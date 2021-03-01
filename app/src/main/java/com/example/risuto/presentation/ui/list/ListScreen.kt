@@ -7,7 +7,10 @@ import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
@@ -16,6 +19,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.bumptech.glide.request.RequestOptions
@@ -31,7 +35,7 @@ fun ListScreen(
     animes: List<SearchAnimePresentation>,
     executeAnimeSearch: (String) -> Unit
 ) {
-    executeAnimeSearch("wonder egg priority")
+    executeAnimeSearch("Konosuba")
     Column {
         ListToolBar()
         AnimeList(animes)
@@ -45,7 +49,6 @@ fun AnimeList(animes: List<SearchAnimePresentation>) {
         cells = GridCells.Adaptive(minSize = 180.dp),
         modifier = Modifier
             .padding(16.dp)
-            .fillMaxSize()
     ) {
         var count = 0
         items(items = animes) { anime ->
@@ -68,13 +71,13 @@ fun AnimeListItem(
         modifier
             .fillMaxSize()
             .padding(bottom = 16.dp)
-            .clip(RoundedCornerShape(8.dp))
-            .shadow(elevation = 8.dp)
+            .shadow(elevation = 4.dp, shape = RoundedCornerShape(8.dp), true)
             .background(Color.White)
     ) {
         Box(modifier = Modifier
             .size(width = 180.dp, height = 216.dp)
-            .background(Color.Gray)) {
+            .background(Color.Gray)
+        ) {
             anime.image_url?.let {
                 GlideImage(
                     data = it.replace("\\\\", "/"),
@@ -95,7 +98,8 @@ fun AnimeListItem(
                 Text(
                     text = it,
                     fontWeight = FontWeight.Bold,
-                    maxLines = 1
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
             Row {
