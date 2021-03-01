@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Risuto">
         <activity
-            android:name=".presentation.ui.home.HomeActivity"
+            android:name=".presentation.ui.list.ListActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.Risuto.NoActionBar">

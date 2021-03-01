@@ -88,4 +88,10 @@ dependencies {
     implementation "com.squareup.moshi:moshi-kotlin:$moshi"
     implementation "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2"
     kapt "com.squareup.moshi:moshi-kotlin-codegen:$moshi"
+
+    def glide = "4.11.0"
+    implementation "com.github.bumptech.glide:glide:$glide"
+    kapt "com.github.bumptech.glide:compiler:$glide"
+    implementation "dev.chrisbanes.accompanist:accompanist-glide:0.6.1"
+
 }
