@@ -1,9 +1,11 @@
 package com.example.risuto.presentation.ui.list
 
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -15,7 +17,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -24,6 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.bumptech.glide.request.RequestOptions
 import com.chun2maru.risutomvvm.presentation.model.SearchAnimePresentation
+import com.example.risuto.presentation.model.TopItemPresentation
 import com.example.risuto.presentation.model.generateDummyAnime
 import dev.chrisbanes.accompanist.glide.GlideImage
 import java.text.NumberFormat
@@ -33,15 +35,26 @@ import java.util.*
 @Composable
 fun ListScreen(
     animes: List<SearchAnimePresentation>,
-    executeAnimeSearch: (String) -> Unit
+    items: List<TopItemPresentation>,
+    executeAnimeSearch: (String) -> Unit,
+    executeTopResult: (String, Int, String) -> Unit
 ) {
-    executeAnimeSearch("Konosuba")
+    executeTopResult("anime", 1, "airing")
     Column {
         ListToolBar()
-        AnimeList(animes)
+        TestTop(items = items)
     }
 }
 
+
+@Composable
+fun TestTop(items: List<TopItemPresentation>){
+    LazyColumn {
+        items(items) { item ->
+            item.title?.let { Text(text = it) }
+        }
+    }
+}
 @ExperimentalFoundationApi
 @Composable
 fun AnimeList(animes: List<SearchAnimePresentation>) {

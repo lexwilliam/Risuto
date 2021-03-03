@@ -1,6 +1,6 @@
 package com.chun2maru.risutomvvm.presentation.di
 
-import com.chun2maru.risutomvvm.data.remote.AnimeService
+import com.chun2maru.risutomvvm.data.remote.JikanService
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -36,6 +36,6 @@ object NetworkModule {
 
     @Singleton
     @Provides
-    fun provideAnimeService(retrofit: Retrofit): AnimeService =
-            retrofit.create(AnimeService::class.java)
+    fun provideAnimeService(retrofit: Retrofit): JikanService =
+            retrofit.create(JikanService::class.java)
 }

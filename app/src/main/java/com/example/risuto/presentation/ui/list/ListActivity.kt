@@ -6,15 +6,14 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.Surface
-import androidx.compose.ui.graphics.Color
-import com.chun2maru.risutomvvm.presentation.viewmodel.SearchViewModel
+import com.chun2maru.risutomvvm.presentation.viewmodel.ListViewModel
 import com.example.risuto.ui.theme.RisutoTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class ListActivity : AppCompatActivity() {
 
-    val searchViewModel by viewModels<SearchViewModel>()
+    private val listViewModel by viewModels<ListViewModel>()
 
     @ExperimentalFoundationApi
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,8 +22,11 @@ class ListActivity : AppCompatActivity() {
             RisutoTheme {
                 Surface {
                     ListScreen(
-                        animes = searchViewModel.searchAnimeViewState,
-                        executeAnimeSearch = searchViewModel::executeAnimeSearch)
+                        animes = listViewModel.searchAnimeViewState,
+                        items = listViewModel.getTopResultViewState,
+                        executeAnimeSearch = listViewModel::executeAnimeSearch,
+                        executeTopResult = listViewModel::executeTopResult
+                    )
                 }
             }
         }
