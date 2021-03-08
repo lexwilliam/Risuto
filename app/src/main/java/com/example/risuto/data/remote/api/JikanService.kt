@@ -1,6 +1,7 @@
 package com.chun2maru.risutomvvm.data.remote
 
 import com.chun2maru.risutomvvm.data.remote.model.RequestSearch
+import com.example.risuto.data.remote.model.AnimeResponse
 import com.example.risuto.data.remote.model.RequestTop
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.squareup.moshi.Moshi
@@ -24,5 +25,10 @@ interface JikanService {
         @Path("page") page: Int,
         @Path("subType") subType: String
     ): RequestTop
+
+    @GET("anime/{id}")
+    suspend fun getAnimeResult(
+        @Path("id") id: Int
+    ): AnimeResponse
 
 }

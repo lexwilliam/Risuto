@@ -1,11 +1,11 @@
 package com.chun2maru.risutomvvm.domain.usecase
 
-import com.chun2maru.risutomvvm.data.repository.ItemRepository
+import com.chun2maru.risutomvvm.data.repository.ListRepository
 import javax.inject.Inject
 
 class SearchAnimeUseCase
 @Inject constructor(
-    private val itemRepository: ItemRepository) {
+    private val listRepository: ListRepository) {
 
-    suspend operator fun invoke(params: String) = itemRepository.getSearchResult(params)
+    suspend operator fun invoke(params: String) = listRepository.searchAnime(params)
 }

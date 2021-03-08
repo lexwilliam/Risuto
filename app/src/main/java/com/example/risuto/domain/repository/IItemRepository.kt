@@ -1,12 +1,10 @@
-package com.chun2maru.risutomvvm.domain.repository
+package com.example.risuto.domain.repository
 
-import com.chun2maru.risutomvvm.domain.model.SearchAnime
-import com.example.risuto.domain.model.TopItem
+import com.example.risuto.domain.model.Anime
 import kotlinx.coroutines.flow.Flow
 
 interface IItemRepository {
 
-    suspend fun getSearchResult(query: String): Flow<List<SearchAnime>>
+    suspend fun getAnime(id: Int): Flow<Anime>
 
-    suspend fun getTopResult(type: String, page: Int, subType: String): Flow<List<TopItem>>
 }

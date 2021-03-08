@@ -1,4 +1,4 @@
-package com.example.risuto.presentation.model
+package com.example.risuto.presentation.dummy
 
 data class DummyAnimeModel(
     val name: String,

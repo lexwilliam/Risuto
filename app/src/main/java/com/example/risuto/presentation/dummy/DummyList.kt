@@ -17,8 +17,8 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.risuto.presentation.model.DummyAnimeModel
-import com.example.risuto.presentation.model.generateDummyAnime
+import com.example.risuto.presentation.dummy.DummyAnimeModel
+import com.example.risuto.presentation.dummy.generateDummyAnime
 import java.text.NumberFormat
 import java.util.*
 

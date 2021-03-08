@@ -14,11 +14,14 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -39,25 +42,30 @@ fun ListScreen(
     executeAnimeSearch: (String) -> Unit,
     executeTopResult: (String, Int, String) -> Unit
 ) {
-    executeTopResult("anime", 1, "airing")
+    executeAnimeSearch("Wonder Egg Priority")
     Column {
         ListToolBar()
-        TestTop(items = items)
+        SearchGridList(animes = animes)
     }
 }
-
 
 @Composable
 fun TestTop(items: List<TopItemPresentation>){
     LazyColumn {
         items(items) { item ->
-            item.title?.let { Text(text = it) }
+            Column {
+                Text(text = item.title)
+                Text(text = item.end_date)
+                Text(text = item.episodes.toString())
+            }
+
         }
     }
 }
+
 @ExperimentalFoundationApi
 @Composable
-fun AnimeList(animes: List<SearchAnimePresentation>) {
+fun SearchGridList(animes: List<SearchAnimePresentation>) {
     LazyVerticalGrid(
         cells = GridCells.Adaptive(minSize = 180.dp),
         modifier = Modifier
@@ -67,16 +75,16 @@ fun AnimeList(animes: List<SearchAnimePresentation>) {
         items(items = animes) { anime ->
             count++
             if(count % 2 == 0){
-                AnimeListItem(anime = anime, modifier = Modifier.padding(end = 0.dp))
+                SearchGrid(anime = anime, modifier = Modifier.padding(end = 0.dp))
             } else {
-                AnimeListItem(anime = anime, modifier = Modifier.padding(end = 16.dp))
+                SearchGrid(anime = anime, modifier = Modifier.padding(end = 16.dp))
             }
         }
     }
 }
 
 @Composable
-fun AnimeListItem(
+fun SearchGrid(
     anime: SearchAnimePresentation,
     modifier: Modifier = Modifier
 ) {
@@ -84,62 +92,49 @@ fun AnimeListItem(
         modifier
             .fillMaxSize()
             .padding(bottom = 16.dp)
-            .shadow(elevation = 4.dp, shape = RoundedCornerShape(8.dp), true)
+            .shadow(elevation = 4.dp, shape = RectangleShape, true)
             .background(Color.White)
     ) {
         Box(modifier = Modifier
             .size(width = 180.dp, height = 216.dp)
             .background(Color.Gray)
         ) {
-            anime.image_url?.let {
-                GlideImage(
-                    data = it.replace("\\\\", "/"),
-                    contentDescription = "Anime Picture",
-                    fadeIn = true,
-                    modifier = Modifier.fillMaxSize(),
-                    requestBuilder = {
-                        val options = RequestOptions()
-                        options
-                            .centerCrop()
-                        apply(options)
-                    }
-                )
-            }
+            GlideImage(
+                data = anime.image_url.replace("\\\\", "/"),
+                contentDescription = "Anime Picture",
+                fadeIn = true,
+                modifier = Modifier.fillMaxSize(),
+                requestBuilder = {
+                    val options = RequestOptions()
+                    options
+                        .centerCrop()
+                    apply(options)
+                }
+            )
         }
         Column(modifier = Modifier.padding(8.dp)){
-            anime.title?.let {
-                Text(
-                    text = it,
-                    fontWeight = FontWeight.Bold,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
-                )
-            }
-            Row {
-                Text(
-                    text = anime.score.toString()
-                )
-                Text(text = " | ")
-                val members = NumberFormat.getNumberInstance(Locale.ENGLISH).format(anime.members)
-                Text(text = members + " members", maxLines = 1)
+            Text(
+                text = anime.title,
+                fontWeight = FontWeight.Bold,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
+            )
+            Column {
+                Row {
+                    Icon(Icons.Filled.Star, contentDescription = null)
+                    Text(
+                        text = anime.score.toString()
+                    )
+                }
+                Row {
+                    Icon(Icons.Filled.Person, contentDescription = null)
+                    val members = NumberFormat.getNumberInstance(Locale.ENGLISH).format(anime.members)
+                    Text(text = members, maxLines = 1)
+                }
             }
         }
     }
 }
-
-@Composable
-fun ListToolBar() {
-    TopAppBar(
-        title = { Text("Risuto") },
-        actions = {
-            IconButton(onClick = { /*TODO*/ }) {
-                Icon(Icons.Filled.Search, contentDescription = "Search Button")
-            }
-        }
-    )
-}
-
-
 
 @ExperimentalFoundationApi
 @Preview
@@ -149,6 +144,13 @@ fun DummyListScreen() {
         ListToolBar()
         DummyAnimeList(dummyModels = generateDummyAnime())
     }
+}
+
+@Composable
+fun ListToolBar() {
+    TopAppBar(
+        title = { Text("Risuto") },
+    )
 }
 
 @Preview
