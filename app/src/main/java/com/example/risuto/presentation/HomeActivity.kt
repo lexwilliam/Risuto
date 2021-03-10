@@ -1,4 +1,4 @@
-package com.example.risuto.presentation.ui.list
+package com.example.risuto.presentation
 
 import android.os.Bundle
 import androidx.activity.compose.setContent
@@ -7,13 +7,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.Surface
 import com.chun2maru.risutomvvm.presentation.viewmodel.ListViewModel
+import com.example.risuto.presentation.ui.home.HomeContent
+import com.example.risuto.presentation.ui.home.HomeScreen
 import com.example.risuto.ui.theme.RisutoTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class ListActivity : AppCompatActivity() {
+class HomeActivity : AppCompatActivity() {
 
-    private val listViewModel by viewModels<ListViewModel>()
+    val listViewModel by viewModels<ListViewModel>()
 
     @ExperimentalFoundationApi
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,12 +23,10 @@ class ListActivity : AppCompatActivity() {
         setContent {
             RisutoTheme {
                 Surface {
-                    ListScreen(
-                        animes = listViewModel.searchAnimeViewState,
-                        items = listViewModel.getTopResultViewState,
-                        executeAnimeSearch = listViewModel::executeAnimeSearch,
-                        executeTopResult = listViewModel::executeTopResult
-                    )
+                    HomeContent(topAnime = listViewModel.topAiringAnime,
+                        searchAnime = listViewModel.searchAnime,
+                        onTopAnime = listViewModel::onTopAiringAnime,
+                        onSearchAnime = listViewModel::onSearchAnime)
                 }
             }
         }

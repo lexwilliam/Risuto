@@ -1,6 +1,6 @@
 package com.example.risuto.presentation.model
 
-data class TopItemPresentation(
+data class TopAnimePresentation(
     val mal_id: Int,
     val rank: Int,
     val title: String,
