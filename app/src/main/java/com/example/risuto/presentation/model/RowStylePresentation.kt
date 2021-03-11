@@ -1,4 +1,4 @@
-package com.example.risuto.presentation.model.custom
+package com.example.risuto.presentation.model
 
 data class RowStylePresentation(
     val mal_id : Int,

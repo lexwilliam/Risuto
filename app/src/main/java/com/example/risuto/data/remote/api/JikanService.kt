@@ -15,13 +15,12 @@ import retrofit2.http.Query
 interface JikanService {
 
     @GET("search/anime")
-    suspend fun getSearchResult(
-            @Query("q") name: String
+    suspend fun getSearchAnimeResult(
+        @Query("q") name: String
     ): RequestSearch
 
-    @GET("top/{type}/{page}/{subType}")
+    @GET("top/anime/{page}/{subType}")
     suspend fun getTopResult(
-        @Path("type") type: String,
         @Path("page") page: Int,
         @Path("subType") subType: String
     ): RequestTop

@@ -1,37 +1,28 @@
 package com.example.risuto.presentation.ui.home
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.chun2maru.risutomvvm.presentation.viewmodel.ListViewModel
-import com.example.risuto.presentation.model.custom.GridStylePresentation
-import com.example.risuto.presentation.model.custom.RowStylePresentation
-import com.example.risuto.presentation.ui.component.RowItemList
-import com.example.risuto.presentation.ui.component.VerticalGridRow
+import com.example.risuto.presentation.model.GridStylePresentation
+import com.example.risuto.presentation.model.RowStylePresentation
+import com.example.risuto.presentation.ui.component.*
 import com.example.risuto.presentation.util.generateFakeGridItemList
 
 @ExperimentalFoundationApi
 @Composable
-fun HomeScreen(listViewModel: ListViewModel) {
-    HomeContent(
-        topAnime = listViewModel.topAiringAnime,
-        searchAnime = listViewModel.searchAnime,
-        onTopAnime = listViewModel::onTopAiringAnime,
-        onSearchAnime = listViewModel::onSearchAnime
-    )
+fun HomeScreen() {
+//    HomeContent(
+//        topAnime = listViewModel.topAiringAnime,
+//        searchAnime = listViewModel.searchAnime,
+//        onTopAnime = listViewModel::onTopAiringAnime,
+//        onSearchAnime = listViewModel::onSearchAnime
+//    )
 }
 
 @ExperimentalFoundationApi
@@ -39,10 +30,10 @@ fun HomeScreen(listViewModel: ListViewModel) {
 fun HomeContent(
     topAnime: List<GridStylePresentation>,
     searchAnime: List<RowStylePresentation>,
-    onTopAnime: (String, Int, String) -> Unit,
+    onTopAnime: (Int, String) -> Unit,
     onSearchAnime: (String) -> Unit
 ) {
-    onTopAnime("anime", 1, "airing")
+    onTopAnime(1, "airing")
     onSearchAnime("Wonder Egg Priority")
     Column(modifier = Modifier.fillMaxSize()) {
         HomeToolBar()
@@ -53,30 +44,7 @@ fun HomeContent(
 
 @Composable
 fun HomeToolBar() {
-    TopAppBar(
-        title = {
-            Text(
-                text = "Search",
-                modifier = Modifier
-                    .clickable {
-
-                    }
-            )
-        },
-        navigationIcon = {
-            IconButton(onClick = { /*TODO*/ }) {
-                Icon(Icons.Default.Menu, contentDescription = null)
-            }
-
-        },
-        actions = {
-            IconButton(onClick = { /*TODO*/ }) {
-                Icon(Icons.Default.Person, contentDescription = null)
-            }
-        },
-        backgroundColor = MaterialTheme.colors.onPrimary,
-        contentColor = MaterialTheme.colors.onSecondary
-    )
+    Toolbar(title = "Home", navIcon = NavIcon.Menu, action = ActionIcon.Search)
 }
 
 @Composable
@@ -90,7 +58,7 @@ fun TypeVerticalGridRow(
                 .padding(start = 16.dp, top = 16.dp),
             text = title,
             fontWeight = FontWeight.Bold,
-            fontSize = 24.sp
+            fontSize = 24.sp,
         )
         VerticalGridRow(items = items)
     }

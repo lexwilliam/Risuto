@@ -1,21 +1,19 @@
 package com.chun2maru.risutomvvm.presentation.viewmodel
 
-import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.chun2maru.risutomvvm.domain.usecase.SearchAnimeUseCase
-import com.chun2maru.risutomvvm.presentation.mapper.toPresentation
-import com.chun2maru.risutomvvm.presentation.model.SearchAnimePresentation
+import com.chun2maru.risutomvvm.presentation.mapper.toGrid
+import com.chun2maru.risutomvvm.presentation.mapper.toRow
 import com.example.risuto.domain.usecase.TopAnimeUseCase
-import com.example.risuto.presentation.mapper.toGrid
-import com.example.risuto.presentation.mapper.toRow
-import com.example.risuto.presentation.model.TopAnimePresentation
-import com.example.risuto.presentation.model.custom.GridStylePresentation
-import com.example.risuto.presentation.model.custom.RowStylePresentation
+import com.example.risuto.presentation.model.GridStylePresentation
+import com.example.risuto.presentation.model.RowStylePresentation
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -40,9 +38,9 @@ class ListViewModel
         }
     }
 
-    fun onTopAiringAnime(type: String, page: Int, subType: String) {
+    fun onTopAiringAnime(page: Int, subType: String) {
         viewModelScope.launch {
-            topAnimeUseCase.invoke(type, page, subType).collect { results ->
+            topAnimeUseCase.invoke(page, subType).collect { results ->
                 val animes = results.map { anime -> anime.toGrid() }
                 topAiringAnime = animes
             }

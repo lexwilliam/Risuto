@@ -9,5 +9,5 @@ interface IListRepository {
 
     suspend fun searchAnime(query: String): Flow<List<SearchAnime>>
 
-    suspend fun topAnime(type: String, page: Int, subType: String): Flow<List<TopAnime>>
+    suspend fun topAnime(page: Int, subType: String): Flow<List<TopAnime>>
 }

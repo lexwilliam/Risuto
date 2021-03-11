@@ -10,7 +10,7 @@ class TopAnimeUseCase
     private val listRepository: ListRepository) {
 
     suspend operator fun invoke(
-        type: String, page: Int, subType: String
-    ): Flow<List<TopAnime>> = listRepository.topAnime(type, page, subType)
+        page: Int, subType: String
+    ): Flow<List<TopAnime>> = listRepository.topAnime(page, subType)
 
 }
