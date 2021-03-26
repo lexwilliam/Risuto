@@ -60,27 +60,6 @@ fun Toolbar(
             }
         }
     }
-//    TopAppBar(
-//        title = {
-//            Text(
-//                text = title,
-//                modifier = Modifier.fillMaxWidth(),
-//                fontWeight = FontWeight.Bold,
-//                textAlign = TextAlign.Center
-//            )
-//        },
-//        navigationIcon = {
-//            when(navIcon) {
-//                NavIcon.Menu -> Icon(Icons.Filled.Menu, contentDescription = null)
-//                NavIcon.Back -> Icon(Icons.Filled.ArrowBack, contentDescription = null)
-//            }
-//        },
-//        actions = {
-//            when(action) {
-//                ActionIcon.Search -> Icon(Icons.Filled.Search, contentDescription = null)
-//            }
-//        }
-//    )
 }
 
 enum class NavIcon {
