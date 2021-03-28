@@ -5,11 +5,11 @@ import com.example.risuto.data.remote.model.*
 data class Anime(
     val aired: Aired,
     val airing: Boolean,
-    val background: Any,
+    val background: Any?,
     val broadcast: String,
     val duration: String,
     val ending_themes: List<String>,
-    val episodes: Int,
+    val episodes: Int?,
     val favorites: Int,
     val genres: List<Genre>,
     val image_url: String,
@@ -36,7 +36,7 @@ data class Anime(
     val title_english: Any,
     val title_japanese: String,
     val title_synonyms: List<Any>,
-    val trailer_url: String,
+    val trailer_url: String?,
     val type: String,
     val url: String
 )

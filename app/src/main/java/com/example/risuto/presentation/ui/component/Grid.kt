@@ -1,5 +1,6 @@
 package com.example.risuto.presentation.ui.component
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -35,7 +36,10 @@ import com.example.risuto.presentation.util.generateFakeGridItemList
 //}
 
 @Composable
-fun VerticalGridRow(items: List<GridStylePresentation>) {
+fun VerticalGridRow(
+    items: List<GridStylePresentation>,
+    navToDetail: (Int) -> Unit
+) {
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         modifier = Modifier
@@ -43,7 +47,10 @@ fun VerticalGridRow(items: List<GridStylePresentation>) {
             .padding(16.dp)
     ){
         items(items = items){ item ->
-            PosterGrid(item = item)
+            PosterGrid(
+                item = item,
+                navToDetail = { navToDetail(it) }
+            )
         }
     }
 }
@@ -52,11 +59,15 @@ fun VerticalGridRow(items: List<GridStylePresentation>) {
 fun PosterGrid(
     modifier: Modifier = Modifier,
     item: GridStylePresentation,
+    navToDetail: (Int) -> Unit
 ) {
     Column(
         modifier
             .wrapContentSize()
             .width(110.dp)
+            .clickable {
+                navToDetail(item.mal_id)
+            }
     ) {
         NetworkImage(imageUrl = item.image_url, width = 110.dp, height = 180.dp)
         Text(text = item.title + "\n",
@@ -68,11 +79,11 @@ fun PosterGrid(
     }
 }
 
-@Preview
-@Composable
-fun BigGridPreview(){
-    PosterGrid(item = generateFakeGridItem())
-}
+//@Preview
+//@Composable
+//fun BigGridPreview(){
+//    PosterGrid(item = generateFakeGridItem())
+//}
 
 //@ExperimentalFoundationApi
 //@Preview
@@ -81,8 +92,8 @@ fun BigGridPreview(){
 //    BigGridList(items = generateFakeGridItemList())
 //}
 
-@Preview
-@Composable
-fun VerticalGridRowPreview(){
-    VerticalGridRow(items = generateFakeGridItemList())
-}
+//@Preview
+//@Composable
+//fun VerticalGridRowPreview(){
+//    VerticalGridRow(items = generateFakeGridItemList())
+//}

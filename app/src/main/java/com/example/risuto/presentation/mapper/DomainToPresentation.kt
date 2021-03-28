@@ -8,7 +8,7 @@ import com.example.risuto.presentation.model.GridStylePresentation
 import com.example.risuto.presentation.model.RowStylePresentation
 
 internal fun Anime.toPresentation(): AnimePresentation {
-    return AnimePresentation(aired, airing, background, broadcast, duration, ending_themes, episodes, favorites, genres, image_url, licensors, mal_id, members, opening_themes, popularity, premiered, producers, rank, rating, related, request_cache_expiry, request_cached, request_hash, score, scored_by, source, status, studios, synopsis, title, title_english, title_japanese, title_synonyms, trailer_url, type, url)
+    return AnimePresentation(aired, airing, background?: "" , broadcast, duration, ending_themes, episodes?: 0, favorites, genres, image_url?: "", licensors, mal_id, members, opening_themes, popularity, premiered, producers, rank, rating, related, request_cache_expiry, request_cached, request_hash, score, scored_by, source, status, studios, synopsis?: "", title, title_english, title_japanese, title_synonyms, trailer_url?: "", type, url)
 }
 
 internal fun SearchAnime.toRow(): RowStylePresentation {

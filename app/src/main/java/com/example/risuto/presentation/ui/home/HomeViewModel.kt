@@ -1,6 +1,5 @@
 package com.example.risuto.presentation.ui.home
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,10 +7,8 @@ import com.chun2maru.risutomvvm.presentation.mapper.toGrid
 import com.example.risuto.domain.usecase.TopAnimeUseCase
 import com.example.risuto.presentation.model.GridStylePresentation
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import java.lang.Exception
 import javax.inject.Inject
 
 @HiltViewModel
@@ -30,9 +27,7 @@ class HomeViewModel
 
     init {
         viewModelScope.launch {
-            onTopAiringAnime()
-            onTopAnime()
-            onTopUpcomingAnime()
+            refresh()
             combine(
                 topAiringAnime,
                 topAnime,
@@ -52,11 +47,9 @@ class HomeViewModel
     }
 
     private fun refresh() {
-        viewModelScope.launch {
-            onTopAiringAnime()
-            onTopAnime()
-            onTopUpcomingAnime()
-        }
+        onTopAiringAnime()
+        onTopAnime()
+        onTopUpcomingAnime()
     }
 
     private fun onTopAiringAnime() {

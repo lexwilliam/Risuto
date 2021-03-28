@@ -4,7 +4,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.*
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
@@ -15,23 +18,26 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.risuto.presentation.model.GridStylePresentation
-import com.example.risuto.presentation.ui.component.*
-import com.example.risuto.presentation.util.generateFakeGridItemList
+import com.example.risuto.presentation.ui.component.VerticalGridRow
 
 @Composable
 fun HomeScreen(
-    viewModel: HomeViewModel = viewModel()
+    viewModel: HomeViewModel = viewModel(),
+    navToDetail: (Int) -> Unit,
+    navToSearch: () -> Unit
 ) {
     val viewState by viewModel.state.collectAsState()
+
     HomeContent(
         topAiringAnime = viewState.topAiringAnime,
         topAnime = viewState.topAnime,
-        topUpcomingAnime = viewState.topUpcomingAnime
+        topUpcomingAnime = viewState.topUpcomingAnime,
+        navToDetail = navToDetail,
+        navToSearch = navToSearch
     )
 }
 
@@ -39,21 +45,37 @@ fun HomeScreen(
 fun HomeContent(
     topAiringAnime: List<GridStylePresentation>,
     topAnime: List<GridStylePresentation>,
-    topUpcomingAnime: List<GridStylePresentation>
+    topUpcomingAnime: List<GridStylePresentation>,
+    navToDetail: (Int) -> Unit,
+    navToSearch: () -> Unit
 ) {
     val state = rememberScrollState()
     Column(
         Modifier.verticalScroll(state)
     ) {
-        HomeToolBar()
-        PosterGridStyle(title = "Top Airing", items = topAiringAnime)
-        PosterGridStyle(title = "Top Upcoming", items = topUpcomingAnime)
-        PosterGridStyle(title = "Top Anime", items = topAnime)
+        HomeToolBar(navToSearch)
+        PosterGridStyle(
+            title = "Top Airing",
+            items = topAiringAnime,
+            navToDetail = { navToDetail(it) }
+        )
+        PosterGridStyle(
+            title = "Top Upcoming",
+            items = topUpcomingAnime,
+            navToDetail = { navToDetail(it) }
+        )
+        PosterGridStyle(
+            title = "Top Anime",
+            items = topAnime,
+            navToDetail = { navToDetail(it) }
+        )
     }
 }
 
 @Composable
-fun HomeToolBar() {
+fun HomeToolBar(
+    navToSearch: () -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -71,14 +93,16 @@ fun HomeToolBar() {
         }
         Text(
             text = "Home",
-            modifier = Modifier.padding(horizontal = 120.dp),
+            modifier = Modifier.padding(horizontal = 100.dp),
             fontWeight = FontWeight.Bold,
             fontSize = 24.sp
         )
         Surface(
             modifier = Modifier.padding(4.dp)
         ) {
-            IconButton(onClick = { }) {
+            IconButton(onClick = {
+                navToSearch()
+            }) {
                 Icon(
                     Icons.Filled.Search,
                     contentDescription = null,
@@ -92,7 +116,8 @@ fun HomeToolBar() {
 @Composable
 fun PosterGridStyle(
     title: String,
-    items: List<GridStylePresentation>
+    items: List<GridStylePresentation>,
+    navToDetail: (Int) -> Unit
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Text(
@@ -102,7 +127,10 @@ fun PosterGridStyle(
             fontWeight = FontWeight.Bold,
             fontSize = 24.sp,
         )
-        VerticalGridRow(items = items)
+        VerticalGridRow(
+            items = items,
+            navToDetail = { navToDetail(it) }
+        )
     }
 }
 
@@ -112,8 +140,8 @@ fun PosterGridStyle(
 //    HomeToolBar(navController = )
 //}
 
-@Preview
-@Composable
-fun TypeVerticalGridListPreview(){
-    PosterGridStyle(title = "Top Airing", items = generateFakeGridItemList())
-}
+//@Preview
+//@Composable
+//fun TypeVerticalGridListPreview(){
+//    PosterGridStyle(title = "Top Airing", items = generateFakeGridItemList())
+//}

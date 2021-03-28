@@ -39,4 +39,15 @@ data class AnimePresentation(
     val trailer_url: String,
     val type: String,
     val url: String
-)
+) {
+    constructor() : this(
+        Aired("", Prop(From(0,0,0),To(0,0,0)),"", ""),
+        false, "", "", "", listOf(""), 0,
+        0, listOf(Genre(0,"", "", "")), "",
+        listOf(Licensor(0, "", "", "")), 0,0,
+        listOf(""), 0, "", listOf(Producer(0, "","", "" )),
+        0, "", Related(), 0, false, "", 0.0, 0,
+        "", "", listOf(Studio(0, "", "", "")), "",
+        "", "", "", listOf(""), "", "", ""
+    )
+}
