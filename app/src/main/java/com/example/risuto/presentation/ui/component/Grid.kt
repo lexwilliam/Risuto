@@ -44,7 +44,7 @@ fun VerticalGridRow(
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
+            .padding(vertical = 4.dp)
     ){
         items(items = items){ item ->
             PosterGrid(

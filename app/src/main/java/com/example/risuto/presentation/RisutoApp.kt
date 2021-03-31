@@ -48,7 +48,8 @@ fun RisutoApp() {
         ) {
             val animeViewModel = hiltNavGraphViewModel<AnimeViewModel>()
             AnimeScreen(
-                viewModel = animeViewModel
+                viewModel = animeViewModel,
+                onBackPressed = { navController.navigateUp() }
             )
         }
     }

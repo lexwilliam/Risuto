@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -26,7 +27,7 @@ fun NetworkImage(
     Surface(
         modifier
             .size(width = width, height = height)
-            .shadow(elevation = 4.dp, shape = RoundedCornerShape(16.dp), true)
+            .shadow(elevation = 4.dp, shape = MaterialTheme.shapes.medium, true)
     ) {
         if (imageUrl.isNotEmpty()) {
             GlideImage(

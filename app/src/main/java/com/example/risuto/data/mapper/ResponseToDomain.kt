@@ -2,8 +2,7 @@ package com.chun2maru.risutomvvm.data.mapper
 
 import com.chun2maru.risutomvvm.data.remote.model.SearchAnimeResponse
 import com.chun2maru.risutomvvm.domain.model.SearchAnime
-import com.example.risuto.data.remote.model.AnimeResponse
-import com.example.risuto.data.remote.model.TopAnimeResponse
+import com.example.risuto.data.remote.model.*
 import com.example.risuto.domain.model.Anime
 import com.example.risuto.domain.model.TopAnime
 

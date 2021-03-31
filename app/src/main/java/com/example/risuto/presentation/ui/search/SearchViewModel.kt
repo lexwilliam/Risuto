@@ -21,37 +21,22 @@ class SearchViewModel
         private val savedStateHandle: SavedStateHandle
 ): ViewModel() {
 
-    private var query = MutableStateFlow("")
     private var searchAnimes = MutableStateFlow<List<RowStylePresentation>>(listOf())
 
     private var _state = MutableStateFlow(SearchViewState())
     val state = _state.asStateFlow()
 
-    fun refresh() {
-        viewModelScope.launch {
-            combine(
-                query,
-                searchAnimes
-            ) { query, searchAnimes ->
-                SearchViewState(
-                    query = query,
-                    searchAnimes = searchAnimes
-                )
-            }
-        }
-    }
-
-    private fun onSearchAnime(animeName: String) {
+    fun onSearchAnime(animeName: String) {
         viewModelScope.launch {
             searchAnimeUseCase.invoke(animeName).collect { results ->
                 val animes = results.map { anime -> anime.toRow() }
                 searchAnimes.value = animes
             }
+            _state.value = _state.value.copy(searchAnimes.value)
         }
     }
 }
 
 data class SearchViewState(
-    val query: String = "",
     val searchAnimes: List<RowStylePresentation> = emptyList()
 )
