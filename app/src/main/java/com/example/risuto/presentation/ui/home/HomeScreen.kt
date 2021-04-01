@@ -1,26 +1,44 @@
 package com.example.risuto.presentation.ui.home
 
+import android.util.Log
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.risuto.presentation.model.GridStylePresentation
-import com.example.risuto.presentation.ui.component.NavSearchBar
-import com.example.risuto.presentation.ui.component.VerticalGridRow
+import com.example.risuto.presentation.model.AnimeListPresentation
+import com.example.risuto.presentation.ui.component.ColumnList
+import com.example.risuto.presentation.ui.component.HorizontalGridList
 
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel = viewModel(),
-    navToDetail: (Int) -> Unit,
-    navToSearch: () -> Unit
+    navToDetail: (Int) -> Unit
 ) {
     val viewState by viewModel.state.collectAsState()
 
@@ -28,36 +46,33 @@ fun HomeScreen(
         topAiringAnime = viewState.topAiringAnime,
         topAnime = viewState.topAnime,
         topUpcomingAnime = viewState.topUpcomingAnime,
-        navToDetail = navToDetail,
-        navToSearch = navToSearch
+        navToDetail = navToDetail
     )
 }
 
 @Composable
 fun HomeContent(
-    topAiringAnime: List<GridStylePresentation>,
-    topAnime: List<GridStylePresentation>,
-    topUpcomingAnime: List<GridStylePresentation>,
-    navToDetail: (Int) -> Unit,
-    navToSearch: () -> Unit
+    topAiringAnime: List<AnimeListPresentation>,
+    topAnime: List<AnimeListPresentation>,
+    topUpcomingAnime: List<AnimeListPresentation>,
+    navToDetail: (Int) -> Unit
 ) {
     val state = rememberScrollState()
     Column(
         modifier = Modifier.verticalScroll(state),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        NavSearchBar(navToSearch)
-        PosterGridStyle(
+        PosterGridList(
             title = "Top Airing",
             items = topAiringAnime,
             navToDetail = { navToDetail(it) }
         )
-        PosterGridStyle(
+        PosterGridList(
             title = "Top Upcoming",
             items = topUpcomingAnime,
             navToDetail = { navToDetail(it) }
         )
-        PosterGridStyle(
+        PosterGridList(
             title = "Top Anime",
             items = topAnime,
             navToDetail = { navToDetail(it) }
@@ -66,34 +81,26 @@ fun HomeContent(
 }
 
 @Composable
-fun PosterGridStyle(
+fun PosterGridList(
     title: String,
-    items: List<GridStylePresentation>,
+    items: List<AnimeListPresentation>,
     navToDetail: (Int) -> Unit
 ) {
     Column(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
     ) {
         Text(
             text = title,
             fontWeight = FontWeight.Bold,
-            fontSize = 24.sp,
+            fontSize = 24.sp
         )
-        VerticalGridRow(
+        HorizontalGridList(
             items = items,
             navToDetail = { navToDetail(it) }
         )
     }
 }
 
-//@Preview
-//@Composable
-//fun ToolbarPreview() {
-//    HomeToolBar(navController = )
-//}
 
-//@Preview
-//@Composable
-//fun TypeVerticalGridListPreview(){
-//    PosterGridStyle(title = "Top Airing", items = generateFakeGridItemList())
-//}

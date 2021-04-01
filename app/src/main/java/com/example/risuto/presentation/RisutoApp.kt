@@ -1,6 +1,8 @@
 package com.example.risuto.presentation
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.hilt.navigation.compose.hiltNavGraphViewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.*
@@ -13,6 +15,8 @@ import com.example.risuto.presentation.ui.home.HomeViewModel
 import com.example.risuto.presentation.ui.search.SearchScreen
 import com.example.risuto.presentation.ui.search.SearchViewModel
 
+@ExperimentalComposeUiApi
+@ExperimentalFoundationApi
 @Composable
 fun RisutoApp() {
     val navController = rememberNavController()
@@ -25,16 +29,18 @@ fun RisutoApp() {
                     navController.navigate(
                         RisutoAnimeScreen.route.plus("/?mal_id=$mal_id")
                     )
-                },
-                navToSearch = {
-                    navController.navigate(RisutoSearchScreen.route)
                 }
             )
         }
         composable(RisutoSearchScreen.route) {
             val searchViewModel = hiltNavGraphViewModel<SearchViewModel>()
             SearchScreen(
-                viewModel = searchViewModel
+                viewModel = searchViewModel,
+                navToDetail = { mal_id ->
+                    navController.navigate(
+                        RisutoAnimeScreen.route.plus("/?mal_id=$mal_id")
+                    )
+                }
             )
         }
         composable(

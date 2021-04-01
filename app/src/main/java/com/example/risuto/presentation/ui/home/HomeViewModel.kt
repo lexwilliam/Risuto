@@ -1,11 +1,15 @@
 package com.example.risuto.presentation.ui.home
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.chun2maru.risutomvvm.domain.usecase.SearchAnimeUseCase
 import com.chun2maru.risutomvvm.presentation.mapper.toGrid
+import com.chun2maru.risutomvvm.presentation.mapper.toRow
 import com.example.risuto.domain.usecase.TopAnimeUseCase
-import com.example.risuto.presentation.model.GridStylePresentation
+import com.example.risuto.presentation.model.AnimeListPresentation
+import com.example.risuto.presentation.ui.search.SearchViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -15,12 +19,13 @@ import javax.inject.Inject
 class HomeViewModel
 @Inject constructor(
     private val topAnimeUseCase: TopAnimeUseCase,
+    private val searchAnimeUseCase: SearchAnimeUseCase,
     private val savedStateHandle: SavedStateHandle
 ): ViewModel() {
 
-    private val topAiringAnime = MutableStateFlow<List<GridStylePresentation>>(listOf())
-    private val topAnime = MutableStateFlow<List<GridStylePresentation>>(listOf())
-    private val topUpcomingAnime = MutableStateFlow<List<GridStylePresentation>>(listOf())
+    private val topAiringAnime = MutableStateFlow<List<AnimeListPresentation>>(listOf())
+    private val topAnime = MutableStateFlow<List<AnimeListPresentation>>(listOf())
+    private val topUpcomingAnime = MutableStateFlow<List<AnimeListPresentation>>(listOf())
 
     private val _state = MutableStateFlow(HomeViewState())
     val state = _state.asStateFlow()
@@ -81,7 +86,7 @@ class HomeViewModel
 }
 
 data class HomeViewState (
-    val topAnime: List<GridStylePresentation> = emptyList(),
-    val topAiringAnime: List<GridStylePresentation> = emptyList(),
-    val topUpcomingAnime: List<GridStylePresentation> = emptyList()
+    val topAnime: List<AnimeListPresentation> = emptyList(),
+    val topAiringAnime: List<AnimeListPresentation> = emptyList(),
+    val topUpcomingAnime: List<AnimeListPresentation> = emptyList()
 )

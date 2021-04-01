@@ -1,16 +1,15 @@
 package com.example.risuto.presentation.ui.search
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.chun2maru.risutomvvm.domain.usecase.SearchAnimeUseCase
 import com.chun2maru.risutomvvm.presentation.mapper.toRow
-import com.example.risuto.presentation.model.RowStylePresentation
+import com.example.risuto.presentation.model.AnimeListPresentation
+import com.example.risuto.presentation.ui.home.HomeViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -21,7 +20,8 @@ class SearchViewModel
         private val savedStateHandle: SavedStateHandle
 ): ViewModel() {
 
-    private var searchAnimes = MutableStateFlow<List<RowStylePresentation>>(listOf())
+    private var searchAnimes = MutableStateFlow<List<AnimeListPresentation>>(listOf())
+    private var query = MutableStateFlow("")
 
     private var _state = MutableStateFlow(SearchViewState())
     val state = _state.asStateFlow()
@@ -32,11 +32,27 @@ class SearchViewModel
                 val animes = results.map { anime -> anime.toRow() }
                 searchAnimes.value = animes
             }
-            _state.value = _state.value.copy(searchAnimes.value)
+            combine(
+                query,
+                searchAnimes
+            ) { query, searchAnime ->
+                SearchViewState(
+                    query = query,
+                    searchAnimes = searchAnime
+                )
+            }.catch { throwable ->
+                throw throwable
+            }.collect {
+                _state.value = it
+            }
+            searchAnimes.value.forEach { anime ->
+                Log.d("TAG", anime.title)
+            }
         }
     }
 }
 
 data class SearchViewState(
-    val searchAnimes: List<RowStylePresentation> = emptyList()
+    val query: String = "",
+    val searchAnimes: List<AnimeListPresentation> = emptyList()
 )

@@ -5,8 +5,7 @@ import com.example.risuto.data.remote.model.*
 import com.example.risuto.domain.model.Anime
 import com.example.risuto.domain.model.TopAnime
 import com.example.risuto.presentation.model.AnimePresentation
-import com.example.risuto.presentation.model.GridStylePresentation
-import com.example.risuto.presentation.model.RowStylePresentation
+import com.example.risuto.presentation.model.AnimeListPresentation
 
 internal fun Anime.toPresentation(): AnimePresentation {
     return AnimePresentation(
@@ -48,10 +47,10 @@ internal fun Anime.toPresentation(): AnimePresentation {
         url?:"")
 }
 
-internal fun SearchAnime.toRow(): RowStylePresentation {
-    return RowStylePresentation(mal_id, image_url?: "", title, synopsis?: "", type, episodes?: 0, score, members)
+internal fun SearchAnime.toRow(): AnimeListPresentation {
+    return AnimeListPresentation(mal_id, image_url?: "", title, synopsis?: "", type, episodes?: 0, score, members)
 }
 
-internal fun TopAnime.toGrid(): GridStylePresentation {
-    return GridStylePresentation(mal_id, image_url?: "", title, type, episodes?:0, score, members)
+internal fun TopAnime.toGrid(): AnimeListPresentation {
+    return AnimeListPresentation(mal_id, image_url?: "", title, "", type, episodes?: 0, score, members)
 }

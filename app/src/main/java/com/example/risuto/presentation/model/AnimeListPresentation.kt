@@ -1,6 +1,6 @@
 package com.example.risuto.presentation.model
 
-data class RowStylePresentation(
+data class AnimeListPresentation(
     val mal_id : Int,
     val image_url : String,
     val title : String,

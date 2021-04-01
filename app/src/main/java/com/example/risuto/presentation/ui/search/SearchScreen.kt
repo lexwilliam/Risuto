@@ -1,112 +1,121 @@
 package com.example.risuto.presentation.ui.search
 
+import android.util.Log
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.risuto.presentation.model.RowStylePresentation
-import com.example.risuto.presentation.util.generateFakeRowItemList
+import com.example.risuto.presentation.model.AnimeListPresentation
+import com.example.risuto.presentation.ui.component.ColumnList
 
+@ExperimentalFoundationApi
+@ExperimentalComposeUiApi
 @Composable
 fun SearchScreen(
-    viewModel: SearchViewModel = viewModel()
+    viewModel: SearchViewModel = viewModel(),
+    navToDetail: (Int) -> Unit
 ) {
     val viewState by viewModel.state.collectAsState()
     SearchContent(
-        searchAnimes = viewState.searchAnimes,
-        onValueChange = viewModel::onSearchAnime
+        items = viewState.searchAnimes,
+        onValueChange = viewModel::onSearchAnime,
+        navToDetail = { navToDetail(it) }
     )
 }
 
+@ExperimentalFoundationApi
+@ExperimentalComposeUiApi
 @Composable
 fun SearchContent(
-    searchAnimes: List<RowStylePresentation>,
+    items: List<AnimeListPresentation>,
     onValueChange: (String) -> Unit,
+    navToDetail: (Int) -> Unit
 ) {
+    var text by remember { mutableStateOf("") }
+    var isResultShowed by remember { mutableStateOf(false) }
+    val keyboardController = LocalSoftwareKeyboardController.current
     Column {
-        var query by rememberSaveable{ mutableStateOf("") }
-        OutlinedTextField(
-            value = query,
-            onValueChange = { query = it },
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Text,
-                imeAction = ImeAction.Search
-            ),
-            leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
-            keyboardActions = KeyboardActions( onDone = {})
-        )
+        Surface(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp)
+                .clip(MaterialTheme.shapes.large)
+                .size(width = 120.dp, height = 32.dp)
+        ) {
+            Row(
+                modifier = Modifier.background(color = MaterialTheme.colors.primary),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Spacer(modifier = Modifier.padding(4.dp))
+                Icon(
+                    Icons.Default.Search,
+                    contentDescription = null,
+                    tint = MaterialTheme.colors.primaryVariant
+                )
+                Spacer(modifier = Modifier.padding(4.dp))
+                BasicTextField(
+                    modifier = Modifier.semantics {  },
+                    value = text,
+                    onValueChange = { text = it },
+                    textStyle = TextStyle(color = MaterialTheme.colors.secondaryVariant, fontWeight = FontWeight.Bold),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Done
+                    ),
+                    keyboardActions = KeyboardActions( onDone = {
+                        onValueChange(text)
+                        isResultShowed = true
+                        Log.d("TAG", "Pressed")
+                        keyboardController?.hideSoftwareKeyboard()
+                    })
+                )
 
-        if(searchAnimes.isNotEmpty()) {
-            Column {
-                var i = 0
-                for (item in searchAnimes) {
-                    SearchRowItem(item = item)
-                    i++
-                    if (i == 8) {
-                        break
-                    }
-                }
             }
-        } else {
-            Text(text = "Not Found")
+        }
+        if(isResultShowed) {
+            ColumnList(items = items, navToDetail = { navToDetail(it) })
         }
     }
 }
 
 @Composable
-fun SearchBar(
-    onValueChange: (String) -> Unit
-){
-//    Surface(
-//        modifier = Modifier
-//            .fillMaxWidth()
-//            .padding(horizontal = 32.dp, vertical = 8.dp)
-//            .clip(MaterialTheme.shapes.large)
-//            .size(width = 120.dp, height = 32.dp)
-//    ) {
-//        Row(
-//            modifier = Modifier.background(color = MaterialTheme.colors.primary),
-//            horizontalArrangement = Arrangement.Center,
-//            verticalAlignment = Alignment.CenterVertically
-//        ) {
-//            var query by remember{ mutableStateOf("type") }
-//            Icon(Icons.Default.Search, contentDescription = null, tint = MaterialTheme.colors.primaryVariant)
-//            OutlinedTextField(
-//                value = query,
-//                onValueChange = { query = it },
-//                singleLine = true
-//            )
-//        }
-//
-//    }
-}
-
-@Composable
 fun SearchList(
-    items: List<RowStylePresentation>
+    query: String,
+    items: List<AnimeListPresentation>,
+    onValueChange: (String) -> Unit
 ) {
+
 }
 
 @Composable
 fun SearchRowItem(
-    item: RowStylePresentation,
-    modifier: Modifier = Modifier
+    item: AnimeListPresentation
 ) {
     Row(
-        modifier
-            .fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { },
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
@@ -117,16 +126,4 @@ fun SearchRowItem(
         )
         Text(text = item.title)
     }
-}
-
-//@Preview
-//@Composable
-//fun PreviewSearchToolBar() {
-//    SearchBar()
-//}
-
-@Preview
-@Composable
-fun PreviewSearchList() {
-    SearchList(items = generateFakeRowItemList())
 }

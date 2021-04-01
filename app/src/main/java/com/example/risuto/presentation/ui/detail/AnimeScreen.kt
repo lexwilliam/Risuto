@@ -71,7 +71,7 @@ fun AnimeDetail(
     ) {
         NetworkImage(modifier = Modifier.padding(top = 16.dp),
             imageUrl = animeDetail.image_url, width = 160.dp, height = 240.dp)
-        Text(text = animeDetail.title, style = Typography.h1)
-        Text(text = animeDetail.score.toString() + " | " + animeDetail.members, style = Typography.h2)
+        Text(text = animeDetail.title, style = Typography.h6)
+        Text(text = animeDetail.score.toString() + " | " + animeDetail.members, style = Typography.h5)
     }
 }
