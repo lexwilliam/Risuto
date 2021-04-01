@@ -1,7 +1,12 @@
 package com.example.risuto.presentation
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.hilt.navigation.compose.hiltNavGraphViewModel
 import androidx.navigation.NavType
@@ -20,43 +25,74 @@ import com.example.risuto.presentation.ui.search.SearchViewModel
 @Composable
 fun RisutoApp() {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = "home") {
-        composable(RisutoHomeScreen.route) {
-            val homeViewModel = hiltNavGraphViewModel<HomeViewModel>()
-            HomeScreen(
-                viewModel = homeViewModel,
-                navToDetail = { mal_id ->
-                    navController.navigate(
-                        RisutoAnimeScreen.route.plus("/?mal_id=$mal_id")
-                    )
-                }
-            )
+    Scaffold(
+        bottomBar = {
+            BottomNavigation {
+                val navBackStackEntry by navController.currentBackStackEntryAsState()
+                val currentRoute = navBackStackEntry?.arguments?.getString(KEY_ROUTE)
+                BottomNavigationItem(
+                    icon = { Icon(Icons.Filled.Home, contentDescription = null) },
+                    label = { Text("Home") },
+                    selected = currentRoute == RisutoHomeScreen.route,
+                    onClick = {
+                        navController.navigate(RisutoHomeScreen.route) {
+                            popUpTo = navController.graph.startDestination
+                            launchSingleTop = true
+                        }
+                    }
+                )
+                BottomNavigationItem(
+                    icon = { Icon(Icons.Filled.Search, contentDescription = null) },
+                    label = { Text("Search") },
+                    selected = currentRoute == RisutoSearchScreen.route,
+                    onClick = {
+                        navController.navigate(RisutoSearchScreen.route) {
+                            popUpTo = navController.graph.startDestination
+                            launchSingleTop = true
+                        }
+                    }
+                )
+            }
         }
-        composable(RisutoSearchScreen.route) {
-            val searchViewModel = hiltNavGraphViewModel<SearchViewModel>()
-            SearchScreen(
-                viewModel = searchViewModel,
-                navToDetail = { mal_id ->
-                    navController.navigate(
-                        RisutoAnimeScreen.route.plus("/?mal_id=$mal_id")
-                    )
-                }
-            )
-        }
-        composable(
-            route = RisutoAnimeScreen.route.plus("/?mal_id={mal_id}"),
-            arguments = listOf(
-                navArgument("mal_id") {
-                    type = NavType.IntType
-                    defaultValue = -1
-                }
-            )
-        ) {
-            val animeViewModel = hiltNavGraphViewModel<AnimeViewModel>()
-            AnimeScreen(
-                viewModel = animeViewModel,
-                onBackPressed = { navController.navigateUp() }
-            )
+    ) {
+        NavHost(navController = navController, startDestination = "home") {
+            composable(RisutoHomeScreen.route) {
+                val homeViewModel = hiltNavGraphViewModel<HomeViewModel>()
+                HomeScreen(
+                    viewModel = homeViewModel,
+                    navToDetail = { mal_id ->
+                        navController.navigate(
+                            RisutoAnimeScreen.route.plus("/?mal_id=$mal_id")
+                        )
+                    }
+                )
+            }
+            composable(RisutoSearchScreen.route) {
+                val searchViewModel = hiltNavGraphViewModel<SearchViewModel>()
+                SearchScreen(
+                    viewModel = searchViewModel,
+                    navToDetail = { mal_id ->
+                        navController.navigate(
+                            RisutoAnimeScreen.route.plus("/?mal_id=$mal_id")
+                        )
+                    }
+                )
+            }
+            composable(
+                route = RisutoAnimeScreen.route.plus("/?mal_id={mal_id}"),
+                arguments = listOf(
+                    navArgument("mal_id") {
+                        type = NavType.IntType
+                        defaultValue = -1
+                    }
+                )
+            ) {
+                val animeViewModel = hiltNavGraphViewModel<AnimeViewModel>()
+                AnimeScreen(
+                    viewModel = animeViewModel,
+                    onBackPressed = { navController.navigateUp() }
+                )
+            }
         }
     }
 }

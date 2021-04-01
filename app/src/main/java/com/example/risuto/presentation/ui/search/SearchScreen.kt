@@ -75,7 +75,6 @@ fun SearchContent(
                 )
                 Spacer(modifier = Modifier.padding(4.dp))
                 BasicTextField(
-                    modifier = Modifier.semantics {  },
                     value = text,
                     onValueChange = { text = it },
                     textStyle = TextStyle(color = MaterialTheme.colors.secondaryVariant, fontWeight = FontWeight.Bold),
