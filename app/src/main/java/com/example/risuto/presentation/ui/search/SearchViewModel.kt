@@ -50,6 +50,10 @@ class SearchViewModel
             }
         }
     }
+
+    fun onQueryChange(query: String){
+        this.query.value = query
+    }
 }
 
 data class SearchViewState(

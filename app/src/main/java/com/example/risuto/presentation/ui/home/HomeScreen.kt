@@ -34,11 +34,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.risuto.presentation.model.AnimeListPresentation
 import com.example.risuto.presentation.ui.component.ColumnList
 import com.example.risuto.presentation.ui.component.HorizontalGridList
+import com.example.risuto.presentation.ui.component.NavSearchBar
 
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel = viewModel(),
-    navToDetail: (Int) -> Unit
+    navToDetail: (Int) -> Unit,
+    navToSearch: () -> Unit
 ) {
     val viewState by viewModel.state.collectAsState()
 
@@ -46,7 +48,8 @@ fun HomeScreen(
         topAiringAnime = viewState.topAiringAnime,
         topAnime = viewState.topAnime,
         topUpcomingAnime = viewState.topUpcomingAnime,
-        navToDetail = navToDetail
+        navToDetail = navToDetail,
+        navToSearch = navToSearch
     )
 }
 
@@ -55,13 +58,17 @@ fun HomeContent(
     topAiringAnime: List<AnimeListPresentation>,
     topAnime: List<AnimeListPresentation>,
     topUpcomingAnime: List<AnimeListPresentation>,
-    navToDetail: (Int) -> Unit
+    navToDetail: (Int) -> Unit,
+    navToSearch: () -> Unit
 ) {
     val state = rememberScrollState()
     Column(
-        modifier = Modifier.verticalScroll(state),
+        modifier = Modifier
+            .verticalScroll(state)
+            .padding(bottom = 64.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
+        NavSearchBar(navToSearch = { navToSearch() })
         PosterGridList(
             title = "Top Airing",
             items = topAiringAnime,

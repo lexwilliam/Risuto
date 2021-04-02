@@ -64,6 +64,9 @@ fun RisutoApp() {
                         navController.navigate(
                             RisutoAnimeScreen.route.plus("/?mal_id=$mal_id")
                         )
+                    },
+                    navToSearch = {
+                        navController.navigate(RisutoSearchScreen.route)
                     }
                 )
             }

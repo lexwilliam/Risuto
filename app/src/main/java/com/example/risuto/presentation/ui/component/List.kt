@@ -70,8 +70,3 @@ fun HorizontalGridList(
     }
 }
 
-@Preview
-@Composable
-fun GridListPreview() {
-
-}
