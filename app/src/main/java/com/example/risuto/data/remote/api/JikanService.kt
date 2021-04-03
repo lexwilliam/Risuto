@@ -16,9 +16,11 @@ interface JikanService {
 
     @GET("search/anime")
     suspend fun getSearchAnimeResult(
-        @Query("q") name: String?,
-        @Query("limit") limit: Int?,
-        @Query("genre") genre: Int?
+        @Query("q") q: String?,
+        @Query("type") type: String?,
+        @Query("status") status: String?,
+        @Query("genre") genre: Int?,
+        @Query("limit") limit: Int?
     ): RequestSearch
 
     @GET("top/anime/{page}/{subType}")

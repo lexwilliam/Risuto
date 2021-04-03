@@ -5,6 +5,7 @@ import com.chun2maru.risutomvvm.data.remote.JikanService
 import com.chun2maru.risutomvvm.domain.model.SearchAnime
 import com.chun2maru.risutomvvm.domain.repository.IListRepository
 import com.example.risuto.domain.model.TopAnime
+import com.example.risuto.presentation.model.QuerySearch
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -12,8 +13,14 @@ class ListRepository(
         private val jikanService: JikanService
 ): IListRepository {
 
-    override suspend fun searchAnime(query: String): Flow<List<SearchAnime>> = flow  {
-        val searchResponse = jikanService.getSearchAnimeResult(query, null, 1)
+    override suspend fun searchAnime(query: QuerySearch): Flow<List<SearchAnime>> = flow  {
+        val searchResponse = jikanService.getSearchAnimeResult(
+            q = query.q,
+            type = query.type,
+            status = query.status,
+            genre = query.genre,
+            limit = query.limit
+        )
         val items = mutableListOf<SearchAnime>()
         for (item in searchResponse.results){
             items.add(item.toDomain())

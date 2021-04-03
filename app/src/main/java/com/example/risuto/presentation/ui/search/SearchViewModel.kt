@@ -6,6 +6,7 @@ import com.chun2maru.risutomvvm.domain.usecase.SearchAnimeUseCase
 import com.chun2maru.risutomvvm.presentation.mapper.toRow
 import com.example.risuto.presentation.base.BaseViewModel
 import com.example.risuto.presentation.model.AnimeListPresentation
+import com.example.risuto.presentation.model.QuerySearch
 import com.example.risuto.presentation.util.Error
 import com.example.risuto.presentation.util.ExceptionHandler
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,7 +27,6 @@ class SearchViewModel
 
     override val coroutineExceptionHandler= CoroutineExceptionHandler { _, exception ->
         val message = ExceptionHandler.parse(exception)
-        Log.d("ETAG", message.toString())
         onSearchError(message)
     }
 
@@ -40,12 +40,11 @@ class SearchViewModel
     private var _state = MutableStateFlow(SearchViewState(error = null, isLoading = false))
     val state = _state.asStateFlow()
 
-    fun onSearchAnime(animeName: String) {
+    fun onSearchAnime(query: QuerySearch) {
         searchJob?.cancel()
         searchJob = launchCoroutine {
-            delay(500)
             onSearchLoading()
-            searchAnimeUseCase.invoke(animeName).collect { results ->
+            searchAnimeUseCase.invoke(query).collect { results ->
                 val animes = results.map { anime -> anime.toRow() }
                 onSearchComplete(animes)
             }
@@ -57,11 +56,11 @@ class SearchViewModel
     }
 
     private fun onSearchLoading() {
-        _state.value = _state.value.copy(isLoading = true)
+        _state.value = _state.value.copy(searchAnimes = emptyList(), isLoading = true)
     }
 
     private fun onSearchError(message: Int){
-        _state.value = _state.value.copy(error = Error(message), isLoading = false)
+        _state.value = _state.value.copy(searchAnimes = emptyList(), error = Error(message), isLoading = false)
     }
 }
 

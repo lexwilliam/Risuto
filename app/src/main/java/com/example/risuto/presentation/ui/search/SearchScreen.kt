@@ -1,6 +1,5 @@
 package com.example.risuto.presentation.ui.search
 
-import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -33,6 +32,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.risuto.presentation.model.AnimeListPresentation
+import com.example.risuto.presentation.model.QuerySearch
 import com.example.risuto.presentation.ui.component.ChipGroupList
 import com.example.risuto.presentation.ui.component.ColumnList
 
@@ -46,7 +46,7 @@ fun SearchScreen(
     val viewState by viewModel.state.collectAsState()
     SearchContent(
         items = viewState.searchAnimes,
-        onValueChange = viewModel::onSearchAnime,
+        onQueryChange = viewModel::onSearchAnime,
         navToDetail = { navToDetail(it) }
     )
 }
@@ -56,8 +56,8 @@ fun SearchScreen(
 @Composable
 fun SearchContent(
     items: List<AnimeListPresentation>,
-    onValueChange: (String) -> Unit,
-    navToDetail: (Int) -> Unit
+    onQueryChange: (QuerySearch) -> Unit,
+    navToDetail: (Int) -> Unit,
 ) {
     var text by remember { mutableStateOf("") }
     val focusRequester = FocusRequester()
@@ -77,6 +77,7 @@ fun SearchContent(
             value = text,
             onValueChange = {
                 text = it
+                onQueryChange(QuerySearch(it, null, null, null, 5))
                 if(isFocused){
                     resultType = ResultType.TitleResult
                 }
@@ -88,9 +89,8 @@ fun SearchContent(
                 imeAction = ImeAction.Done
             ),
             keyboardActions = KeyboardActions( onDone = {
-                onValueChange(text)
+                onQueryChange(QuerySearch(text, null, null, null, null))
                 resultType = ResultType.FullResult
-                Log.d("TAG", "Pressed")
                 keyboardController?.hideSoftwareKeyboard()
             }),
             decorationBox = {
@@ -119,8 +119,7 @@ fun SearchContent(
         )
         when(resultType){
             ResultType.TitleResult ->
-                Text(text = "THIS IS TITLE")
-//                SearchList(items = items)
+                SearchList(items = items)
             ResultType.FullResult ->
                 ColumnList(items = items, navToDetail = { navToDetail(it) })
             ResultType.Filter ->
@@ -134,7 +133,7 @@ fun SearchContent(
 }
 
 enum class ResultType{
-    TitleResult, FullResult, Filter
+    TitleResult, FullResult, Filter, Loading
 }
 
 @Composable
