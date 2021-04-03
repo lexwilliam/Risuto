@@ -138,11 +138,6 @@ enum class ResultType{
 }
 
 @Composable
-fun FilterList() {
-
-}
-
-@Composable
 fun SearchList(
     items: List<AnimeListPresentation>
 ) {

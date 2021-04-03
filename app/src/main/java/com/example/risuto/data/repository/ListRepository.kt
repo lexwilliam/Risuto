@@ -13,7 +13,7 @@ class ListRepository(
 ): IListRepository {
 
     override suspend fun searchAnime(query: String): Flow<List<SearchAnime>> = flow  {
-        val searchResponse = jikanService.getSearchAnimeResult(query)
+        val searchResponse = jikanService.getSearchAnimeResult(query, null, 1)
         val items = mutableListOf<SearchAnime>()
         for (item in searchResponse.results){
             items.add(item.toDomain())
