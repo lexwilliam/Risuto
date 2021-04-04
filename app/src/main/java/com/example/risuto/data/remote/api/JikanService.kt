@@ -1,13 +1,10 @@
 package com.chun2maru.risutomvvm.data.remote
 
-import com.chun2maru.risutomvvm.data.remote.model.RequestSearch
+import com.example.risuto.data.remote.model.request.RequestSearch
 import com.example.risuto.data.remote.model.AnimeResponse
-import com.example.risuto.data.remote.model.RequestTop
-import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
+import com.example.risuto.data.remote.model.request.RequestSeason
+import com.example.risuto.data.remote.model.request.RequestTop
+import com.example.risuto.presentation.util.thisSeason
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -28,6 +25,12 @@ interface JikanService {
         @Path("page") page: Int,
         @Path("subType") subType: String
     ): RequestTop
+
+    @GET("season/{year}/{season}")
+    suspend fun getSeasonAnimeResult(
+        @Path("year") year: Int,
+        @Path("season") season: String
+    ): RequestSeason
 
     @GET("anime/{id}")
     suspend fun getAnimeResult(

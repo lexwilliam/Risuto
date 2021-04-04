@@ -1,4 +1,6 @@
-package com.example.risuto.data.remote.model
+package com.example.risuto.data.remote.model.request
+
+import com.example.risuto.data.remote.model.TopAnimeResponse
 
 data class RequestTop(
     val request_hash: String,

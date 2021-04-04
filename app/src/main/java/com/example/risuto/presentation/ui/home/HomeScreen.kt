@@ -1,40 +1,28 @@
 package com.example.risuto.presentation.ui.home
 
 import android.util.Log
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Icon
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.risuto.presentation.model.AnimeListPresentation
-import com.example.risuto.presentation.ui.component.ColumnList
 import com.example.risuto.presentation.ui.component.HorizontalGridList
 import com.example.risuto.presentation.ui.component.NavSearchBar
+import com.example.risuto.presentation.util.getCurrentYear
+import com.example.risuto.presentation.util.thisSeason
+import java.util.*
 
 @Composable
 fun HomeScreen(
@@ -45,9 +33,11 @@ fun HomeScreen(
     val viewState by viewModel.state.collectAsState()
 
     HomeContent(
+        currentSeasonAnime = viewState.currentSeasonAnime,
         topAiringAnime = viewState.topAiringAnime,
         topAnime = viewState.topAnime,
         topUpcomingAnime = viewState.topUpcomingAnime,
+        isLoading = viewState.isLoading,
         navToDetail = navToDetail,
         navToSearch = navToSearch
     )
@@ -55,12 +45,15 @@ fun HomeScreen(
 
 @Composable
 fun HomeContent(
+    currentSeasonAnime: List<AnimeListPresentation>,
     topAiringAnime: List<AnimeListPresentation>,
     topAnime: List<AnimeListPresentation>,
     topUpcomingAnime: List<AnimeListPresentation>,
+    isLoading: Boolean,
     navToDetail: (Int) -> Unit,
     navToSearch: () -> Unit
 ) {
+    Log.d("TAG", "ON LOADING$isLoading")
     val state = rememberScrollState()
     Column(
         modifier = Modifier
@@ -69,21 +62,30 @@ fun HomeContent(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         NavSearchBar(navToSearch = { navToSearch() })
-        PosterGridList(
-            title = "Top Airing",
-            items = topAiringAnime,
-            navToDetail = { navToDetail(it) }
-        )
-        PosterGridList(
-            title = "Top Upcoming",
-            items = topUpcomingAnime,
-            navToDetail = { navToDetail(it) }
-        )
-        PosterGridList(
-            title = "Top Anime",
-            items = topAnime,
-            navToDetail = { navToDetail(it) }
-        )
+        if(!isLoading) {
+            PosterGridList(
+                title = thisSeason.capitalize(Locale.ROOT) + " " + getCurrentYear() + " " + "Anime",
+                items = currentSeasonAnime,
+                navToDetail = { navToDetail(it) }
+            )
+            PosterGridList(
+                title = "Top Airing",
+                items = topAiringAnime,
+                navToDetail = { navToDetail(it) }
+            )
+            PosterGridList(
+                title = "Top Upcoming",
+                items = topUpcomingAnime,
+                navToDetail = { navToDetail(it) }
+            )
+            PosterGridList(
+                title = "Top Anime",
+                items = topAnime,
+                navToDetail = { navToDetail(it) }
+            )
+        } else {
+            Text(text = "LOADING", style = MaterialTheme.typography.h2)
+        }
     }
 }
 

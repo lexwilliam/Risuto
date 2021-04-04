@@ -1,7 +1,5 @@
 package com.example.risuto.data.remote.model
 
-import com.squareup.moshi.JsonClass
-
 data class TopAnimeResponse(
     val mal_id: Int,
     val rank: Int,

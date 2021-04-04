@@ -1,7 +1,5 @@
 package com.chun2maru.risutomvvm.data.remote.model
 
-import com.squareup.moshi.Json
-
 data class SearchAnimeResponse(
         val mal_id : Int,
         val url : String,
