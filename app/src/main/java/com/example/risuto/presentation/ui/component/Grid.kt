@@ -11,6 +11,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.risuto.presentation.model.AnimeListPresentation
+import com.example.risuto.presentation.util.generateFakeItem
+import com.example.risuto.presentation.util.generateFakeItemList
 
 @Composable
 fun SmallGrid(
@@ -31,6 +33,7 @@ fun SmallGrid(
             maxLines = 2,
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier.padding(top = 4.dp),
+            style = MaterialTheme.typography.body1,
             fontWeight = FontWeight.Bold
         )
     }
@@ -53,8 +56,20 @@ fun MediumGrid(
             maxLines = 2,
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier.padding(top = 4.dp),
-            fontWeight = FontWeight.Bold,
-            style = MaterialTheme.typography.subtitle1
+            style = MaterialTheme.typography.subtitle1,
+            fontWeight = FontWeight.Bold
         )
     }
+}
+
+@Preview
+@Composable
+fun SmallGridPreview() {
+    SmallGrid(item = generateFakeItem(), navToDetail = {})
+}
+
+@Preview
+@Composable
+fun MediumGridPreview() {
+    MediumGrid(item = generateFakeItem(), navToDetail = {})
 }

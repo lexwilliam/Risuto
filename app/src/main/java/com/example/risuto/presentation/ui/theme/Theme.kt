@@ -14,7 +14,6 @@ private val DarkColorPalette = darkColors(
     background = Gray800,
     surface = Gray800,
     error = ErrorRed
-
 )
 
 private val LightColorPalette = lightColors(

@@ -10,6 +10,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.risuto.presentation.model.AnimeListPresentation
+import com.example.risuto.presentation.util.generateFakeAnimeDetail
+import com.example.risuto.presentation.util.generateFakeItem
+import com.example.risuto.presentation.util.generateFakeItemList
 
 @ExperimentalFoundationApi
 @Composable
@@ -19,8 +22,6 @@ fun GridList(
 ) {
     LazyVerticalGrid(
         cells = GridCells.Adaptive(minSize = 180.dp),
-        modifier = Modifier
-            .padding(16.dp)
     ) {
         var count = 0
         items(items = items) { item ->
@@ -40,8 +41,7 @@ fun ColumnList(
     navToDetail: (Int) -> Unit
 ) {
     LazyColumn(
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = Modifier.padding(16.dp)
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(items = items){ item ->
             RowItem(item = item, navToDetail = { navToDetail(it) })
@@ -70,3 +70,21 @@ fun HorizontalGridList(
     }
 }
 
+@Preview
+@Composable
+fun ColumnListPreview() {
+    ColumnList(items = generateFakeItemList(), navToDetail = {})
+}
+
+@ExperimentalFoundationApi
+@Preview
+@Composable
+fun GridListPreview() {
+    GridList(items = generateFakeItemList(), navToDetail = {})
+}
+
+@Preview
+@Composable
+fun HorizontalGridListPreview() {
+    HorizontalGridList(items = generateFakeItemList(), navToDetail = {})
+}

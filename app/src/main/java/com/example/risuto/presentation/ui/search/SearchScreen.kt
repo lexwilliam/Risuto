@@ -22,19 +22,25 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.risuto.presentation.model.AnimeListPresentation
 import com.example.risuto.presentation.model.QuerySearch
 import com.example.risuto.presentation.ui.component.ChipGroupList
 import com.example.risuto.presentation.ui.component.ColumnList
+import com.example.risuto.presentation.ui.component.GridList
+import com.example.risuto.presentation.ui.component.Header
+import com.example.risuto.presentation.util.generateFakeItemList
 
 @ExperimentalFoundationApi
 @ExperimentalComposeUiApi
@@ -57,59 +63,65 @@ fun SearchScreen(
 fun SearchContent(
     items: List<AnimeListPresentation>,
     onQueryChange: (QuerySearch) -> Unit,
-    navToDetail: (Int) -> Unit,
+    navToDetail: (Int) -> Unit
 ) {
     var text by remember { mutableStateOf("") }
-    val focusRequester = FocusRequester()
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
+
+    var headerState by remember { mutableStateOf(true) }
 
     var resultType by remember { mutableStateOf(ResultType.Filter) }
     if(text.isEmpty()){
         resultType = ResultType.Filter
     }
     val keyboardController = LocalSoftwareKeyboardController.current
-    Column {
+    Column(
+        modifier = Modifier
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        if(headerState) {
+            SearchTopBar()
+        }
         BasicTextField(
-            modifier = Modifier
-                .fillMaxWidth()
-                .focusRequester(focusRequester),
+            modifier = Modifier.fillMaxWidth(),
             value = text,
             onValueChange = {
                 text = it
                 onQueryChange(QuerySearch(it, null, null, null, 5))
                 if(isFocused){
-                    resultType = ResultType.TitleResult
+                    resultType = ResultType.FullResult
+                    headerState = false
                 }
             },
             interactionSource = interactionSource,
-            textStyle = TextStyle(color = MaterialTheme.colors.primaryVariant, fontWeight = FontWeight.Bold),
+            textStyle = MaterialTheme.typography.subtitle1,
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Text,
                 imeAction = ImeAction.Done
             ),
             keyboardActions = KeyboardActions( onDone = {
                 onQueryChange(QuerySearch(text, null, null, null, null))
-                resultType = ResultType.FullResult
                 keyboardController?.hideSoftwareKeyboard()
             }),
             decorationBox = {
                 Surface(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 20.dp, vertical = 8.dp)
-                        .clip(MaterialTheme.shapes.large)
+                        .padding(vertical = 8.dp)
+                        .shadow(elevation = 8.dp, shape = MaterialTheme.shapes.small, clip = true)
                         .size(width = 120.dp, height = 40.dp)
                 ) {
                     Row(
-                        modifier = Modifier.background(color = MaterialTheme.colors.primary),
+                        modifier = Modifier.background(color = MaterialTheme.colors.onPrimary),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Spacer(modifier = Modifier.padding(4.dp))
                         Icon(
                             Icons.Default.Search,
                             contentDescription = null,
-                            tint = MaterialTheme.colors.primaryVariant
+                            tint = MaterialTheme.colors.onSecondary
                         )
                         Spacer(modifier = Modifier.padding(4.dp))
                         it()
@@ -118,54 +130,31 @@ fun SearchContent(
             }
         )
         when(resultType){
-            ResultType.TitleResult ->
-                SearchList(items = items)
             ResultType.FullResult ->
-                ColumnList(items = items, navToDetail = { navToDetail(it) })
+                GridList(items = items, navToDetail = { navToDetail(it) })
             ResultType.Filter ->
-                ChipGroupList()
+                ChipGroupList(onClick = { text = it })
         }
-    }
-    DisposableEffect(Unit) {
-        focusRequester.requestFocus()
-        onDispose { }
     }
 }
 
 enum class ResultType{
-    TitleResult, FullResult, Filter, Loading
+    FullResult, Filter
 }
 
 @Composable
-fun SearchList(
-    items: List<AnimeListPresentation>
-) {
-    LazyColumn(
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = Modifier.padding(16.dp)
-    ) {
-        items(items = items){ item ->
-            SearchRowItem(item = item)
-        }
-    }
+fun SearchTopBar() {
+    Header(title = "Search")
 }
 
+@ExperimentalComposeUiApi
+@ExperimentalFoundationApi
+@Preview
 @Composable
-fun SearchRowItem(
-    item: AnimeListPresentation
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { },
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(
-            Icons.Default.Search,
-            contentDescription = null,
-            modifier = Modifier
-                .padding(end = 8.dp)
-        )
-        Text(text = item.title)
-    }
+fun SearchScreenPreview() {
+    SearchContent(
+        items = generateFakeItemList(),
+        onQueryChange = {},
+        navToDetail = {}
+    )
 }

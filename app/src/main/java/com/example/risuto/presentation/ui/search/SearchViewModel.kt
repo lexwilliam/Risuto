@@ -39,13 +39,17 @@ class SearchViewModel
     val state = _state.asStateFlow()
 
     fun onSearchAnime(query: QuerySearch) {
-        searchJob?.cancel()
-        searchJob = launchCoroutine {
-            onSearchLoading()
-            searchAnimeUseCase.invoke(query).collect { results ->
-                val animes = results.map { anime -> anime.toPresentation() }
-                onSearchComplete(animes)
+        if(query.q?.length?: 0 >= 3) {
+            searchJob?.cancel()
+            searchJob = launchCoroutine {
+                onSearchLoading()
+                searchAnimeUseCase.invoke(query).collect { results ->
+                    val animes = results.map { anime -> anime.toPresentation() }
+                    onSearchComplete(animes)
+                }
             }
+        } else {
+            _state.value = _state.value.copy(searchAnimes = emptyList())
         }
     }
 
