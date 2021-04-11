@@ -34,8 +34,7 @@ fun Chip(
             modifier = Modifier.padding(8.dp),
             text = text,
             maxLines = 1,
-            style = MaterialTheme.typography.button,
-            fontWeight = FontWeight.Bold
+            style = MaterialTheme.typography.button
         )
     }
 }

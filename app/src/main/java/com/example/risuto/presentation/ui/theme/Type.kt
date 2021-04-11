@@ -33,7 +33,7 @@ val Typography = Typography(
     subtitle2 = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Bold),
     body1 = TextStyle(fontSize = 16.sp),
     body2 = TextStyle(fontSize = 14.sp),
-    button = TextStyle(fontSize = 14.sp),
+    button = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Bold),
     caption = TextStyle(fontSize = 12.sp),
     overline = TextStyle(fontSize = 10.sp),
 )

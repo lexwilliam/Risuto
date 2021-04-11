@@ -23,17 +23,17 @@ fun SmallGrid(
     Column(
         modifier
             .wrapContentSize()
-            .width(110.dp)
+            .width(100.dp)
             .clickable {
                 navToDetail(item.mal_id)
             }
     ) {
-        NetworkImage(imageUrl = item.image_url, width = 110.dp, height = 180.dp)
+        NetworkImage(imageUrl = item.image_url, width = 100.dp, height = 160.dp)
         Text(text = item.title + "\n",
             maxLines = 2,
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier.padding(top = 4.dp),
-            style = MaterialTheme.typography.body1,
+            style = MaterialTheme.typography.body2,
             fontWeight = FontWeight.Bold
         )
     }
