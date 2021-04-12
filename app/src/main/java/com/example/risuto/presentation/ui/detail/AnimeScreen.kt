@@ -7,7 +7,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -21,11 +24,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.risuto.presentation.model.AnimePresentation
+import com.example.risuto.presentation.ui.component.Chip
 import com.example.risuto.presentation.ui.component.NetworkImage
 import com.example.risuto.presentation.util.generateFakeAnimeDetail
-import com.example.risuto.presentation.util.genresToString
 import com.example.risuto.presentation.util.intToCurrency
-import com.example.risuto.presentation.util.spaceToNextLine
 
 @Composable
 fun AnimeScreen(
@@ -44,37 +46,40 @@ fun AnimeContent(
     animeDetail: AnimePresentation,
     onBackPressed: () -> Unit
 ) {
-    AnimeTrailer(trailer_url = "", onBackPressed = { onBackPressed() })
     Column(modifier = Modifier
-        .fillMaxSize()
-        .offset(y = 160.dp),
+        .fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
+        AnimeToolBar(onBackPressed = { onBackPressed() })
         AnimeDetail(animeDetail = animeDetail)
+        AnimeGenre(animeDetail = animeDetail)
         AnimeRating(animeDetail = animeDetail)
     }
-
 }
 
 @Composable
-fun AnimeTrailer(
-    trailer_url: String,
+fun AnimeToolBar(
     onBackPressed: () -> Unit
 ) {
-    Box(modifier = Modifier
-        .fillMaxWidth()
-        .height(200.dp)
-        .background(Color.LightGray)) {
-        IconButton(
-            modifier = Modifier
-                .clip(RoundedCornerShape(24.dp))
-                .padding(16.dp)
-                .background(Color.Gray),
-            onClick = { onBackPressed() }
-        ) {
-            Icon(Icons.Filled.ArrowBack, contentDescription = null)
-        }
-    }
+    TopAppBar(
+        title = { Text("") },
+        navigationIcon = {
+            IconButton(onClick = { onBackPressed() }) {
+                Icon(Icons.Default.ArrowBack, contentDescription = null, tint = Color.Black)
+            }
+        },
+        actions = {
+            Row {
+                IconButton(onClick = { }) {
+                    Icon(Icons.Default.Add, contentDescription = null, tint = Color.Black)
+                }
+                IconButton(onClick = { }) {
+                    Icon(Icons.Outlined.Favorite, contentDescription = null, tint = Color.Black)
+                }
+            }
+        },
+        backgroundColor = Color.White
+    )
 }
 
 @Composable
@@ -95,13 +100,33 @@ fun AnimeDetail(
 
         ) {
             Text(text = animeDetail.title, style = MaterialTheme.typography.h6)
-            Text(
-                text = animeDetail.premiered+" | "+animeDetail.type+"("+animeDetail.episodes+")",
-                style = MaterialTheme.typography.caption)
-//            Text(text = animeDetail.score.toString()+" | "+ intToCurrency(animeDetail.members), style = MaterialTheme.typography.caption)
-            Text(text = genresToString(animeDetail.genres), style = MaterialTheme.typography.button)
+            Text(text = animeDetail.premiered+" | "+animeDetail.type+"("+animeDetail.episodes+")", style = MaterialTheme.typography.caption)
+            Row {
+                Text(text = "Studio: ", style = MaterialTheme.typography.button)
+                animeDetail.studios.forEach {
+                    it.name?.let { it1 -> Text(text = "$it1 ", style = MaterialTheme.typography.button) }
+                }
+            }
+//            Text(text = genresToString(animeDetail.genres), style = MaterialTheme.typography.button)
             Divider()
             Text(text = animeDetail.synopsis, style = MaterialTheme.typography.body2, maxLines = 5, overflow = TextOverflow.Ellipsis)
+        }
+    }
+}
+
+@Composable
+fun AnimeGenre(
+    animeDetail: AnimePresentation
+) {
+    Row(
+        modifier = Modifier
+            .padding(horizontal = 16.dp)
+            .horizontalScroll(rememberScrollState()),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(text = "Genre: ", style = MaterialTheme.typography.subtitle1)
+        animeDetail.genres.forEach { genre ->
+            genre.name?.let { Chip(modifier = Modifier.padding(end = 8.dp), text = it, size = 8.dp,onClick = {}) }
         }
     }
 }
@@ -116,12 +141,13 @@ fun AnimeRating(
         horizontalArrangement = Arrangement.spacedBy(1.dp),
         verticalAlignment = Alignment.CenterVertically
     ){
+        data class Rating(val string: String, val int: String)
         val ratings = listOf(
             Rating("Score", animeDetail.score.toString()),
             Rating("Members", intToCurrency(animeDetail.members)),
             Rating("Rank", "#"+ intToCurrency(animeDetail.rank)),
             Rating("Popularity", "#"+ intToCurrency(animeDetail.popularity)),
-            Rating("Favorite", intToCurrency(animeDetail.favorites)),
+            Rating("Favorited", intToCurrency(animeDetail.favorites)),
             Rating("Rated", animeDetail.rating)
         )
         ratings.forEach { rating ->
@@ -142,11 +168,6 @@ fun AnimeRating(
         }
     }
 }
-
-data class Rating(
-    val string: String,
-    val int: String
-)
 
 @Composable
 fun AnimeCast(

@@ -10,7 +10,3 @@ internal fun genresToString(genres: List<Genre>): String {
     }
     return string.dropLast(2)
 }
-
-internal fun spaceToNextLine(string: String): String {
-    return string.replace(" ", "\n ")
-}
