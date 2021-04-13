@@ -29,7 +29,7 @@ fun Chip(
 ) {
     Surface(
         modifier = modifier
-            .background(color = Color.White)
+            .background(color = Color.Transparent)
             .clickable { onClick(text) },
         shape = RoundedCornerShape(size),
         border = BorderStroke(

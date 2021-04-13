@@ -78,7 +78,7 @@ fun SearchContent(
             value = text,
             onValueChange = {
                 text = it
-                onQueryChange(QuerySearch(it, null, null, null, 5))
+                onQueryChange(QuerySearch(q = it))
                 if(isFocused){
                     resultType = ResultType.Result
                     headerState = false

@@ -136,7 +136,7 @@ fun AnimeGenre(
     ) {
         Text(text = "Genre: ", style = MaterialTheme.typography.subtitle1)
         animeDetail.genres.forEach { genre ->
-            genre.name?.let { Chip(modifier = Modifier.padding(end = 8.dp), text = it, size = 8.dp,onClick = {}) }
+            genre.name?.let { Chip(modifier = Modifier.padding(end = 8.dp), text = it, onClick = {}) }
         }
     }
 }
