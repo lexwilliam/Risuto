@@ -9,6 +9,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.risuto.data.remote.model.detail.Character
+import com.example.risuto.data.remote.model.detail.VoiceActor
 import com.example.risuto.presentation.model.AnimeListPresentation
 import com.example.risuto.presentation.util.generateFakeAnimeDetail
 import com.example.risuto.presentation.util.generateFakeItem
@@ -68,6 +70,14 @@ fun HorizontalGridList(
             )
         }
     }
+}
+
+@Composable
+fun StaffGridList(
+    chars: List<Character>,
+    voiceActor: List<VoiceActor>
+) {
+
 }
 
 @Preview

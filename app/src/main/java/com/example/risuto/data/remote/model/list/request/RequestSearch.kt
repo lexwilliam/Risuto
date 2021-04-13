@@ -1,6 +1,6 @@
-package com.example.risuto.data.remote.model.request
+package com.example.risuto.data.remote.model.list.request
 
-import com.chun2maru.risutomvvm.data.remote.model.SearchAnimeResponse
+import com.example.risuto.data.remote.model.list.SearchAnimeResponse
 import com.squareup.moshi.Json
 
 data class RequestSearch(

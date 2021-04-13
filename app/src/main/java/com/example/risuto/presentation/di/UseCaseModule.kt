@@ -5,6 +5,7 @@ import com.chun2maru.risutomvvm.domain.usecase.SearchAnimeUseCase
 import com.example.risuto.data.repository.ItemRepository
 import com.example.risuto.domain.model.SeasonAnime
 import com.example.risuto.domain.usecase.GetAnimeUseCase
+import com.example.risuto.domain.usecase.GetCharacterStaffUseCase
 import com.example.risuto.domain.usecase.SeasonAnimeUseCase
 import com.example.risuto.domain.usecase.TopAnimeUseCase
 import dagger.Module
@@ -39,5 +40,11 @@ object UseCaseModule {
     @Singleton
     fun provideAnime(itemRepository: ItemRepository): GetAnimeUseCase {
         return GetAnimeUseCase(itemRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCharacterStaffUseCase(itemRepository: ItemRepository): GetCharacterStaffUseCase {
+        return GetCharacterStaffUseCase(itemRepository)
     }
 }

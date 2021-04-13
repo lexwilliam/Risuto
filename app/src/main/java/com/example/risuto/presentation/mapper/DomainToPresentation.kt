@@ -1,62 +1,31 @@
 package com.chun2maru.risutomvvm.presentation.mapper
 
 import com.chun2maru.risutomvvm.domain.model.SearchAnime
-import com.example.risuto.data.remote.model.*
+import com.example.risuto.data.remote.model.detail.*
 import com.example.risuto.domain.model.Anime
+import com.example.risuto.domain.model.CharacterStaff
 import com.example.risuto.domain.model.SeasonAnime
 import com.example.risuto.domain.model.TopAnime
 import com.example.risuto.presentation.model.AnimePresentation
 import com.example.risuto.presentation.model.AnimeListPresentation
-import com.example.risuto.presentation.model.AnimeSeasonListPresentation
+import com.example.risuto.presentation.model.CharacterStaffPresentation
 
 internal fun Anime.toPresentation(): AnimePresentation {
-    return AnimePresentation(
-        aired?: Aired("", Prop(From(0,0,0), To(0,0,0)),"", ""),
-        airing?: false,
-        background?: "",
-        broadcast?: "",
-        duration?: "",
-        ending_themes?:listOf(""),
-        episodes?:0,
-        favorites?:0,
-        genres?:listOf(Genre(0,"", "", "")),
-        image_url?:"",
-        licensors?:listOf(Licensor(0, "", "", "")),
-        mal_id?:0,
-        members?:0,
-        opening_themes?:listOf(""),
-        popularity?:0,
-        premiered?:"",
-        producers?:listOf(Producer(0, "","", "" )),
-        rank?:0,
-        rating?:"",
-        related?:Related(),
-        request_cache_expiry?:0,
-        request_cached?:false,
-        request_hash?:"",
-        score?:0.0,
-        scored_by?:0,
-        source?:"",
-        status?:"",
-        studios?:listOf(Studio(0, "", "", "")),
-        synopsis?:"",
-        title?:"",
-        title_english?:"",
-        title_japanese?:"",
-        title_synonyms?:listOf(""),
-        trailer_url?:"",
-        type?:"",
-        url?:"")
+    return AnimePresentation(aired, airing, background, broadcast, duration, ending_themes, episodes, favorites, genres, image_url, licensors, mal_id, members, opening_themes, popularity, premiered, producers, rank, rating, related, request_cache_expiry, request_cached, request_hash, score, scored_by, source, status, studios, synopsis, title, title_english, title_japanese, title_synonyms, trailer_url, type, url)
+}
+
+internal fun CharacterStaff.toPresentation(): CharacterStaffPresentation {
+    return CharacterStaffPresentation(characters, request_cache_expiry, request_cached, request_hash, staff)
 }
 
 internal fun SearchAnime.toPresentation(): AnimeListPresentation {
-    return AnimeListPresentation(mal_id, image_url?: "", title, synopsis?: "", type, episodes?: 0, score, members)
+    return AnimeListPresentation(mal_id, image_url, title, synopsis, type, episodes, score, members)
 }
 
 internal fun TopAnime.toPresentation(): AnimeListPresentation {
-    return AnimeListPresentation(mal_id, image_url?: "", title, "", type, episodes?: 0, score, members)
+    return AnimeListPresentation(mal_id, image_url, title, "", type, episodes, score, members)
 }
 
 internal fun SeasonAnime.toPresentation(): AnimeListPresentation {
-    return AnimeListPresentation(mal_id, image_url?: "", title, "", type, episodes?: 0, score?: 0.0f, members)
+    return AnimeListPresentation(mal_id, image_url, title, "", type, episodes, score, members)
 }

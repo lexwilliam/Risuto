@@ -19,7 +19,6 @@ import com.example.risuto.R
 import com.example.risuto.presentation.Screens.*
 import com.example.risuto.presentation.ui.detail.AnimeScreen
 import com.example.risuto.presentation.ui.detail.AnimeViewModel
-import com.example.risuto.presentation.ui.detail.AnimeViewState
 import com.example.risuto.presentation.ui.home.HomeScreen
 import com.example.risuto.presentation.ui.home.HomeViewModel
 import com.example.risuto.presentation.ui.search.SearchScreen
@@ -31,7 +30,6 @@ import com.example.risuto.presentation.ui.search.SearchViewModel
 fun RisutoApp() {
     val context = LocalContext.current
     var isOnline by remember { mutableStateOf(checkIfOnline(context)) }
-    Log.d("TAG", "isOnline = $isOnline")
 
     if(isOnline) {
         RisutoAppContent()
@@ -94,7 +92,7 @@ fun RisutoAppContent() {
                 val searchViewModel = hiltNavGraphViewModel<SearchViewModel>()
                 SearchScreen(
                     viewModel = searchViewModel,
-                    navToDetail = { mal_id ->
+                    navToList = { mal_id ->
                         navController.navigate(
                             RisutoAnimeScreen.route.plus("/?mal_id=$mal_id")
                         )

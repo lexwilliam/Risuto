@@ -1,4 +1,4 @@
-package com.chun2maru.risutomvvm.data.remote.model
+package com.example.risuto.data.remote.model.list
 
 data class SearchAnimeResponse(
         val mal_id : Int,

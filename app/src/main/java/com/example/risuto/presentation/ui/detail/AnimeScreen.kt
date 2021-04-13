@@ -1,9 +1,7 @@
 package com.example.risuto.presentation.ui.detail
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -17,16 +15,21 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.risuto.data.remote.model.detail.Character
+import com.example.risuto.data.remote.model.detail.VoiceActor
 import com.example.risuto.presentation.model.AnimePresentation
+import com.example.risuto.presentation.model.CharacterStaffPresentation
 import com.example.risuto.presentation.ui.component.Chip
 import com.example.risuto.presentation.ui.component.NetworkImage
 import com.example.risuto.presentation.util.generateFakeAnimeDetail
+import com.example.risuto.presentation.util.getJpnVoiceActor
 import com.example.risuto.presentation.util.intToCurrency
 
 @Composable
@@ -37,6 +40,7 @@ fun AnimeScreen(
     val viewState by viewModel.state.collectAsState()
     AnimeContent(
         animeDetail = viewState.animeDetail,
+        animeStaff = viewState.animeStaff,
         onBackPressed = { onBackPressed() }
     )
 }
@@ -44,6 +48,7 @@ fun AnimeScreen(
 @Composable
 fun AnimeContent(
     animeDetail: AnimePresentation,
+    animeStaff: CharacterStaffPresentation,
     onBackPressed: () -> Unit
 ) {
     Column(modifier = Modifier
@@ -54,6 +59,7 @@ fun AnimeContent(
         AnimeDetail(animeDetail = animeDetail)
         AnimeGenre(animeDetail = animeDetail)
         AnimeRating(animeDetail = animeDetail)
+        CharVoiceActorList(animeStaff = animeStaff)
     }
 }
 
@@ -92,8 +98,12 @@ fun AnimeDetail(
             .padding(horizontal = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        NetworkImage(modifier = Modifier,
-            imageUrl = animeDetail.image_url, width = 120.dp, height = 180.dp)
+        NetworkImage(
+            modifier = Modifier
+                .size(width = 120.dp, height = 180.dp)
+                .shadow(elevation = 4.dp, shape = MaterialTheme.shapes.medium, true),
+            imageUrl = animeDetail.image_url
+        )
         Column(
             modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(4.dp)
@@ -170,10 +180,54 @@ fun AnimeRating(
 }
 
 @Composable
-fun AnimeCast(
-    animeDetail: AnimePresentation
+fun CharVoiceActorList(
+    animeStaff: CharacterStaffPresentation
 ) {
+    Column(
+        modifier = Modifier.padding(start = 16.dp)
+    ) {
+        Text(text = "Voice Actor", style = MaterialTheme.typography.h6, fontWeight = FontWeight.Bold)
+        Row(
+            modifier = Modifier
+                .horizontalScroll(rememberScrollState()),
+            horizontalArrangement = Arrangement.spacedBy(2.dp)
+        ) {
+            animeStaff.characters.forEach {
+                Column {
+                    NetworkImage(
+                        imageUrl = it.image_url,
+                        modifier = Modifier
+                            .size(width = 80.dp, height = 100.dp)
+                    )
+                    Surface(
+                        modifier = Modifier.width(80.dp)
+                    ) {
+                        Text(
+                            text = it.name + "\n",
+                            maxLines = 2, overflow = TextOverflow.Ellipsis,
+                            style = MaterialTheme.typography.caption
+                        )
+                    }
+                    Spacer(modifier = Modifier.padding(2.dp))
+                    NetworkImage(
+                        imageUrl = getJpnVoiceActor(it.voice_actors).image_url,
+                        modifier = Modifier
+                            .size(width = 80.dp, height = 100.dp)
+                    )
+                    Surface(
+                        modifier = Modifier.width(80.dp)
+                    ) {
+                        Text(
+                            text = getJpnVoiceActor(it.voice_actors).name + "\n",
+                            maxLines = 2, overflow = TextOverflow.Ellipsis,
+                            style = MaterialTheme.typography.caption
+                        )
+                    }
 
+                }
+            }
+        }
+    }
 }
 
 @Preview
@@ -181,6 +235,7 @@ fun AnimeCast(
 fun AnimeScreenPreview() {
     AnimeContent(
         animeDetail = generateFakeAnimeDetail(),
+        animeStaff = CharacterStaffPresentation(),
         onBackPressed = {}
     )
 }

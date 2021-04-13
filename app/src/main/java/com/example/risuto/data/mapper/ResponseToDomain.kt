@@ -1,24 +1,68 @@
 package com.chun2maru.risutomvvm.data.mapper
 
-import com.chun2maru.risutomvvm.data.remote.model.SearchAnimeResponse
+import com.example.risuto.data.remote.model.list.SearchAnimeResponse
 import com.chun2maru.risutomvvm.domain.model.SearchAnime
-import com.example.risuto.data.remote.model.*
+import com.example.risuto.data.remote.model.detail.*
+import com.example.risuto.data.remote.model.list.SeasonAnimeResponse
+import com.example.risuto.data.remote.model.list.TopAnimeResponse
 import com.example.risuto.domain.model.Anime
+import com.example.risuto.domain.model.CharacterStaff
 import com.example.risuto.domain.model.SeasonAnime
 import com.example.risuto.domain.model.TopAnime
+import com.example.risuto.presentation.model.AnimePresentation
 
 internal fun SearchAnimeResponse.toDomain(): SearchAnime {
-    return SearchAnime(mal_id, url, image_url, title, airing, synopsis, type, episodes, score, start_date, end_date, members, rated)
+    return SearchAnime(mal_id, url, image_url?: "", title, airing, synopsis?: "", type, episodes?: 0, score, start_date?: "", end_date?: "", members, rated)
 }
 
 internal fun TopAnimeResponse.toDomain(): TopAnime {
-    return TopAnime(mal_id, rank, title, url, image_url, type, episodes, start_date, end_date, members, score)
-}
-
-internal fun AnimeResponse.toDomain(): Anime {
-    return Anime(aired, airing, background, broadcast, duration, ending_themes, episodes, favorites, genres, image_url?: "", licensors, mal_id, members, opening_themes, popularity, premiered, producers, rank, rating, related, request_cache_expiry, request_cached, request_hash, score, scored_by, source, status, studios, synopsis?: "", title, title_english, title_japanese, title_synonyms, trailer_url, type, url)
+    return TopAnime(mal_id, rank, title, url, image_url?: "", type, episodes?: 0, start_date?: "", end_date?: "", members, score)
 }
 
 internal fun SeasonAnimeResponse.toDomain(): SeasonAnime {
-    return SeasonAnime(airing_start, continuing, episodes, genres, image_url, kids, licensors, mal_id, members, producers, r18, score, source, synopsis, title, type, url)
+    return SeasonAnime(airing_start?: "", continuing, episodes?: 0, genres, image_url?: "", kids, licensors, mal_id, members, producers, r18, score?: 0.0f, source, synopsis, title, type, url)
+}
+
+internal fun AnimeResponse.toDomain(): Anime {
+    return Anime(
+        aired?: Aired("", Prop(From(0,0,0), To(0,0,0)),"", ""),
+        airing?: false,
+        background?: "",
+        broadcast?: "",
+        duration?: "",
+        ending_themes?:listOf(""),
+        episodes?:0,
+        favorites?:0,
+        genres?:listOf(Genre(0,"", "", "")),
+        image_url?:"",
+        licensors?:listOf(Licensor(0, "", "", "")),
+        mal_id?:0,
+        members?:0,
+        opening_themes?:listOf(""),
+        popularity?:0,
+        premiered?:"",
+        producers?:listOf(Producer(0, "","", "" )),
+        rank?:0,
+        rating?:"",
+        related?: Related(),
+        request_cache_expiry?:0,
+        request_cached?:false,
+        request_hash?:"",
+        score?:0.0,
+        scored_by?:0,
+        source?:"",
+        status?:"",
+        studios?:listOf(Studio(0, "", "", "")),
+        synopsis?:"",
+        title?:"",
+        title_english?:"",
+        title_japanese?:"",
+        title_synonyms?:listOf(""),
+        trailer_url?:"",
+        type?:"",
+        url?:"")
+}
+
+internal fun CharacterStaffResponse.toDomain(): CharacterStaff {
+    return CharacterStaff(characters?: listOf(), request_cache_expiry, request_cached, request_hash, staff?: listOf())
 }

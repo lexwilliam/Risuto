@@ -10,6 +10,7 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -31,7 +32,12 @@ fun RowItem(
                 navToDetail(item.mal_id)
             }
             .height(180.dp)) {
-        NetworkImage(imageUrl = item.image_url, width = 120.dp, height = 160.dp)
+        NetworkImage(
+            imageUrl = item.image_url,
+            modifier = Modifier
+                .size(width = 120.dp, height = 160.dp)
+                .shadow(elevation = 4.dp, shape = MaterialTheme.shapes.medium, true)
+        )
         Column(modifier = Modifier
             .padding(start = 16.dp)) {
             Text(

@@ -1,6 +1,6 @@
 package com.example.risuto.presentation.model
 
-import com.example.risuto.data.remote.model.*
+import com.example.risuto.data.remote.model.detail.*
 
 data class AnimePresentation(
     val aired: Aired,
@@ -41,7 +41,7 @@ data class AnimePresentation(
     val url: String
 ) {
     constructor() : this(
-        Aired("", Prop(From(0,0,0),To(0,0,0)),"", ""),
+        Aired("", Prop(From(0,0,0), To(0,0,0)),"", ""),
         false, "", "", "", listOf(""), 0,
         0, listOf(Genre(0,"", "", "")), "",
         listOf(Licensor(0, "", "", "")), 0,0,

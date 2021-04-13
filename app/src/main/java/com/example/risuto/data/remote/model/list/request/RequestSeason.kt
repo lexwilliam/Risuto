@@ -1,6 +1,6 @@
-package com.example.risuto.data.remote.model.request
+package com.example.risuto.data.remote.model.list.request
 
-import com.example.risuto.data.remote.model.SeasonAnimeResponse
+import com.example.risuto.data.remote.model.list.SeasonAnimeResponse
 
 data class RequestSeason(
     val anime: List<SeasonAnimeResponse>,

@@ -1,6 +1,7 @@
 package com.example.risuto.presentation.util
 
 import android.annotation.SuppressLint
+import com.example.risuto.data.remote.model.detail.VoiceActor
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -24,3 +25,12 @@ fun getCurrentYear(): Int {
 }
 
 val thisSeason = seasons[getCurrentMonth() - 1]
+
+fun getJpnVoiceActor(voiceActors: List<VoiceActor>): VoiceActor{
+    voiceActors.forEach { voiceActor ->
+        if(voiceActor.language == "Japanese"){
+            return voiceActor
+        }
+    }
+    return VoiceActor("", "", 0, "Not Found", "")
+}

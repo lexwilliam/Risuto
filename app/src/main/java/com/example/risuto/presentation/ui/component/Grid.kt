@@ -6,6 +6,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -28,7 +29,12 @@ fun SmallGrid(
                 navToDetail(item.mal_id)
             }
     ) {
-        NetworkImage(imageUrl = item.image_url, width = 100.dp, height = 160.dp)
+        NetworkImage(
+            imageUrl = item.image_url,
+            modifier = Modifier
+                .size(width = 100.dp, height = 160.dp)
+                .shadow(elevation = 4.dp, shape = MaterialTheme.shapes.medium, true)
+        )
         Text(text = item.title + "\n",
             maxLines = 2,
             overflow = TextOverflow.Ellipsis,
@@ -51,7 +57,12 @@ fun MediumGrid(
                 navToDetail(item.mal_id)
             }
     ) {
-        NetworkImage(imageUrl = item.image_url, width = 180.dp, height = 290.dp)
+        NetworkImage(
+            imageUrl = item.image_url,
+            modifier = Modifier
+                .size(width = 180.dp, height = 240.dp)
+                .shadow(elevation = 4.dp, shape = MaterialTheme.shapes.medium, true)
+        )
         Text(text = item.title + "\n",
             maxLines = 2,
             overflow = TextOverflow.Ellipsis,

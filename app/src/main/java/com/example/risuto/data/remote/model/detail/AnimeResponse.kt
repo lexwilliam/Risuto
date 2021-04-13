@@ -1,4 +1,4 @@
-package com.example.risuto.data.remote.model
+package com.example.risuto.data.remote.model.detail
 
 data class AnimeResponse(
     val aired: Aired?,

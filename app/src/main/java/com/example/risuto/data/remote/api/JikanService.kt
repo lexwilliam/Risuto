@@ -1,10 +1,10 @@
 package com.chun2maru.risutomvvm.data.remote
 
-import com.example.risuto.data.remote.model.request.RequestSearch
-import com.example.risuto.data.remote.model.AnimeResponse
-import com.example.risuto.data.remote.model.request.RequestSeason
-import com.example.risuto.data.remote.model.request.RequestTop
-import com.example.risuto.presentation.util.thisSeason
+import com.example.risuto.data.remote.model.list.request.RequestSearch
+import com.example.risuto.data.remote.model.detail.AnimeResponse
+import com.example.risuto.data.remote.model.detail.CharacterStaffResponse
+import com.example.risuto.data.remote.model.list.request.RequestSeason
+import com.example.risuto.data.remote.model.list.request.RequestTop
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -36,5 +36,10 @@ interface JikanService {
     suspend fun getAnimeResult(
         @Path("id") id: Int
     ): AnimeResponse
+
+    @GET("anime/{id}/characters_staff")
+    suspend fun getCharacterStaffResult(
+        @Path("id") id: Int
+    ): CharacterStaffResponse
 
 }

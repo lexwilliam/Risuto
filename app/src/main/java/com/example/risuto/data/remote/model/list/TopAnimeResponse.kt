@@ -1,4 +1,4 @@
-package com.example.risuto.data.remote.model
+package com.example.risuto.data.remote.model.list
 
 data class TopAnimeResponse(
     val mal_id: Int,

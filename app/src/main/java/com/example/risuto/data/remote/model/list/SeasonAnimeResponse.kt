@@ -1,4 +1,7 @@
-package com.example.risuto.data.remote.model
+package com.example.risuto.data.remote.model.list
+
+import com.example.risuto.data.remote.model.detail.Genre
+import com.example.risuto.data.remote.model.detail.Producer
 
 data class SeasonAnimeResponse(
     val airing_start: String?,

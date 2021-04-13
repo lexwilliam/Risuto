@@ -7,7 +7,9 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.chun2maru.risutomvvm.presentation.mapper.toPresentation
 import com.example.risuto.domain.usecase.GetAnimeUseCase
+import com.example.risuto.domain.usecase.GetCharacterStaffUseCase
 import com.example.risuto.presentation.model.AnimePresentation
+import com.example.risuto.presentation.model.CharacterStaffPresentation
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -17,10 +19,10 @@ import javax.inject.Inject
 class AnimeViewModel
 @Inject constructor(
     private val getAnimeUseCase: GetAnimeUseCase,
-    private val savedState: SavedStateHandle
+    private val getCharacterStaffUseCase: GetCharacterStaffUseCase,
+    savedState: SavedStateHandle
 ): ViewModel() {
 
-    private val animeDetail = MutableStateFlow(AnimePresentation())
     private val malIdFromArgs = savedState.get<Int>("mal_id")
 
     private val _state = MutableStateFlow(AnimeViewState())
@@ -32,9 +34,12 @@ class AnimeViewModel
                 if (id > 0) {
                     getAnimeUseCase.invoke(id).collect { results ->
                         val animes = results.toPresentation()
-                        animeDetail.value = animes
+                        _state.value = _state.value.copy(animeDetail = animes)
                     }
-                    _state.value = _state.value.copy(animeDetail.value)
+                    getCharacterStaffUseCase.invoke(id).collect { results ->
+                        val staffs = results.toPresentation()
+                        _state.value = _state.value.copy(animeStaff = staffs)
+                    }
                 }
             }
         }
@@ -42,5 +47,6 @@ class AnimeViewModel
 }
 
 data class AnimeViewState(
-    val animeDetail: AnimePresentation = AnimePresentation()
+    val animeDetail: AnimePresentation = AnimePresentation(),
+    val animeStaff: CharacterStaffPresentation = CharacterStaffPresentation()
 )

@@ -21,13 +21,10 @@ import dev.chrisbanes.accompanist.glide.GlideImage
 fun NetworkImage(
     modifier: Modifier = Modifier,
     imageUrl: String,
-    width: Dp,
-    height: Dp
 ) {
     Surface(
         modifier
-            .size(width = width, height = height)
-            .shadow(elevation = 4.dp, shape = MaterialTheme.shapes.medium, true)
+            .background(color = Color.LightGray)
     ) {
         if (imageUrl.isNotEmpty()) {
             GlideImage(
