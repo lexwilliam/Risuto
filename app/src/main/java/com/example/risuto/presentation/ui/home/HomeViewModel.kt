@@ -76,10 +76,12 @@ class HomeViewModel
     }
 
     private fun refresh() {
-        onCurrentSeasonAnime()
-        onTopAiringAnime()
-        onTopAnime()
-        onTopUpcomingAnime()
+        viewModelScope.launch {
+            onCurrentSeasonAnime()
+            onTopAiringAnime()
+            onTopAnime()
+            onTopUpcomingAnime()
+        }
     }
 
     private fun onCurrentSeasonAnime() {

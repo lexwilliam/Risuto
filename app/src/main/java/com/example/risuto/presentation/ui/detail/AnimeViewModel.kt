@@ -25,6 +25,8 @@ class AnimeViewModel
 
     private val malIdFromArgs = savedState.get<Int>("mal_id")
 
+    private val animeDetail = MutableStateFlow(AnimePresentation())
+    private val animeStaff = MutableStateFlow(CharacterStaffPresentation())
     private val _state = MutableStateFlow(AnimeViewState())
     val state = _state.asStateFlow()
 
@@ -34,11 +36,24 @@ class AnimeViewModel
                 if (id > 0) {
                     getAnimeUseCase.invoke(id).collect { results ->
                         val animes = results.toPresentation()
-                        _state.value = _state.value.copy(animeDetail = animes)
+                        animeDetail.value = animes
                     }
                     getCharacterStaffUseCase.invoke(id).collect { results ->
                         val staffs = results.toPresentation()
-                        _state.value = _state.value.copy(animeStaff = staffs)
+                        animeStaff.value = staffs
+                    }
+                    combine(
+                        animeDetail,
+                        animeStaff
+                    ) { animeDetail, animeStaff ->
+                        AnimeViewState(
+                            animeDetail = animeDetail,
+                            animeStaff = animeStaff
+                        )
+                    }.catch {
+                        throw it
+                    }.collect {
+                        _state.value = it
                     }
                 }
             }

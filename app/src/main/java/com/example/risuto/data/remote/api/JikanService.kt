@@ -17,7 +17,9 @@ interface JikanService {
         @Query("type") type: String?,
         @Query("status") status: String?,
         @Query("genre") genre: Int?,
-        @Query("limit") limit: Int?
+        @Query("limit") limit: Int?,
+        @Query("order_by") orderBy: String = "members",
+        @Query("sort") sort: String = "desc"
     ): RequestSearch
 
     @GET("top/anime/{page}/{subType}")

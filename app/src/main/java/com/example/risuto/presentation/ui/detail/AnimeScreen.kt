@@ -51,8 +51,10 @@ fun AnimeContent(
     animeStaff: CharacterStaffPresentation,
     onBackPressed: () -> Unit
 ) {
-    Column(modifier = Modifier
-        .fillMaxSize(),
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         AnimeToolBar(onBackPressed = { onBackPressed() })

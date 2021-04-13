@@ -60,7 +60,7 @@ fun MediumGrid(
         NetworkImage(
             imageUrl = item.image_url,
             modifier = Modifier
-                .size(width = 180.dp, height = 240.dp)
+                .size(width = 180.dp, height = 200.dp)
                 .shadow(elevation = 4.dp, shape = MaterialTheme.shapes.medium, true)
         )
         Text(text = item.title + "\n",

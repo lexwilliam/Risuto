@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.risuto.presentation.model.AnimeListPresentation
 import com.example.risuto.presentation.model.QuerySearch
-import com.example.risuto.presentation.ui.component.ChipGroupList
+import com.example.risuto.presentation.ui.component.FilterGenre
 import com.example.risuto.presentation.ui.component.GridList
 import com.example.risuto.presentation.ui.component.Header
 import com.example.risuto.presentation.util.generateFakeItemList
@@ -41,7 +41,10 @@ fun SearchScreen(
     val viewState by viewModel.state.collectAsState()
     SearchContent(
         items = viewState.searchAnimes,
-        onQueryChange = viewModel::onSearchAnime,
+        query = viewState.query,
+        onSearchAnime = viewModel::onSearchAnime,
+        onQueryChange = viewModel::onQueryChanged,
+        onGenreChange = viewModel::onGenreChanged,
         navToDetail = { navToList(it) }
     )
 }
@@ -51,7 +54,10 @@ fun SearchScreen(
 @Composable
 fun SearchContent(
     items: List<AnimeListPresentation>,
-    onQueryChange: (QuerySearch) -> Unit,
+    query: QuerySearch,
+    onSearchAnime: () -> Unit,
+    onQueryChange: (String) -> Unit,
+    onGenreChange: (Int) -> Unit,
     navToDetail: (Int) -> Unit
 ) {
     var text by remember { mutableStateOf("") }
@@ -78,11 +84,7 @@ fun SearchContent(
             value = text,
             onValueChange = {
                 text = it
-                onQueryChange(QuerySearch(q = it))
-                if(isFocused){
-                    resultType = ResultType.Result
-                    headerState = false
-                }
+                onQueryChange(it)
             },
             interactionSource = interactionSource,
             textStyle = MaterialTheme.typography.subtitle1,
@@ -94,6 +96,10 @@ fun SearchContent(
                 keyboardController?.hideSoftwareKeyboard()
             }),
             decorationBox = {
+                if(isFocused){
+                    resultType = ResultType.Result
+                    headerState = false
+                }
                 Surface(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -121,7 +127,9 @@ fun SearchContent(
             ResultType.Result ->
                 GridList(items = items, navToDetail = { navToDetail(it) })
             ResultType.Filter ->
-                ChipGroupList(onClick = { text = it })
+                FilterGenre(onClick = {
+                    onGenreChange(it)
+                })
         }
     }
 }
@@ -135,14 +143,15 @@ fun SearchTopBar() {
     Header(title = "Search")
 }
 
-@ExperimentalComposeUiApi
-@ExperimentalFoundationApi
-@Preview
-@Composable
-fun SearchScreenPreview() {
-    SearchContent(
-        items = generateFakeItemList(),
-        onQueryChange = {},
-        navToDetail = {}
-    )
-}
+//@ExperimentalComposeUiApi
+//@ExperimentalFoundationApi
+//@Preview
+//@Composable
+//fun SearchScreenPreview() {
+//    SearchContent(
+//        items = generateFakeItemList(),
+//        query = QuerySearch(),
+//        onQueryChange = {},
+//        navToDetail = {}
+//    )
+//}
