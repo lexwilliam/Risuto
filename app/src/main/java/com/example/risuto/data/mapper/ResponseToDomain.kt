@@ -5,11 +5,7 @@ import com.chun2maru.risutomvvm.domain.model.SearchAnime
 import com.example.risuto.data.remote.model.detail.*
 import com.example.risuto.data.remote.model.list.SeasonAnimeResponse
 import com.example.risuto.data.remote.model.list.TopAnimeResponse
-import com.example.risuto.domain.model.Anime
-import com.example.risuto.domain.model.CharacterStaff
-import com.example.risuto.domain.model.SeasonAnime
-import com.example.risuto.domain.model.TopAnime
-import com.example.risuto.presentation.model.AnimePresentation
+import com.example.risuto.domain.model.*
 
 internal fun SearchAnimeResponse.toDomain(): SearchAnime {
     return SearchAnime(mal_id, url, image_url?: "", title, airing, synopsis?: "", type, episodes?: 0, score, start_date?: "", end_date?: "", members, rated)

@@ -1,16 +1,13 @@
 package com.example.risuto.presentation.ui.search
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
@@ -18,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -26,9 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.risuto.presentation.model.AnimeListPresentation
 import com.example.risuto.presentation.model.QuerySearch
-import com.example.risuto.presentation.ui.component.FilterGenre
-import com.example.risuto.presentation.ui.component.GridList
-import com.example.risuto.presentation.ui.component.Header
+import com.example.risuto.presentation.ui.component.*
 import com.example.risuto.presentation.util.generateFakeItemList
 
 @ExperimentalFoundationApi
@@ -36,16 +32,19 @@ import com.example.risuto.presentation.util.generateFakeItemList
 @Composable
 fun SearchScreen(
     viewModel: SearchViewModel = viewModel(),
-    navToList: (Int) -> Unit
+    navToDetail: (Int) -> Unit,
+    navToGenre: (Int) -> Unit
 ) {
     val viewState by viewModel.state.collectAsState()
     SearchContent(
         items = viewState.searchAnimes,
         query = viewState.query,
         onSearchAnime = viewModel::onSearchAnime,
-        onQueryChange = viewModel::onQueryChanged,
-        onGenreChange = viewModel::onGenreChanged,
-        navToDetail = { navToList(it) }
+        getQuery = viewModel::getQuery,
+        getGenre = viewModel::getGenre,
+        getOrder = viewModel::getOrderBy,
+        navToDetail = { navToDetail(it) },
+        navToGenre = { navToGenre(it) }
     )
 }
 
@@ -56,35 +55,36 @@ fun SearchContent(
     items: List<AnimeListPresentation>,
     query: QuerySearch,
     onSearchAnime: () -> Unit,
-    onQueryChange: (String) -> Unit,
-    onGenreChange: (Int) -> Unit,
-    navToDetail: (Int) -> Unit
+    getQuery: (String) -> Unit,
+    getGenre: (Int) -> Unit,
+    getOrder: (String) -> Unit,
+    navToDetail: (Int) -> Unit,
+    navToGenre: (Int) -> Unit
 ) {
+    var headerState by remember { mutableStateOf(true) }
     var text by remember { mutableStateOf("") }
+    var showFilterBtn by remember { mutableStateOf(false) }
+    var resultState by remember { mutableStateOf(ResultType.Filter) }
+
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
-
-    var headerState by remember { mutableStateOf(true) }
-
-    var resultType by remember { mutableStateOf(ResultType.Filter) }
-    if(text.isEmpty()){
-        resultType = ResultType.Filter
-    }
     val keyboardController = LocalSoftwareKeyboardController.current
+
     Column(
         modifier = Modifier
             .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         if(headerState) {
             SearchTopBar()
         }
         BasicTextField(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth(),
             value = text,
             onValueChange = {
                 text = it
-                onQueryChange(it)
+                getQuery(it)
             },
             interactionSource = interactionSource,
             textStyle = MaterialTheme.typography.subtitle1,
@@ -93,29 +93,33 @@ fun SearchContent(
                 imeAction = ImeAction.Done
             ),
             keyboardActions = KeyboardActions( onDone = {
+                onSearchAnime()
                 keyboardController?.hideSoftwareKeyboard()
             }),
             decorationBox = {
                 if(isFocused){
-                    resultType = ResultType.Result
+                    resultState = ResultType.Result
                     headerState = false
                 }
                 Surface(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 8.dp)
-                        .shadow(elevation = 8.dp, shape = MaterialTheme.shapes.small, clip = true)
-                        .size(width = 120.dp, height = 40.dp)
+                        .shadow(
+                            elevation = 8.dp,
+                            shape = MaterialTheme.shapes.small,
+                            clip = true
+                        )
+                        .size(width = 120.dp, height = 40.dp),
+                    color = Color.White
                 ) {
                     Row(
-                        modifier = Modifier.background(color = MaterialTheme.colors.onPrimary),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Spacer(modifier = Modifier.padding(4.dp))
                         Icon(
                             Icons.Default.Search,
                             contentDescription = null,
-                            tint = MaterialTheme.colors.onSecondary
+                            tint = Color.DarkGray
                         )
                         Spacer(modifier = Modifier.padding(4.dp))
                         it()
@@ -123,18 +127,21 @@ fun SearchContent(
                 }
             }
         )
-        when(resultType){
-            ResultType.Result ->
+        when(resultState){
+            ResultType.Result -> {
+                showFilterBtn = true
                 GridList(items = items, navToDetail = { navToDetail(it) })
-            ResultType.Filter ->
-                FilterGenre(onClick = {
-                    onGenreChange(it)
+            }
+            ResultType.Filter -> {
+                FilterGenre(navToGenre = {
+                    navToGenre(it)
                 })
+            }
         }
     }
 }
 
-enum class ResultType{
+private enum class ResultType{
     Result, Filter
 }
 
@@ -143,15 +150,19 @@ fun SearchTopBar() {
     Header(title = "Search")
 }
 
-//@ExperimentalComposeUiApi
-//@ExperimentalFoundationApi
-//@Preview
-//@Composable
-//fun SearchScreenPreview() {
-//    SearchContent(
-//        items = generateFakeItemList(),
-//        query = QuerySearch(),
-//        onQueryChange = {},
-//        navToDetail = {}
-//    )
-//}
+@ExperimentalComposeUiApi
+@ExperimentalFoundationApi
+@Preview
+@Composable
+fun SearchScreenPreview() {
+    SearchContent(
+        items = generateFakeItemList(),
+        query = QuerySearch(),
+        onSearchAnime = {},
+        getGenre = {},
+        getQuery = {},
+        getOrder = {},
+        navToDetail = {},
+        navToGenre = {}
+    )
+}

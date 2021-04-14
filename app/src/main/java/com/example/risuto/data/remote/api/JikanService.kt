@@ -1,8 +1,8 @@
 package com.chun2maru.risutomvvm.data.remote
 
-import com.example.risuto.data.remote.model.list.request.RequestSearch
 import com.example.risuto.data.remote.model.detail.AnimeResponse
 import com.example.risuto.data.remote.model.detail.CharacterStaffResponse
+import com.example.risuto.data.remote.model.list.request.RequestSearch
 import com.example.risuto.data.remote.model.list.request.RequestSeason
 import com.example.risuto.data.remote.model.list.request.RequestTop
 import retrofit2.http.GET
@@ -18,8 +18,8 @@ interface JikanService {
         @Query("status") status: String?,
         @Query("genre") genre: Int?,
         @Query("limit") limit: Int?,
-        @Query("order_by") orderBy: String = "members",
-        @Query("sort") sort: String = "desc"
+        @Query("order_by") orderBy: String?,
+        @Query("sort") sort: String?
     ): RequestSearch
 
     @GET("top/anime/{page}/{subType}")

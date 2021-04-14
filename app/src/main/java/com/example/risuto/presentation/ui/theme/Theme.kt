@@ -1,33 +1,36 @@
 package com.example.risuto.ui.theme
 
+import android.util.Log
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 
 private val DarkColorPalette = darkColors(
-    primary = Gray900,
-    primaryVariant = Gray600,
-    secondary = Gray600,
-    secondaryVariant = Gray500,
-    background = Gray800,
-    surface = Gray800,
-    error = ErrorRed
+    primary = bluePrimary,
+    primaryVariant = blueLight,
+    secondary = Color.White,
+    secondaryVariant = Color.Black,
+    background = Gray900,
+    surface = Gray900,
+    error = redLight
 )
 
 private val LightColorPalette = lightColors(
-    primary = primaryLight,
-    primaryVariant = primaryVariant,
-    secondary = secondaryLight,
-    secondaryVariant = secondaryVariant,
-    background = Gray50,
-    surface = Gray50,
-    error = ErrorRed
+    primary = bluePrimary,
+    primaryVariant = blueLight,
+    secondary = Color.Black,
+    secondaryVariant = Color.White,
+    background = Color.White,
+    surface = Color.White,
+    error = redDark
 )
 
 @Composable
 fun RisutoTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable() () -> Unit) {
+    Log.d("TAG", darkTheme.toString())
     val colors = if (darkTheme) {
         DarkColorPalette
     } else {
@@ -36,7 +39,7 @@ fun RisutoTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable
 
     MaterialTheme(
         colors = colors,
-        typography = Typography,
+        typography = RisutoTypography,
         shapes = Shapes,
         content = content
     )

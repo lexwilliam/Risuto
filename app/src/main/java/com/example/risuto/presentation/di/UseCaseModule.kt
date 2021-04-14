@@ -2,12 +2,10 @@ package com.chun2maru.risutomvvm.presentation.di
 
 import com.chun2maru.risutomvvm.data.repository.ListRepository
 import com.chun2maru.risutomvvm.domain.usecase.SearchAnimeUseCase
+import com.example.risuto.data.remote.model.detail.Genre
 import com.example.risuto.data.repository.ItemRepository
 import com.example.risuto.domain.model.SeasonAnime
-import com.example.risuto.domain.usecase.GetAnimeUseCase
-import com.example.risuto.domain.usecase.GetCharacterStaffUseCase
-import com.example.risuto.domain.usecase.SeasonAnimeUseCase
-import com.example.risuto.domain.usecase.TopAnimeUseCase
+import com.example.risuto.domain.usecase.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

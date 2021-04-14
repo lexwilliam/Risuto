@@ -2,10 +2,7 @@ package com.chun2maru.risutomvvm.presentation.mapper
 
 import com.chun2maru.risutomvvm.domain.model.SearchAnime
 import com.example.risuto.data.remote.model.detail.*
-import com.example.risuto.domain.model.Anime
-import com.example.risuto.domain.model.CharacterStaff
-import com.example.risuto.domain.model.SeasonAnime
-import com.example.risuto.domain.model.TopAnime
+import com.example.risuto.domain.model.*
 import com.example.risuto.presentation.model.AnimePresentation
 import com.example.risuto.presentation.model.AnimeListPresentation
 import com.example.risuto.presentation.model.CharacterStaffPresentation

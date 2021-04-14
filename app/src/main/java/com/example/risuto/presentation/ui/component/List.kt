@@ -19,10 +19,12 @@ import com.example.risuto.presentation.util.generateFakeItemList
 @ExperimentalFoundationApi
 @Composable
 fun GridList(
+    modifier: Modifier = Modifier,
     items: List<AnimeListPresentation>,
     navToDetail: (Int) -> Unit
 ) {
     LazyVerticalGrid(
+        modifier = modifier,
         cells = GridCells.Adaptive(minSize = 180.dp),
     ) {
         var count = 0

@@ -2,7 +2,6 @@ package com.example.risuto.presentation
 
 import android.content.Context
 import android.net.ConnectivityManager
-import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -12,6 +11,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltNavGraphViewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.*
@@ -19,6 +19,8 @@ import com.example.risuto.R
 import com.example.risuto.presentation.Screens.*
 import com.example.risuto.presentation.ui.detail.AnimeScreen
 import com.example.risuto.presentation.ui.detail.AnimeViewModel
+import com.example.risuto.presentation.ui.genre.GenreScreen
+import com.example.risuto.presentation.ui.genre.GenreViewModel
 import com.example.risuto.presentation.ui.home.HomeScreen
 import com.example.risuto.presentation.ui.home.HomeViewModel
 import com.example.risuto.presentation.ui.search.SearchScreen
@@ -30,8 +32,7 @@ import com.example.risuto.presentation.ui.search.SearchViewModel
 fun RisutoApp() {
     val context = LocalContext.current
     var isOnline by remember { mutableStateOf(checkIfOnline(context)) }
-
-    if(isOnline) {
+    if (isOnline) {
         RisutoAppContent()
     } else {
         OfflineDialog { isOnline = checkIfOnline(context) }
@@ -45,12 +46,15 @@ fun RisutoAppContent() {
     val navController = rememberNavController()
     Scaffold(
         bottomBar = {
-            BottomNavigation {
+            BottomNavigation(
+                backgroundColor = MaterialTheme.colors.background,
+                contentColor = MaterialTheme.colors.secondary,
+                elevation = 0.dp
+            ) {
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentRoute = navBackStackEntry?.arguments?.getString(KEY_ROUTE)
                 BottomNavigationItem(
                     icon = { Icon(Icons.Filled.Home, contentDescription = null) },
-                    label = { Text("Home") },
                     selected = currentRoute == RisutoHomeScreen.route,
                     onClick = {
                         navController.navigate(RisutoHomeScreen.route) {
@@ -61,7 +65,6 @@ fun RisutoAppContent() {
                 )
                 BottomNavigationItem(
                     icon = { Icon(Icons.Filled.Search, contentDescription = null) },
-                    label = { Text("Search") },
                     selected = currentRoute == RisutoSearchScreen.route,
                     onClick = {
                         navController.navigate(RisutoSearchScreen.route) {
@@ -82,9 +85,6 @@ fun RisutoAppContent() {
                         navController.navigate(
                             RisutoAnimeScreen.route.plus("/?mal_id=$mal_id")
                         )
-                    },
-                    navToSearch = {
-                        navController.navigate(RisutoSearchScreen.route)
                     }
                 )
             }
@@ -92,9 +92,14 @@ fun RisutoAppContent() {
                 val searchViewModel = hiltNavGraphViewModel<SearchViewModel>()
                 SearchScreen(
                     viewModel = searchViewModel,
-                    navToList = { mal_id ->
+                    navToDetail = { mal_id ->
                         navController.navigate(
                             RisutoAnimeScreen.route.plus("/?mal_id=$mal_id")
+                        )
+                    },
+                    navToGenre = { genre_id ->
+                        navController.navigate(
+                            RisutoGenreScreen.route.plus("/?genre_id=$genre_id")
                         )
                     }
                 )
@@ -111,7 +116,32 @@ fun RisutoAppContent() {
                 val animeViewModel = hiltNavGraphViewModel<AnimeViewModel>()
                 AnimeScreen(
                     viewModel = animeViewModel,
-                    onBackPressed = { navController.navigateUp() }
+                    onBackPressed = { navController.navigateUp() },
+                    navToGenre = { genre_id ->
+                        navController.navigate(
+                            RisutoGenreScreen.route.plus("/?genre_id=$genre_id")
+                        )
+                    }
+                )
+            }
+            composable(
+                route = RisutoGenreScreen.route.plus("/?genre_id={genre_id}"),
+                arguments = listOf(
+                    navArgument("genre_id") {
+                        type = NavType.IntType
+                        defaultValue = -1
+                    }
+                )
+            ) {
+                val genreViewModel = hiltNavGraphViewModel<GenreViewModel>()
+                GenreScreen(
+                    viewModel = genreViewModel,
+                    onBackPressed = { navController.navigateUp()},
+                    navToDetail = { mal_id ->
+                        navController.navigate(
+                            RisutoAnimeScreen.route.plus("/?mal_id=$mal_id")
+                        )
+                    }
                 )
             }
         }
@@ -120,8 +150,9 @@ fun RisutoAppContent() {
 
 sealed class Screens(val route: String) {
     object RisutoHomeScreen: Screens("home")
-    object RisutoAnimeScreen: Screens("anime")
     object RisutoSearchScreen: Screens("search")
+    object RisutoAnimeScreen: Screens("anime")
+    object RisutoGenreScreen: Screens("genre")
 }
 
 @Suppress("DEPRECATION")
@@ -135,8 +166,8 @@ private fun checkIfOnline(context: Context): Boolean {
 fun OfflineDialog(onRetry: () -> Unit) {
     AlertDialog(
         onDismissRequest = {},
-        title = { Text(text = stringResource(R.string.connection_error_title)) },
-        text = { Text(text = stringResource(R.string.connection_error_message)) },
+        title = { Text(text = "Connection Error") },
+        text = { Text(text = "Unable to fetch anime list. Please check your connection") },
         confirmButton = {
             TextButton(onClick = onRetry) {
                 Text(stringResource(R.string.retry_label))

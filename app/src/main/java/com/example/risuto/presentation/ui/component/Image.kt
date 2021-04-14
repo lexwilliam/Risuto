@@ -23,8 +23,8 @@ fun NetworkImage(
     imageUrl: String,
 ) {
     Surface(
-        modifier
-            .background(color = Color.LightGray)
+        modifier = modifier,
+        color = Color.LightGray
     ) {
         if (imageUrl.isNotEmpty()) {
             GlideImage(

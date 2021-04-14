@@ -26,8 +26,7 @@ import java.util.*
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel = viewModel(),
-    navToDetail: (Int) -> Unit,
-    navToSearch: () -> Unit
+    navToDetail: (Int) -> Unit
 ) {
     val viewState by viewModel.state.collectAsState()
 
@@ -36,7 +35,6 @@ fun HomeScreen(
         topAiringAnime = viewState.topAiringAnime,
         topAnime = viewState.topAnime,
         topUpcomingAnime = viewState.topUpcomingAnime,
-        onError = viewState.error,
         navToDetail = navToDetail
     )
 }
@@ -47,7 +45,6 @@ fun HomeContent(
     topAiringAnime: List<AnimeListPresentation>,
     topAnime: List<AnimeListPresentation>,
     topUpcomingAnime: List<AnimeListPresentation>,
-    onError: Error?,
     navToDetail: (Int) -> Unit
 ) {
     val state = rememberScrollState()
@@ -116,7 +113,6 @@ fun HomeContentPreview() {
         topAiringAnime = generateFakeItemList(),
         topAnime = generateFakeItemList(),
         topUpcomingAnime = generateFakeItemList(),
-        onError = null,
         navToDetail = {}
     )
 }

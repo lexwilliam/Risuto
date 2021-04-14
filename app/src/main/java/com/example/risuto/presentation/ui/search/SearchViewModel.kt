@@ -35,15 +35,16 @@ class SearchViewModel
         searchJob?.cancel()
     }
 
-    var query = MutableStateFlow(QuerySearch())
+    private var query = MutableStateFlow(QuerySearch())
 
-    private var _state = MutableStateFlow(SearchViewState(error = null, isLoading = false))
+    private var _state = MutableStateFlow(SearchViewState(query = QuerySearch(), error = null, isLoading = false))
     val state = _state.asStateFlow()
 
     fun onSearchAnime() {
         searchJob?.cancel()
         searchJob = launchCoroutine {
             onSearchLoading()
+            _state.value = _state.value.copy(query = query.value)
             searchAnimeUseCase.invoke(query.value).collect { results ->
                 val animes = results.map { anime -> anime.toPresentation() }
                 onSearchComplete(animes)
@@ -51,14 +52,28 @@ class SearchViewModel
         }
     }
 
-    fun onQueryChanged(q: String) {
+    fun getQuery(q: String) {
         query.value = query.value.copy(q = q)
-        onSearchAnime()
     }
 
-    fun onGenreChanged(genre: Int) {
+    fun getGenre(genre: Int) {
         query.value = query.value.copy(genre = genre)
-        onSearchAnime()
+    }
+
+    fun getStatus(status: String) {
+        query.value = query.value.copy(status = status)
+    }
+
+    fun getType(type: String) {
+        query.value = query.value.copy(type = type)
+    }
+
+    fun getOrderBy(order: String) {
+        query.value = query.value.copy(order_by = order)
+    }
+
+    fun getSort(sort: String) {
+        query.value = query.value.copy(sort = sort)
     }
 
     private fun onSearchComplete(animes: List<AnimeListPresentation>) {
@@ -75,7 +90,7 @@ class SearchViewModel
 }
 
 data class SearchViewState(
-    val query: QuerySearch = QuerySearch(),
+    val query: QuerySearch,
     val searchAnimes: List<AnimeListPresentation> = emptyList(),
     val error: Error?,
     val isLoading: Boolean

@@ -26,8 +26,7 @@ import com.example.risuto.data.remote.model.detail.Character
 import com.example.risuto.data.remote.model.detail.VoiceActor
 import com.example.risuto.presentation.model.AnimePresentation
 import com.example.risuto.presentation.model.CharacterStaffPresentation
-import com.example.risuto.presentation.ui.component.Chip
-import com.example.risuto.presentation.ui.component.NetworkImage
+import com.example.risuto.presentation.ui.component.*
 import com.example.risuto.presentation.util.generateFakeAnimeDetail
 import com.example.risuto.presentation.util.getJpnVoiceActor
 import com.example.risuto.presentation.util.intToCurrency
@@ -35,13 +34,15 @@ import com.example.risuto.presentation.util.intToCurrency
 @Composable
 fun AnimeScreen(
     viewModel: AnimeViewModel = viewModel(),
-    onBackPressed: () -> Unit
+    onBackPressed: () -> Unit,
+    navToGenre: (Int) -> Unit
 ) {
     val viewState by viewModel.state.collectAsState()
     AnimeContent(
         animeDetail = viewState.animeDetail,
         animeStaff = viewState.animeStaff,
-        onBackPressed = { onBackPressed() }
+        onBackPressed = { onBackPressed() },
+        navToGenre = navToGenre
     )
 }
 
@@ -49,17 +50,19 @@ fun AnimeScreen(
 fun AnimeContent(
     animeDetail: AnimePresentation,
     animeStaff: CharacterStaffPresentation,
-    onBackPressed: () -> Unit
+    onBackPressed: () -> Unit,
+    navToGenre: (Int) -> Unit
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .padding(bottom = 64.dp)
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         AnimeToolBar(onBackPressed = { onBackPressed() })
         AnimeDetail(animeDetail = animeDetail)
-        AnimeGenre(animeDetail = animeDetail)
+        AnimeGenre(animeDetail = animeDetail, navToGenre = { navToGenre(it) })
         AnimeRating(animeDetail = animeDetail)
         CharVoiceActorList(animeStaff = animeStaff)
     }
@@ -73,20 +76,21 @@ fun AnimeToolBar(
         title = { Text("") },
         navigationIcon = {
             IconButton(onClick = { onBackPressed() }) {
-                Icon(Icons.Default.ArrowBack, contentDescription = null, tint = Color.Black)
+                Icon(Icons.Default.ArrowBack, contentDescription = null, tint = MaterialTheme.colors.secondary)
             }
         },
         actions = {
             Row {
                 IconButton(onClick = { }) {
-                    Icon(Icons.Default.Add, contentDescription = null, tint = Color.Black)
+                    Icon(Icons.Default.Add, contentDescription = null, tint = MaterialTheme.colors.secondary)
                 }
                 IconButton(onClick = { }) {
-                    Icon(Icons.Outlined.Favorite, contentDescription = null, tint = Color.Black)
+                    Icon(Icons.Outlined.Favorite, contentDescription = null, tint = MaterialTheme.colors.secondary)
                 }
             }
         },
-        backgroundColor = Color.White
+        backgroundColor = MaterialTheme.colors.background,
+        elevation = 0.dp
     )
 }
 
@@ -128,7 +132,8 @@ fun AnimeDetail(
 
 @Composable
 fun AnimeGenre(
-    animeDetail: AnimePresentation
+    animeDetail: AnimePresentation,
+    navToGenre: (Int) -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -138,7 +143,11 @@ fun AnimeGenre(
     ) {
         Text(text = "Genre: ", style = MaterialTheme.typography.subtitle1)
         animeDetail.genres.forEach { genre ->
-            genre.name?.let { Chip(modifier = Modifier.padding(end = 8.dp), text = it, onClick = {}) }
+            genre.name?.let { Chip(modifier = Modifier.padding(end = 8.dp), text = it,
+                onClick = { genre ->
+                    navToGenre(genreSearchList.indexOf(genre) + 1)
+                })
+            }
         }
     }
 }
@@ -238,6 +247,7 @@ fun AnimeScreenPreview() {
     AnimeContent(
         animeDetail = generateFakeAnimeDetail(),
         animeStaff = CharacterStaffPresentation(),
-        onBackPressed = {}
+        onBackPressed = {},
+        navToGenre = {}
     )
 }

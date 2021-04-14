@@ -20,7 +20,9 @@ class ListRepository(
             type = query.type,
             status = query.status,
             genre = query.genre,
-            limit = query.limit
+            limit = query.limit,
+            orderBy = query.order_by,
+            sort = query.sort
         )
         val items = mutableListOf<SearchAnime>()
         for (item in searchResponse.results){

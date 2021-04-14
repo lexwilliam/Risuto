@@ -25,20 +25,16 @@ fun Chip(
 ) {
     Surface(
         modifier = modifier
-            .background(color = Color.Transparent)
             .clickable { onClick(text) },
         shape = RoundedCornerShape(size),
-        border = BorderStroke(
-            width = 1.dp,
-            color = MaterialTheme.colors.primary
-        )
+        color = MaterialTheme.colors.primary
     ) {
         Text(
             modifier = Modifier.padding(8.dp),
             text = text,
             maxLines = 1,
             style = MaterialTheme.typography.button,
-            color = MaterialTheme.colors.primary
+            color = Color.White
         )
     }
 }
