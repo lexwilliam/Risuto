@@ -45,7 +45,7 @@ class GenreViewModel
                 if(id > 0) {
                     searchAnimeUseCase.invoke(QuerySearch(genre = id, order_by = "members")).collect { results ->
                         val animes = results.map { anime -> anime.toPresentation() }
-                        _state.value = _state.value.copy(genreAnimes = animes, id - 1)
+                        _state.value = _state.value.copy(animes, id - 1, false)
                     }
                 }
             }
@@ -55,5 +55,6 @@ class GenreViewModel
 
 data class GenreViewState(
     val genreAnimes: List<AnimeListPresentation> = emptyList(),
-    val genreIndex: Int? = null
+    val genreIndex: Int? = null,
+    val onLoading: Boolean = true
 )

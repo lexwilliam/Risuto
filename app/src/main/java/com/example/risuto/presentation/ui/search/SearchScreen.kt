@@ -63,7 +63,7 @@ fun SearchContent(
 ) {
     var headerState by remember { mutableStateOf(true) }
     var text by remember { mutableStateOf("") }
-    var showFilterBtn by remember { mutableStateOf(false) }
+    var onDone by remember { mutableStateOf(false) }
     var resultState by remember { mutableStateOf(ResultType.Filter) }
 
     val interactionSource = remember { MutableInteractionSource() }
@@ -93,6 +93,7 @@ fun SearchContent(
                 imeAction = ImeAction.Done
             ),
             keyboardActions = KeyboardActions( onDone = {
+                onDone = true
                 onSearchAnime()
                 keyboardController?.hideSoftwareKeyboard()
             }),
@@ -129,8 +130,11 @@ fun SearchContent(
         )
         when(resultState){
             ResultType.Result -> {
-                showFilterBtn = true
-                GridList(items = items, navToDetail = { navToDetail(it) })
+                if(items.isEmpty() && onDone) {
+                    LoadingScreen()
+                } else {
+                    GridList(items = items, navToDetail = { navToDetail(it) })
+                }
             }
             ResultType.Filter -> {
                 FilterGenre(navToGenre = {

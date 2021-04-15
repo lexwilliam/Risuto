@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.risuto.presentation.model.AnimeListPresentation
 import com.example.risuto.presentation.ui.component.GridList
+import com.example.risuto.presentation.ui.component.LoadingScreen
 import com.example.risuto.presentation.ui.component.genreList
 import com.example.risuto.presentation.ui.component.genreSearchList
 
@@ -29,10 +30,11 @@ fun GenreScreen(
     val viewState by viewModel.state.collectAsState()
     viewState.genreIndex?.let {
         GenreContent(
-        animeList = viewState.genreAnimes,
-        genreId = it,
-        onBackPressed = onBackPressed,
-        navToDetail = navToDetail
+            animeList = viewState.genreAnimes,
+            genreId = it,
+            onLoading = viewState.onLoading,
+            onBackPressed = onBackPressed,
+            navToDetail = navToDetail
         )
     }
 }
@@ -42,22 +44,27 @@ fun GenreScreen(
 fun GenreContent(
     animeList: List<AnimeListPresentation>,
     genreId: Int,
+    onLoading: Boolean,
     onBackPressed: () -> Unit,
     navToDetail: (Int) -> Unit
 ) {
-    Column {
-        TopAppBar(
-            title = {
-                Text(text = genreSearchList[genreId])
-            },
-            navigationIcon = {
-                IconButton(onClick = { onBackPressed() }) {
-                    Icon(Icons.Default.ArrowBack, contentDescription = null, tint = MaterialTheme.colors.secondary)
-                }
-            },
-            backgroundColor = MaterialTheme.colors.background,
-            elevation = 0.dp
-        )
-        GridList(modifier = Modifier.padding(horizontal = 16.dp),items = animeList, navToDetail = { navToDetail(it) })
+    if(onLoading) {
+        LoadingScreen()
+    } else {
+        Column {
+            TopAppBar(
+                title = {
+                    Text(text = genreSearchList[genreId])
+                },
+                navigationIcon = {
+                    IconButton(onClick = { onBackPressed() }) {
+                        Icon(Icons.Default.ArrowBack, contentDescription = null, tint = MaterialTheme.colors.secondary)
+                    }
+                },
+                backgroundColor = MaterialTheme.colors.background,
+                elevation = 0.dp
+            )
+            GridList(modifier = Modifier.padding(horizontal = 16.dp),items = animeList, navToDetail = { navToDetail(it) })
+        }
     }
 }

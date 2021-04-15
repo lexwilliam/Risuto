@@ -41,6 +41,7 @@ fun AnimeScreen(
     AnimeContent(
         animeDetail = viewState.animeDetail,
         animeStaff = viewState.animeStaff,
+        onLoading = viewState.onLoading,
         onBackPressed = { onBackPressed() },
         navToGenre = navToGenre
     )
@@ -50,21 +51,26 @@ fun AnimeScreen(
 fun AnimeContent(
     animeDetail: AnimePresentation,
     animeStaff: CharacterStaffPresentation,
+    onLoading: Boolean,
     onBackPressed: () -> Unit,
     navToGenre: (Int) -> Unit
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(bottom = 64.dp)
-            .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        AnimeToolBar(onBackPressed = { onBackPressed() })
-        AnimeDetail(animeDetail = animeDetail)
-        AnimeGenre(animeDetail = animeDetail, navToGenre = { navToGenre(it) })
-        AnimeRating(animeDetail = animeDetail)
-        CharVoiceActorList(animeStaff = animeStaff)
+    if(onLoading){
+        LoadingScreen()
+    } else {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(bottom = 64.dp)
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            AnimeToolBar(onBackPressed = { onBackPressed() })
+            AnimeDetail(animeDetail = animeDetail)
+            AnimeGenre(animeDetail = animeDetail, navToGenre = { navToGenre(it) })
+            AnimeRating(animeDetail = animeDetail)
+            CharVoiceActorList(animeStaff = animeStaff)
+        }
     }
 }
 
@@ -211,7 +217,8 @@ fun CharVoiceActorList(
                             .size(width = 80.dp, height = 100.dp)
                     )
                     Surface(
-                        modifier = Modifier.width(80.dp)
+                        modifier = Modifier.width(80.dp),
+                        color = Color.Transparent
                     ) {
                         Text(
                             text = it.name + "\n",
@@ -226,7 +233,8 @@ fun CharVoiceActorList(
                             .size(width = 80.dp, height = 100.dp)
                     )
                     Surface(
-                        modifier = Modifier.width(80.dp)
+                        modifier = Modifier.width(80.dp),
+                        color = Color.Transparent
                     ) {
                         Text(
                             text = getJpnVoiceActor(it.voice_actors).name + "\n",
@@ -247,6 +255,7 @@ fun AnimeScreenPreview() {
     AnimeContent(
         animeDetail = generateFakeAnimeDetail(),
         animeStaff = CharacterStaffPresentation(),
+        onLoading = false,
         onBackPressed = {},
         navToGenre = {}
     )

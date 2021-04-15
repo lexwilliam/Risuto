@@ -8,9 +8,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.chun2maru.risutomvvm.presentation.mapper.toPresentation
 import com.example.risuto.domain.usecase.GetAnimeUseCase
 import com.example.risuto.domain.usecase.GetCharacterStaffUseCase
+import com.example.risuto.presentation.base.BaseViewModel
 import com.example.risuto.presentation.model.AnimePresentation
 import com.example.risuto.presentation.model.CharacterStaffPresentation
+import com.example.risuto.presentation.util.ExceptionHandler
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -21,7 +25,18 @@ class AnimeViewModel
     private val getAnimeUseCase: GetAnimeUseCase,
     private val getCharacterStaffUseCase: GetCharacterStaffUseCase,
     savedState: SavedStateHandle
-): ViewModel() {
+): BaseViewModel() {
+
+    override val coroutineExceptionHandler= CoroutineExceptionHandler { _, exception ->
+        val message = ExceptionHandler.parse(exception)
+    }
+
+    private var searchJob: Job? = null
+
+    override fun onCleared() {
+        super.onCleared()
+        searchJob?.cancel()
+    }
 
     private val malIdFromArgs = savedState.get<Int>("mal_id")
 
@@ -31,7 +46,8 @@ class AnimeViewModel
     val state = _state.asStateFlow()
 
     init {
-        viewModelScope.launch {
+        searchJob?.cancel()
+        searchJob = launchCoroutine {
             malIdFromArgs?.let { id ->
                 if (id > 0) {
                     getAnimeUseCase.invoke(id).collect { results ->
@@ -48,7 +64,8 @@ class AnimeViewModel
                     ) { animeDetail, animeStaff ->
                         AnimeViewState(
                             animeDetail = animeDetail,
-                            animeStaff = animeStaff
+                            animeStaff = animeStaff,
+                            onLoading = false
                         )
                     }.catch {
                         throw it
@@ -63,5 +80,6 @@ class AnimeViewModel
 
 data class AnimeViewState(
     val animeDetail: AnimePresentation = AnimePresentation(),
-    val animeStaff: CharacterStaffPresentation = CharacterStaffPresentation()
+    val animeStaff: CharacterStaffPresentation = CharacterStaffPresentation(),
+    val onLoading: Boolean = true
 )

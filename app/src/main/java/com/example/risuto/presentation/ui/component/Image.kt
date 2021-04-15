@@ -24,7 +24,7 @@ fun NetworkImage(
 ) {
     Surface(
         modifier = modifier,
-        color = Color.LightGray
+        color = MaterialTheme.colors.surface
     ) {
         if (imageUrl.isNotEmpty()) {
             GlideImage(

@@ -14,7 +14,7 @@ private val DarkColorPalette = darkColors(
     secondary = Color.White,
     secondaryVariant = Color.Black,
     background = Gray900,
-    surface = Gray900,
+    surface = Gray600,
     error = redLight
 )
 
@@ -24,7 +24,7 @@ private val LightColorPalette = lightColors(
     secondary = Color.Black,
     secondaryVariant = Color.White,
     background = Color.White,
-    surface = Color.White,
+    surface = Gray300,
     error = redDark
 )
 

@@ -16,6 +16,7 @@ import com.example.risuto.presentation.util.thisSeason
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -49,7 +50,6 @@ class HomeViewModel
     val state = _state.asStateFlow()
 
     init {
-        onLoading()
         homeJob?.cancel()
         homeJob = launchCoroutine {
             refresh()
@@ -118,10 +118,6 @@ class HomeViewModel
                 topAnime.value = animes
             }
         }
-    }
-
-    private fun onLoading() {
-        _state.value = _state.value.copy(isLoading = true)
     }
 
     private fun onError(message: Int){
