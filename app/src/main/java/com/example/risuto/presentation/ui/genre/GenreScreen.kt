@@ -1,24 +1,19 @@
 package com.example.risuto.presentation.ui.genre
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.risuto.presentation.model.AnimeListPresentation
-import com.example.risuto.presentation.ui.component.GridList
-import com.example.risuto.presentation.ui.component.LoadingScreen
-import com.example.risuto.presentation.ui.component.genreList
-import com.example.risuto.presentation.ui.component.genreSearchList
+import com.example.risuto.presentation.ui.component.*
 
 @ExperimentalFoundationApi
 @Composable
@@ -51,20 +46,50 @@ fun GenreContent(
     if(onLoading) {
         LoadingScreen()
     } else {
+        var listType by remember { mutableStateOf(ListType.GridList) }
         Column {
             TopAppBar(
                 title = {
-                    Text(text = genreSearchList[genreId])
+                    Text(text = genreList[genreId])
                 },
                 navigationIcon = {
                     IconButton(onClick = { onBackPressed() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = null, tint = MaterialTheme.colors.secondary)
+                        Icon(
+                            Icons.Default.ArrowBack,
+                            contentDescription = null,
+                            tint = MaterialTheme.colors.secondary
+                        )
+                    }
+                },
+                actions = {
+                    var listTypeBtn = Icons.Default.List
+                    if (listType == ListType.GridList) listTypeBtn = Icons.Default.List
+                    else listTypeBtn = Icons.Default.Menu
+                    IconButton(onClick = {
+                        if (listType == ListType.GridList) listType = ListType.ColumnList
+                        else listType = ListType.GridList
+                    }) {
+                        Icon(
+                            listTypeBtn,
+                            contentDescription = null,
+                            tint = MaterialTheme.colors.secondary
+                        )
                     }
                 },
                 backgroundColor = MaterialTheme.colors.background,
-                elevation = 0.dp
+                elevation = 4.dp
             )
-            GridList(modifier = Modifier.padding(horizontal = 16.dp),items = animeList, navToDetail = { navToDetail(it) })
+            if (listType == ListType.GridList) {
+                GridList(
+                    items = animeList,
+                    navToDetail = { navToDetail(it) })
+            } else {
+                ColumnList(
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    items = animeList,
+                    navToDetail = { navToDetail(it) }
+                )
+            }
         }
     }
 }

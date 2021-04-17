@@ -1,5 +1,6 @@
 package com.example.risuto.presentation.ui.genre
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import com.chun2maru.risutomvvm.domain.usecase.SearchAnimeUseCase
 import com.chun2maru.risutomvvm.presentation.mapper.toPresentation
@@ -10,6 +11,7 @@ import com.example.risuto.presentation.util.ExceptionHandler
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
@@ -42,6 +44,7 @@ class GenreViewModel
         searchJob?.cancel()
         searchJob = launchCoroutine {
             genreIdFromArgs?.let { id ->
+                Log.d("TAG", id.toString())
                 if(id > 0) {
                     searchAnimeUseCase.invoke(QuerySearch(genre = id, order_by = "members")).collect { results ->
                         val animes = results.map { anime -> anime.toPresentation() }

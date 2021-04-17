@@ -151,7 +151,7 @@ fun AnimeGenre(
         animeDetail.genres.forEach { genre ->
             genre.name?.let { Chip(modifier = Modifier.padding(end = 8.dp), text = it,
                 onClick = { genre ->
-                    navToGenre(genreSearchList.indexOf(genre) + 1)
+                    navToGenre(getGenre(genre))
                 })
             }
         }

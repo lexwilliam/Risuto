@@ -23,17 +23,21 @@ fun GridList(
     items: List<AnimeListPresentation>,
     navToDetail: (Int) -> Unit
 ) {
-    LazyVerticalGrid(
-        modifier = modifier,
-        cells = GridCells.Adaptive(minSize = 180.dp),
-    ) {
-        var count = 0
-        items(items = items) { item ->
-            count++
-            if(count % 2 == 0){
-                MediumGrid(item = item, modifier = Modifier.padding(bottom = 16.dp, end = 0.dp), navToDetail = { navToDetail(it) })
-            } else {
-                MediumGrid(item = item, modifier = Modifier.padding(bottom = 16.dp, end = 16.dp), navToDetail = { navToDetail(it) })
+    if(items.isEmpty()) {
+        LoadingScreen()
+    } else {
+        LazyVerticalGrid(
+            modifier = modifier.padding(horizontal = 16.dp),
+            cells = GridCells.Adaptive(minSize = 180.dp),
+        ) {
+            var count = 0
+            items(items = items) { item ->
+                count++
+                if(count % 2 == 0){
+                    MediumGrid(item = item, modifier = Modifier.padding(top = 16.dp, end = 0.dp), navToDetail = { navToDetail(it) })
+                } else {
+                    MediumGrid(item = item, modifier = Modifier.padding(top = 16.dp, end = 16.dp), navToDetail = { navToDetail(it) })
+                }
             }
         }
     }
@@ -41,10 +45,12 @@ fun GridList(
 
 @Composable
 fun ColumnList(
+    modifier: Modifier = Modifier,
     items: List<AnimeListPresentation>,
     navToDetail: (Int) -> Unit
 ) {
     LazyColumn(
+        modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(items = items){ item ->
@@ -74,14 +80,6 @@ fun HorizontalGridList(
     }
 }
 
-@Composable
-fun StaffGridList(
-    chars: List<Character>,
-    voiceActor: List<VoiceActor>
-) {
-
-}
-
 @Preview
 @Composable
 fun ColumnListPreview() {
@@ -99,4 +97,8 @@ fun GridListPreview() {
 @Composable
 fun HorizontalGridListPreview() {
     HorizontalGridList(items = generateFakeItemList(), navToDetail = {})
+}
+
+enum class ListType {
+    ColumnList, GridList
 }

@@ -2,6 +2,7 @@ package com.example.risuto.presentation
 
 import android.content.Context
 import android.net.ConnectivityManager
+import android.view.Window
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -9,6 +10,7 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -23,6 +25,7 @@ import com.example.risuto.presentation.ui.genre.GenreScreen
 import com.example.risuto.presentation.ui.genre.GenreViewModel
 import com.example.risuto.presentation.ui.home.HomeScreen
 import com.example.risuto.presentation.ui.home.HomeViewModel
+import com.example.risuto.presentation.ui.search.SearchHomeScreen
 import com.example.risuto.presentation.ui.search.SearchScreen
 import com.example.risuto.presentation.ui.search.SearchViewModel
 
@@ -49,7 +52,7 @@ fun RisutoAppContent() {
             BottomNavigation(
                 backgroundColor = MaterialTheme.colors.background,
                 contentColor = MaterialTheme.colors.secondary,
-                elevation = 0.dp
+                elevation = 16.dp
             ) {
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentRoute = navBackStackEntry?.arguments?.getString(KEY_ROUTE)
@@ -65,9 +68,9 @@ fun RisutoAppContent() {
                 )
                 BottomNavigationItem(
                     icon = { Icon(Icons.Filled.Search, contentDescription = null) },
-                    selected = currentRoute == RisutoSearchScreen.route,
+                    selected = currentRoute == RisutoSearchHomeScreen.route,
                     onClick = {
-                        navController.navigate(RisutoSearchScreen.route) {
+                        navController.navigate(RisutoSearchHomeScreen.route) {
                             popUpTo = navController.graph.startDestination
                             launchSingleTop = true
                         }
@@ -88,6 +91,20 @@ fun RisutoAppContent() {
                     }
                 )
             }
+            composable(RisutoSearchHomeScreen.route) {
+                SearchHomeScreen(
+                    navToSearch = {
+                        navController.navigate(
+                            RisutoSearchScreen.route
+                        )
+                    },
+                    navToGenre = { genre_id ->
+                        navController.navigate(
+                            RisutoGenreScreen.route.plus("/?genre_id=$genre_id")
+                        )
+                    }
+                )
+            }
             composable(RisutoSearchScreen.route) {
                 val searchViewModel = hiltNavGraphViewModel<SearchViewModel>()
                 SearchScreen(
@@ -97,10 +114,8 @@ fun RisutoAppContent() {
                             RisutoAnimeScreen.route.plus("/?mal_id=$mal_id")
                         )
                     },
-                    navToGenre = { genre_id ->
-                        navController.navigate(
-                            RisutoGenreScreen.route.plus("/?genre_id=$genre_id")
-                        )
+                    onBackPressed = {
+                        navController.navigateUp()
                     }
                 )
             }
@@ -136,7 +151,7 @@ fun RisutoAppContent() {
                 val genreViewModel = hiltNavGraphViewModel<GenreViewModel>()
                 GenreScreen(
                     viewModel = genreViewModel,
-                    onBackPressed = { navController.navigateUp()},
+                    onBackPressed = { navController.navigateUp() },
                     navToDetail = { mal_id ->
                         navController.navigate(
                             RisutoAnimeScreen.route.plus("/?mal_id=$mal_id")
@@ -150,6 +165,7 @@ fun RisutoAppContent() {
 
 sealed class Screens(val route: String) {
     object RisutoHomeScreen: Screens("home")
+    object RisutoSearchHomeScreen: Screens("searchHome")
     object RisutoSearchScreen: Screens("search")
     object RisutoAnimeScreen: Screens("anime")
     object RisutoGenreScreen: Screens("genre")

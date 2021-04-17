@@ -14,6 +14,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.combine
 import javax.inject.Inject
 
 @HiltViewModel
@@ -52,28 +53,9 @@ class SearchViewModel
         }
     }
 
-    fun getQuery(q: String) {
-        query.value = query.value.copy(q = q)
-    }
-
-    fun getGenre(genre: Int) {
-        query.value = query.value.copy(genre = genre)
-    }
-
-    fun getStatus(status: String) {
-        query.value = query.value.copy(status = status)
-    }
-
-    fun getType(type: String) {
-        query.value = query.value.copy(type = type)
-    }
-
-    fun getOrderBy(order: String) {
-        query.value = query.value.copy(order_by = order)
-    }
-
-    fun getSort(sort: String) {
-        query.value = query.value.copy(sort = sort)
+    fun getQuery(q: QuerySearch) {
+        query.value = query.value.copy(q = q.q)
+        query.value = query.value.copy(limit = q.limit)
     }
 
     private fun onSearchComplete(animes: List<AnimeListPresentation>) {

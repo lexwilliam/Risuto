@@ -32,7 +32,7 @@ fun SmallGrid(
         NetworkImage(
             imageUrl = item.image_url,
             modifier = Modifier
-                .size(width = 100.dp, height = 160.dp)
+                .size(width = 120.dp, height = 160.dp)
                 .shadow(elevation = 4.dp, shape = MaterialTheme.shapes.medium, true)
         )
         Text(text = item.title + "\n",
@@ -60,8 +60,8 @@ fun MediumGrid(
         NetworkImage(
             imageUrl = item.image_url,
             modifier = Modifier
-                .size(width = 180.dp, height = 200.dp)
-                .shadow(elevation = 4.dp, shape = MaterialTheme.shapes.medium, true)
+                .size(width = 180.dp, height = 240.dp)
+                .shadow(elevation = 4.dp)
         )
         Text(text = item.title + "\n",
             maxLines = 2,
