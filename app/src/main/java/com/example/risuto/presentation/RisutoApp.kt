@@ -6,6 +6,7 @@ import android.view.Window
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
@@ -28,6 +29,8 @@ import com.example.risuto.presentation.ui.home.HomeViewModel
 import com.example.risuto.presentation.ui.search.SearchHomeScreen
 import com.example.risuto.presentation.ui.search.SearchScreen
 import com.example.risuto.presentation.ui.search.SearchViewModel
+import com.example.risuto.presentation.ui.season.SeasonScreen
+import com.example.risuto.presentation.ui.season.SeasonViewModel
 
 @ExperimentalComposeUiApi
 @ExperimentalFoundationApi
@@ -76,6 +79,16 @@ fun RisutoAppContent() {
                         }
                     }
                 )
+                BottomNavigationItem(
+                    icon = { Icon(Icons.Filled.Check, contentDescription = null)},
+                    selected = currentRoute == RisutoSeasonScreen.route,
+                    onClick = {
+                        navController.navigate(RisutoSeasonScreen.route) {
+                            popUpTo = navController.graph.startDestination
+                            launchSingleTop = true
+                        }
+                    }
+                )
             }
         }
     ) {
@@ -117,6 +130,12 @@ fun RisutoAppContent() {
                     onBackPressed = {
                         navController.navigateUp()
                     }
+                )
+            }
+            composable(RisutoSeasonScreen.route) {
+                val seasonViewModel = hiltNavGraphViewModel<SeasonViewModel>()
+                SeasonScreen(
+                    viewModel = seasonViewModel
                 )
             }
             composable(
@@ -167,6 +186,7 @@ sealed class Screens(val route: String) {
     object RisutoHomeScreen: Screens("home")
     object RisutoSearchHomeScreen: Screens("searchHome")
     object RisutoSearchScreen: Screens("search")
+    object RisutoSeasonScreen: Screens("season")
     object RisutoAnimeScreen: Screens("anime")
     object RisutoGenreScreen: Screens("genre")
 }

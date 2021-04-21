@@ -36,6 +36,12 @@ object UseCaseModule {
 
     @Provides
     @Singleton
+    fun provideSeasonArchiveUseCase(itemRepository: ItemRepository): GetSeasonArchiveUseCase {
+        return GetSeasonArchiveUseCase(itemRepository)
+    }
+
+    @Provides
+    @Singleton
     fun provideAnime(itemRepository: ItemRepository): GetAnimeUseCase {
         return GetAnimeUseCase(itemRepository)
     }

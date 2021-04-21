@@ -5,6 +5,7 @@ import com.chun2maru.risutomvvm.domain.model.SearchAnime
 import com.example.risuto.data.remote.model.detail.*
 import com.example.risuto.data.remote.model.list.SeasonAnimeResponse
 import com.example.risuto.data.remote.model.list.TopAnimeResponse
+import com.example.risuto.data.remote.model.detail.SeasonArchiveResponse
 import com.example.risuto.domain.model.*
 
 internal fun SearchAnimeResponse.toDomain(): SearchAnime {
@@ -17,6 +18,10 @@ internal fun TopAnimeResponse.toDomain(): TopAnime {
 
 internal fun SeasonAnimeResponse.toDomain(): SeasonAnime {
     return SeasonAnime(airing_start?: "", continuing, episodes?: 0, genres, image_url?: "", kids, licensors, mal_id, members, producers, r18, score?: 0.0f, source, synopsis, title, type, url)
+}
+
+internal fun SeasonArchiveResponse.toDomain(): SeasonArchive {
+    return SeasonArchive(request_hash, request_cached, request_cache_expiry, archive)
 }
 
 internal fun AnimeResponse.toDomain(): Anime {

@@ -2,6 +2,7 @@ package com.chun2maru.risutomvvm.data.remote
 
 import com.example.risuto.data.remote.model.detail.AnimeResponse
 import com.example.risuto.data.remote.model.detail.CharacterStaffResponse
+import com.example.risuto.data.remote.model.detail.SeasonArchiveResponse
 import com.example.risuto.data.remote.model.list.request.RequestSearch
 import com.example.risuto.data.remote.model.list.request.RequestSeason
 import com.example.risuto.data.remote.model.list.request.RequestTop
@@ -33,6 +34,9 @@ interface JikanService {
         @Path("year") year: Int,
         @Path("season") season: String
     ): RequestSeason
+
+    @GET("season/archive")
+    suspend fun getSeasonArchiveResult(): SeasonArchiveResponse
 
     @GET("anime/{id}")
     suspend fun getAnimeResult(
