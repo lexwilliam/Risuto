@@ -135,7 +135,12 @@ fun RisutoAppContent() {
             composable(RisutoSeasonScreen.route) {
                 val seasonViewModel = hiltNavGraphViewModel<SeasonViewModel>()
                 SeasonScreen(
-                    viewModel = seasonViewModel
+                    viewModel = seasonViewModel,
+                    navToDetail = { mal_id ->
+                        navController.navigate(
+                            RisutoAnimeScreen.route.plus("/?mal_id=$mal_id")
+                        )
+                    }
                 )
             }
             composable(

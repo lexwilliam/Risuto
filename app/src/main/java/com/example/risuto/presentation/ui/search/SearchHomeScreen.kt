@@ -17,8 +17,8 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.risuto.presentation.ui.component.Header
-import com.example.risuto.presentation.ui.component.genreList
-import com.example.risuto.presentation.ui.component.getGenre
+import com.example.risuto.presentation.util.genreList
+import com.example.risuto.presentation.util.getGenre
 
 @Composable
 fun SearchHomeScreen(

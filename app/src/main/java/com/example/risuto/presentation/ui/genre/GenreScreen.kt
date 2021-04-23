@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.risuto.presentation.model.AnimeListPresentation
 import com.example.risuto.presentation.ui.component.*
+import com.example.risuto.presentation.util.genreList
 
 @ExperimentalFoundationApi
 @Composable

@@ -1,20 +1,19 @@
 package com.example.risuto.presentation.ui.detail
 
-import androidx.compose.foundation.*
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -22,12 +21,13 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.risuto.data.remote.model.detail.Character
-import com.example.risuto.data.remote.model.detail.VoiceActor
 import com.example.risuto.presentation.model.AnimePresentation
 import com.example.risuto.presentation.model.CharacterStaffPresentation
-import com.example.risuto.presentation.ui.component.*
+import com.example.risuto.presentation.ui.component.Chip
+import com.example.risuto.presentation.ui.component.LoadingScreen
+import com.example.risuto.presentation.ui.component.NetworkImage
 import com.example.risuto.presentation.util.generateFakeAnimeDetail
+import com.example.risuto.presentation.util.getGenre
 import com.example.risuto.presentation.util.getJpnVoiceActor
 import com.example.risuto.presentation.util.intToCurrency
 

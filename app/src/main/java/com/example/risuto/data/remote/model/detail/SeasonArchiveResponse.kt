@@ -8,6 +8,6 @@ data class SeasonArchiveResponse(
 )
 
 data class Archive(
-    val year: Int? = null,
-    val seasons: List<String?> = emptyList()
+    val year: Int,
+    val season: List<String>
 )

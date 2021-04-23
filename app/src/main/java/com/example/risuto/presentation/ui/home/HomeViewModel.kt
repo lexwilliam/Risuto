@@ -2,21 +2,18 @@ package com.example.risuto.presentation.ui.home
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.chun2maru.risutomvvm.presentation.mapper.toPresentation
 import com.example.risuto.domain.usecase.SeasonAnimeUseCase
 import com.example.risuto.domain.usecase.TopAnimeUseCase
 import com.example.risuto.presentation.base.BaseViewModel
 import com.example.risuto.presentation.model.AnimeListPresentation
-import com.example.risuto.presentation.model.AnimeSeasonListPresentation
 import com.example.risuto.presentation.util.Error
 import com.example.risuto.presentation.util.ExceptionHandler
+import com.example.risuto.presentation.util.getCurrentSeason
 import com.example.risuto.presentation.util.getCurrentYear
-import com.example.risuto.presentation.util.thisSeason
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -86,7 +83,7 @@ class HomeViewModel
 
     private fun onCurrentSeasonAnime() {
         viewModelScope.launch {
-            seasonAnimeUseCase.invoke(getCurrentYear(), thisSeason).collect { results ->
+            seasonAnimeUseCase.invoke(getCurrentYear(), getCurrentSeason()).collect { results ->
                 val animes = results.map { anime -> anime.toPresentation() }
                 currentSeasonAnime.value = animes
             }

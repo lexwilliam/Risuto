@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import com.example.risuto.data.remote.model.detail.VoiceActor
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
+import java.time.Year
 import java.util.*
 
 private val typeList= arrayListOf("TV", "OVA", "Movie", "Special", "ONA", "Music")
@@ -17,7 +18,13 @@ private val seasons = arrayListOf(
     "summer", "summer", "fall", "fall", "fall", "winter"
 )
 
-val thisSeason = seasons[getCurrentMonth() - 1]
+fun seasonYearFormat(season: String, year: Int): String {
+    return season.capitalize(Locale.ROOT) + " " + year.toString()
+}
+
+fun getCurrentSeason(): String {
+    return seasons[getCurrentMonth() - 1]
+}
 
 fun getGenre(genre: String): Int {
     return genreList.indexOf(genre) + 1

@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun Header(
-    title: String
+    title: String,
 ) {
     Text(
         modifier = Modifier

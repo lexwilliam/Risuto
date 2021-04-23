@@ -20,8 +20,8 @@ import com.example.risuto.presentation.ui.component.Header
 import com.example.risuto.presentation.ui.component.HorizontalGridList
 import com.example.risuto.presentation.ui.component.LoadingScreen
 import com.example.risuto.presentation.util.generateFakeItemList
+import com.example.risuto.presentation.util.getCurrentSeason
 import com.example.risuto.presentation.util.getCurrentYear
-import com.example.risuto.presentation.util.thisSeason
 import java.util.*
 
 @Composable
@@ -59,7 +59,7 @@ fun HomeContent(
         ) {
             HomeTopBar()
             PosterGridList(
-                title = thisSeason.capitalize(Locale.ROOT) + " " + getCurrentYear() + " " + "Anime",
+                title = getCurrentSeason().capitalize(Locale.ROOT) + " " + getCurrentYear() + " " + "Anime",
                 items = currentSeasonAnime,
                 navToDetail = { navToDetail(it) }
             )
