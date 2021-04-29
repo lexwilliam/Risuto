@@ -62,7 +62,7 @@ class SeasonViewModel
     }
 
     fun setSeason(str: String) {
-        val strToSeason = str.split("")
+        val strToSeason = str.split(" ")
         season.value = strToSeason.first().decapitalize(Locale.ROOT)
         year.value = strToSeason.last().toInt()
         onSeasonAnime()

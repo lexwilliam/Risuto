@@ -18,6 +18,8 @@ private val seasons = arrayListOf(
     "summer", "summer", "fall", "fall", "fall", "winter"
 )
 
+val allSeason = arrayListOf("Winter", "Spring", "Summer", "Fall")
+
 fun seasonYearFormat(season: String, year: Int): String {
     return season.capitalize(Locale.ROOT) + " " + year.toString()
 }
