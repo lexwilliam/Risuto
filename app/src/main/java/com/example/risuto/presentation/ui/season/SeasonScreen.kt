@@ -1,12 +1,8 @@
 package com.example.risuto.presentation.ui.season
 
-import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
@@ -15,10 +11,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -72,24 +64,16 @@ fun SeasonContent(
             setSeason = { setSeason(it) },
             onSeasonMenu = { onSeasonMenu(true) }
         )
+//        if(isSeasonMenuShown) {
+//            SeasonMenu(
+//                archive = archive,
+//                onSeasonSelected = {
+//                    setSeason(it)
+//                    onSeasonMenu(false)
+//                }
+//            )
+//        }
         GridList(items = animes, navToDetail = { navToDetail(it)} )
-    }
-    if (isSeasonMenuShown) {
-        Column(
-            modifier = Modifier
-                .background(Color.Transparent)
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            SeasonMenu(
-                archive = archive,
-                onSeasonSelected = {
-                    setSeason(it)
-                    onSeasonMenu(false)
-                }
-            )
-        }
     }
 }
 
@@ -103,18 +87,19 @@ fun SeasonToolBar(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp),
-        verticalAlignment = Alignment.CenterVertically
+            .padding(top = 24.dp, start = 16.dp, end = 16.dp)
     ) {
         Header(
             modifier = Modifier
+                .weight(2f)
                 .wrapContentWidth(Alignment.Start)
                 .clickable { onSeasonMenu() },
             title = seasonYearFormat(season, year)
         )
-        Spacer(modifier = Modifier.padding(32.dp))
         Row(
-            horizontalArrangement = Arrangement.End
+            modifier = Modifier
+                .weight(1f)
+                .wrapContentWidth(Alignment.End)
         ) {
             IconButton(
                 modifier = Modifier
@@ -138,71 +123,18 @@ fun SeasonToolBar(
     }
 }
 
-@ExperimentalComposeUiApi
-@Composable
-fun SeasonMenu(
-    archive: List<Archive>,
-    onSeasonSelected: (String) -> Unit
-) {
-    var seasonText by remember { mutableStateOf("") }
-    var yearText by remember { mutableStateOf("") }
-    val keyboardController = LocalSoftwareKeyboardController.current
-    Surface(
-        modifier = Modifier
-            .size(240.dp)
-            .shadow(4.dp, shape = MaterialTheme.shapes.large, clip = true)
-            .background(MaterialTheme.colors.background)
-    ) {
-        Column(
-            modifier = Modifier
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(4.dp)
-        ) {
-            OutlinedTextField(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                value = seasonText,
-                onValueChange = { seasonText = it },
-                label = { Text("Season") },
-                singleLine = true
-            )
-            OutlinedTextField(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                value = yearText,
-                onValueChange = { yearText = it },
-                label = { Text("Year") },
-                singleLine = true
-            )
-            Text(
-                modifier = Modifier
-                    .wrapContentWidth(Alignment.End)
-                    .clickable {
-                        onSeasonSelected("$seasonText $yearText")
-                        keyboardController?.hideSoftwareKeyboard()
-                    },
-                text = "Filter",
-                style = MaterialTheme.typography.button
-            )
-        }
-    }
-}
-
 private fun onPreviousSeason(
     year: Int,
     season: String,
     setSeason: (String) -> Unit
 ) {
     val seasonIndex = allSeason.indexOf(season.capitalize(Locale.ROOT))
-    Log.d("TAG", "$seasonIndex $season")
     val previousSeason: String
     if(seasonIndex != 0) {
         previousSeason = allSeason[seasonIndex - 1]
-        Log.d("TAG", "$seasonIndex $season")
         setSeason("$previousSeason $year")
     } else {
         previousSeason = allSeason.last()
-        Log.d("TAG", "$seasonIndex $season")
         setSeason("$previousSeason ${year-1}")
     }
 
@@ -214,15 +146,12 @@ private fun onNextSeason(
     setSeason: (String) -> Unit
 ) {
     val seasonIndex = allSeason.indexOf(season.capitalize(Locale.ROOT))
-    Log.d("TAG", "$seasonIndex $season")
     val nextSeason: String
     if(seasonIndex != allSeason.size-1) {
         nextSeason = allSeason[seasonIndex + 1]
-        Log.d("TAG", "$seasonIndex $season")
         setSeason("$nextSeason ${year}")
     } else {
         nextSeason = allSeason.first()
-        Log.d("TAG", "$seasonIndex $season")
         setSeason("$nextSeason ${year+1}")
     }
 }
@@ -232,3 +161,125 @@ private fun onNextSeason(
 fun SeasonToolBarPreview() {
     SeasonToolBar(year = 2021, season = "spring", onSeasonMenu = {}, setSeason = {})
 }
+
+//@Composable
+//fun SeasonMenu(
+//    archive: List<Archive>,
+//    onSeasonSelected: (String) -> Unit
+//) {
+//    var seasonText by remember { mutableStateOf("Season") }
+//    var yearText by remember { mutableStateOf("Year") }
+//    var isToggleSeason by remember { mutableStateOf(false) }
+//    var isToggleYear by remember { mutableStateOf(false)}
+//    val keyboardController = LocalSoftwareKeyboardController.current
+//    Column {
+//        Row(
+//            modifier = Modifier
+//                .padding(horizontal = 16.dp)
+//                .fillMaxWidth(),
+//            horizontalArrangement = Arrangement.spacedBy(2.dp),
+//            verticalAlignment = Alignment.CenterVertically
+//        ) {
+//            Column(
+//                modifier = Modifier
+//                    .weight(1f)
+//                    .height(32.dp)
+//                    .clip(MaterialTheme.shapes.medium)
+//                    .border(
+//                        width = 1.dp,
+//                        color = MaterialTheme.colors.secondary,
+//                        shape = MaterialTheme.shapes.medium
+//                    )
+//                    .clickable { isToggleSeason = true },
+//                horizontalAlignment = Alignment.CenterHorizontally,
+//                verticalArrangement = Arrangement.Center
+//            ) {
+//                Row {
+//                    Text(text = seasonText)
+//                    Icon(Icons.Default.ArrowDropDown, contentDescription = null)
+//                    DropdownMenu(
+//                        expanded = isToggleSeason,
+//                        onDismissRequest = { isToggleSeason = false }) {
+//                        allSeason.forEach { season ->
+//                            Log.d("TAG", season)
+//                            DropdownMenuItem(onClick = {
+//                                seasonText = season
+//                                isToggleSeason = false
+//                            }) {
+//                                Text(text = season)
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//            Column(
+//                modifier = Modifier
+//                    .weight(1f)
+//                    .height(32.dp)
+//                    .clip(MaterialTheme.shapes.medium)
+//                    .border(
+//                        width = 1.dp,
+//                        color = MaterialTheme.colors.secondary,
+//                        shape = MaterialTheme.shapes.medium
+//                    )
+//                    .clickable { isToggleYear = true },
+//                horizontalAlignment = Alignment.CenterHorizontally,
+//                verticalArrangement = Arrangement.Center
+//            ) {
+//                Row {
+//                    Text(text = yearText)
+//                    Icon(Icons.Default.ArrowDropDown, contentDescription = null)
+//                    DropdownMenu(
+//                        expanded = isToggleYear,
+//                        onDismissRequest = { isToggleYear = false }) {
+//                        archive.forEach { archive ->
+//                            Log.d("TAG", archive.year.toString())
+//                            DropdownMenuItem(onClick = {
+//                                yearText = archive.year.toString()
+//                                isToggleYear = false
+//                            }) {
+//                                Text(text = archive.year.toString())
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+////            BasicTextField(
+////                modifier = Modifier.align(Alignment.CenterVertically),
+////                value = yearText,
+////                onValueChange = { yearText = it },
+////                textStyle = MaterialTheme.typography.button,
+////                singleLine = true,
+////                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+////                keyboardActions = KeyboardActions(onDone = {
+////                    keyboardController?.hideSoftwareKeyboard()
+////                }),
+////                decorationBox = {
+////                    Column(
+////                        modifier = Modifier
+////                            .weight(1f)
+////                            .height(32.dp)
+////                            .clip(MaterialTheme.shapes.medium)
+////                            .border(
+////                                width = 1.dp,
+////                                color = MaterialTheme.colors.secondary,
+////                                shape = MaterialTheme.shapes.medium
+////                            ),
+////                        horizontalAlignment = Alignment.CenterHorizontally,
+////                        verticalArrangement = Arrangement.Center
+////                    ) {
+////                        it()
+////                    }
+////                }
+////            )
+//        }
+//        Column(modifier = Modifier
+//            .fillMaxWidth()
+//            .clickable { onSeasonSelected("$seasonText $yearText") },
+//            horizontalAlignment = Alignment.CenterHorizontally,
+//            verticalArrangement = Arrangement.Center
+//        ) {
+//            Text(text = "Go", style = MaterialTheme.typography.button)
+//        }
+//    }
+//}

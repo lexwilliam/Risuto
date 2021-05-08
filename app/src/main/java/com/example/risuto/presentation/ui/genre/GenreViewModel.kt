@@ -2,7 +2,7 @@ package com.example.risuto.presentation.ui.genre
 
 import android.util.Log
 import androidx.lifecycle.SavedStateHandle
-import com.chun2maru.risutomvvm.domain.usecase.SearchAnimeUseCase
+import com.example.risuto.domain.usecase.remote.SearchAnimeUseCase
 import com.chun2maru.risutomvvm.presentation.mapper.toPresentation
 import com.example.risuto.presentation.base.BaseViewModel
 import com.example.risuto.presentation.model.AnimeListPresentation
@@ -11,7 +11,6 @@ import com.example.risuto.presentation.util.ExceptionHandler
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect

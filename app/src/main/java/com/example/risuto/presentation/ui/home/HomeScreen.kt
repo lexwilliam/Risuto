@@ -57,7 +57,7 @@ fun HomeContent(
                 .padding(start = 16.dp, bottom = 64.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            HomeTopBar()
+            Header(title = "Home", modifier = Modifier.padding(top = 24.dp))
             PosterGridList(
                 title = getCurrentSeason().capitalize(Locale.ROOT) + " " + getCurrentYear() + " " + "Anime",
                 items = currentSeasonAnime,
@@ -108,11 +108,6 @@ fun PosterGridList(
             )
         }
     }
-}
-
-@Composable
-fun HomeTopBar() {
-    Header(title = "Home")
 }
 
 @Preview

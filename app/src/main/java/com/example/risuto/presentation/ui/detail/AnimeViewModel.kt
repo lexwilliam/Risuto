@@ -1,13 +1,9 @@
 package com.example.risuto.presentation.ui.detail
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.chun2maru.risutomvvm.presentation.mapper.toPresentation
-import com.example.risuto.domain.usecase.GetAnimeUseCase
-import com.example.risuto.domain.usecase.GetCharacterStaffUseCase
+import com.example.risuto.domain.usecase.remote.GetAnimeUseCase
+import com.example.risuto.domain.usecase.remote.GetCharacterStaffUseCase
 import com.example.risuto.presentation.base.BaseViewModel
 import com.example.risuto.presentation.model.AnimePresentation
 import com.example.risuto.presentation.model.CharacterStaffPresentation
@@ -16,7 +12,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel

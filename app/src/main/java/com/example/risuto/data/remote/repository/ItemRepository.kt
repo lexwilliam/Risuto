@@ -1,4 +1,4 @@
-package com.example.risuto.data.repository
+package com.example.risuto.data.remote.repository
 
 import com.chun2maru.risutomvvm.data.mapper.toDomain
 import com.chun2maru.risutomvvm.data.remote.JikanService

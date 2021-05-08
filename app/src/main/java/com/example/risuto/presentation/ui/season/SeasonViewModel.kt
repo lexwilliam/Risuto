@@ -1,9 +1,10 @@
 package com.example.risuto.presentation.ui.season
 
+import android.util.Log
 import com.chun2maru.risutomvvm.presentation.mapper.toPresentation
 import com.example.risuto.data.remote.model.detail.Archive
-import com.example.risuto.domain.usecase.GetSeasonArchiveUseCase
-import com.example.risuto.domain.usecase.SeasonAnimeUseCase
+import com.example.risuto.domain.usecase.remote.GetSeasonArchiveUseCase
+import com.example.risuto.domain.usecase.remote.SeasonAnimeUseCase
 import com.example.risuto.presentation.base.BaseViewModel
 import com.example.risuto.presentation.model.AnimeListPresentation
 import com.example.risuto.presentation.util.*
@@ -45,8 +46,12 @@ class SeasonViewModel
         seasonJob?.cancel()
         seasonJob = launchCoroutine {
             onSeasonAnime()
+            Log.d("TAG", "TEST")
             seasonArchiveUseCase.invoke().collect { result ->
-                _state.value = _state.value.copy(seasonArchive = result.archive)
+                Log.d("TAG", "TEST")
+                Log.d("TAG", result.archive.toString())
+                val archive = result.toPresentation().archive
+                _state.value = _state.value.copy(seasonArchive = archive)
             }
         }
     }

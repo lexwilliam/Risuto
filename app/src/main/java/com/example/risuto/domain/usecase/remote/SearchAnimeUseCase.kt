@@ -1,4 +1,4 @@
-package com.chun2maru.risutomvvm.domain.usecase
+package com.example.risuto.domain.usecase.remote
 
 import com.chun2maru.risutomvvm.data.repository.ListRepository
 import com.example.risuto.presentation.model.QuerySearch

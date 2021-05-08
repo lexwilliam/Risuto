@@ -1,11 +1,15 @@
 package com.example.risuto.presentation.ui.search
 
 import androidx.lifecycle.SavedStateHandle
-import com.chun2maru.risutomvvm.domain.usecase.SearchAnimeUseCase
+import com.example.risuto.domain.usecase.remote.SearchAnimeUseCase
 import com.chun2maru.risutomvvm.presentation.mapper.toPresentation
+import com.example.risuto.data.local.dao.Results
+import com.example.risuto.domain.usecase.local.*
 import com.example.risuto.presentation.base.BaseViewModel
+import com.example.risuto.presentation.mapper.toDomain
 import com.example.risuto.presentation.model.AnimeListPresentation
 import com.example.risuto.presentation.model.QuerySearch
+import com.example.risuto.presentation.model.SearchHistoryPresentation
 import com.example.risuto.presentation.util.Error
 import com.example.risuto.presentation.util.ExceptionHandler
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,13 +18,17 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.combine
 import javax.inject.Inject
 
 @HiltViewModel
 class SearchViewModel
     @Inject constructor(
         private val searchAnimeUseCase: SearchAnimeUseCase,
+        private val getAllSearchHistoryUseCase: GetAllSearchHistoryUseCase,
+        private val insertSearchHistoryUseCase: InsertSearchHistoryUseCase,
+        private val deleteSearchHistoryUseCase: DeleteSearchHistoryUseCase,
+        private val getAllAnimeHistoryUseCase: GetAllAnimeHistoryUseCase,
+        private val deleteAnimeHistoryUseCase: DeleteAnimeHistoryUseCase,
         private val savedStateHandle: SavedStateHandle,
     ): BaseViewModel() {
 
@@ -30,10 +38,16 @@ class SearchViewModel
     }
 
     private var searchJob: Job? = null
+    private var getAllSearchJob: Job? = null
+    private var insertSearchJob: Job? = null
 
     override fun onCleared() {
         super.onCleared()
         searchJob?.cancel()
+    }
+
+    init {
+
     }
 
     private var query = MutableStateFlow(QuerySearch())
@@ -69,11 +83,27 @@ class SearchViewModel
     private fun onSearchError(message: Int){
         _state.value = _state.value.copy(searchAnimes = emptyList(), error = Error(message), isLoading = false)
     }
+
+    private fun getSearchHistory() {
+        getAllSearchJob = launchCoroutine {
+            getAllSearchHistoryUseCase.invoke().collect { results ->
+                val history = results.map { it.toPresentation() }
+                _state.value = _state.value.copy(searchHistory = history)
+            }
+        }
+    }
+
+    fun insertSearchHistory(query: SearchHistoryPresentation) {
+        insertSearchJob = launchCoroutine {
+            insertSearchHistoryUseCase.invoke(query.toDomain())
+        }
+    }
 }
 
 data class SearchViewState(
     val query: QuerySearch,
     val searchAnimes: List<AnimeListPresentation> = emptyList(),
+    val searchHistory: List<SearchHistoryPresentation> = emptyList(),
     val error: Error?,
     val isLoading: Boolean
 )

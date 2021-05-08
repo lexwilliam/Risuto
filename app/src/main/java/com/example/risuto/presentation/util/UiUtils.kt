@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import com.example.risuto.data.remote.model.detail.VoiceActor
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
-import java.time.Year
 import java.util.*
 
 private val typeList= arrayListOf("TV", "OVA", "Movie", "Special", "ONA", "Music")

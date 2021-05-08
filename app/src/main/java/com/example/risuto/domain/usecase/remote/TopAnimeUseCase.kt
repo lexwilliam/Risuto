@@ -1,4 +1,4 @@
-package com.example.risuto.domain.usecase
+package com.example.risuto.domain.usecase.remote
 
 import com.chun2maru.risutomvvm.data.repository.ListRepository
 import com.example.risuto.domain.model.TopAnime

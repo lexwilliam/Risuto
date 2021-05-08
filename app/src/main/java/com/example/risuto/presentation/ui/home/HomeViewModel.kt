@@ -3,8 +3,8 @@ package com.example.risuto.presentation.ui.home
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.chun2maru.risutomvvm.presentation.mapper.toPresentation
-import com.example.risuto.domain.usecase.SeasonAnimeUseCase
-import com.example.risuto.domain.usecase.TopAnimeUseCase
+import com.example.risuto.domain.usecase.remote.SeasonAnimeUseCase
+import com.example.risuto.domain.usecase.remote.TopAnimeUseCase
 import com.example.risuto.presentation.base.BaseViewModel
 import com.example.risuto.presentation.model.AnimeListPresentation
 import com.example.risuto.presentation.util.Error

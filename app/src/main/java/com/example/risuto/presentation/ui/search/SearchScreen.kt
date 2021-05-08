@@ -2,7 +2,6 @@ package com.example.risuto.presentation.ui.search
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.BasicTextField
@@ -28,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.risuto.presentation.model.AnimeListPresentation
 import com.example.risuto.presentation.model.QuerySearch
+import com.example.risuto.presentation.model.SearchHistoryPresentation
 import com.example.risuto.presentation.ui.component.*
 
 @ExperimentalFoundationApi
@@ -40,13 +40,14 @@ fun SearchScreen(
 ) {
     val viewState by viewModel.state.collectAsState()
     var query by rememberSaveable { mutableStateOf("") }
-    var resultState by rememberSaveable { mutableStateOf(ResultType.Filter) }
+    var resultState by rememberSaveable { mutableStateOf(ResultType.History) }
     if(query.isEmpty()) {
-        resultState = ResultType.Filter
+        resultState = ResultType.History
     }
     SearchContent(
         items = viewState.searchAnimes,
         onSearchAnime = viewModel::onSearchAnime,
+        insertSearchHistory = viewModel::insertSearchHistory,
         getQuery = viewModel::getQuery,
         query = query,
         onQueryChanged = { query = it },
@@ -62,6 +63,7 @@ fun SearchScreen(
 fun SearchContent(
     items: List<AnimeListPresentation>,
     onSearchAnime: () -> Unit,
+    insertSearchHistory: (SearchHistoryPresentation) -> Unit,
     getQuery: (QuerySearch) -> Unit,
 
     query: String,
@@ -99,6 +101,7 @@ fun SearchContent(
             ResultType.FullResult -> {
                 keyboardController?.hideSoftwareKeyboard()
                 getQuery(QuerySearch(limit = null))
+                insertSearchHistory(SearchHistoryPresentation(query = query))
                 GridList(items = items, navToDetail = { navToDetail(it) })
             }
             ResultType.Result -> {
@@ -110,7 +113,7 @@ fun SearchContent(
                     cursorColor = Color.Transparent
                 })
             }
-            ResultType.Filter -> {
+            ResultType.History -> {
                 Text("Filter Type")
             }
         }
@@ -118,7 +121,7 @@ fun SearchContent(
 }
 
 enum class ResultType{
-    Result, Filter, FullResult
+    Result, History, FullResult
 }
 
 @ExperimentalComposeUiApi
@@ -178,7 +181,7 @@ fun SearchBar(
         backgroundColor = MaterialTheme.colors.surface,
         contentColor = MaterialTheme.colors.secondary
     )
-    if(resultState == ResultType.Filter) {
+    if(resultState == ResultType.History) {
         DisposableEffect(Unit) {
             focusRequester.requestFocus()
             onDispose { }

@@ -42,7 +42,7 @@ fun SearchHomeContent(
             .padding(start = 16.dp, end = 16.dp, bottom = 64.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Header(title = "Search")
+        Header(title = "Search", modifier = Modifier.padding(top = 24.dp))
         SearchHomeBar(navToSearch = { navToSearch() })
         Text(text = "Genre", style = MaterialTheme.typography.h6)
         GenreGridList(navToGenre = {
