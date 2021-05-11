@@ -15,7 +15,7 @@ data class SeasonAnimeResponse(
     val members: Int,
     val producers: List<Producer>,
     val r18: Boolean,
-    val score: Float?,
+    val score: Double?,
     val source: String,
     val synopsis: String,
     val title: String,

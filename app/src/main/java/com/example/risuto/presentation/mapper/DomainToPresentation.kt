@@ -33,6 +33,6 @@ internal fun SearchHistory.toPresentation(): SearchHistoryPresentation {
     return SearchHistoryPresentation(query)
 }
 
-internal fun AnimeHistory.toPresentation(): AnimeHistoryPresentation {
-    return AnimeHistoryPresentation(mal_id, title, image_url)
+internal fun AnimeHistory.toPresentation(): AnimeListPresentation {
+    return AnimeListPresentation(mal_id, image_url, title, synopsis, type, episodes, score, members)
 }

@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 class HistoryRepository(private val historyDao: HistoryDao): IHistoryRepository {
+
     override fun getSearchHistory(): Flow<List<SearchHistory>> = flow {
         val searches = historyDao.getSearchHistory()
         emit(searches.map { it.toDomain() })

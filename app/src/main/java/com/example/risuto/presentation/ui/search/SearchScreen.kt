@@ -46,6 +46,8 @@ fun SearchScreen(
     }
     SearchContent(
         items = viewState.searchAnimes,
+        searchHistory = viewState.searchHistory,
+        animeHistory = viewState.animeHistory,
         onSearchAnime = viewModel::onSearchAnime,
         insertSearchHistory = viewModel::insertSearchHistory,
         getQuery = viewModel::getQuery,
@@ -62,6 +64,8 @@ fun SearchScreen(
 @Composable
 fun SearchContent(
     items: List<AnimeListPresentation>,
+    searchHistory: List<SearchHistoryPresentation>,
+    animeHistory: List<AnimeListPresentation>,
     onSearchAnime: () -> Unit,
     insertSearchHistory: (SearchHistoryPresentation) -> Unit,
     getQuery: (QuerySearch) -> Unit,
@@ -88,6 +92,7 @@ fun SearchContent(
             cursorColor = cursorColor,
             onCursorChanged = { cursorColor = it },
             onSearchAnime = onSearchAnime,
+            insertSearchHistory = insertSearchHistory,
             getQuery = {
                 getQuery(it)
                 onResultChange(ResultType.Result)
@@ -101,20 +106,35 @@ fun SearchContent(
             ResultType.FullResult -> {
                 keyboardController?.hideSoftwareKeyboard()
                 getQuery(QuerySearch(limit = null))
-                insertSearchHistory(SearchHistoryPresentation(query = query))
                 GridList(items = items, navToDetail = { navToDetail(it) })
             }
             ResultType.Result -> {
-                QueryList(items = items, onSelectItem = {
+                QueryList(items = items.map { it.title }, onSelectItem = {
                     onQueryChanged(it)
                     getQuery(QuerySearch(q = it))
                     onSearchAnime()
-                    onResultChange(ResultType.FullResult)
+                    insertSearchHistory(SearchHistoryPresentation(query = it))
                     cursorColor = Color.Transparent
+                    onResultChange(ResultType.FullResult)
                 })
             }
             ResultType.History -> {
-                Text("Filter Type")
+                Column(
+                    modifier = Modifier
+                        .padding(top = 16.dp, start = 16.dp, end = 16.dp, bottom = 64.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Text(text = "Recent Search")
+                    QueryList(items = searchHistory.map { it.query }, onSelectItem = {
+                        onQueryChanged(it)
+                        getQuery(QuerySearch(q = it))
+                        onSearchAnime()
+                        onResultChange(ResultType.FullResult)
+                        cursorColor = Color.Transparent
+                    })
+                    Text(text = "History")
+                    HorizontalGridList(items = animeHistory, navToDetail = { navToDetail(it) })
+                }
             }
         }
     }
@@ -133,6 +153,7 @@ fun SearchBar(
     cursorColor: Color,
     onCursorChanged: (Color) -> Unit,
     onSearchAnime: () -> Unit,
+    insertSearchHistory: (SearchHistoryPresentation) -> Unit,
     getQuery: (QuerySearch) -> Unit,
     onBackPressed: () -> Unit,
     onDone: () -> Unit,
@@ -170,6 +191,7 @@ fun SearchBar(
                     onSearchAnime()
                     onDone()
                     onCursorChanged(Color.Transparent)
+                    insertSearchHistory(SearchHistoryPresentation(query = query))
                 })
             )
         },
@@ -191,7 +213,7 @@ fun SearchBar(
 
 @Composable
 fun QueryList(
-    items: List<AnimeListPresentation>,
+    items: List<String>,
     onSelectItem: (String) -> Unit
 ) {
     Column(
@@ -203,32 +225,15 @@ fun QueryList(
                     .padding(vertical = 4.dp)
                     .height(40.dp)
                     .clickable {
-                        onSelectItem(item.title)
+                        onSelectItem(item)
                     },
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Spacer(modifier = Modifier.padding(4.dp))
                 Icon(Icons.Default.Search, contentDescription = null, tint = MaterialTheme.colors.surface)
                 Spacer(modifier = Modifier.padding(4.dp))
-                Text(text = item.title, style = MaterialTheme.typography.subtitle2)
+                Text(text = item, style = MaterialTheme.typography.subtitle2)
             }
         }
     }
 }
-
-//@ExperimentalComposeUiApi
-//@ExperimentalFoundationApi
-//@Preview
-//@Composable
-//fun SearchScreenPreview() {
-//    SearchContent(
-//        items = generateFakeItemList(),
-//        query = QuerySearch(),
-//        onSearchAnime = {},
-//        getGenre = {},
-//        getQuery = {},
-//        getOrder = {},
-//        getLimit = {},
-//        navToDetail = {}
-//    )
-//}

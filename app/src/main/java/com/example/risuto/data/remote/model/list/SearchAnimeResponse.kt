@@ -9,7 +9,7 @@ data class SearchAnimeResponse(
         val synopsis : String?,
         val type : String,
         val episodes : Int?,
-        val score : Float,
+        val score : Double,
         val start_date : String?,
         val end_date : String?,
         val members : Int,

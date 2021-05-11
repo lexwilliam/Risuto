@@ -1,5 +1,6 @@
 package com.example.risuto.presentation.ui.search
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import com.example.risuto.domain.usecase.remote.SearchAnimeUseCase
 import com.chun2maru.risutomvvm.presentation.mapper.toPresentation
@@ -40,6 +41,9 @@ class SearchViewModel
     private var searchJob: Job? = null
     private var getAllSearchJob: Job? = null
     private var insertSearchJob: Job? = null
+    private var deleteSearchJob: Job? = null
+    private var getAllAnimeJob: Job? = null
+    private var deleteAnimeJob: Job? = null
 
     override fun onCleared() {
         super.onCleared()
@@ -47,7 +51,7 @@ class SearchViewModel
     }
 
     init {
-
+        loadHistory()
     }
 
     private var query = MutableStateFlow(QuerySearch())
@@ -84,18 +88,42 @@ class SearchViewModel
         _state.value = _state.value.copy(searchAnimes = emptyList(), error = Error(message), isLoading = false)
     }
 
-    private fun getSearchHistory() {
+    private fun loadHistory() {
         getAllSearchJob = launchCoroutine {
             getAllSearchHistoryUseCase.invoke().collect { results ->
                 val history = results.map { it.toPresentation() }
                 _state.value = _state.value.copy(searchHistory = history)
             }
         }
+        getAllAnimeJob = launchCoroutine {
+            getAllAnimeHistoryUseCase.invoke().collect { results ->
+                val history = results.map { it.toPresentation() }
+                _state.value = _state.value.copy(animeHistory = history)
+            }
+        }
     }
 
     fun insertSearchHistory(query: SearchHistoryPresentation) {
         insertSearchJob = launchCoroutine {
-            insertSearchHistoryUseCase.invoke(query.toDomain())
+            insertSearchHistoryUseCase.invoke(query.toDomain()).collect { result ->
+                if(result == Results.SUCCESS) {
+                    Log.d("TAG", "Saving Success")
+                } else {
+                    Log.d("TAG", "Saving Failed")
+                }
+            }
+        }
+    }
+
+    fun deleteSearchHistory(query: String) {
+        deleteSearchJob = launchCoroutine {
+            deleteSearchHistoryUseCase.invoke(query)
+        }
+    }
+
+    fun deleteAnimeHistory(title: String) {
+        deleteAnimeJob = launchCoroutine {
+            deleteAnimeHistoryUseCase.invoke(title)
         }
     }
 }
@@ -103,6 +131,7 @@ class SearchViewModel
 data class SearchViewState(
     val query: QuerySearch,
     val searchAnimes: List<AnimeListPresentation> = emptyList(),
+    val animeHistory: List<AnimeListPresentation> = emptyList(),
     val searchHistory: List<SearchHistoryPresentation> = emptyList(),
     val error: Error?,
     val isLoading: Boolean

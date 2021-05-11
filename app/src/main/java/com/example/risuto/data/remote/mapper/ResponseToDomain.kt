@@ -17,7 +17,7 @@ internal fun TopAnimeResponse.toDomain(): TopAnime {
 }
 
 internal fun SeasonAnimeResponse.toDomain(): SeasonAnime {
-    return SeasonAnime(airing_start?: "", continuing, episodes?: 0, genres, image_url?: "", kids, licensors, mal_id, members, producers, r18, score?: 0.0f, source, synopsis, title, type, url)
+    return SeasonAnime(airing_start?: "", continuing, episodes?: 0, genres, image_url?: "", kids, licensors, mal_id, members, producers, r18, score?: 0.0, source, synopsis, title, type, url)
 }
 
 internal fun SeasonArchiveResponse.toDomain(): SeasonArchive {

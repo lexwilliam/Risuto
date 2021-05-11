@@ -10,5 +10,5 @@ internal fun SearchHistoryEntity.toDomain(): SearchHistory {
 }
 
 internal fun AnimeHistoryEntity.toDomain(): AnimeHistory {
-    return AnimeHistory(mal_id, title, image_url)
+    return AnimeHistory(mal_id, image_url, title, synopsis, type, episodes, score, members)
 }

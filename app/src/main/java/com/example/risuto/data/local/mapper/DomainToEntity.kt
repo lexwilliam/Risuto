@@ -12,7 +12,12 @@ internal fun SearchHistory.toEntity(): SearchHistoryEntity {
 internal fun AnimeHistory.toEntity(): AnimeHistoryEntity {
     return AnimeHistoryEntity(
         mal_id = mal_id,
+        image_url = image_url,
         title = title,
-        image_url = image_url
+        synopsis = synopsis,
+        type = type,
+        episodes = episodes,
+        score = score,
+        members = members
     )
 }
