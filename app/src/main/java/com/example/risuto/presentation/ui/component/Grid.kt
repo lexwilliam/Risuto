@@ -1,17 +1,19 @@
 package com.example.risuto.presentation.ui.component
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Divider
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.VerticalAlignmentLine
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -77,12 +79,13 @@ fun MediumGrid(
             fontWeight = FontWeight.Bold
         )
         Row(
+            modifier = Modifier.requiredHeight(IntrinsicSize.Min),
             horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             Icon(Icons.Default.Star, contentDescription = null)
-            Text(text = item.score.toString())
+            Text(text = item.score.toString(), style = MaterialTheme.typography.caption)
             Icon(Icons.Default.Person, contentDescription = null)
-            Text(text = intToCurrency(item.members))
+            Text(text = intToCurrency(item.members), style = MaterialTheme.typography.caption)
         }
     }
 }

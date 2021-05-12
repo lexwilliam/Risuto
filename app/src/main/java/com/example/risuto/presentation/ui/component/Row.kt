@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -35,48 +36,37 @@ fun RowItem(
         NetworkImage(
             imageUrl = item.image_url,
             modifier = Modifier
-                .size(width = 120.dp, height = 160.dp)
+                .size(width = 120.dp, height = 180.dp)
                 .shadow(elevation = 4.dp, shape = MaterialTheme.shapes.medium, true)
         )
         Column(modifier = Modifier
-            .padding(start = 16.dp)) {
+            .padding(start = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
             Text(
                 text = item.title,
-                modifier = Modifier.padding(bottom = 6.dp),
-                style = MaterialTheme.typography.h6,
+                style = MaterialTheme.typography.subtitle1,
                 fontWeight = FontWeight.Bold
             )
             Text(
                 text = item.type + " (" + item.episodes + ")",
-                modifier = Modifier.padding(bottom = 6.dp),
-                style = MaterialTheme.typography.body1
+                style = MaterialTheme.typography.caption
             )
             Row(
-                modifier = Modifier.padding(bottom = 6.dp)
+                modifier = Modifier.requiredHeight(IntrinsicSize.Min),
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
             ) {
-                Icon(
-                    Icons.Filled.Star,
-                    contentDescription = null
-                )
-                Text(
-                    text = item.score.toString(),
-                    modifier = Modifier.padding(end = 4.dp),
-                    style = MaterialTheme.typography.body1
-                )
+                Icon(Icons.Default.Star, contentDescription = null)
+                Text(text = item.score.toString(), style = MaterialTheme.typography.caption)
+                Icon(Icons.Default.Person, contentDescription = null)
+                Text(text = intToCurrency(item.members), style = MaterialTheme.typography.caption)
             }
-            Row(
-                modifier = Modifier.padding(bottom = 6.dp)
-            ) {
-                Icon(
-                    Icons.Filled.Person,
-                    contentDescription = null
-                )
-                Text(
-                    text = intToCurrency(item.members),
-                    maxLines = 1,
-                    style = MaterialTheme.typography.body1
-                )
-            }
+            Text(
+                text = item.synopsis,
+                maxLines = 5,
+                overflow = TextOverflow.Ellipsis,
+                style = MaterialTheme.typography.overline
+            )
         } 
     }
 }
