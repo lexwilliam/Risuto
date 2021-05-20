@@ -1,6 +1,6 @@
 package com.example.risuto.domain.repository
 
-import com.example.risuto.data.local.dao.Results
+import com.example.risuto.data.local.Results
 import com.example.risuto.domain.model.AnimeHistory
 import com.example.risuto.domain.model.SearchHistory
 import kotlinx.coroutines.flow.Flow

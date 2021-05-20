@@ -1,8 +1,10 @@
 package com.example.risuto.data.local.mapper
 
 import com.example.risuto.data.local.model.AnimeHistoryEntity
+import com.example.risuto.data.local.model.MyAnimeEntity
 import com.example.risuto.data.local.model.SearchHistoryEntity
 import com.example.risuto.domain.model.AnimeHistory
+import com.example.risuto.domain.model.MyAnime
 import com.example.risuto.domain.model.SearchHistory
 
 internal fun SearchHistory.toEntity(): SearchHistoryEntity {
@@ -19,5 +21,16 @@ internal fun AnimeHistory.toEntity(): AnimeHistoryEntity {
         episodes = episodes,
         score = score,
         members = members
+    )
+}
+
+internal fun MyAnime.toEntity(): MyAnimeEntity {
+    return MyAnimeEntity(
+        mal_id = mal_id,
+        image_url = image_url,
+        title = title,
+        myScore = myScore,
+        watchStatus = watchStatus,
+        timeAdded = timeAdded
     )
 }

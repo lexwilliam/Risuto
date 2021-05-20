@@ -1,7 +1,7 @@
 package com.example.risuto.data.local.repository
 
+import com.example.risuto.data.local.Results
 import com.example.risuto.data.local.dao.HistoryDao
-import com.example.risuto.data.local.dao.Results
 import com.example.risuto.data.local.mapper.toDomain
 import com.example.risuto.domain.model.AnimeHistory
 import com.example.risuto.domain.model.SearchHistory

@@ -21,6 +21,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.risuto.domain.model.MyAnime
 import com.example.risuto.presentation.model.AnimePresentation
 import com.example.risuto.presentation.model.CharacterStaffPresentation
 import com.example.risuto.presentation.ui.component.Chip
@@ -65,7 +66,11 @@ fun AnimeContent(
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            AnimeToolBar(onBackPressed = { onBackPressed() })
+            AnimeToolBar(
+                onAddPressed = {
+                },
+                onBackPressed = { onBackPressed() }
+            )
             AnimeDetail(animeDetail = animeDetail)
             AnimeGenre(animeDetail = animeDetail, navToGenre = { navToGenre(it) })
             AnimeRating(animeDetail = animeDetail)
@@ -76,6 +81,7 @@ fun AnimeContent(
 
 @Composable
 fun AnimeToolBar(
+    onAddPressed: () -> Unit,
     onBackPressed: () -> Unit
 ) {
     TopAppBar(
@@ -87,7 +93,7 @@ fun AnimeToolBar(
         },
         actions = {
             Row {
-                IconButton(onClick = { }) {
+                IconButton(onClick = { onAddPressed() }) {
                     Icon(Icons.Default.Add, contentDescription = null, tint = MaterialTheme.colors.secondary)
                 }
                 IconButton(onClick = { }) {
@@ -143,7 +149,7 @@ fun AnimeGenre(
 ) {
     Row(
         modifier = Modifier
-            .padding(horizontal = 16.dp)
+            .padding(start = 16.dp)
             .horizontalScroll(rememberScrollState()),
         verticalAlignment = Alignment.CenterVertically
     ) {

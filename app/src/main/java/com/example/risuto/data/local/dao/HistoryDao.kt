@@ -1,6 +1,7 @@
 package com.example.risuto.data.local.dao
 
 import androidx.room.*
+import com.example.risuto.data.local.Results
 import com.example.risuto.data.local.mapper.toEntity
 import com.example.risuto.data.local.model.AnimeHistoryEntity
 import com.example.risuto.data.local.model.SearchHistoryEntity
@@ -55,7 +56,3 @@ interface HistoryDao {
     }
 }
 
-enum class Results {
-    SUCCESS,
-    FAILURE
-}

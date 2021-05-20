@@ -3,8 +3,11 @@ package com.example.risuto.presentation.ui.detail
 import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import com.chun2maru.risutomvvm.presentation.mapper.toPresentation
-import com.example.risuto.data.local.dao.Results
+import com.example.risuto.data.local.Results
+import com.example.risuto.data.local.model.WatchStatus
+import com.example.risuto.domain.model.MyAnime
 import com.example.risuto.domain.usecase.local.InsertAnimeHistoryUseCase
+import com.example.risuto.domain.usecase.local.InsertMyAnimeUseCase
 import com.example.risuto.domain.usecase.remote.GetAnimeUseCase
 import com.example.risuto.domain.usecase.remote.GetCharacterStaffUseCase
 import com.example.risuto.presentation.base.BaseViewModel
@@ -24,6 +27,7 @@ class AnimeViewModel
     private val getAnimeUseCase: GetAnimeUseCase,
     private val getCharacterStaffUseCase: GetCharacterStaffUseCase,
     private val insertAnimeHistoryUseCase: InsertAnimeHistoryUseCase,
+    private val insertMyAnimeUseCase: InsertMyAnimeUseCase,
     savedState: SavedStateHandle
 ): BaseViewModel() {
 
@@ -32,6 +36,7 @@ class AnimeViewModel
     }
 
     private var detailJob: Job? = null
+    private var insertMyAnimeJob: Job? = null
 
     override fun onCleared() {
         super.onCleared()
@@ -79,6 +84,27 @@ class AnimeViewModel
                     }.collect {
                         _state.value = it
                     }
+                }
+            }
+        }
+    }
+
+    fun insertToMyAnime(
+        malId: Int,
+        image_url: String,
+        title: String,
+        myScore: Int = -1,
+        watchStatus: WatchStatus = WatchStatus.Default
+    ) {
+        val timeAdded = System.currentTimeMillis()
+        val myAnime = MyAnime(malId, image_url, title, myScore, watchStatus, timeAdded)
+        insertMyAnimeJob?.cancel()
+        insertMyAnimeJob = launchCoroutine {
+            insertMyAnimeUseCase.invoke(myAnime).collect { result ->
+                if(result == Results.SUCCESS) {
+                    Log.d("TAG", "Saving Success")
+                } else {
+                    Log.d("TAG", "Saving Failed")
                 }
             }
         }

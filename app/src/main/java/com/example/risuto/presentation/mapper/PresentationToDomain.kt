@@ -1,6 +1,8 @@
 package com.example.risuto.presentation.mapper
 
+import com.example.risuto.data.local.model.WatchStatus
 import com.example.risuto.domain.model.AnimeHistory
+import com.example.risuto.domain.model.MyAnime
 import com.example.risuto.domain.model.SearchHistory
 import com.example.risuto.presentation.model.AnimePresentation
 import com.example.risuto.presentation.model.SearchHistoryPresentation

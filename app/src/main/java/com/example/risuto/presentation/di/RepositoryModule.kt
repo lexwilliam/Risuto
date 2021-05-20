@@ -3,7 +3,9 @@ package com.chun2maru.risutomvvm.presentation.di
 import com.chun2maru.risutomvvm.data.remote.JikanService
 import com.chun2maru.risutomvvm.data.repository.ListRepository
 import com.example.risuto.data.local.dao.HistoryDao
+import com.example.risuto.data.local.dao.MyAnimeDao
 import com.example.risuto.data.local.repository.HistoryRepository
+import com.example.risuto.data.local.repository.MyAnimeRepository
 import com.example.risuto.data.remote.repository.ItemRepository
 import dagger.Module
 import dagger.Provides
@@ -31,5 +33,11 @@ object RepositoryModule {
     @Provides
     fun provideHistoryRepository(historyDao: HistoryDao): HistoryRepository{
         return HistoryRepository(historyDao)
+    }
+
+    @Singleton
+    @Provides
+    fun provideMyAnimeRepository(myAnimeDao: MyAnimeDao): MyAnimeRepository{
+        return MyAnimeRepository(myAnimeDao)
     }
 }

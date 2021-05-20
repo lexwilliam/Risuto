@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import com.example.risuto.domain.usecase.remote.SearchAnimeUseCase
 import com.chun2maru.risutomvvm.presentation.mapper.toPresentation
-import com.example.risuto.data.local.dao.Results
+import com.example.risuto.data.local.Results
 import com.example.risuto.domain.usecase.local.*
 import com.example.risuto.presentation.base.BaseViewModel
 import com.example.risuto.presentation.mapper.toDomain

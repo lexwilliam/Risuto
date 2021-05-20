@@ -3,7 +3,9 @@ package com.example.risuto.presentation.di
 import android.content.Context
 import androidx.room.Room
 import com.example.risuto.data.local.HistoryDatabase
+import com.example.risuto.data.local.MyAnimeDatabase
 import com.example.risuto.data.local.dao.HistoryDao
+import com.example.risuto.data.local.dao.MyAnimeDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -32,6 +34,25 @@ object RoomModule {
     @Provides
     fun provideHistoryDAO(historyDatabase: HistoryDatabase): HistoryDao {
         return historyDatabase.historyDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideMyAnimeDb(@ApplicationContext context: Context): MyAnimeDatabase {
+        return Room
+            .databaseBuilder(
+                context,
+                MyAnimeDatabase::class.java,
+                "myAnime_database"
+            )
+            .fallbackToDestructiveMigration()
+            .build()
+    }
+
+    @Singleton
+    @Provides
+    fun provideMyAnimeDAO(myAnimeDatabase: MyAnimeDatabase): MyAnimeDao {
+        return myAnimeDatabase.myAnimeDao()
     }
 
 }
