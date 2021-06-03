@@ -12,7 +12,7 @@ data class MyAnimeEntity(
     val title : String,
     val myScore: Int,
     val watchStatus: WatchStatus?,
-    val timeAdded: Long
+    val timeAdded: Long = System.currentTimeMillis()
 )
 
 enum class WatchStatus{

@@ -17,5 +17,5 @@ internal fun AnimeHistoryEntity.toDomain(): AnimeHistory {
 }
 
 internal fun MyAnimeEntity.toDomain(): MyAnime {
-    return MyAnime(mal_id, image_url, title, myScore, watchStatus?: WatchStatus.Default, timeAdded)
+    return MyAnime(mal_id, image_url, title, myScore, watchStatus?: WatchStatus.Default)
 }

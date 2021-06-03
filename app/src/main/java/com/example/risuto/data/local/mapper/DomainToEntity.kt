@@ -30,7 +30,6 @@ internal fun MyAnime.toEntity(): MyAnimeEntity {
         image_url = image_url,
         title = title,
         myScore = myScore,
-        watchStatus = watchStatus,
-        timeAdded = timeAdded
+        watchStatus = watchStatus
     )
 }

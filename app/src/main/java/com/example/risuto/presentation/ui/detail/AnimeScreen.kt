@@ -9,9 +9,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.outlined.Favorite
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -21,11 +19,14 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.risuto.data.local.model.WatchStatus
 import com.example.risuto.domain.model.MyAnime
 import com.example.risuto.presentation.model.AnimePresentation
 import com.example.risuto.presentation.model.CharacterStaffPresentation
+import com.example.risuto.presentation.model.MyAnimePresentation
 import com.example.risuto.presentation.ui.component.Chip
 import com.example.risuto.presentation.ui.component.LoadingScreen
+import com.example.risuto.presentation.ui.component.MyAnimePopUp
 import com.example.risuto.presentation.ui.component.NetworkImage
 import com.example.risuto.presentation.util.generateFakeAnimeDetail
 import com.example.risuto.presentation.util.getGenre
@@ -43,6 +44,7 @@ fun AnimeScreen(
         animeDetail = viewState.animeDetail,
         animeStaff = viewState.animeStaff,
         onLoading = viewState.onLoading,
+        insertToMyAnime = viewModel::insertToMyAnime,
         onBackPressed = { onBackPressed() },
         navToGenre = navToGenre
     )
@@ -53,6 +55,7 @@ fun AnimeContent(
     animeDetail: AnimePresentation,
     animeStaff: CharacterStaffPresentation,
     onLoading: Boolean,
+    insertToMyAnime: (MyAnimePresentation) -> Unit,
     onBackPressed: () -> Unit,
     navToGenre: (Int) -> Unit
 ) {
@@ -66,9 +69,28 @@ fun AnimeContent(
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+            var score = -1
+            var watchStatus = WatchStatus.Default
+            var popUpState by remember { mutableStateOf(false) }
+            if(popUpState) {
+                MyAnimePopUp(
+                    setScore = { score = it },
+                    setWatchStatus = { watchStatus = it },
+                    onDoneClicked = {
+                        val myAnime = MyAnimePresentation(
+                            mal_id = animeDetail.mal_id,
+                            title = animeDetail.title,
+                            image_url = animeDetail.image_url,
+                            myScore = score,
+                            watchStatus = watchStatus
+                        )
+                        insertToMyAnime(myAnime)
+                        popUpState = false
+                    }
+                )
+            }
             AnimeToolBar(
-                onAddPressed = {
-                },
+                onAddPressed = { popUpState = true },
                 onBackPressed = { onBackPressed() }
             )
             AnimeDetail(animeDetail = animeDetail)
@@ -95,9 +117,6 @@ fun AnimeToolBar(
             Row {
                 IconButton(onClick = { onAddPressed() }) {
                     Icon(Icons.Default.Add, contentDescription = null, tint = MaterialTheme.colors.secondary)
-                }
-                IconButton(onClick = { }) {
-                    Icon(Icons.Outlined.Favorite, contentDescription = null, tint = MaterialTheme.colors.secondary)
                 }
             }
         },
@@ -255,14 +274,14 @@ fun CharVoiceActorList(
     }
 }
 
-@Preview
-@Composable
-fun AnimeScreenPreview() {
-    AnimeContent(
-        animeDetail = generateFakeAnimeDetail(),
-        animeStaff = CharacterStaffPresentation(),
-        onLoading = false,
-        onBackPressed = {},
-        navToGenre = {}
-    )
-}
+//@Preview
+//@Composable
+//fun AnimeScreenPreview() {
+//    AnimeContent(
+//        animeDetail = generateFakeAnimeDetail(),
+//        animeStaff = CharacterStaffPresentation(),
+//        onLoading = false,
+//        onBackPressed = {},
+//        navToGenre = {}
+//    )
+//}

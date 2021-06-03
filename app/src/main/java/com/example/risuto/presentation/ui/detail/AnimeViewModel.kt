@@ -14,6 +14,7 @@ import com.example.risuto.presentation.base.BaseViewModel
 import com.example.risuto.presentation.mapper.toDomain
 import com.example.risuto.presentation.model.AnimePresentation
 import com.example.risuto.presentation.model.CharacterStaffPresentation
+import com.example.risuto.presentation.model.MyAnimePresentation
 import com.example.risuto.presentation.util.ExceptionHandler
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -90,17 +91,11 @@ class AnimeViewModel
     }
 
     fun insertToMyAnime(
-        malId: Int,
-        image_url: String,
-        title: String,
-        myScore: Int = -1,
-        watchStatus: WatchStatus = WatchStatus.Default
+        myAnime: MyAnimePresentation
     ) {
-        val timeAdded = System.currentTimeMillis()
-        val myAnime = MyAnime(malId, image_url, title, myScore, watchStatus, timeAdded)
         insertMyAnimeJob?.cancel()
         insertMyAnimeJob = launchCoroutine {
-            insertMyAnimeUseCase.invoke(myAnime).collect { result ->
+            insertMyAnimeUseCase.invoke(myAnime.toDomain()).collect { result ->
                 if(result == Results.SUCCESS) {
                     Log.d("TAG", "Saving Success")
                 } else {

@@ -1,8 +1,8 @@
-package com.example.risuto.domain.model
+package com.example.risuto.presentation.model
 
 import com.example.risuto.data.local.model.WatchStatus
 
-data class MyAnime(
+data class MyAnimePresentation(
     val mal_id : Int,
     val image_url : String,
     val title : String,
