@@ -36,3 +36,7 @@ internal fun SearchHistory.toPresentation(): SearchHistoryPresentation {
 internal fun AnimeHistory.toPresentation(): AnimeListPresentation {
     return AnimeListPresentation(mal_id, image_url, title, synopsis, type, episodes, score, members)
 }
+
+internal fun MyAnime.toPresentation(): MyAnimePresentation {
+    return MyAnimePresentation(mal_id, image_url, title, myScore, watchStatus)
+}

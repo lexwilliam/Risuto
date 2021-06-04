@@ -8,6 +8,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -26,6 +27,8 @@ import com.example.risuto.presentation.ui.genre.GenreScreen
 import com.example.risuto.presentation.ui.genre.GenreViewModel
 import com.example.risuto.presentation.ui.home.HomeScreen
 import com.example.risuto.presentation.ui.home.HomeViewModel
+import com.example.risuto.presentation.ui.profile.ProfileScreen
+import com.example.risuto.presentation.ui.profile.ProfileViewModel
 import com.example.risuto.presentation.ui.search.SearchHomeScreen
 import com.example.risuto.presentation.ui.search.SearchScreen
 import com.example.risuto.presentation.ui.search.SearchViewModel
@@ -50,6 +53,19 @@ fun RisutoApp() {
 @Composable
 fun RisutoAppContent() {
     val navController = rememberNavController()
+
+    data class BottomNavItem(
+        val icon: Unit,
+        val route: String
+    )
+
+    val bottomNavIcons = listOf(
+        BottomNavItem(Icon(Icons.Filled.Home, contentDescription = null), RisutoHomeScreen.route),
+        BottomNavItem(Icon(Icons.Filled.Search, contentDescription = null), RisutoSearchHomeScreen.route),
+        BottomNavItem(Icon(Icons.Filled.Check, contentDescription = null), RisutoSeasonScreen.route),
+        BottomNavItem(Icon(Icons.Filled.Person, contentDescription = null), RisutoProfileScreen.route)
+    )
+
     Scaffold(
         bottomBar = {
             BottomNavigation(
@@ -59,36 +75,19 @@ fun RisutoAppContent() {
             ) {
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentRoute = navBackStackEntry?.arguments?.getString(KEY_ROUTE)
-                BottomNavigationItem(
-                    icon = { Icon(Icons.Filled.Home, contentDescription = null) },
-                    selected = currentRoute == RisutoHomeScreen.route,
-                    onClick = {
-                        navController.navigate(RisutoHomeScreen.route) {
-                            popUpTo = navController.graph.startDestination
-                            launchSingleTop = true
+
+                bottomNavIcons.forEach {
+                    BottomNavigationItem(
+                        icon = { it.icon },
+                        selected = currentRoute == it.route,
+                        onClick = {
+                            navController.navigate(it.route) {
+                                popUpTo = navController.graph.startDestination
+                                launchSingleTop = true
+                            }
                         }
-                    }
-                )
-                BottomNavigationItem(
-                    icon = { Icon(Icons.Filled.Search, contentDescription = null) },
-                    selected = currentRoute == RisutoSearchHomeScreen.route,
-                    onClick = {
-                        navController.navigate(RisutoSearchHomeScreen.route) {
-                            popUpTo = navController.graph.startDestination
-                            launchSingleTop = true
-                        }
-                    }
-                )
-                BottomNavigationItem(
-                    icon = { Icon(Icons.Filled.Check, contentDescription = null)},
-                    selected = currentRoute == RisutoSeasonScreen.route,
-                    onClick = {
-                        navController.navigate(RisutoSeasonScreen.route) {
-                            popUpTo = navController.graph.startDestination
-                            launchSingleTop = true
-                        }
-                    }
-                )
+                    )
+                }
             }
         }
     ) {
@@ -183,6 +182,17 @@ fun RisutoAppContent() {
                     }
                 )
             }
+            composable(RisutoProfileScreen.route) {
+                val profileViewModel = hiltNavGraphViewModel<ProfileViewModel>()
+                ProfileScreen(
+                    viewModel = profileViewModel,
+                    navToDetail = { mal_id ->
+                        navController.navigate(
+                            RisutoAnimeScreen.route.plus("/?mal_id=$mal_id")
+                        )
+                    }
+                )
+            }
         }
     }
 }
@@ -194,6 +204,7 @@ sealed class Screens(val route: String) {
     object RisutoSeasonScreen: Screens("season")
     object RisutoAnimeScreen: Screens("anime")
     object RisutoGenreScreen: Screens("genre")
+    object RisutoProfileScreen: Screens("profile")
 }
 
 @Suppress("DEPRECATION")
