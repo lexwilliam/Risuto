@@ -1,8 +1,11 @@
 package com.example.risuto.presentation.ui.season
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
@@ -11,7 +14,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.risuto.data.remote.model.detail.Archive
@@ -20,8 +23,11 @@ import com.example.risuto.presentation.ui.component.GridList
 import com.example.risuto.presentation.ui.component.Header
 import com.example.risuto.presentation.util.allSeason
 import com.example.risuto.presentation.util.seasonYearFormat
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import java.util.*
 
+@ExperimentalMaterialApi
 @ExperimentalComposeUiApi
 @ExperimentalFoundationApi
 @Composable
@@ -30,20 +36,38 @@ fun SeasonScreen(
     navToDetail: (Int) -> Unit
 ) {
     val viewState by viewModel.state.collectAsState()
-    var isSeasonMenuShown by remember { mutableStateOf(false) }
-
-    SeasonContent(
-        year = viewState.year,
-        season = viewState.season,
-        archive = viewState.seasonArchive,
-        animes = viewState.seasonAnimes,
-        setSeason = viewModel::setSeason,
-        isSeasonMenuShown = isSeasonMenuShown,
-        onSeasonMenu = { isSeasonMenuShown = it },
-        navToDetail = { navToDetail(it) }
+    val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(
+        bottomSheetState = BottomSheetState(BottomSheetValue.Collapsed)
     )
+    val coroutineScope = rememberCoroutineScope()
+
+    BottomSheetScaffold(
+        scaffoldState = bottomSheetScaffoldState,
+        sheetContent = {
+            SeasonMenu(
+                setSeason = viewModel::setSeason,
+                onDoneClicked = {
+                    coroutineScope.launch {
+                        bottomSheetScaffoldState.bottomSheetState.collapse()
+                    }
+                }
+            )
+        }
+    ) {
+        SeasonContent(
+            year = viewState.year,
+            season = viewState.season,
+            archive = viewState.seasonArchive,
+            animes = viewState.seasonAnimes,
+            bottomSheetState = bottomSheetScaffoldState,
+            coroutineScope = coroutineScope,
+            setSeason = viewModel::setSeason,
+            navToDetail = { navToDetail(it) }
+        )
+    }
 }
 
+@ExperimentalMaterialApi
 @ExperimentalComposeUiApi
 @ExperimentalFoundationApi
 @Composable
@@ -52,9 +76,9 @@ fun SeasonContent(
     season: String,
     archive: List<Archive>,
     animes: List<AnimeListPresentation>,
+    bottomSheetState: BottomSheetScaffoldState,
+    coroutineScope: CoroutineScope,
     setSeason: (String) -> Unit,
-    isSeasonMenuShown: Boolean,
-    onSeasonMenu: (Boolean) -> Unit,
     navToDetail: (Int) -> Unit
 ) {
     Column {
@@ -62,27 +86,22 @@ fun SeasonContent(
             year = year,
             season = season,
             setSeason = { setSeason(it) },
-            onSeasonMenu = { onSeasonMenu(true) }
+            bottomSheetState = bottomSheetState,
+            coroutineScope = coroutineScope
         )
-//        if(isSeasonMenuShown) {
-//            SeasonMenu(
-//                archive = archive,
-//                onSeasonSelected = {
-//                    setSeason(it)
-//                    onSeasonMenu(false)
-//                }
-//            )
-//        }
         GridList(items = animes, navToDetail = { navToDetail(it)} )
+
     }
 }
 
+@ExperimentalMaterialApi
 @Composable
 fun SeasonToolBar(
     year: Int,
     season: String,
     setSeason: (String) -> Unit,
-    onSeasonMenu: () -> Unit
+    bottomSheetState: BottomSheetScaffoldState,
+    coroutineScope: CoroutineScope
 ) {
     Row(
         modifier = Modifier
@@ -93,7 +112,11 @@ fun SeasonToolBar(
             modifier = Modifier
                 .weight(2f)
                 .wrapContentWidth(Alignment.Start)
-                .clickable { onSeasonMenu() },
+                .clickable {
+                    coroutineScope.launch {
+                        bottomSheetState.bottomSheetState.expand()
+                    }
+                },
             title = seasonYearFormat(season, year)
         )
         Row(
@@ -156,11 +179,78 @@ private fun onNextSeason(
     }
 }
 
-@Preview
 @Composable
-fun SeasonToolBarPreview() {
-    SeasonToolBar(year = 2021, season = "spring", onSeasonMenu = {}, setSeason = {})
+fun SeasonMenu(
+    onDoneClicked: () -> Unit,
+    setSeason: (String) -> Unit
+) {
+    var yearText by remember { mutableStateOf("Year") }
+    var seasonText by remember { mutableStateOf("Season") }
+    Column(
+        modifier = Modifier
+            .padding(bottom = 64.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Row(modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            var seasonExpanded by remember { mutableStateOf(false) }
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .height(32.dp)
+                    .background(MaterialTheme.colors.background)
+                    .clip(MaterialTheme.shapes.small)
+            ) {
+                BasicTextField(
+                    value = yearText,
+                    onValueChange = { yearText = it },
+                )
+            }
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .height(32.dp)
+                    .background(MaterialTheme.colors.background)
+                    .clip(MaterialTheme.shapes.small)
+                    .clickable { seasonExpanded = true }
+            ) {
+                Text(seasonText)
+                DropdownMenu(expanded = seasonExpanded, onDismissRequest = { seasonExpanded = false }) {
+                    allSeason.forEach {
+                        DropdownMenuItem(onClick = {
+                            seasonText = it
+                            seasonExpanded = false
+                        }) {
+                            Text(it)
+                        }
+                    }
+                }
+            }
+        }
+        Button(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            onClick = {
+            if(yearText != "Year" && seasonText != "Season")
+            setSeason("$seasonText $yearText")
+            onDoneClicked()
+        }) {
+            Text("Done")
+        }
+    }
 }
+
+//@Preview
+//@Composable
+//fun SeasonToolBarPreview() {
+//    SeasonToolBar(year = 2021, season = "spring", onSeasonMenu = {}, setSeason = {})
+//}
 
 //@Composable
 //fun SeasonMenu(

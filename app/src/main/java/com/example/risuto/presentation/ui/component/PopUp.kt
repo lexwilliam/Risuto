@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import com.example.risuto.data.local.model.WatchStatus
+import kotlinx.coroutines.launch
 
 @Composable
 fun MyAnimePopUp(
@@ -91,3 +92,48 @@ fun MyAnimePopUp(
 
     }
 }
+
+//@ExperimentalMaterialApi
+//@Composable
+//fun BottomSheetPopUp(
+//    content: @Composable () -> Unit,
+//) {
+//    val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(
+//        bottomSheetState = BottomSheetState(BottomSheetValue.Collapsed)
+//    )
+//    val coroutineScope = rememberCoroutineScope()
+//    BottomSheetScaffold(
+//        scaffoldState = bottomSheetScaffoldState,
+//        sheetContent = {
+//            Box(
+//                Modifier
+//                    .fillMaxWidth()
+//                    .height(200.dp)
+//            ) {
+//                content()
+//            }
+//        },
+//        sheetPeekHeight = 0.dp
+//    ) {
+//        coroutineScope.launch {
+//            if (isBotSheetShown) {
+//                bottomSheetScaffoldState.bottomSheetState.expand()
+//            } else {
+//                bottomSheetScaffoldState.bottomSheetState.collapse()
+//                setBotSheetState(false)
+//            }
+//        }
+//    }
+//}
+
+//        Button(onClick = {
+//            coroutineScope.launch {
+//                if (bottomSheetScaffoldState.bottomSheetState.isCollapsed) {
+//                    bottomSheetScaffoldState.bottomSheetState.expand()
+//                } else {
+//                    bottomSheetScaffoldState.bottomSheetState.collapse()
+//                }
+//            }
+//        }) {
+//            Text(text = "Expand/Collapse Bottom Sheet")
+//        }

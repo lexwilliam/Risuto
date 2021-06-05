@@ -45,11 +45,12 @@ class SeasonViewModel
     init {
         seasonJob?.cancel()
         seasonJob = launchCoroutine {
-            onSeasonAnime()
-            Log.d("TAG", "TEST")
+            seasonAnimeUseCase.invoke(year.value, season.value).collect { results ->
+                val animes = results.map { anime -> anime.toPresentation() }
+                _state.value = _state.value.copy(seasonAnimes = animes, year = year.value, season = season.value)
+            }
             seasonArchiveUseCase.invoke().collect { result ->
                 Log.d("TAG", "TEST")
-                Log.d("TAG", result.archive.toString())
                 val archive = result.toPresentation().archive
                 _state.value = _state.value.copy(seasonArchive = archive)
             }

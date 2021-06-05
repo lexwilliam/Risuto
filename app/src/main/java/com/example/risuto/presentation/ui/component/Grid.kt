@@ -70,7 +70,7 @@ fun MediumGrid(
             imageUrl = item.image_url,
             modifier = Modifier
                 .size(width = 180.dp, height = 240.dp)
-                .shadow(elevation = 4.dp, shape = MaterialTheme.shapes.large, clip = true)
+                .shadow(elevation = 4.dp, shape = MaterialTheme.shapes.medium, clip = true)
         )
         Text(text = item.title,
             maxLines = 2,

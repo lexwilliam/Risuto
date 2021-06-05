@@ -13,6 +13,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -35,6 +36,7 @@ import com.example.risuto.presentation.ui.search.SearchViewModel
 import com.example.risuto.presentation.ui.season.SeasonScreen
 import com.example.risuto.presentation.ui.season.SeasonViewModel
 
+@ExperimentalMaterialApi
 @ExperimentalComposeUiApi
 @ExperimentalFoundationApi
 @Composable
@@ -48,6 +50,7 @@ fun RisutoApp() {
     }
 }
 
+@ExperimentalMaterialApi
 @ExperimentalComposeUiApi
 @ExperimentalFoundationApi
 @Composable
@@ -55,15 +58,15 @@ fun RisutoAppContent() {
     val navController = rememberNavController()
 
     data class BottomNavItem(
-        val icon: Unit,
+        val icon: ImageVector,
         val route: String
     )
 
     val bottomNavIcons = listOf(
-        BottomNavItem(Icon(Icons.Filled.Home, contentDescription = null), RisutoHomeScreen.route),
-        BottomNavItem(Icon(Icons.Filled.Search, contentDescription = null), RisutoSearchHomeScreen.route),
-        BottomNavItem(Icon(Icons.Filled.Check, contentDescription = null), RisutoSeasonScreen.route),
-        BottomNavItem(Icon(Icons.Filled.Person, contentDescription = null), RisutoProfileScreen.route)
+        BottomNavItem(Icons.Filled.Home, RisutoHomeScreen.route),
+        BottomNavItem(Icons.Filled.Search, RisutoSearchHomeScreen.route),
+        BottomNavItem(Icons.Filled.Check, RisutoSeasonScreen.route),
+        BottomNavItem(Icons.Filled.Person, RisutoProfileScreen.route)
     )
 
     Scaffold(
@@ -78,7 +81,7 @@ fun RisutoAppContent() {
 
                 bottomNavIcons.forEach {
                     BottomNavigationItem(
-                        icon = { it.icon },
+                        icon = { Icon(it.icon, contentDescription = null) },
                         selected = currentRoute == it.route,
                         onClick = {
                             navController.navigate(it.route) {
