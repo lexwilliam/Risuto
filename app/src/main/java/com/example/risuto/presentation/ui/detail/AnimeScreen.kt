@@ -1,9 +1,8 @@
 package com.example.risuto.presentation.ui.detail
 
-import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -12,6 +11,7 @@ import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -28,11 +28,15 @@ import com.example.risuto.presentation.ui.component.Chip
 import com.example.risuto.presentation.ui.component.LoadingScreen
 import com.example.risuto.presentation.ui.component.MyAnimePopUp
 import com.example.risuto.presentation.ui.component.NetworkImage
-import com.example.risuto.presentation.util.generateFakeAnimeDetail
-import com.example.risuto.presentation.util.getGenre
-import com.example.risuto.presentation.util.getJpnVoiceActor
+import com.example.risuto.presentation.ui.season.SeasonContent
+import com.example.risuto.presentation.ui.season.SeasonMenu
+import com.example.risuto.presentation.util.*
 import com.example.risuto.presentation.util.intToCurrency
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 
+@ExperimentalMaterialApi
 @Composable
 fun AnimeScreen(
     viewModel: AnimeViewModel = viewModel(),
@@ -40,16 +44,40 @@ fun AnimeScreen(
     navToGenre: (Int) -> Unit
 ) {
     val viewState by viewModel.state.collectAsState()
-    AnimeContent(
-        animeDetail = viewState.animeDetail,
-        animeStaff = viewState.animeStaff,
-        onLoading = viewState.onLoading,
-        insertToMyAnime = viewModel::insertToMyAnime,
-        onBackPressed = { onBackPressed() },
-        navToGenre = navToGenre
+    val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(
+        bottomSheetState = BottomSheetState(BottomSheetValue.Collapsed)
     )
+    val coroutineScope = rememberCoroutineScope()
+
+    BottomSheetScaffold(
+        modifier = Modifier.background(MaterialTheme.colors.background),
+        scaffoldState = bottomSheetScaffoldState,
+        sheetContent = {
+            MyAnimeMenu(
+                insertToMyAnime = viewModel::insertToMyAnime,
+                animeDetail = viewState.animeDetail,
+                onDoneClicked = {
+                    coroutineScope.launch {
+                        bottomSheetScaffoldState.bottomSheetState.collapse()
+                    }
+                }
+            )
+        }
+    ) {
+        AnimeContent(
+            animeDetail = viewState.animeDetail,
+            animeStaff = viewState.animeStaff,
+            onLoading = viewState.onLoading,
+            insertToMyAnime = viewModel::insertToMyAnime,
+            onBackPressed = { onBackPressed() },
+            navToGenre = navToGenre,
+            bottomSheetState = bottomSheetScaffoldState,
+            coroutineScope = coroutineScope
+        )
+    }
 }
 
+@ExperimentalMaterialApi
 @Composable
 fun AnimeContent(
     animeDetail: AnimePresentation,
@@ -57,7 +85,9 @@ fun AnimeContent(
     onLoading: Boolean,
     insertToMyAnime: (MyAnimePresentation) -> Unit,
     onBackPressed: () -> Unit,
-    navToGenre: (Int) -> Unit
+    navToGenre: (Int) -> Unit,
+    bottomSheetState: BottomSheetScaffoldState,
+    coroutineScope: CoroutineScope
 ) {
     if(onLoading){
         LoadingScreen()
@@ -69,34 +99,129 @@ fun AnimeContent(
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            var score = -1
-            var watchStatus = WatchStatus.Default
-            var popUpState by remember { mutableStateOf(false) }
-            if(popUpState) {
-                MyAnimePopUp(
-                    setScore = { score = it },
-                    setWatchStatus = { watchStatus = it },
-                    onDoneClicked = {
-                        val myAnime = MyAnimePresentation(
-                            mal_id = animeDetail.mal_id,
-                            title = animeDetail.title,
-                            image_url = animeDetail.image_url,
-                            myScore = score,
-                            watchStatus = watchStatus
-                        )
-                        insertToMyAnime(myAnime)
-                        popUpState = false
-                    }
-                )
-            }
             AnimeToolBar(
-                onAddPressed = { popUpState = true },
+                onAddPressed = {
+                    coroutineScope.launch {
+                        bottomSheetState.bottomSheetState.expand()
+                    }
+                },
                 onBackPressed = { onBackPressed() }
             )
             AnimeDetail(animeDetail = animeDetail)
             AnimeGenre(animeDetail = animeDetail, navToGenre = { navToGenre(it) })
             AnimeRating(animeDetail = animeDetail)
             CharVoiceActorList(animeStaff = animeStaff)
+        }
+    }
+}
+
+@Composable
+fun MyAnimeMenu(
+    onDoneClicked: () -> Unit,
+    animeDetail: AnimePresentation,
+    insertToMyAnime: (MyAnimePresentation) -> Unit
+) {
+    var score by remember { mutableStateOf(-1) }
+    var watchStateText by remember { mutableStateOf("Plan To Watch")}
+    var watchState by remember { mutableStateOf(WatchStatus.PlanToWatch) }
+    var expandedWatchStatus by remember { mutableStateOf(false) }
+    var expandedScore by remember { mutableStateOf(false) }
+    Column(
+        modifier = Modifier
+            .padding(bottom = 64.dp, top = 24.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Row(modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .height(40.dp)
+                    .background(Color.LightGray)
+                    .clip(MaterialTheme.shapes.medium)
+                    .clickable { expandedScore = true },
+                contentAlignment = Alignment.Center
+            ) {
+                if(score != -1) {
+                    Text(
+                        text = "$score/10",
+                        style = MaterialTheme.typography.subtitle1
+                    )
+                } else {
+                    Text(
+                        text = "Score",
+                        style = MaterialTheme.typography.subtitle1
+                    )
+                }
+                DropdownMenu(expanded = expandedScore, onDismissRequest = { expandedScore = false }) {
+                    for(i in 10 downTo 1) {
+                        DropdownMenuItem(onClick = {
+                            score = i
+                            expandedScore = false
+                        }) {
+                            Text(i.toString())
+                        }
+                    }
+                }
+            }
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .height(40.dp)
+                    .background(Color.LightGray)
+                    .clip(MaterialTheme.shapes.medium)
+                    .clickable { expandedWatchStatus = true },
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = watchStateText,
+                    style = MaterialTheme.typography.subtitle1
+                )
+                DropdownMenu(expanded = expandedWatchStatus, onDismissRequest = { expandedWatchStatus = false }) {
+                    data class WatchStatusAndText(val watchStatus: WatchStatus, val text: String)
+
+                    val watchStatusList = listOf(
+                        WatchStatusAndText(WatchStatus.PlanToWatch, "Plan To Watch"),
+                        WatchStatusAndText(WatchStatus.Completed, "Completed"),
+                        WatchStatusAndText(WatchStatus.Watching, "Watching"),
+                        WatchStatusAndText(WatchStatus.Dropped, "Dropped"),
+                        WatchStatusAndText(WatchStatus.OnHold, "On Hold")
+                    )
+
+                    watchStatusList.forEach {
+                        DropdownMenuItem(onClick = {
+                            watchState = it.watchStatus
+                            watchStateText = it.text
+                            expandedWatchStatus = false
+                        }) {
+                            Text(it.text)
+                        }
+                    }
+                }
+            }
+        }
+        Button(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            onClick = {
+                insertToMyAnime(
+                    MyAnimePresentation(
+                        mal_id = animeDetail.mal_id,
+                        title = animeDetail.title,
+                        image_url = animeDetail.image_url,
+                        myScore = score,
+                        watchStatus = watchState
+                    )
+                )
+                onDoneClicked()
+            }) {
+            Text("Done")
         }
     }
 }

@@ -60,6 +60,7 @@ fun SearchHomeBar(
             .fillMaxWidth()
             .height(48.dp)
             .clip(MaterialTheme.shapes.medium)
+            .background(MaterialTheme.colors.secondary)
             .clickable {
                 navToSearch()
             }

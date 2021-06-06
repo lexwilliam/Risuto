@@ -108,7 +108,7 @@ fun MyAnimeMediumGrid(
                 imageUrl = item.image_url,
                 modifier = Modifier
                     .size(width = 180.dp, height = 240.dp)
-                    .shadow(elevation = 4.dp, shape = MaterialTheme.shapes.large, clip = true)
+                    .shadow(elevation = 4.dp, shape = MaterialTheme.shapes.medium, clip = true)
             )
             Box(modifier = Modifier.background(Color.LightGray)) {
                 Text(text = item.myScore.toString(), color = Color.White)

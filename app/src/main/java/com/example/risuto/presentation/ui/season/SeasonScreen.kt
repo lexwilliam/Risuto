@@ -1,8 +1,6 @@
 package com.example.risuto.presentation.ui.season
 
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -15,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.risuto.data.remote.model.detail.Archive
@@ -42,6 +41,7 @@ fun SeasonScreen(
     val coroutineScope = rememberCoroutineScope()
 
     BottomSheetScaffold(
+        modifier = Modifier.background(MaterialTheme.colors.background),
         scaffoldState = bottomSheetScaffoldState,
         sheetContent = {
             SeasonMenu(
@@ -90,7 +90,6 @@ fun SeasonContent(
             coroutineScope = coroutineScope
         )
         GridList(items = animes, navToDetail = { navToDetail(it)} )
-
     }
 }
 
@@ -188,12 +187,12 @@ fun SeasonMenu(
     var seasonText by remember { mutableStateOf("Season") }
     Column(
         modifier = Modifier
-            .padding(bottom = 64.dp),
+            .padding(bottom = 64.dp, top = 24.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Row(modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp),
+            .padding(horizontal = 16.dp, vertical = 8.dp),
             horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             var seasonExpanded by remember { mutableStateOf(false) }
@@ -201,25 +200,32 @@ fun SeasonMenu(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f)
-                    .height(32.dp)
-                    .background(MaterialTheme.colors.background)
-                    .clip(MaterialTheme.shapes.small)
+                    .height(40.dp)
+                    .background(Color.LightGray)
+                    .clip(MaterialTheme.shapes.medium),
+                contentAlignment = Alignment.Center
             ) {
                 BasicTextField(
                     value = yearText,
                     onValueChange = { yearText = it },
+                    singleLine = true,
+                    textStyle = MaterialTheme.typography.subtitle1
                 )
             }
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f)
-                    .height(32.dp)
-                    .background(MaterialTheme.colors.background)
-                    .clip(MaterialTheme.shapes.small)
-                    .clickable { seasonExpanded = true }
+                    .height(40.dp)
+                    .background(Color.LightGray)
+                    .clip(MaterialTheme.shapes.medium)
+                    .clickable { seasonExpanded = true },
+                contentAlignment = Alignment.Center
             ) {
-                Text(seasonText)
+                Text(
+                    text = seasonText,
+                    style = MaterialTheme.typography.subtitle1
+                )
                 DropdownMenu(expanded = seasonExpanded, onDismissRequest = { seasonExpanded = false }) {
                     allSeason.forEach {
                         DropdownMenuItem(onClick = {
@@ -237,10 +243,10 @@ fun SeasonMenu(
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
             onClick = {
-            if(yearText != "Year" && seasonText != "Season")
-            setSeason("$seasonText $yearText")
-            onDoneClicked()
-        }) {
+                if(yearText != "Year" && seasonText != "Season")
+                    setSeason("$seasonText $yearText")
+                onDoneClicked()
+            }) {
             Text("Done")
         }
     }
