@@ -18,6 +18,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltNavGraphViewModel
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavType
 import androidx.navigation.compose.*
 import com.example.risuto.R
@@ -77,15 +80,18 @@ fun RisutoAppContent() {
                 elevation = 16.dp
             ) {
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
-                val currentRoute = navBackStackEntry?.arguments?.getString(KEY_ROUTE)
+                val currentRoute = navBackStackEntry?.destination
 
-                bottomNavIcons.forEach {
+                bottomNavIcons.forEach { screen ->
                     BottomNavigationItem(
-                        icon = { Icon(it.icon, contentDescription = null) },
-                        selected = currentRoute == it.route,
+                        icon = { Icon(screen.icon, contentDescription = null) },
+                        selected = currentRoute?.hierarchy?.any { it.route == screen.route } == true,
                         onClick = {
-                            navController.navigate(it.route) {
-                                popUpTo = navController.graph.startDestination
+                            navController.navigate(screen.route) {
+                                popUpTo(navController.graph.findStartDestination().id) {
+                                    saveState = true
+                                }
+                                restoreState = true
                                 launchSingleTop = true
                             }
                         }
@@ -96,7 +102,7 @@ fun RisutoAppContent() {
     ) {
         NavHost(navController = navController, startDestination = "home") {
             composable(RisutoHomeScreen.route) {
-                val homeViewModel = hiltNavGraphViewModel<HomeViewModel>()
+                val homeViewModel = hiltViewModel<HomeViewModel>()
                 HomeScreen(
                     viewModel = homeViewModel,
                     navToDetail = { mal_id ->
@@ -121,7 +127,7 @@ fun RisutoAppContent() {
                 )
             }
             composable(RisutoSearchScreen.route) {
-                val searchViewModel = hiltNavGraphViewModel<SearchViewModel>()
+                val searchViewModel = hiltViewModel<SearchViewModel>()
                 SearchScreen(
                     viewModel = searchViewModel,
                     navToDetail = { mal_id ->
@@ -135,7 +141,7 @@ fun RisutoAppContent() {
                 )
             }
             composable(RisutoSeasonScreen.route) {
-                val seasonViewModel = hiltNavGraphViewModel<SeasonViewModel>()
+                val seasonViewModel = hiltViewModel<SeasonViewModel>()
                 SeasonScreen(
                     viewModel = seasonViewModel,
                     navToDetail = { mal_id ->
@@ -154,7 +160,7 @@ fun RisutoAppContent() {
                     }
                 )
             ) {
-                val animeViewModel = hiltNavGraphViewModel<AnimeViewModel>()
+                val animeViewModel = hiltViewModel<AnimeViewModel>()
                 AnimeScreen(
                     viewModel = animeViewModel,
                     onBackPressed = { navController.navigateUp() },
@@ -174,7 +180,7 @@ fun RisutoAppContent() {
                     }
                 )
             ) {
-                val genreViewModel = hiltNavGraphViewModel<GenreViewModel>()
+                val genreViewModel = hiltViewModel<GenreViewModel>()
                 GenreScreen(
                     viewModel = genreViewModel,
                     onBackPressed = { navController.navigateUp() },
@@ -186,7 +192,7 @@ fun RisutoAppContent() {
                 )
             }
             composable(RisutoProfileScreen.route) {
-                val profileViewModel = hiltNavGraphViewModel<ProfileViewModel>()
+                val profileViewModel = hiltViewModel<ProfileViewModel>()
                 ProfileScreen(
                     viewModel = profileViewModel,
                     navToDetail = { mal_id ->
