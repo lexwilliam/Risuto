@@ -2,6 +2,8 @@ package com.example.risuto.presentation.ui.detail
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -68,7 +70,6 @@ fun AnimeScreen(
             animeDetail = viewState.animeDetail,
             animeStaff = viewState.animeStaff,
             onLoading = viewState.onLoading,
-            insertToMyAnime = viewModel::insertToMyAnime,
             onBackPressed = { onBackPressed() },
             navToGenre = navToGenre,
             bottomSheetState = bottomSheetScaffoldState,
@@ -83,7 +84,6 @@ fun AnimeContent(
     animeDetail: AnimePresentation,
     animeStaff: CharacterStaffPresentation,
     onLoading: Boolean,
-    insertToMyAnime: (MyAnimePresentation) -> Unit,
     onBackPressed: () -> Unit,
     navToGenre: (Int) -> Unit,
     bottomSheetState: BottomSheetScaffoldState,
@@ -183,23 +183,13 @@ fun MyAnimeMenu(
                     style = MaterialTheme.typography.subtitle1
                 )
                 DropdownMenu(expanded = expandedWatchStatus, onDismissRequest = { expandedWatchStatus = false }) {
-                    data class WatchStatusAndText(val watchStatus: WatchStatus, val text: String)
-
-                    val watchStatusList = listOf(
-                        WatchStatusAndText(WatchStatus.PlanToWatch, "Plan To Watch"),
-                        WatchStatusAndText(WatchStatus.Completed, "Completed"),
-                        WatchStatusAndText(WatchStatus.Watching, "Watching"),
-                        WatchStatusAndText(WatchStatus.Dropped, "Dropped"),
-                        WatchStatusAndText(WatchStatus.OnHold, "On Hold")
-                    )
-
                     watchStatusList.forEach {
                         DropdownMenuItem(onClick = {
-                            watchState = it.watchStatus
-                            watchStateText = it.text
+                            watchState = it
+                            watchStateText = watchStatusToString(it)
                             expandedWatchStatus = false
                         }) {
-                            Text(it.text)
+                            Text(watchStatusToString(it))
                         }
                     }
                 }
@@ -293,10 +283,10 @@ fun AnimeGenre(
 ) {
     Row(
         modifier = Modifier
-            .padding(start = 16.dp)
             .horizontalScroll(rememberScrollState()),
         verticalAlignment = Alignment.CenterVertically
     ) {
+        Spacer(modifier = Modifier.padding(8.dp))
         Text(text = "Genre: ", style = MaterialTheme.typography.subtitle1)
         animeDetail.genres.forEach { genre ->
             genre.name?.let { Chip(modifier = Modifier.padding(end = 8.dp), text = it,
@@ -350,19 +340,16 @@ fun AnimeRating(
 fun CharVoiceActorList(
     animeStaff: CharacterStaffPresentation
 ) {
-    Column(
-        modifier = Modifier.padding(start = 16.dp)
-    ) {
-        Text(text = "Voice Actor", style = MaterialTheme.typography.h6, fontWeight = FontWeight.Bold)
-        Row(
-            modifier = Modifier
-                .horizontalScroll(rememberScrollState()),
-            horizontalArrangement = Arrangement.spacedBy(2.dp)
+    Column {
+        Text(modifier = Modifier.padding(start = 16.dp), text = "Voice Actor", style = MaterialTheme.typography.h6, fontWeight = FontWeight.Bold)
+        LazyRow(
+            horizontalArrangement = Arrangement.spacedBy(2.dp),
+            contentPadding = PaddingValues(start = 16.dp)
         ) {
-            animeStaff.characters.forEach {
-                Column {
+            items(items = animeStaff.characters) { item ->
+                Column() {
                     NetworkImage(
-                        imageUrl = it.image_url,
+                        imageUrl = item.image_url,
                         modifier = Modifier
                             .size(width = 80.dp, height = 100.dp)
                     )
@@ -371,14 +358,14 @@ fun CharVoiceActorList(
                         color = Color.Transparent
                     ) {
                         Text(
-                            text = it.name + "\n",
+                            text = item.name + "\n",
                             maxLines = 2, overflow = TextOverflow.Ellipsis,
                             style = MaterialTheme.typography.caption
                         )
                     }
                     Spacer(modifier = Modifier.padding(2.dp))
                     NetworkImage(
-                        imageUrl = getJpnVoiceActor(it.voice_actors).image_url,
+                        imageUrl = getJpnVoiceActor(item.voice_actors).image_url,
                         modifier = Modifier
                             .size(width = 80.dp, height = 100.dp)
                     )
@@ -387,7 +374,7 @@ fun CharVoiceActorList(
                         color = Color.Transparent
                     ) {
                         Text(
-                            text = getJpnVoiceActor(it.voice_actors).name + "\n",
+                            text = getJpnVoiceActor(item.voice_actors).name + "\n",
                             maxLines = 2, overflow = TextOverflow.Ellipsis,
                             style = MaterialTheme.typography.caption
                         )

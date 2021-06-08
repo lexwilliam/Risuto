@@ -55,15 +55,16 @@ fun SearchHomeContent(
 fun SearchHomeBar(
     navToSearch: () -> Unit
 ) {
-    Surface(
+    Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(48.dp)
             .clip(MaterialTheme.shapes.medium)
-            .background(MaterialTheme.colors.secondary)
+            .background(MaterialTheme.colors.surface)
             .clickable {
                 navToSearch()
-            }
+            },
+        contentAlignment = Alignment.CenterStart
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(4.dp),

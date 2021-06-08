@@ -11,7 +11,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.risuto.presentation.model.AnimeListPresentation
-import com.example.risuto.presentation.model.MyAnimePresentation
 import com.example.risuto.presentation.util.generateFakeItemList
 
 @ExperimentalFoundationApi
@@ -30,27 +29,6 @@ fun GridList(
         ) {
             items(items = items) { item ->
                 MediumGrid(item = item, modifier = Modifier.padding(top = 16.dp, end = 16.dp), navToDetail = { navToDetail(it) })
-            }
-        }
-    }
-}
-
-@ExperimentalFoundationApi
-@Composable
-fun MyAnimeGridList(
-    modifier: Modifier = Modifier,
-    items: List<MyAnimePresentation>,
-    navToDetail: (Int) -> Unit
-) {
-    if(items.isEmpty()) {
-        LoadingScreen()
-    } else {
-        LazyVerticalGrid(
-            modifier = modifier.padding(start = 16.dp),
-            cells = GridCells.Adaptive(minSize = 136.dp),
-        ) {
-            items(items = items) { item ->
-                MyAnimeMediumGrid(item = item, modifier = Modifier.padding(top = 16.dp, end = 16.dp), navToDetail = { navToDetail(it) })
             }
         }
     }

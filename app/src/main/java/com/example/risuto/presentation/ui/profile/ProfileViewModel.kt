@@ -1,7 +1,9 @@
 package com.example.risuto.presentation.ui.profile
 
 import com.chun2maru.risutomvvm.presentation.mapper.toPresentation
+import com.example.risuto.data.local.model.WatchStatus
 import com.example.risuto.domain.usecase.local.GetMyAnimesUseCase
+import com.example.risuto.domain.usecase.local.GetMyAnimesWithWatchStatusUseCase
 import com.example.risuto.presentation.base.BaseViewModel
 import com.example.risuto.presentation.model.MyAnimePresentation
 import com.example.risuto.presentation.util.ExceptionHandler
@@ -16,7 +18,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ProfileViewModel
 @Inject constructor(
-    private val getMyAnimesUseCase: GetMyAnimesUseCase
+    private val getMyAnimesUseCase: GetMyAnimesUseCase,
+    private val getMyAnimesWithWatchStatusUseCase: GetMyAnimesWithWatchStatusUseCase
 ) : BaseViewModel() {
 
     override val coroutineExceptionHandler= CoroutineExceptionHandler { _, exception ->

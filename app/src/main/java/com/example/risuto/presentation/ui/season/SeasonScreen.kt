@@ -81,7 +81,9 @@ fun SeasonContent(
     setSeason: (String) -> Unit,
     navToDetail: (Int) -> Unit
 ) {
-    Column {
+    Column(
+        modifier = Modifier.padding(bottom = 64.dp)
+    ) {
         SeasonToolBar(
             year = year,
             season = season,

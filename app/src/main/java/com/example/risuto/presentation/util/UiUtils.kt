@@ -1,6 +1,8 @@
 package com.example.risuto.presentation.util
 
 import android.annotation.SuppressLint
+import androidx.compose.ui.graphics.Color
+import com.example.risuto.data.local.model.WatchStatus
 import com.example.risuto.data.remote.model.detail.VoiceActor
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
@@ -16,6 +18,39 @@ private val seasons = arrayListOf(
     "winter", "winter", "spring","spring", "spring", "summer",
     "summer", "summer", "fall", "fall", "fall", "winter"
 )
+
+data class WatchStatusUi(val watchStatus: WatchStatus, val text: String)
+
+val watchStatusList = listOf(
+    WatchStatus.PlanToWatch,
+    WatchStatus.Completed,
+    WatchStatus.Watching,
+    WatchStatus.Dropped,
+    WatchStatus.OnHold
+)
+
+fun watchStatusToString(watchStatus: WatchStatus): String {
+    return when(watchStatus) {
+        WatchStatus.PlanToWatch -> "Plan To Watch"
+        WatchStatus.OnHold -> "On Hold"
+        WatchStatus.Completed -> "Completed"
+        WatchStatus.Watching -> "Watching"
+        WatchStatus.Dropped -> "Dropped"
+        else -> "Default"
+    }
+}
+
+fun getWatchStatusColor(watchStatus: WatchStatus): Color {
+    return when(watchStatus) {
+        WatchStatus.PlanToWatch -> Color.LightGray
+        WatchStatus.OnHold -> Color.Yellow
+        WatchStatus.Completed -> Color.Blue
+        WatchStatus.Watching -> Color.Green
+        WatchStatus.Dropped -> Color.Red
+        else -> Color.Transparent
+    }
+
+}
 
 val allSeason = arrayListOf("Winter", "Spring", "Summer", "Fall")
 

@@ -3,6 +3,7 @@ package com.example.risuto.data.local.repository
 import com.example.risuto.data.local.Results
 import com.example.risuto.data.local.dao.MyAnimeDao
 import com.example.risuto.data.local.mapper.toDomain
+import com.example.risuto.data.local.model.WatchStatus
 import com.example.risuto.domain.model.MyAnime
 import com.example.risuto.domain.repository.IMyAnimeRepository
 import kotlinx.coroutines.flow.Flow
@@ -15,6 +16,11 @@ class MyAnimeRepository
 ): IMyAnimeRepository {
     override suspend fun getMyAnimes(): Flow<List<MyAnime>> = flow {
         val animes = myAnimeDao.getMyAnimes()
+        emit(animes.map {it.toDomain()})
+    }
+
+    override suspend fun getMyAnimeWithWatchStatus(watchStatus: WatchStatus): Flow<List<MyAnime>> = flow{
+        val animes = myAnimeDao.getMyAnimeWithWatchStatus(watchStatus)
         emit(animes.map {it.toDomain()})
     }
 

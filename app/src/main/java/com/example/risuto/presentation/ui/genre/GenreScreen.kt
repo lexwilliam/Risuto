@@ -48,7 +48,7 @@ fun GenreContent(
         LoadingScreen()
     } else {
         var listType by remember { mutableStateOf(ListType.GridList) }
-        Column {
+        Column(modifier = Modifier.padding(bottom = 64.dp)) {
             TopAppBar(
                 title = {
                     Text(text = genreList[genreId])

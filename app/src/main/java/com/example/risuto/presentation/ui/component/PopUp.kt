@@ -25,7 +25,7 @@ fun MyAnimePopUp(
         ) {
             Column(modifier = Modifier.padding(16.dp)){
                 var score by remember { mutableStateOf(-1) }
-                var watchState by remember { mutableStateOf(WatchStatus.Default) }
+                var watchState by remember { mutableStateOf(WatchStatus.PlanToWatch) }
                 var expandedWatchStatus by remember { mutableStateOf(false) }
                 var expandedScore by remember { mutableStateOf(false) }
                 Button(

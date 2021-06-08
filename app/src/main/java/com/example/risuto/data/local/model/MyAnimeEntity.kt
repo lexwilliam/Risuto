@@ -16,5 +16,5 @@ data class MyAnimeEntity(
 )
 
 enum class WatchStatus{
-    Completed, Watching, PlanToWatch, Dropped, OnHold, Default
+    Completed, Watching, PlanToWatch, Dropped, OnHold
 }

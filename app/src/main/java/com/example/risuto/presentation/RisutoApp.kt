@@ -6,10 +6,7 @@ import android.view.Window
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.graphics.toArgb
@@ -62,14 +59,15 @@ fun RisutoAppContent() {
 
     data class BottomNavItem(
         val icon: ImageVector,
-        val route: String
+        val route: String,
+        val description: String
     )
 
     val bottomNavIcons = listOf(
-        BottomNavItem(Icons.Filled.Home, RisutoHomeScreen.route),
-        BottomNavItem(Icons.Filled.Search, RisutoSearchHomeScreen.route),
-        BottomNavItem(Icons.Filled.Check, RisutoSeasonScreen.route),
-        BottomNavItem(Icons.Filled.Person, RisutoProfileScreen.route)
+        BottomNavItem(Icons.Filled.Home, RisutoHomeScreen.route, "Home"),
+        BottomNavItem(Icons.Filled.Search, RisutoSearchHomeScreen.route, "Search"),
+        BottomNavItem(Icons.Default.DateRange, RisutoSeasonScreen.route, "Season"),
+        BottomNavItem(Icons.Filled.Person, RisutoProfileScreen.route, "Profile")
     )
 
     Scaffold(
@@ -94,7 +92,8 @@ fun RisutoAppContent() {
                                 restoreState = true
                                 launchSingleTop = true
                             }
-                        }
+                        },
+                        label = { Text(screen.description) }
                     )
                 }
             }

@@ -91,39 +91,6 @@ fun MediumGrid(
     }
 }
 
-@Composable
-fun MyAnimeMediumGrid(
-    modifier: Modifier = Modifier,
-    item: MyAnimePresentation,
-    navToDetail: (Int) -> Unit
-) {
-    Column(
-        modifier = modifier
-            .clickable {
-                navToDetail(item.mal_id)
-            }
-    ) {
-        Box(contentAlignment = Alignment.TopEnd) {
-            NetworkImage(
-                imageUrl = item.image_url,
-                modifier = Modifier
-                    .size(width = 180.dp, height = 240.dp)
-                    .shadow(elevation = 4.dp, shape = MaterialTheme.shapes.medium, clip = true)
-            )
-            Box(modifier = Modifier.background(Color.LightGray)) {
-                Text(text = item.myScore.toString(), color = Color.White)
-            }
-        }
-        Text(text = item.title,
-            maxLines = 2,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.padding(top = 4.dp),
-            style = MaterialTheme.typography.subtitle1,
-            fontWeight = FontWeight.Bold
-        )
-    }
-}
-
 @Preview
 @Composable
 fun SmallGridPreview() {
