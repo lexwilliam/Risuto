@@ -4,8 +4,6 @@ import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import com.chun2maru.risutomvvm.presentation.mapper.toPresentation
 import com.example.risuto.data.local.Results
-import com.example.risuto.data.local.model.WatchStatus
-import com.example.risuto.domain.model.MyAnime
 import com.example.risuto.domain.usecase.local.InsertAnimeHistoryUseCase
 import com.example.risuto.domain.usecase.local.InsertMyAnimeUseCase
 import com.example.risuto.domain.usecase.remote.GetAnimeUseCase
@@ -96,11 +94,7 @@ class AnimeViewModel
         insertMyAnimeJob?.cancel()
         insertMyAnimeJob = launchCoroutine {
             insertMyAnimeUseCase.invoke(myAnime.toDomain()).collect { result ->
-                if(result == Results.SUCCESS) {
-                    Log.d("TAG", "Saving Success")
-                } else {
-                    Log.d("TAG", "Saving Failed")
-                }
+                Log.d("TAG", result.toString())
             }
         }
     }

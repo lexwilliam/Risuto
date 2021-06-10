@@ -3,6 +3,7 @@ package com.example.risuto.data.local.repository
 import com.example.risuto.data.local.Results
 import com.example.risuto.data.local.dao.MyAnimeDao
 import com.example.risuto.data.local.mapper.toDomain
+import com.example.risuto.data.local.mapper.toEntity
 import com.example.risuto.data.local.model.WatchStatus
 import com.example.risuto.domain.model.MyAnime
 import com.example.risuto.domain.repository.IMyAnimeRepository
@@ -24,13 +25,19 @@ class MyAnimeRepository
         emit(animes.map {it.toDomain()})
     }
 
-    override suspend fun deleteMyAnime(malId: Int): Flow<Int> = flow {
-        val affectedAnime = myAnimeDao.deleteMyAnime(malId)
+    override suspend fun deleteMyAnime(myAnime: MyAnime): Flow<Int> = flow {
+        val affectedAnime = myAnimeDao.deleteMyAnime(myAnime.toEntity())
         emit(affectedAnime)
     }
 
-    override suspend fun insert(myAnime: MyAnime): Flow<Results> = flow {
-        val result = myAnimeDao.insert(myAnime)
-        emit(result)
+    override suspend fun insert(myAnime: MyAnime): Flow<Long> = flow {
+        val animes = myAnimeDao.getMyAnimes()
+        if(animes.contains(myAnime.toEntity())) {
+            val result = myAnimeDao.updateMyAnime(myAnime.toEntity())
+            emit(-1)
+        } else {
+            val result = myAnimeDao.insert(myAnime.toEntity())
+            emit(result)
+        }
     }
 }

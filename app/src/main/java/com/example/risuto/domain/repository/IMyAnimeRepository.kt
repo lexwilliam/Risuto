@@ -11,8 +11,8 @@ interface IMyAnimeRepository {
 
     suspend fun getMyAnimeWithWatchStatus(watchStatus: WatchStatus): Flow<List<MyAnime>>
 
-    suspend fun deleteMyAnime(malId: Int): Flow<Int>
+    suspend fun deleteMyAnime(myAnime: MyAnime): Flow<Int>
 
-    suspend fun insert(myAnime: MyAnime): Flow<Results>
+    suspend fun insert(myAnime: MyAnime): Flow<Long>
 
 }

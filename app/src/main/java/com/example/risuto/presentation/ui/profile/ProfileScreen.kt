@@ -75,6 +75,16 @@ fun MyAnimeRow(
                 style = MaterialTheme.typography.subtitle1,
                 fontWeight = FontWeight.Bold
             )
+            Text(
+                text = item.myScore.toString(),
+                style = MaterialTheme.typography.subtitle1,
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                text = watchStatusToString(item.watchStatus),
+                style = MaterialTheme.typography.subtitle1,
+                fontWeight = FontWeight.Bold
+            )
         }
     }
 }

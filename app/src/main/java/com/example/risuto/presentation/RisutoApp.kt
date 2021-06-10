@@ -86,10 +86,7 @@ fun RisutoAppContent() {
                         selected = currentRoute?.hierarchy?.any { it.route == screen.route } == true,
                         onClick = {
                             navController.navigate(screen.route) {
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
-                                }
-                                restoreState = true
+                                popUpTo(navController.graph.findStartDestination().id)
                                 launchSingleTop = true
                             }
                         },

@@ -5,9 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "myAnime")
 data class MyAnimeEntity(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
-    val mal_id : Int,
+    @PrimaryKey val mal_id : Int,
     val image_url : String,
     val title : String,
     val myScore: Int,

@@ -1,7 +1,6 @@
 package com.example.risuto.presentation.ui.profile
 
 import com.chun2maru.risutomvvm.presentation.mapper.toPresentation
-import com.example.risuto.data.local.model.WatchStatus
 import com.example.risuto.domain.usecase.local.GetMyAnimesUseCase
 import com.example.risuto.domain.usecase.local.GetMyAnimesWithWatchStatusUseCase
 import com.example.risuto.presentation.base.BaseViewModel

@@ -7,19 +7,19 @@ import kotlinx.coroutines.flow.Flow
 
 interface IHistoryRepository {
 
-    fun getSearchHistory(): Flow<List<SearchHistory>>
+    suspend fun getSearchHistory(): Flow<List<SearchHistory>>
 
-    fun getAnimeHistory(): Flow<List<AnimeHistory>>
+    suspend fun getAnimeHistory(): Flow<List<AnimeHistory>>
 
-    fun deleteSearchByTitle(query: String): Flow<Int>
+    suspend fun deleteSearchHistory(query: String): Flow<Int>
 
-    fun deleteAllSearch(): Flow<Int>
+    suspend fun deleteAllSearch(): Flow<Int>
 
-    fun deleteAnimeByTitle(title: String): Flow<Int>
+    suspend fun deleteAnimeByTitle(title: String): Flow<Int>
 
-    fun deleteAllAnime(): Flow<Int>
+    suspend fun deleteAllAnime(): Flow<Int>
 
-    fun insertSearch(search: SearchHistory): Flow<Results>
+    suspend fun insertSearch(search: SearchHistory): Flow<Results>
 
-    fun insertAnime(anime: AnimeHistory): Flow<Results>
+    suspend fun insertAnime(anime: AnimeHistory): Flow<Results>
 }
