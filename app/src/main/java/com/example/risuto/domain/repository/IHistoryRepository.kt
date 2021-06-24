@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface IHistoryRepository {
 
-    suspend fun getSearchHistory(): Flow<List<SearchHistory>>
+    fun getSearchHistory(): Flow<List<SearchHistory>>
 
     suspend fun getAnimeHistory(): Flow<List<AnimeHistory>>
 

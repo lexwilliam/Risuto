@@ -28,6 +28,7 @@ class SearchViewModel
         private val getAllSearchHistoryUseCase: GetAllSearchHistoryUseCase,
         private val insertSearchHistoryUseCase: InsertSearchHistoryUseCase,
         private val deleteSearchHistoryUseCase: DeleteSearchHistoryUseCase,
+        private val deleteAllSearchHistoryUseCase: DeleteAllSearchHistoryUseCase,
         private val getAllAnimeHistoryUseCase: GetAllAnimeHistoryUseCase,
         private val deleteAnimeHistoryUseCase: DeleteAnimeHistoryUseCase,
         private val savedStateHandle: SavedStateHandle,
@@ -39,11 +40,9 @@ class SearchViewModel
     }
 
     private var searchJob: Job? = null
-    private var getAllSearchJob: Job? = null
-    private var insertSearchJob: Job? = null
-    private var deleteSearchJob: Job? = null
-    private var getAllAnimeJob: Job? = null
-    private var deleteAnimeJob: Job? = null
+    private var getJob: Job? = null
+    private var insertJob: Job? = null
+    private var deleteJob: Job? = null
 
     override fun onCleared() {
         super.onCleared()
@@ -89,13 +88,13 @@ class SearchViewModel
     }
 
     private fun loadHistory() {
-        getAllSearchJob = launchCoroutine {
+        getJob = launchCoroutine {
             getAllSearchHistoryUseCase.invoke().collect { results ->
                 val history = results.map { it.toPresentation() }
                 _state.value = _state.value.copy(searchHistory = history)
             }
         }
-        getAllAnimeJob = launchCoroutine {
+        getJob = launchCoroutine {
             getAllAnimeHistoryUseCase.invoke().collect { results ->
                 val history = results.map { it.toPresentation() }
                 _state.value = _state.value.copy(animeHistory = history)
@@ -104,7 +103,7 @@ class SearchViewModel
     }
 
     fun insertSearchHistory(query: SearchHistoryPresentation) {
-        insertSearchJob = launchCoroutine {
+        insertJob = launchCoroutine {
             insertSearchHistoryUseCase.invoke(query.toDomain()).collect { result ->
                 if(result == Results.SUCCESS) {
                     Log.d("TAG", "Saving Success")
@@ -115,14 +114,32 @@ class SearchViewModel
         }
     }
 
+    fun deleteAllSearchHistory() {
+        deleteJob = launchCoroutine {
+            deleteAllSearchHistoryUseCase.invoke().collect { result ->
+                if(result == -1) run {
+                    Log.d("TAG", "Delete Failed")
+                } else {
+                    Log.d("TAG", "Delete Success")
+                }
+            }
+        }
+    }
+
     fun deleteSearchHistory(query: String) {
-        deleteSearchJob = launchCoroutine {
-            deleteSearchHistoryUseCase.invoke(query)
+        deleteJob = launchCoroutine {
+            deleteSearchHistoryUseCase.invoke(query).collect { result ->
+                if(result == -1) run {
+                    Log.d("TAG", "Delete Failed")
+                } else {
+                    Log.d("TAG", "Delete Success")
+                }
+            }
         }
     }
 
     fun deleteAnimeHistory(title: String) {
-        deleteAnimeJob = launchCoroutine {
+        deleteJob = launchCoroutine {
             deleteAnimeHistoryUseCase.invoke(title)
         }
     }

@@ -1,19 +1,24 @@
 package com.example.risuto.data.local.repository
 
+import android.util.Log
 import com.example.risuto.data.local.Results
 import com.example.risuto.data.local.dao.HistoryDao
 import com.example.risuto.data.local.mapper.toDomain
+import com.example.risuto.data.local.mapper.toEntity
+import com.example.risuto.data.local.model.SearchHistoryEntity
 import com.example.risuto.domain.model.AnimeHistory
 import com.example.risuto.domain.model.SearchHistory
 import com.example.risuto.domain.repository.IHistoryRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 
 class HistoryRepository(private val historyDao: HistoryDao): IHistoryRepository {
 
-    override suspend fun getSearchHistory(): Flow<List<SearchHistory>> = flow {
-        val searches = historyDao.getSearchHistory()
-        emit(searches.map { it.toDomain() })
+    override fun getSearchHistory(): Flow<List<SearchHistory>> = flow {
+        historyDao.getSearchHistory().collect {
+            emit(it.map { it.toDomain() })
+        }
     }
 
     override suspend fun getAnimeHistory(): Flow<List<AnimeHistory>> = flow {

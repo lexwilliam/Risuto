@@ -1,5 +1,6 @@
 package com.example.risuto.presentation.ui.search
 
+import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
@@ -10,6 +11,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -50,6 +52,8 @@ fun SearchScreen(
         animeHistory = viewState.animeHistory,
         onSearchAnime = viewModel::onSearchAnime,
         insertSearchHistory = viewModel::insertSearchHistory,
+        deleteSearchHistory = viewModel::deleteSearchHistory,
+        deleteAllSearchHistory = viewModel::deleteAllSearchHistory,
         getQuery = viewModel::getQuery,
         query = query,
         onQueryChanged = { query = it },
@@ -68,6 +72,8 @@ fun SearchContent(
     animeHistory: List<AnimeListPresentation>,
     onSearchAnime: () -> Unit,
     insertSearchHistory: (SearchHistoryPresentation) -> Unit,
+    deleteSearchHistory: (String) -> Unit,
+    deleteAllSearchHistory: () -> Unit,
     getQuery: (QuerySearch) -> Unit,
 
     query: String,
@@ -104,19 +110,22 @@ fun SearchContent(
         )
         when(resultState){
             ResultType.FullResult -> {
-                keyboardController?.hideSoftwareKeyboard()
+                keyboardController?.hide()
                 getQuery(QuerySearch(limit = null))
                 GridList(items = items, navToDetail = { navToDetail(it) })
             }
             ResultType.Result -> {
-                QueryList(items = items.map { it.title }, onSelectItem = {
-                    onQueryChanged(it)
-                    getQuery(QuerySearch(q = it))
+                QueryList(
+                    items = items.map { SearchHistoryPresentation(query = it.title) },
+                    onSelectItem = {
+                    onQueryChanged(it.query)
+                    getQuery(QuerySearch(q = it.query))
                     onSearchAnime()
-                    insertSearchHistory(SearchHistoryPresentation(query = it))
+                    insertSearchHistory(SearchHistoryPresentation(query = it.query))
                     cursorColor = Color.Transparent
                     onResultChange(ResultType.FullResult)
-                })
+                    }
+                )
             }
             ResultType.History -> {
                 Column(
@@ -124,14 +133,38 @@ fun SearchContent(
                         .padding(top = 16.dp, start = 16.dp, end = 16.dp, bottom = 64.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Text(text = "Recent Search")
-                    QueryList(items = searchHistory.map { it.query }, onSelectItem = {
-                        onQueryChanged(it)
-                        getQuery(QuerySearch(q = it))
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        Text(
+                            modifier = Modifier
+                                .weight(1f)
+                                .wrapContentWidth(Alignment.Start),
+                            text = "Recent Search",
+                            style = MaterialTheme.typography.subtitle2
+                        )
+                        Text(
+                            modifier = Modifier
+                                .clickable {
+                                    deleteAllSearchHistory()
+                                }
+                                .weight(1f)
+                                .wrapContentWidth(Alignment.End),
+                            text = "Delete All", color = Color.Red,
+                            style = MaterialTheme.typography.subtitle2
+                        )
+                    }
+                    QueryListWithDelete(
+                        items = searchHistory.map { SearchHistoryPresentation(query = it.query) },
+                        onSelectItem = {
+                        onQueryChanged(it.query)
+                        getQuery(QuerySearch(q = it.query))
                         onSearchAnime()
                         onResultChange(ResultType.FullResult)
                         cursorColor = Color.Transparent
-                    })
+                        },
+                        onDeleteItem = {
+                            deleteSearchHistory(it)
+                        }
+                    )
                     Text(text = "History")
                     HorizontalGridList(items = animeHistory, navToDetail = { navToDetail(it) })
                 }
@@ -213,8 +246,8 @@ fun SearchBar(
 
 @Composable
 fun QueryList(
-    items: List<String>,
-    onSelectItem: (String) -> Unit
+    items: List<SearchHistoryPresentation>,
+    onSelectItem: (SearchHistoryPresentation) -> Unit
 ) {
     Column(
     ) {
@@ -222,17 +255,53 @@ fun QueryList(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 4.dp)
+                    .padding(vertical = 4.dp, horizontal = 8.dp)
                     .height(40.dp)
-                    .clickable {
-                        onSelectItem(item)
-                    },
+                    .clickable { onSelectItem(item) },
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                Icon(Icons.Default.Search, contentDescription = null, tint = MaterialTheme.colors.surface)
+                Text(text = item.query, style = MaterialTheme.typography.subtitle2)
+            }
+        }
+    }
+}
+
+@Composable
+fun QueryListWithDelete(
+    items: List<SearchHistoryPresentation>,
+    onSelectItem: (SearchHistoryPresentation) -> Unit,
+    onDeleteItem: (String) -> Unit
+) {
+    Column(
+    ) {
+        items.forEach { item ->
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 4.dp, horizontal = 8.dp)
+                    .height(40.dp)
+                    .clickable { onSelectItem(item) },
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Spacer(modifier = Modifier.padding(4.dp))
-                Icon(Icons.Default.Search, contentDescription = null, tint = MaterialTheme.colors.surface)
-                Spacer(modifier = Modifier.padding(4.dp))
-                Text(text = item, style = MaterialTheme.typography.subtitle2)
+                Icon(modifier = Modifier
+                    .wrapContentWidth(Alignment.Start)
+                    .weight(1f), imageVector = Icons.Default.Search, contentDescription = null, tint = MaterialTheme.colors.surface)
+                Text(modifier = Modifier
+                    .wrapContentWidth(Alignment.Start)
+                    .weight(4f), text = item.query, style = MaterialTheme.typography.subtitle2)
+                IconButton(
+                    modifier = Modifier
+                        .weight(1f)
+                        .wrapContentWidth(Alignment.End),
+                    onClick = { onDeleteItem(item.query) }) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = null,
+                        tint = MaterialTheme.colors.surface
+                    )
+                }
             }
         }
     }

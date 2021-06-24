@@ -1,5 +1,6 @@
 package com.example.risuto.presentation.mapper
 
+import android.util.Log
 import com.example.risuto.data.local.model.WatchStatus
 import com.example.risuto.domain.model.AnimeHistory
 import com.example.risuto.domain.model.MyAnime
@@ -10,7 +11,7 @@ import com.example.risuto.presentation.model.MyAnimePresentation
 import com.example.risuto.presentation.model.SearchHistoryPresentation
 
 internal fun SearchHistoryPresentation.toDomain(): SearchHistory {
-    return SearchHistory(query = query)
+    return SearchHistory(query)
 }
 
 internal fun AnimePresentation.toDomain(): AnimeHistory{

@@ -22,6 +22,6 @@ interface MyAnimeDao {
     @Update
     suspend fun updateMyAnime(myAnime: MyAnimeEntity): Int
 
-    @Insert(onConflict =  OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(myAnimeEntity: MyAnimeEntity): Long
 }
