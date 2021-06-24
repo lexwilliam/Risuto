@@ -9,7 +9,7 @@ interface IHistoryRepository {
 
     fun getSearchHistory(): Flow<List<SearchHistory>>
 
-    suspend fun getAnimeHistory(): Flow<List<AnimeHistory>>
+    fun getAnimeHistory(): Flow<List<AnimeHistory>>
 
     suspend fun deleteSearchHistory(query: String): Flow<Int>
 

@@ -54,6 +54,8 @@ fun SearchScreen(
         insertSearchHistory = viewModel::insertSearchHistory,
         deleteSearchHistory = viewModel::deleteSearchHistory,
         deleteAllSearchHistory = viewModel::deleteAllSearchHistory,
+        deleteAnimeHistory = viewModel::deleteAnimeHistory,
+        deleteAllAnimeHistory = viewModel::deleteAllAnimeHistory,
         getQuery = viewModel::getQuery,
         query = query,
         onQueryChanged = { query = it },
@@ -74,6 +76,8 @@ fun SearchContent(
     insertSearchHistory: (SearchHistoryPresentation) -> Unit,
     deleteSearchHistory: (String) -> Unit,
     deleteAllSearchHistory: () -> Unit,
+    deleteAnimeHistory: (String) -> Unit,
+    deleteAllAnimeHistory: () -> Unit,
     getQuery: (QuerySearch) -> Unit,
 
     query: String,
@@ -133,40 +137,63 @@ fun SearchContent(
                         .padding(top = 16.dp, start = 16.dp, end = 16.dp, bottom = 64.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Row(modifier = Modifier.fillMaxWidth()) {
-                        Text(
-                            modifier = Modifier
-                                .weight(1f)
-                                .wrapContentWidth(Alignment.Start),
-                            text = "Recent Search",
-                            style = MaterialTheme.typography.subtitle2
-                        )
-                        Text(
-                            modifier = Modifier
-                                .clickable {
-                                    deleteAllSearchHistory()
-                                }
-                                .weight(1f)
-                                .wrapContentWidth(Alignment.End),
-                            text = "Delete All", color = Color.Red,
-                            style = MaterialTheme.typography.subtitle2
+                    if(animeHistory.isNotEmpty()) {
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            Text(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .wrapContentWidth(Alignment.Start),
+                                text = "History",
+                                style = MaterialTheme.typography.subtitle2
+                            )
+                            Text(
+                                modifier = Modifier
+                                    .clickable {
+                                        deleteAllAnimeHistory()
+                                    }
+                                    .weight(1f)
+                                    .wrapContentWidth(Alignment.End),
+                                text = "Delete All", color = Color.Red,
+                                style = MaterialTheme.typography.subtitle2
+                            )
+                        }
+                        HorizontalGridList(items = animeHistory, navToDetail = { navToDetail(it) })
+                    }
+                    if(searchHistory.isNotEmpty()) {
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            Text(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .wrapContentWidth(Alignment.Start),
+                                text = "Recent Search",
+                                style = MaterialTheme.typography.subtitle2
+                            )
+                            Text(
+                                modifier = Modifier
+                                    .clickable {
+                                        deleteAllSearchHistory()
+                                    }
+                                    .weight(1f)
+                                    .wrapContentWidth(Alignment.End),
+                                text = "Delete All", color = Color.Red,
+                                style = MaterialTheme.typography.subtitle2
+                            )
+                        }
+                        QueryListWithDelete(
+                            items = searchHistory.map { SearchHistoryPresentation(query = it.query) },
+                            onSelectItem = {
+                                onQueryChanged(it.query)
+                                getQuery(QuerySearch(q = it.query))
+                                onSearchAnime()
+                                onResultChange(ResultType.FullResult)
+                                cursorColor = Color.Transparent
+                            },
+                            onDeleteItem = {
+                                deleteSearchHistory(it)
+                            }
                         )
                     }
-                    QueryListWithDelete(
-                        items = searchHistory.map { SearchHistoryPresentation(query = it.query) },
-                        onSelectItem = {
-                        onQueryChanged(it.query)
-                        getQuery(QuerySearch(q = it.query))
-                        onSearchAnime()
-                        onResultChange(ResultType.FullResult)
-                        cursorColor = Color.Transparent
-                        },
-                        onDeleteItem = {
-                            deleteSearchHistory(it)
-                        }
-                    )
-                    Text(text = "History")
-                    HorizontalGridList(items = animeHistory, navToDetail = { navToDetail(it) })
+
                 }
             }
         }

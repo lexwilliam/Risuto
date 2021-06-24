@@ -29,8 +29,9 @@ class SearchViewModel
         private val insertSearchHistoryUseCase: InsertSearchHistoryUseCase,
         private val deleteSearchHistoryUseCase: DeleteSearchHistoryUseCase,
         private val deleteAllSearchHistoryUseCase: DeleteAllSearchHistoryUseCase,
-        private val getAllAnimeHistoryUseCase: GetAllAnimeHistoryUseCase,
         private val deleteAnimeHistoryUseCase: DeleteAnimeHistoryUseCase,
+        private val deleteAllAnimeHistoryUseCase: DeleteAllAnimeHistoryUseCase,
+        private val getAllAnimeHistoryUseCase: GetAllAnimeHistoryUseCase,
         private val savedStateHandle: SavedStateHandle,
     ): BaseViewModel() {
 
@@ -138,9 +139,27 @@ class SearchViewModel
         }
     }
 
+    fun deleteAllAnimeHistory() {
+        deleteJob = launchCoroutine {
+            deleteAllAnimeHistoryUseCase.invoke().collect { result ->
+                if(result == -1) run {
+                    Log.d("TAG", "Delete Failed")
+                } else {
+                    Log.d("TAG", "Delete Success")
+                }
+            }
+        }
+    }
+
     fun deleteAnimeHistory(title: String) {
         deleteJob = launchCoroutine {
-            deleteAnimeHistoryUseCase.invoke(title)
+            deleteAnimeHistoryUseCase.invoke(title).collect { result ->
+                if(result == -1) run {
+                    Log.d("TAG", "Delete Failed")
+                } else {
+                    Log.d("TAG", "Delete Success")
+                }
+            }
         }
     }
 }

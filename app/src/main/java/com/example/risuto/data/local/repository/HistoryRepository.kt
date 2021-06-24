@@ -21,9 +21,10 @@ class HistoryRepository(private val historyDao: HistoryDao): IHistoryRepository 
         }
     }
 
-    override suspend fun getAnimeHistory(): Flow<List<AnimeHistory>> = flow {
-        val animes = historyDao.getAnimeHistory()
-        emit(animes.map { it.toDomain() })
+    override fun getAnimeHistory(): Flow<List<AnimeHistory>> = flow {
+        historyDao.getAnimeHistory().collect {
+            emit(it.map { it.toDomain() })
+        }
     }
 
     override suspend fun deleteSearchHistory(query: String): Flow<Int> = flow {

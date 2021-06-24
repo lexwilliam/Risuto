@@ -22,7 +22,7 @@ interface HistoryDao {
     suspend fun deleteAllSearchHistory(): Int
 
     @Query("SELECT * FROM animeHistory ORDER BY id DESC")
-    suspend fun getAnimeHistory(): List<AnimeHistoryEntity>
+    fun getAnimeHistory(): Flow<List<AnimeHistoryEntity>>
 
     @Query("DELETE FROM animeHistory WHERE title=:title")
     suspend fun deleteAnime(title: String): Int
