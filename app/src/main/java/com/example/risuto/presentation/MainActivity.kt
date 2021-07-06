@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            RisutoTheme(darkTheme = false) {
+            RisutoTheme {
                 Surface(color = MaterialTheme.colors.background) {
                     RisutoApp()
                 }

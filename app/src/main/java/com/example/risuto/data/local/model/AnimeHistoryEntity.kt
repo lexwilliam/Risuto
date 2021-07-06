@@ -5,16 +5,16 @@ import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "animeHistory")
+@Entity(tableName = "animeHistory", indices = [Index(value = ["mal_id"], unique = true)])
 data class AnimeHistoryEntity(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
-    val mal_id : Int,
+    @PrimaryKey
+    @ColumnInfo(name = "mal_id") val mal_id : Int,
     val image_url : String,
     val title : String,
     val synopsis : String,
     val type : String,
     val episodes : Int,
     val score : Double,
-    val members : Int
+    val members : Int,
+    val timeAdded: Long = System.currentTimeMillis()
 )

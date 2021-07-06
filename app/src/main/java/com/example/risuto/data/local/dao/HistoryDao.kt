@@ -21,7 +21,7 @@ interface HistoryDao {
     @Query("DELETE FROM searchHistory")
     suspend fun deleteAllSearchHistory(): Int
 
-    @Query("SELECT * FROM animeHistory ORDER BY id DESC")
+    @Query("SELECT * FROM animeHistory ORDER BY timeAdded DESC")
     fun getAnimeHistory(): Flow<List<AnimeHistoryEntity>>
 
     @Query("DELETE FROM animeHistory WHERE title=:title")
