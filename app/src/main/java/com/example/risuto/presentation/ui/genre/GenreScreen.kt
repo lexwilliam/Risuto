@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.risuto.presentation.model.AnimeListPresentation
 import com.example.risuto.presentation.ui.component.*
+import com.example.risuto.presentation.util.bottomNavGap
 import com.example.risuto.presentation.util.genreList
 
 @ExperimentalFoundationApi
@@ -48,7 +49,7 @@ fun GenreContent(
         LoadingScreen()
     } else {
         var listType by remember { mutableStateOf(ListType.GridList) }
-        Column(modifier = Modifier.padding(bottom = 64.dp)) {
+        Column(modifier = Modifier.padding(bottom = bottomNavGap)) {
             TopAppBar(
                 title = {
                     Text(text = genreList[genreId])

@@ -1,9 +1,7 @@
 package com.example.risuto.presentation.ui.component
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
 import androidx.compose.material.Divider
 import androidx.compose.runtime.Composable
@@ -24,7 +22,9 @@ fun GridList(
         LoadingScreen()
     } else {
         LazyVerticalGrid(
-            modifier = modifier.padding(start = 16.dp),
+            modifier = modifier
+                .fillMaxSize()
+                .padding(start = 16.dp),
             cells = GridCells.Adaptive(minSize = 136.dp),
         ) {
             items(items = items) { item ->

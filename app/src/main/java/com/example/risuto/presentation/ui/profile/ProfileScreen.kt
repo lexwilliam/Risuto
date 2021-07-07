@@ -25,6 +25,7 @@ import com.example.risuto.data.local.model.WatchStatus
 import com.example.risuto.presentation.model.AnimeListPresentation
 import com.example.risuto.presentation.model.MyAnimePresentation
 import com.example.risuto.presentation.ui.component.*
+import com.example.risuto.presentation.util.bottomNavGap
 import com.example.risuto.presentation.util.intToCurrency
 import com.example.risuto.presentation.util.watchStatusToString
 
@@ -47,7 +48,7 @@ fun ProfileContent(
     myAnimelist: List<MyAnimePresentation>,
     navToDetail: (Int) -> Unit
 ) {
-    Column(modifier = Modifier.padding(bottom = 64.dp)) {
+    Column(modifier = Modifier.padding(bottom = bottomNavGap)) {
         TopAppBar(
             backgroundColor = MaterialTheme.colors.background,
             contentColor = MaterialTheme.colors.secondary,
@@ -69,7 +70,6 @@ fun ProfileContent(
             "Dropped" -> filteredList = myAnimelist.filter { it.watchStatus == WatchStatus.Dropped }
         }
         MyAnimeGridList(items = filteredList, navToDetail = { navToDetail(it) })
-//        MyAnimeColumnList(items = myAnimelist, navToDetail = { navToDetail(it) })
     }
 }
 
@@ -160,77 +160,77 @@ fun MyAnimeGridList(
     }
 }
 
-@Composable
-fun MyAnimeRow(
-    modifier: Modifier = Modifier,
-    item: MyAnimePresentation,
-    navToDetail: (Int) -> Unit
-) {
-    Row(
-        modifier
-            .fillMaxWidth()
-            .clickable {
-                navToDetail(item.mal_id)
-            }
-            .height(180.dp)) {
-        NetworkImage(
-            imageUrl = item.image_url,
-            modifier = Modifier
-                .size(width = 120.dp, height = 180.dp)
-                .shadow(elevation = 4.dp, shape = MaterialTheme.shapes.medium, true)
-        )
-        Column(modifier = Modifier
-            .padding(start = 8.dp),
-            verticalArrangement = Arrangement.spacedBy(4.dp)
-        ) {
-            Text(
-                text = item.title,
-                style = MaterialTheme.typography.subtitle1,
-                fontWeight = FontWeight.Bold
-            )
-            Text(
-                text = item.myScore.toString(),
-                style = MaterialTheme.typography.subtitle1,
-                fontWeight = FontWeight.Bold
-            )
-            Text(
-                text = watchStatusToString(item.watchStatus),
-                style = MaterialTheme.typography.subtitle1,
-                fontWeight = FontWeight.Bold
-            )
-        }
-    }
-}
-
-@ExperimentalFoundationApi
-@Composable
-fun MyAnimeColumnList(
-    modifier: Modifier = Modifier,
-    items: List<MyAnimePresentation>,
-    navToDetail: (Int) -> Unit
-) {
-    val grouped = items.groupBy { it.watchStatus }
-    if(items.isEmpty()) {
-        LoadingScreen()
-    } else {
-        LazyColumn(
-            modifier = modifier
-        ) {
-            grouped.forEach { (watchStatus, animes) ->
-                stickyHeader {
-                    Text(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(MaterialTheme.colors.background)
-                            .padding(start = 16.dp),
-                        text = watchStatusToString(watchStatus),
-                        style = MaterialTheme.typography.h5
-                    )
-                }
-                items(items = animes) { item ->
-                    MyAnimeRow(item = item, modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp), navToDetail = { navToDetail(it) })
-                }
-            }
-        }
-    }
-}
+//@Composable
+//fun MyAnimeRow(
+//    modifier: Modifier = Modifier,
+//    item: MyAnimePresentation,
+//    navToDetail: (Int) -> Unit
+//) {
+//    Row(
+//        modifier
+//            .fillMaxWidth()
+//            .clickable {
+//                navToDetail(item.mal_id)
+//            }
+//            .height(180.dp)) {
+//        NetworkImage(
+//            imageUrl = item.image_url,
+//            modifier = Modifier
+//                .size(width = 120.dp, height = 180.dp)
+//                .shadow(elevation = 4.dp, shape = MaterialTheme.shapes.medium, true)
+//        )
+//        Column(modifier = Modifier
+//            .padding(start = 8.dp),
+//            verticalArrangement = Arrangement.spacedBy(4.dp)
+//        ) {
+//            Text(
+//                text = item.title,
+//                style = MaterialTheme.typography.subtitle1,
+//                fontWeight = FontWeight.Bold
+//            )
+//            Text(
+//                text = item.myScore.toString(),
+//                style = MaterialTheme.typography.subtitle1,
+//                fontWeight = FontWeight.Bold
+//            )
+//            Text(
+//                text = watchStatusToString(item.watchStatus),
+//                style = MaterialTheme.typography.subtitle1,
+//                fontWeight = FontWeight.Bold
+//            )
+//        }
+//    }
+//}
+//
+//@ExperimentalFoundationApi
+//@Composable
+//fun MyAnimeColumnList(
+//    modifier: Modifier = Modifier,
+//    items: List<MyAnimePresentation>,
+//    navToDetail: (Int) -> Unit
+//) {
+//    val grouped = items.groupBy { it.watchStatus }
+//    if(items.isEmpty()) {
+//        LoadingScreen()
+//    } else {
+//        LazyColumn(
+//            modifier = modifier
+//        ) {
+//            grouped.forEach { (watchStatus, animes) ->
+//                stickyHeader {
+//                    Text(
+//                        modifier = Modifier
+//                            .fillMaxWidth()
+//                            .background(MaterialTheme.colors.background)
+//                            .padding(start = 16.dp),
+//                        text = watchStatusToString(watchStatus),
+//                        style = MaterialTheme.typography.h5
+//                    )
+//                }
+//                items(items = animes) { item ->
+//                    MyAnimeRow(item = item, modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp), navToDetail = { navToDetail(it) })
+//                }
+//            }
+//        }
+//    }
+//}

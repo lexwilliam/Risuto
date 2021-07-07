@@ -2,6 +2,7 @@ package com.example.risuto.presentation.util
 
 import android.annotation.SuppressLint
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import com.example.risuto.data.local.model.WatchStatus
 import com.example.risuto.data.remote.model.detail.VoiceActor
 import java.text.NumberFormat
@@ -20,6 +21,8 @@ private val seasons = arrayListOf(
 )
 
 data class WatchStatusUi(val watchStatus: WatchStatus, val text: String)
+
+val bottomNavGap = 48.dp
 
 val watchStatusList = listOf(
     WatchStatus.PlanToWatch,

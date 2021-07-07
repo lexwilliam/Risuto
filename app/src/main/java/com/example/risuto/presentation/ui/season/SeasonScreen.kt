@@ -21,6 +21,7 @@ import com.example.risuto.presentation.model.AnimeListPresentation
 import com.example.risuto.presentation.ui.component.GridList
 import com.example.risuto.presentation.ui.component.Header
 import com.example.risuto.presentation.util.allSeason
+import com.example.risuto.presentation.util.bottomNavGap
 import com.example.risuto.presentation.util.seasonYearFormat
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -81,9 +82,7 @@ fun SeasonContent(
     setSeason: (String) -> Unit,
     navToDetail: (Int) -> Unit
 ) {
-    Column(
-        modifier = Modifier.padding(bottom = 64.dp)
-    ) {
+    Column(modifier = Modifier.padding(bottom = bottomNavGap)) {
         SeasonToolBar(
             year = year,
             season = season,

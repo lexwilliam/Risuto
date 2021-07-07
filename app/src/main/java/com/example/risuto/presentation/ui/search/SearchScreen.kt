@@ -31,6 +31,7 @@ import com.example.risuto.presentation.model.AnimeListPresentation
 import com.example.risuto.presentation.model.QuerySearch
 import com.example.risuto.presentation.model.SearchHistoryPresentation
 import com.example.risuto.presentation.ui.component.*
+import com.example.risuto.presentation.util.bottomNavGap
 
 @ExperimentalFoundationApi
 @ExperimentalComposeUiApi
@@ -134,7 +135,7 @@ fun SearchContent(
             ResultType.History -> {
                 Column(
                     modifier = Modifier
-                        .padding(top = 16.dp, start = 16.dp, end = 16.dp, bottom = 64.dp),
+                        .padding(top = 16.dp, start = 16.dp, end = 16.dp, bottom = bottomNavGap),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     if(animeHistory.isNotEmpty()) {
