@@ -3,6 +3,10 @@
 Risuto is my first android application that i build using Jetpack Compose
 All of the anime data comes from [MyAnimeList](https://myanimelist.net/) and using [JikanAPI](https://jikan.moe/) for the REST API
 
+# Preview
+<br><img src= "readme/home.png" width="240"></img> <img src= "readme/searchhome.png" width="240"></img> <img src= "readme/search.png" width="240"></img> <br>
+<br><img src= "readme/season.png" width="240"></img> <img src= "readme/myanime.png" width="240"></img> <img src= "readme/detail.png" width="240"></img> <br>
+
 
 # Project Structure
 
