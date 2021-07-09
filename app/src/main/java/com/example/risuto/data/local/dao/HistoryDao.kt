@@ -5,8 +5,8 @@ import com.example.risuto.data.local.Results
 import com.example.risuto.data.local.mapper.toEntity
 import com.example.risuto.data.local.model.AnimeHistoryEntity
 import com.example.risuto.data.local.model.SearchHistoryEntity
-import com.example.risuto.domain.model.AnimeHistory
-import com.example.risuto.domain.model.SearchHistory
+import com.example.risuto.domain.model.history.AnimeHistory
+import com.example.risuto.domain.model.history.SearchHistory
 import kotlinx.coroutines.flow.Flow
 
 @Dao

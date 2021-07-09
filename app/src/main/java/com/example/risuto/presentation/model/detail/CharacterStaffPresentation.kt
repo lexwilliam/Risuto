@@ -1,4 +1,4 @@
-package com.example.risuto.presentation.model
+package com.example.risuto.presentation.model.detail
 
 import com.example.risuto.data.remote.model.detail.Character
 import com.example.risuto.data.remote.model.detail.Staff

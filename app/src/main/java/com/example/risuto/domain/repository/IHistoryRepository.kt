@@ -1,8 +1,8 @@
 package com.example.risuto.domain.repository
 
 import com.example.risuto.data.local.Results
-import com.example.risuto.domain.model.AnimeHistory
-import com.example.risuto.domain.model.SearchHistory
+import com.example.risuto.domain.model.history.AnimeHistory
+import com.example.risuto.domain.model.history.SearchHistory
 import kotlinx.coroutines.flow.Flow
 
 interface IHistoryRepository {

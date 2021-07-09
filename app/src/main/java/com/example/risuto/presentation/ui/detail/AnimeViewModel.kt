@@ -6,12 +6,12 @@ import com.chun2maru.risutomvvm.presentation.mapper.toPresentation
 import com.example.risuto.data.local.Results
 import com.example.risuto.domain.usecase.local.InsertAnimeHistoryUseCase
 import com.example.risuto.domain.usecase.local.InsertMyAnimeUseCase
-import com.example.risuto.domain.usecase.remote.GetAnimeUseCase
-import com.example.risuto.domain.usecase.remote.GetCharacterStaffUseCase
+import com.example.risuto.domain.usecase.remote.detail.GetAnimeUseCase
+import com.example.risuto.domain.usecase.remote.detail.GetCharacterStaffUseCase
 import com.example.risuto.presentation.base.BaseViewModel
 import com.example.risuto.presentation.mapper.toDomain
-import com.example.risuto.presentation.model.AnimePresentation
-import com.example.risuto.presentation.model.CharacterStaffPresentation
+import com.example.risuto.presentation.model.detail.AnimePresentation
+import com.example.risuto.presentation.model.detail.CharacterStaffPresentation
 import com.example.risuto.presentation.model.MyAnimePresentation
 import com.example.risuto.presentation.util.ExceptionHandler
 import dagger.hilt.android.lifecycle.HiltViewModel

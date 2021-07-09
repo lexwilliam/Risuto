@@ -7,6 +7,7 @@ import com.example.risuto.data.remote.model.list.SeasonAnimeResponse
 import com.example.risuto.data.remote.model.list.TopAnimeResponse
 import com.example.risuto.data.remote.model.detail.SeasonArchiveResponse
 import com.example.risuto.domain.model.*
+import com.example.risuto.domain.model.detail.*
 
 internal fun SearchAnimeResponse.toDomain(): SearchAnime {
     return SearchAnime(mal_id, url, image_url?: "", title, airing, synopsis?: "", type, episodes?: 0, score, start_date?: "", end_date?: "", members, rated)
@@ -66,4 +67,40 @@ internal fun AnimeResponse.toDomain(): Anime {
 
 internal fun CharacterStaffResponse.toDomain(): CharacterStaff {
     return CharacterStaff(characters?: listOf(), request_cache_expiry, request_cached, request_hash, staff?: listOf())
+}
+
+internal fun EpisodeResponse.toDomain(): Episodes {
+    return Episodes(episodes, episodes_last_page)
+}
+
+internal fun NewsResponse.toDomain(): News {
+    return News(articles)
+}
+
+internal fun ForumResponse.toDomain(): Forum {
+    return Forum(topics)
+}
+
+internal fun MoreInfoResponse.toDomain(): MoreInfo {
+    return MoreInfo(moreinfo)
+}
+
+internal fun PicturesResponse.toDomain(): Pictures {
+    return Pictures(pictures)
+}
+
+internal fun RecommendationsResponse.toDomain(): Recommendations {
+    return Recommendations(recommendations)
+}
+
+internal fun ReviewsResponse.toDomain(): Reviews {
+    return Reviews(reviews)
+}
+
+internal fun StatsResponse.toDomain(): Stats {
+    return Stats(completed, dropped, on_hold, plan_to_watch, scores, total, watching)
+}
+
+internal fun VideosResponse.toDomain(): Videos {
+    return Videos(episodes, promo)
 }

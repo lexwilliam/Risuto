@@ -1,7 +1,7 @@
 package com.example.risuto.presentation.util
 
 import com.example.risuto.data.remote.model.detail.*
-import com.example.risuto.presentation.model.AnimePresentation
+import com.example.risuto.presentation.model.detail.AnimePresentation
 import com.example.risuto.presentation.model.AnimeListPresentation
 
 fun generateFakeItemList(): List<AnimeListPresentation> {

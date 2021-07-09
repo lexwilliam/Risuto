@@ -50,7 +50,7 @@ class SeasonViewModel
                 _state.value = _state.value.copy(seasonAnimes = animes, year = year.value, season = season.value)
             }
             seasonArchiveUseCase.invoke().collect { result ->
-                Log.d("TAG", "TEST")
+                Log.d("TAG", "TESTVIEWMODELARCHIVE")
                 val archive = result.toPresentation().archive
                 _state.value = _state.value.copy(seasonArchive = archive)
             }

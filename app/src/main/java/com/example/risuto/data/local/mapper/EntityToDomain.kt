@@ -4,9 +4,9 @@ import com.example.risuto.data.local.model.AnimeHistoryEntity
 import com.example.risuto.data.local.model.MyAnimeEntity
 import com.example.risuto.data.local.model.SearchHistoryEntity
 import com.example.risuto.data.local.model.WatchStatus
-import com.example.risuto.domain.model.AnimeHistory
+import com.example.risuto.domain.model.history.AnimeHistory
 import com.example.risuto.domain.model.MyAnime
-import com.example.risuto.domain.model.SearchHistory
+import com.example.risuto.domain.model.history.SearchHistory
 
 internal fun SearchHistoryEntity.toDomain(): SearchHistory {
     return SearchHistory(query)

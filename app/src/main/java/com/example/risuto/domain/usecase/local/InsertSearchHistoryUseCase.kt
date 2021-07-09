@@ -1,7 +1,7 @@
 package com.example.risuto.domain.usecase.local
 
 import com.example.risuto.data.local.repository.HistoryRepository
-import com.example.risuto.domain.model.SearchHistory
+import com.example.risuto.domain.model.history.SearchHistory
 import javax.inject.Inject
 
 class InsertSearchHistoryUseCase

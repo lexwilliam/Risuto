@@ -1,13 +1,10 @@
 package com.example.risuto.data.local.repository
 
-import android.util.Log
 import com.example.risuto.data.local.Results
 import com.example.risuto.data.local.dao.HistoryDao
 import com.example.risuto.data.local.mapper.toDomain
-import com.example.risuto.data.local.mapper.toEntity
-import com.example.risuto.data.local.model.SearchHistoryEntity
-import com.example.risuto.domain.model.AnimeHistory
-import com.example.risuto.domain.model.SearchHistory
+import com.example.risuto.domain.model.history.AnimeHistory
+import com.example.risuto.domain.model.history.SearchHistory
 import com.example.risuto.domain.repository.IHistoryRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect

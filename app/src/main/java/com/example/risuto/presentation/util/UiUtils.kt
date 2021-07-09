@@ -22,7 +22,7 @@ private val seasons = arrayListOf(
 
 data class WatchStatusUi(val watchStatus: WatchStatus, val text: String)
 
-val bottomNavGap = 48.dp
+val bottomNavGap = 56.dp
 
 val watchStatusList = listOf(
     WatchStatus.PlanToWatch,

@@ -1,4 +1,4 @@
-package com.example.risuto.domain.model
+package com.example.risuto.domain.model.history
 
 import androidx.room.PrimaryKey
 

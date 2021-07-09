@@ -1,4 +1,4 @@
-package com.example.risuto.domain.model
+package com.example.risuto.domain.model.detail
 
 import com.example.risuto.data.remote.model.detail.*
 

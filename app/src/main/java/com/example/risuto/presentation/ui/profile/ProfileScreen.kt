@@ -13,10 +13,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -147,7 +149,7 @@ fun MyAnimeGridList(
     navToDetail: (Int) -> Unit
 ) {
     if(items.isEmpty()) {
-        LoadingScreen()
+        NoAnimeScreen()
     } else {
         LazyVerticalGrid(
             modifier = modifier.padding(start = 16.dp),
@@ -156,6 +158,21 @@ fun MyAnimeGridList(
             items(items = items) { item ->
                 MyAnimeGrid(item = item, modifier = Modifier.padding(top = 16.dp, end = 16.dp), navToDetail = { navToDetail(it) })
             }
+        }
+    }
+}
+
+@Composable
+fun NoAnimeScreen() {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Icon(modifier = Modifier.size(80.dp), imageVector = Icons.Default.Warning, contentDescription = null, tint = Color.LightGray)
+            Text(text = "No Anime Found", style = MaterialTheme.typography.h6, color = Color.LightGray)
         }
     }
 }
