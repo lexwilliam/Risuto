@@ -35,6 +35,7 @@ class ListRepository(
         emit(items)
     }
 
+    var currentGenre = -1
 
     override suspend fun genreAnime(query: QuerySearch, page: Int): Flow<RequestSearch> = flow  {
         val searchResponse = jikanService.getSearchAnimeResult(

@@ -16,11 +16,9 @@ class GenreListSource(
     private val listRepository: ListRepository
 ): PagingSource<Int, AnimeListPresentation>() {
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, AnimeListPresentation> {
-        Log.d("ListSource", "TEST")
-
         return try {
             val nextPage = params.key ?: 1
-            val searchResponse = listRepository.genreAnime(QuerySearch(genre = 1, order_by = "members"), nextPage)
+            val searchResponse = listRepository.genreAnime(QuerySearch(genre = listRepository.currentGenre, order_by = "members"), nextPage)
 
             var data: List<AnimeListPresentation> = emptyList()
             searchResponse.collect {

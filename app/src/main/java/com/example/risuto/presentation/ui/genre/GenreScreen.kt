@@ -37,8 +37,7 @@ fun GenreScreen(
     val viewState by viewModel.state.collectAsState()
     GenreContent(
         animeList = viewModel.animes,
-        genreId = 0,
-        onLoading = viewState.onLoading,
+        genreId = viewState.genreIndex!!,
         onBackPressed = onBackPressed,
         navToDetail = navToDetail
     )
@@ -49,7 +48,6 @@ fun GenreScreen(
 fun GenreContent(
     animeList: Flow<PagingData<AnimeListPresentation>>,
     genreId: Int,
-    onLoading: Boolean,
     onBackPressed: () -> Unit,
     navToDetail: (Int) -> Unit
 ) {
@@ -58,7 +56,7 @@ fun GenreContent(
     Column(modifier = Modifier.padding(bottom = bottomNavGap)) {
         TopAppBar(
             title = {
-                Text(text = genreList[genreId])
+                Text(text = genreList[genreId-1])
             },
             navigationIcon = {
                 IconButton(onClick = { onBackPressed() }) {
@@ -79,12 +77,8 @@ fun GenreContent(
 
             lazyAnimeList.apply {
                 when {
-                    loadState.refresh is LoadState.Loading -> {
-                        item { Box(modifier = Modifier.fillParentMaxSize()) }
-                    }
-                    loadState.append is LoadState.Loading -> {
-                        item { Box(modifier = Modifier.background(Color.Yellow)) }
-                    }
+                    loadState.refresh is LoadState.Loading -> { }
+                    loadState.append is LoadState.Loading -> { }
                     loadState.refresh is LoadState.Error -> {
                         val e = lazyAnimeList.loadState.refresh as LoadState.Error
                         item {

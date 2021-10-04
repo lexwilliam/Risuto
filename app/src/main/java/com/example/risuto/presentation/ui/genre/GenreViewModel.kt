@@ -43,21 +43,19 @@ class GenreViewModel
     private var _state = MutableStateFlow(GenreViewState())
     val state = _state.asStateFlow()
 
+    init {
+        genreIdFromArgs.let {
+            if (it != null) {
+                listRepository.currentGenre = it
+                _state.value = _state.value.copy(genreIndex = it)
+            }
+        }
+    }
+
     val animes: Flow<PagingData<AnimeListPresentation>> = Pager(PagingConfig(pageSize = 20)) {
         GenreListSource(listRepository)
     }.flow.cachedIn(viewModelScope)
 
-    init {
-        searchJob?.cancel()
-        searchJob = launchCoroutine {
-            genreIdFromArgs?.let { id ->
-                Log.d("TAG", id.toString())
-                if(id > 0) {
-                    listRepository.genreAnime(QuerySearch(genre = id, sort = "members"), page = 1)
-                }
-            }
-        }
-    }
 }
 
 data class GenreViewState(
