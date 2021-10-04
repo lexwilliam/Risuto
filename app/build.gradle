@@ -101,4 +101,10 @@ dependencies {
     def coil = "1.2.2"
     implementation("io.coil-kt:coil:$coil")
     implementation "com.google.accompanist:accompanist-coil:0.12.0"
+
+    def paging_version = "3.0.1"
+
+    implementation "androidx.paging:paging-runtime:$paging_version"
+    implementation "androidx.paging:paging-compose:1.0.0-alpha12"
+
 }

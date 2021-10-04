@@ -2,8 +2,14 @@ package com.example.risuto.presentation.ui.genre
 
 import android.util.Log
 import androidx.lifecycle.SavedStateHandle
-import com.example.risuto.domain.usecase.remote.SearchAnimeUseCase
-import com.chun2maru.risutomvvm.presentation.mapper.toPresentation
+import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import com.chun2maru.risutomvvm.data.repository.ListRepository
+import com.chun2maru.risutomvvm.domain.model.SearchAnime
+import com.example.risuto.data.remote.repository.paged.GenreListSource
 import com.example.risuto.presentation.base.BaseViewModel
 import com.example.risuto.presentation.model.AnimeListPresentation
 import com.example.risuto.presentation.model.QuerySearch
@@ -11,15 +17,13 @@ import com.example.risuto.presentation.util.ExceptionHandler
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 @HiltViewModel
 class GenreViewModel
 @Inject constructor(
-    private val searchAnimeUseCase: SearchAnimeUseCase,
+    private val listRepository: ListRepository,
     savedState: SavedStateHandle
 ): BaseViewModel() {
 
@@ -39,16 +43,17 @@ class GenreViewModel
     private var _state = MutableStateFlow(GenreViewState())
     val state = _state.asStateFlow()
 
+    val animes: Flow<PagingData<AnimeListPresentation>> = Pager(PagingConfig(pageSize = 20)) {
+        GenreListSource(listRepository)
+    }.flow.cachedIn(viewModelScope)
+
     init {
         searchJob?.cancel()
         searchJob = launchCoroutine {
             genreIdFromArgs?.let { id ->
                 Log.d("TAG", id.toString())
                 if(id > 0) {
-                    searchAnimeUseCase.invoke(QuerySearch(genre = id, order_by = "members")).collect { results ->
-                        val animes = results.map { anime -> anime.toPresentation() }
-                        _state.value = _state.value.copy(animes, id - 1, false)
-                    }
+                    listRepository.genreAnime(QuerySearch(genre = id, sort = "members"), page = 1)
                 }
             }
         }
@@ -56,7 +61,6 @@ class GenreViewModel
 }
 
 data class GenreViewState(
-    val genreAnimes: List<AnimeListPresentation> = emptyList(),
     val genreIndex: Int? = null,
     val onLoading: Boolean = true
 )

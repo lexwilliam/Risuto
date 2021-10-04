@@ -20,7 +20,8 @@ interface JikanService {
         @Query("genre") genre: Int?,
         @Query("limit") limit: Int?,
         @Query("order_by") orderBy: String?,
-        @Query("sort") sort: String?
+        @Query("sort") sort: String?,
+        @Query("page") page: Int?
     ): RequestSearch
 
     @GET("top/anime/{page}/{subType}")
