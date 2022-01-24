@@ -1,5 +1,4 @@
 # Risuto
-# It doesn't work anymore because Jikan API update to v4, but i will update the code someday lol
 
 Risuto is my first android application that i build using Jetpack Compose
 All of the anime data comes from [MyAnimeList](https://myanimelist.net/) and using [JikanAPI](https://jikan.moe/) for the REST API
