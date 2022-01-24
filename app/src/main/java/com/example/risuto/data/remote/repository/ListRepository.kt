@@ -77,4 +77,13 @@ class ListRepository(
         }
         emit(items)
     }
+
+    override suspend fun currentSeasonAnime(): Flow<List<SeasonAnime>> = flow{
+        val seasonResponse = jikanService.getCurrentSeasonAnimeResult()
+        val items = mutableListOf<SeasonAnime>()
+        for (item in seasonResponse.anime) {
+            items.add(item.toDomain())
+        }
+        emit(items)
+    }
 }

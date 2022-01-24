@@ -1,16 +1,13 @@
 package com.example.risuto.data.remote.repository.paged
 
-import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.chun2maru.risutomvvm.data.mapper.toDomain
 import com.chun2maru.risutomvvm.data.repository.ListRepository
-import com.chun2maru.risutomvvm.domain.model.SearchAnime
 import com.chun2maru.risutomvvm.presentation.mapper.toPresentation
 import com.example.risuto.presentation.model.AnimeListPresentation
 import com.example.risuto.presentation.model.QuerySearch
 import kotlinx.coroutines.flow.collect
-import javax.inject.Inject
 
 class GenreListSource(
     private val listRepository: ListRepository

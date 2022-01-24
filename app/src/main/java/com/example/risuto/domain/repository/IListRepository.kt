@@ -17,4 +17,6 @@ interface IListRepository {
     suspend fun topAnime(page: Int, subType: String): Flow<List<TopAnime>>
 
     suspend fun seasonAnime(year: Int, season: String): Flow<List<SeasonAnime>>
+
+    suspend fun currentSeasonAnime(): Flow<List<SeasonAnime>>
 }

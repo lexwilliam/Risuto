@@ -3,9 +3,10 @@ package com.chun2maru.risutomvvm.data.mapper
 import com.example.risuto.data.remote.model.list.SearchAnimeResponse
 import com.chun2maru.risutomvvm.domain.model.SearchAnime
 import com.example.risuto.data.remote.model.detail.*
-import com.example.risuto.data.remote.model.list.SeasonAnimeResponse
 import com.example.risuto.data.remote.model.list.TopAnimeResponse
 import com.example.risuto.data.remote.model.detail.SeasonArchiveResponse
+import com.example.risuto.data.remote.model.list.SeasonAnimeResponse
+import com.example.risuto.data.remote.model.list.request.RequestSeason
 import com.example.risuto.domain.model.*
 import com.example.risuto.domain.model.detail.*
 
@@ -17,8 +18,12 @@ internal fun TopAnimeResponse.toDomain(): TopAnime {
     return TopAnime(mal_id, rank, title, url, image_url?: "", type, episodes?: 0, start_date?: "", end_date?: "", members, score)
 }
 
-internal fun SeasonAnimeResponse.toDomain(): SeasonAnime {
-    return SeasonAnime(airing_start?: "", continuing, episodes?: 0, genres, image_url?: "", kids, licensors, mal_id, members, producers, r18, score?: 0.0, source, synopsis, title, type, url)
+fun SeasonAnimeResponse.toDomain(): SeasonAnime {
+    return SeasonAnime(airing_start, continuing, demographics, episodes?: 12, explicit_genres, genres, image_url, kids, licensors, mal_id, members, producers, r18, score?: 0.0, source, synopsis, themes, title, type?: "TV", url)
+}
+
+internal fun RequestSeason.toDomain(): Season {
+    return Season(request_hash, request_cached, request_cache_expiry, season_name, season_year, anime.map { it.toDomain() })
 }
 
 internal fun SeasonArchiveResponse.toDomain(): SeasonArchive {

@@ -30,6 +30,9 @@ interface JikanService {
         @Path("subType") subType: String
     ): RequestTop
 
+    @GET("season")
+    suspend fun getCurrentSeasonAnimeResult(): RequestSeason
+
     @GET("season/{year}/{season}")
     suspend fun getSeasonAnimeResult(
         @Path("year") year: Int,

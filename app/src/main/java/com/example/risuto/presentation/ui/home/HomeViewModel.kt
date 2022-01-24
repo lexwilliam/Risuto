@@ -3,6 +3,7 @@ package com.example.risuto.presentation.ui.home
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.chun2maru.risutomvvm.presentation.mapper.toPresentation
+import com.example.risuto.domain.usecase.remote.GetCurrentSeasonAnimeUseCase
 import com.example.risuto.domain.usecase.remote.SeasonAnimeUseCase
 import com.example.risuto.domain.usecase.remote.TopAnimeUseCase
 import com.example.risuto.presentation.base.BaseViewModel
@@ -21,7 +22,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel
 @Inject constructor(
-    private val seasonAnimeUseCase: SeasonAnimeUseCase,
+    private val getCurrentSeasonAnimeUseCase: GetCurrentSeasonAnimeUseCase,
     private val topAnimeUseCase: TopAnimeUseCase,
     private val savedStateHandle: SavedStateHandle
 ): BaseViewModel() {
@@ -83,7 +84,7 @@ class HomeViewModel
 
     private fun onCurrentSeasonAnime() {
         viewModelScope.launch {
-            seasonAnimeUseCase.invoke(getCurrentYear(), getCurrentSeason()).collect { results ->
+            getCurrentSeasonAnimeUseCase.invoke().collect { results ->
                 val animes = results.map { anime -> anime.toPresentation() }
                 currentSeasonAnime.value = animes
             }

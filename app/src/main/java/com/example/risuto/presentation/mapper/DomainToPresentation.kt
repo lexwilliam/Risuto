@@ -1,6 +1,8 @@
 package com.chun2maru.risutomvvm.presentation.mapper
 
 import com.chun2maru.risutomvvm.domain.model.SearchAnime
+import com.example.risuto.data.remote.model.list.SeasonAnimeResponse
+import com.example.risuto.data.remote.model.list.request.RequestSeason
 import com.example.risuto.domain.model.*
 import com.example.risuto.domain.model.detail.*
 import com.example.risuto.domain.model.history.AnimeHistory
@@ -29,8 +31,12 @@ internal fun TopAnime.toPresentation(): AnimeListPresentation {
     return AnimeListPresentation(mal_id, image_url, title, "", type, episodes, score, members)
 }
 
-internal fun SeasonAnime.toPresentation(): AnimeListPresentation {
+fun SeasonAnime.toPresentation(): AnimeListPresentation {
     return AnimeListPresentation(mal_id, image_url, title, "", type, episodes, score, members)
+}
+
+internal fun Season.toPresentation(): SeasonPresentation {
+    return SeasonPresentation(request_hash, request_cached, request_cache_expiry, season_name, season_year, anime.map { it.toPresentation() })
 }
 
 internal fun SearchHistory.toPresentation(): SearchHistoryPresentation {

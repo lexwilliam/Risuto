@@ -51,7 +51,6 @@ fun GenreContent(
     onBackPressed: () -> Unit,
     navToDetail: (Int) -> Unit
 ) {
-    Log.d("TAG", "TEST")
     val lazyAnimeList = animeList.collectAsLazyPagingItems()
     Column(modifier = Modifier.padding(bottom = bottomNavGap)) {
         TopAppBar(
