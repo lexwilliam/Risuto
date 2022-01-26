@@ -5,6 +5,7 @@ import com.lexwilliam.data.model.local.MyAnimeRepo
 import com.lexwilliam.data.model.local.WatchStatusRepo
 import com.lexwilliam.data_local.dao.MyAnimeDao
 import com.lexwilliam.data_local.mapper.MyAnimeMapper
+import com.lexwilliam.data_local.model.WatchStatusEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject

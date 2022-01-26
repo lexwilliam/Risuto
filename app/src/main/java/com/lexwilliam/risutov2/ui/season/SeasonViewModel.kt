@@ -2,8 +2,6 @@ package com.lexwilliam.risutov2.ui.season
 
 import android.util.Log
 import com.example.risuto.data.remote.model.detail.Archive
-import com.example.risuto.domain.usecase.remote.GetSeasonArchiveUseCase
-import com.example.risuto.domain.usecase.remote.SeasonAnimeUseCase
 import com.lexwilliam.risutov2.base.BaseViewModel
 import com.lexwilliam.risutov2.model.AnimeListPresentation
 import com.example.risuto.presentation.util.*
@@ -13,7 +11,6 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import java.util.*
 import javax.inject.Inject
 

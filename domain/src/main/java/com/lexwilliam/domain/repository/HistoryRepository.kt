@@ -10,15 +10,15 @@ interface HistoryRepository {
 
     fun getAnimeHistory(): Flow<List<AnimeHistory>>
 
-    suspend fun deleteSearchHistory(query: String): Flow<Int>
+    suspend fun deleteSearchHistory(query: String): Int
 
-    suspend fun deleteAllSearch(): Flow<Int>
+    suspend fun deleteAllSearch(): Int
 
-    suspend fun deleteAnimeByTitle(title: String): Flow<Int>
+    suspend fun deleteAnimeByTitle(title: String): Int
 
-    suspend fun deleteAllAnime(): Flow<Int>
+    suspend fun deleteAllAnime(): Int
 
-    suspend fun insertSearch(search: SearchHistory): Flow<Long>
+    suspend fun insertSearch(search: SearchHistory): Long
 
-    suspend fun insertAnime(anime: AnimeHistory): Flow<Long>
+    suspend fun insertAnime(anime: AnimeHistory): Long
 }

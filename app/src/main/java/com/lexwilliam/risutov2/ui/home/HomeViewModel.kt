@@ -2,8 +2,6 @@ package com.lexwilliam.risutov2.ui.home
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import com.example.risuto.domain.usecase.remote.GetCurrentSeasonAnimeUseCase
-import com.example.risuto.domain.usecase.remote.TopAnimeUseCase
 import com.lexwilliam.risutov2.base.BaseViewModel
 import com.lexwilliam.risutov2.model.AnimeListPresentation
 import com.lexwilliam.risutov2.util.Error

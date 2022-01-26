@@ -11,8 +11,6 @@ interface DetailRepository {
 
     suspend fun characterStaff(id: Int): Flow<CharacterStaff>
 
-    suspend fun seasonArchive(): Flow<SeasonArchive>
-
     suspend fun episodes(id: Int): Flow<Episodes>
 
     suspend fun forum(id: Int): Flow<Forum>

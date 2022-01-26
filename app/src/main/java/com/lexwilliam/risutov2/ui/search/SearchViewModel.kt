@@ -2,7 +2,6 @@ package com.lexwilliam.risutov2.ui.search
 
 import android.util.Log
 import androidx.lifecycle.SavedStateHandle
-import com.example.risuto.domain.usecase.remote.SearchAnimeUseCase
 import com.example.risuto.data.local.Results
 import com.example.risuto.domain.usecase.local.*
 import com.lexwilliam.risutov2.base.BaseViewModel

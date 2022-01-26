@@ -1,7 +1,5 @@
 package com.lexwilliam.risutov2.ui.profile
 
-import com.example.risuto.domain.usecase.local.GetMyAnimesUseCase
-import com.example.risuto.domain.usecase.local.GetMyAnimesWithWatchStatusUseCase
 import com.lexwilliam.risutov2.base.BaseViewModel
 import com.lexwilliam.risutov2.model.MyAnimePresentation
 import com.lexwilliam.risutov2.util.ExceptionHandler

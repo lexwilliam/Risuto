@@ -3,10 +3,6 @@ package com.lexwilliam.risutov2.ui.detail
 import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import com.example.risuto.data.local.Results
-import com.example.risuto.domain.usecase.local.InsertAnimeHistoryUseCase
-import com.example.risuto.domain.usecase.local.InsertMyAnimeUseCase
-import com.example.risuto.domain.usecase.remote.detail.GetAnimeUseCase
-import com.example.risuto.domain.usecase.remote.detail.GetCharacterStaffUseCase
 import com.lexwilliam.risutov2.base.BaseViewModel
 import com.lexwilliam.risutov2.mapper.toDomain
 import com.lexwilliam.risutov2.model.detail.AnimePresentation
