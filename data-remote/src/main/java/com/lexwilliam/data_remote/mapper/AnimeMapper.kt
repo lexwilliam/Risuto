@@ -1,12 +1,12 @@
 package com.lexwilliam.data_remote.mapper
 
-import com.lexwilliam.data.model.detail.AnimeRepo
-import com.lexwilliam.data.model.search.SearchAnimeRepo
-import com.lexwilliam.data.model.search.SearchRepo
-import com.lexwilliam.data.model.season.SeasonAnimeRepo
-import com.lexwilliam.data.model.season.SeasonRepo
-import com.lexwilliam.data.model.top.TopAnimeRepo
-import com.lexwilliam.data.model.top.TopRepo
+import com.lexwilliam.data.model.remote.detail.AnimeRepo
+import com.lexwilliam.data.model.remote.search.SearchAnimeRepo
+import com.lexwilliam.data.model.remote.search.SearchRepo
+import com.lexwilliam.data.model.remote.season.SeasonAnimeRepo
+import com.lexwilliam.data.model.remote.season.SeasonRepo
+import com.lexwilliam.data.model.remote.top.TopAnimeRepo
+import com.lexwilliam.data.model.remote.top.TopRepo
 import com.lexwilliam.data_remote.model.detail.AnimeResponse
 import com.lexwilliam.data_remote.model.search.SearchAnimeResponse
 import com.lexwilliam.data_remote.model.search.SearchResponse
@@ -23,7 +23,6 @@ interface AnimeMapper {
     fun toRepo(topAnime: TopAnimeResponse): TopAnimeRepo
     fun toRepo(season: SeasonResponse): SeasonRepo
     fun toRepo(seasonAnime: SeasonAnimeResponse): SeasonAnimeRepo
-    fun toRepo(anime: AnimeResponse): AnimeRepo
 }
 
 class AnimeMapperImpl @Inject constructor(
@@ -48,7 +47,4 @@ class AnimeMapperImpl @Inject constructor(
 
     override fun toRepo(seasonAnime: SeasonAnimeResponse): SeasonAnimeRepo =
         SeasonAnimeRepo(seasonAnime.airing_start, seasonAnime.continuing, seasonAnime.demographics.map { commonMapper.toRepo(it) }, seasonAnime.episodes, seasonAnime.explicit_genres, seasonAnime.genres.map { commonMapper.toRepo(it) }, seasonAnime.image_url, seasonAnime.kids, seasonAnime.licensors, seasonAnime.mal_id, seasonAnime.members, seasonAnime.producers.map { commonMapper.toRepo(it) }, seasonAnime.r18, seasonAnime.score, seasonAnime.source, seasonAnime.synopsis, seasonAnime.themes.map { commonMapper.toRepo(it) }, seasonAnime.title, seasonAnime.type, seasonAnime.url)
-
-    override fun toRepo(anime: AnimeResponse): AnimeRepo =
-        AnimeRepo(commonMapper.toRepo(anime.aired!!), anime.airing, anime.background, anime.broadcast, anime.duration, anime.ending_themes, anime.episodes, anime.favorites, anime.genres?.map { commonMapper.toRepo(it) }, anime.image_url, anime.licensors?.map { commonMapper.toRepo(it) }, anime.mal_id, anime.members, anime.opening_themes, anime.popularity, anime.premiered, anime.producers?.map { commonMapper.toRepo(it) }, anime.rank, anime.rating, commonMapper.toRepo(anime.related!!), anime.request_cache_expiry, anime.request_cached, anime.request_hash, anime.score, anime.scored_by, anime.source, anime.status, anime.studios?.map { commonMapper.toRepo(it) }, anime.synopsis, anime.title, anime.title_english, anime.title_japanese, anime.title_synonyms, anime.trailer_url, anime.type, anime.url)
 }

@@ -22,4 +22,8 @@ object RemoteModule {
     @Singleton
     @Provides
     fun provideArchiveMapper(): ArchiveMapper = ArchiveMapperImpl()
+
+    @Singleton
+    @Provides
+    fun provideDetailMapper(commonMapper: CommonMapper): DetailMapper = DetailMapperImpl(commonMapper)
 }

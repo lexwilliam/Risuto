@@ -9,10 +9,6 @@ data class MyAnimeEntity(
     val image_url : String,
     val title : String,
     val myScore: Int,
-    val watchStatus: WatchStatus?,
+    val watchStatus: WatchStatusEntity?,
     val timeAdded: Long = System.currentTimeMillis()
 )
-
-enum class WatchStatus{
-    Completed, Watching, PlanToWatch, Dropped, OnHold
-}

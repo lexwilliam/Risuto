@@ -3,7 +3,7 @@ package com.lexwilliam.data.paged
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.chun2maru.risutomvvm.data.mapper.toDomain
-import com.lexwilliam.data.ListRepository
+import com.lexwilliam.data.repository.ListRepository
 import com.chun2maru.risutomvvm.presentation.mapper.toPresentation
 import com.example.risuto.presentation.model.AnimeListPresentation
 import com.example.risuto.presentation.model.QuerySearch

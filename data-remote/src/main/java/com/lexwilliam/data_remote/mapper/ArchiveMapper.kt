@@ -1,7 +1,7 @@
 package com.lexwilliam.data_remote.mapper
 
-import com.lexwilliam.data.model.season.ArchiveRepo
-import com.lexwilliam.data.model.season.SeasonArchiveRepo
+import com.lexwilliam.data.model.remote.season.ArchiveRepo
+import com.lexwilliam.data.model.remote.season.SeasonArchiveRepo
 import com.lexwilliam.data_remote.model.season.ArchiveResponse
 import com.lexwilliam.data_remote.model.season.SeasonArchiveResponse
 import javax.inject.Inject
