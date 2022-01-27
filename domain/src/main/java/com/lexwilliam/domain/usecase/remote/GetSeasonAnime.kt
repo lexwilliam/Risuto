@@ -7,13 +7,13 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 interface GetSeasonAnime {
-    suspend fun execute(year: Int, season: String): Flow<Season>
+    suspend fun execute(year: Int?, season: String?): Flow<Season>
 }
 
 class GetSeasonAnimeImpl @Inject constructor(
     private val animeRepository: AnimeRepository
 ): GetSeasonAnime {
-    override suspend fun execute(year: Int, season: String): Flow<Season> {
+    override suspend fun execute(year: Int?, season: String?): Flow<Season> {
         return animeRepository.seasonAnime(year, season)
     }
 }

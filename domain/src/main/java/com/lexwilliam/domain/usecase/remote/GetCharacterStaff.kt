@@ -1,6 +1,5 @@
 package com.lexwilliam.domain.usecase.remote
 
-import com.lexwilliam.domain.model.remote.detail.Anime
 import com.lexwilliam.domain.model.remote.detail.CharacterStaff
 import com.lexwilliam.domain.repository.DetailRepository
 import kotlinx.coroutines.flow.Flow

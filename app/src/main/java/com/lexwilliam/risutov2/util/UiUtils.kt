@@ -3,8 +3,8 @@ package com.lexwilliam.risutov2.util
 import android.annotation.SuppressLint
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.example.risuto.data.local.model.WatchStatus
-import com.example.risuto.data.remote.model.detail.VoiceActor
+import com.lexwilliam.risutov2.model.detail.VoiceActorPresentation
+import com.lexwilliam.risutov2.model.local.WatchStatusPresentation
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -20,36 +20,36 @@ private val seasons = arrayListOf(
     "summer", "summer", "fall", "fall", "fall", "winter"
 )
 
-data class WatchStatusUi(val watchStatus: WatchStatus, val text: String)
+data class WatchStatusUi(val watchStatus: WatchStatusPresentation, val text: String)
 
 val bottomNavGap = 56.dp
 
 val watchStatusList = listOf(
-    WatchStatus.PlanToWatch,
-    WatchStatus.Completed,
-    WatchStatus.Watching,
-    WatchStatus.Dropped,
-    WatchStatus.OnHold
+    WatchStatusPresentation.PlanToWatch,
+    WatchStatusPresentation.Completed,
+    WatchStatusPresentation.Watching,
+    WatchStatusPresentation.Dropped,
+    WatchStatusPresentation.OnHold
 )
 
-fun watchStatusToString(watchStatus: WatchStatus): String {
+fun watchStatusToString(watchStatus: WatchStatusPresentation): String {
     return when(watchStatus) {
-        WatchStatus.PlanToWatch -> "Plan To Watch"
-        WatchStatus.OnHold -> "On Hold"
-        WatchStatus.Completed -> "Completed"
-        WatchStatus.Watching -> "Watching"
-        WatchStatus.Dropped -> "Dropped"
+        WatchStatusPresentation.PlanToWatch -> "Plan To Watch"
+        WatchStatusPresentation.OnHold -> "On Hold"
+        WatchStatusPresentation.Completed -> "Completed"
+        WatchStatusPresentation.Watching -> "Watching"
+        WatchStatusPresentation.Dropped -> "Dropped"
         else -> "Default"
     }
 }
 
-fun getWatchStatusColor(watchStatus: WatchStatus): Color {
+fun getWatchStatusColor(watchStatus: WatchStatusPresentation): Color {
     return when(watchStatus) {
-        WatchStatus.PlanToWatch -> Color.LightGray
-        WatchStatus.OnHold -> Color.Yellow
-        WatchStatus.Completed -> Color.Blue
-        WatchStatus.Watching -> Color.Green
-        WatchStatus.Dropped -> Color.Red
+        WatchStatusPresentation.PlanToWatch -> Color.LightGray
+        WatchStatusPresentation.OnHold -> Color.Yellow
+        WatchStatusPresentation.Completed -> Color.Blue
+        WatchStatusPresentation.Watching -> Color.Green
+        WatchStatusPresentation.Dropped -> Color.Red
         else -> Color.Transparent
     }
 
@@ -87,11 +87,11 @@ fun getCurrentYear(): Int {
     return currentYear.toInt()
 }
 
-fun getJpnVoiceActor(voiceActors: List<VoiceActor>): VoiceActor {
+fun getJpnVoiceActor(voiceActors: List<VoiceActorPresentation>): VoiceActorPresentation {
     voiceActors.forEach { voiceActor ->
         if(voiceActor.language == "Japanese"){
             return voiceActor
         }
     }
-    return VoiceActor("", "", 0, "Not Found", "")
+    return VoiceActorPresentation("", "", 0, "Not Found", "")
 }

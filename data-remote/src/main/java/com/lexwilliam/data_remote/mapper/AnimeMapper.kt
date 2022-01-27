@@ -1,13 +1,11 @@
 package com.lexwilliam.data_remote.mapper
 
-import com.lexwilliam.data.model.remote.detail.AnimeRepo
 import com.lexwilliam.data.model.remote.search.SearchAnimeRepo
 import com.lexwilliam.data.model.remote.search.SearchRepo
 import com.lexwilliam.data.model.remote.season.SeasonAnimeRepo
 import com.lexwilliam.data.model.remote.season.SeasonRepo
 import com.lexwilliam.data.model.remote.top.TopAnimeRepo
 import com.lexwilliam.data.model.remote.top.TopRepo
-import com.lexwilliam.data_remote.model.detail.AnimeResponse
 import com.lexwilliam.data_remote.model.search.SearchAnimeResponse
 import com.lexwilliam.data_remote.model.search.SearchResponse
 import com.lexwilliam.data_remote.model.season.SeasonAnimeResponse

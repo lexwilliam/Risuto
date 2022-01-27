@@ -15,13 +15,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.risuto.data.remote.model.detail.Archive
-import com.lexwilliam.risutov2.model.AnimeListPresentation
+import com.lexwilliam.risutov2.model.AnimePresentation
 import com.lexwilliam.risutov2.ui.component.GridList
 import com.lexwilliam.risutov2.ui.component.Header
-import com.lexwilliam.risutov2.util.allSeason
-import com.lexwilliam.risutov2.util.bottomNavGap
-import com.lexwilliam.risutov2.util.seasonYearFormat
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.util.*
@@ -57,7 +53,6 @@ fun SeasonScreen(
         SeasonContent(
             year = viewState.year,
             season = viewState.season,
-            archive = viewState.seasonArchive,
             animes = viewState.seasonAnimes,
             bottomSheetState = bottomSheetScaffoldState,
             coroutineScope = coroutineScope,
@@ -74,8 +69,7 @@ fun SeasonScreen(
 fun SeasonContent(
     year: Int,
     season: String,
-    archive: List<Archive>,
-    animes: List<AnimeListPresentation>,
+    animes: List<AnimePresentation>,
     bottomSheetState: BottomSheetScaffoldState,
     coroutineScope: CoroutineScope,
     setSeason: (String) -> Unit,

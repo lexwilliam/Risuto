@@ -4,7 +4,6 @@ import com.lexwilliam.data.DetailRemoteSource
 import com.lexwilliam.data.mapper.DetailMapper
 import com.lexwilliam.data.model.remote.detail.Pictures
 import com.lexwilliam.domain.model.remote.detail.*
-import com.lexwilliam.domain.model.remote.season.SeasonArchive
 import com.lexwilliam.domain.repository.DetailRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -14,7 +13,7 @@ class DetailRepositoryImpl @Inject constructor(
     private val detailRemoteSource: DetailRemoteSource,
     private val detailMapper: DetailMapper
 ): DetailRepository {
-    override suspend fun anime(id: Int): Flow<Anime> {
+    override suspend fun anime(id: Int): Flow<AnimeDetail> {
         return detailRemoteSource.anime(id).map { detailMapper.toDomain(it) }
     }
 

@@ -9,12 +9,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
-import com.example.risuto.data.local.model.WatchStatus
+import com.lexwilliam.risutov2.model.local.WatchStatusPresentation
 
 @Composable
 fun MyAnimePopUp(
     setScore: (Int) -> Unit,
-    setWatchStatus: (WatchStatus) -> Unit,
+    setWatchStatus: (WatchStatusPresentation) -> Unit,
     onDoneClicked: () -> Unit
 ) {
     Popup(alignment = Alignment.Center) {
@@ -24,7 +24,7 @@ fun MyAnimePopUp(
         ) {
             Column(modifier = Modifier.padding(16.dp)){
                 var score by remember { mutableStateOf(-1) }
-                var watchState by remember { mutableStateOf(WatchStatus.PlanToWatch) }
+                var watchState by remember { mutableStateOf(WatchStatusPresentation.PlanToWatch) }
                 var expandedWatchStatus by remember { mutableStateOf(false) }
                 var expandedScore by remember { mutableStateOf(false) }
                 Button(
@@ -46,31 +46,31 @@ fun MyAnimePopUp(
                     onClick = { expandedWatchStatus = true }) {
                     DropdownMenu(expanded = expandedWatchStatus, onDismissRequest = { expandedWatchStatus = false }) {
                         DropdownMenuItem(onClick = {
-                            watchState = WatchStatus.PlanToWatch
+                            watchState = WatchStatusPresentation.PlanToWatch
                             expandedWatchStatus = false
                         }) {
                             Text("Plan To Watch")
                         }
                         DropdownMenuItem(onClick = {
-                            watchState = WatchStatus.Completed
+                            watchState = WatchStatusPresentation.Completed
                             expandedWatchStatus = false
                         }) {
                             Text("Completed")
                         }
                         DropdownMenuItem(onClick = {
-                            watchState = WatchStatus.Watching
+                            watchState = WatchStatusPresentation.Watching
                             expandedWatchStatus = false
                         }) {
                             Text("Watching")
                         }
                         DropdownMenuItem(onClick = {
-                            watchState = WatchStatus.Dropped
+                            watchState = WatchStatusPresentation.Dropped
                             expandedWatchStatus = false
                         }) {
                             Text("Dropped")
                         }
                         DropdownMenuItem(onClick = {
-                            watchState = WatchStatus.OnHold
+                            watchState = WatchStatusPresentation.OnHold
                             expandedWatchStatus = false
                         }) {
                             Text("On Hold")

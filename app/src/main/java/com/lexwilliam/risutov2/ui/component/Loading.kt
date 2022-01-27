@@ -16,7 +16,6 @@ fun LoadingScreen() {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Log.d("TAG", "ONLOADING")
         CircularProgressIndicator(
             modifier = Modifier.wrapContentSize(),
             color = MaterialTheme.colors.primary

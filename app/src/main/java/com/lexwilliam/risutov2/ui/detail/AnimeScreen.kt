@@ -18,14 +18,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.risuto.data.local.model.WatchStatus
-import com.lexwilliam.risutov2.model.detail.AnimePresentation
+import com.lexwilliam.risutov2.model.AnimePresentation
+import com.lexwilliam.risutov2.model.detail.AnimeDetailPresentation
 import com.lexwilliam.risutov2.model.detail.CharacterStaffPresentation
-import com.lexwilliam.risutov2.model.MyAnimePresentation
+import com.lexwilliam.risutov2.model.local.WatchStatusPresentation
 import com.lexwilliam.risutov2.ui.component.Chip
 import com.lexwilliam.risutov2.ui.component.LoadingScreen
 import com.lexwilliam.risutov2.ui.component.NetworkImage
-import com.example.risuto.presentation.util.*
 import com.lexwilliam.risutov2.util.*
 import com.lexwilliam.risutov2.util.intToCurrency
 import kotlinx.coroutines.CoroutineScope
@@ -74,7 +73,7 @@ fun AnimeScreen(
 @ExperimentalMaterialApi
 @Composable
 fun AnimeContent(
-    animeDetail: AnimePresentation,
+    animeDetail: AnimeDetailPresentation,
     animeStaff: CharacterStaffPresentation,
     onLoading: Boolean,
     onBackPressed: () -> Unit,
@@ -111,12 +110,12 @@ fun AnimeContent(
 @Composable
 fun MyAnimeMenu(
     onDoneClicked: () -> Unit,
-    animeDetail: AnimePresentation,
-    insertToMyAnime: (MyAnimePresentation) -> Unit
+    animeDetail: AnimeDetailPresentation,
+    insertToMyAnime: (AnimePresentation) -> Unit
 ) {
     var score by remember { mutableStateOf(-1) }
     var watchStateText by remember { mutableStateOf("Plan To Watch")}
-    var watchState by remember { mutableStateOf(WatchStatus.PlanToWatch) }
+    var watchState by remember { mutableStateOf(WatchStatusPresentation.PlanToWatch) }
     var expandedWatchStatus by remember { mutableStateOf(false) }
     var expandedScore by remember { mutableStateOf(false) }
     Column(
@@ -176,17 +175,17 @@ fun MyAnimeMenu(
                     style = MaterialTheme.typography.subtitle1
                 )
                 DropdownMenu(expanded = expandedWatchStatus, onDismissRequest = { expandedWatchStatus = false }) {
-                    _root_ide_package_.com.lexwilliam.risutov2.util.watchStatusList.forEach {
+                    watchStatusList.forEach {
                         DropdownMenuItem(onClick = {
                             watchState = it
                             watchStateText =
-                                _root_ide_package_.com.lexwilliam.risutov2.util.watchStatusToString(
+                                watchStatusToString(
                                     it
                                 )
                             expandedWatchStatus = false
                         }) {
                             Text(
-                                _root_ide_package_.com.lexwilliam.risutov2.util.watchStatusToString(
+                                watchStatusToString(
                                     it
                                 )
                             )
@@ -201,12 +200,12 @@ fun MyAnimeMenu(
                 .padding(horizontal = 16.dp),
             onClick = {
                 insertToMyAnime(
-                    MyAnimePresentation(
+                    AnimePresentation(
                         mal_id = animeDetail.mal_id,
                         title = animeDetail.title,
                         image_url = animeDetail.image_url,
-                        myScore = score,
-                        watchStatus = watchState
+                        my_score = score,
+                        watch_status = watchState
                     )
                 )
                 onDoneClicked()
@@ -242,7 +241,7 @@ fun AnimeToolBar(
 
 @Composable
 fun AnimeDetail(
-    animeDetail: AnimePresentation
+    animeDetail: AnimeDetailPresentation
 ) {
     Row(
         modifier = Modifier
@@ -254,31 +253,31 @@ fun AnimeDetail(
             modifier = Modifier
                 .size(width = 120.dp, height = 180.dp)
                 .shadow(elevation = 4.dp, shape = MaterialTheme.shapes.medium, true),
-            imageUrl = animeDetail.image_url
+            imageUrl = animeDetail.image_url!!
         )
         Column(
             modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(4.dp)
 
         ) {
-            Text(text = animeDetail.title, style = MaterialTheme.typography.h6)
+            Text(text = animeDetail.title!!, style = MaterialTheme.typography.h6)
             Text(text = animeDetail.premiered+" | "+animeDetail.type+"("+animeDetail.episodes+")", style = MaterialTheme.typography.caption)
             Row {
                 Text(text = "Studio: ", style = MaterialTheme.typography.button)
-                animeDetail.studios.forEach {
+                animeDetail.studios?.forEach {
                     it.name?.let { it1 -> Text(text = "$it1 ", style = MaterialTheme.typography.button) }
                 }
             }
 //            Text(text = genresToString(animeDetail.genres), style = MaterialTheme.typography.button)
             Divider()
-            Text(text = animeDetail.synopsis, style = MaterialTheme.typography.body2, maxLines = 5, overflow = TextOverflow.Ellipsis)
+            Text(text = animeDetail.synopsis!!, style = MaterialTheme.typography.body2, maxLines = 5, overflow = TextOverflow.Ellipsis)
         }
     }
 }
 
 @Composable
 fun AnimeGenre(
-    animeDetail: AnimePresentation,
+    animeDetail: AnimeDetailPresentation,
     navToGenre: (Int) -> Unit
 ) {
     Row(
@@ -288,19 +287,18 @@ fun AnimeGenre(
     ) {
         Spacer(modifier = Modifier.padding(8.dp))
         Text(text = "Genre: ", style = MaterialTheme.typography.subtitle1)
-        animeDetail.genres.forEach { genre ->
-            genre.name?.let { Chip(modifier = Modifier.padding(end = 8.dp), text = it,
-                onClick = { genre ->
-                    navToGenre(_root_ide_package_.com.lexwilliam.risutov2.util.getGenre(genre))
+        animeDetail.genres?.forEach { genre ->
+            Chip(modifier = Modifier.padding(end = 8.dp), text = genre.name,
+                onClick = {
+                    navToGenre(getGenre(it))
                 })
-            }
         }
     }
 }
 
 @Composable
 fun AnimeRating(
-    animeDetail: AnimePresentation
+    animeDetail: AnimeDetailPresentation
 ) {
     val scrollState = rememberScrollState()
     Row(
@@ -311,11 +309,11 @@ fun AnimeRating(
         data class Rating(val string: String, val int: String)
         val ratings = listOf(
             Rating("Score", animeDetail.score.toString()),
-            Rating("Members", intToCurrency(animeDetail.members)),
-            Rating("Rank", "#"+ intToCurrency(animeDetail.rank)),
-            Rating("Popularity", "#"+ intToCurrency(animeDetail.popularity)),
-            Rating("Favorited", intToCurrency(animeDetail.favorites)),
-            Rating("Rated", animeDetail.rating)
+            Rating("Members", intToCurrency(animeDetail.members!!)),
+            Rating("Rank", "#"+ intToCurrency(animeDetail.rank!!)),
+            Rating("Popularity", "#"+ intToCurrency(animeDetail.popularity!!)),
+            Rating("Favorited", intToCurrency(animeDetail.favorites!!)),
+            Rating("Rated", animeDetail.rating!!)
         )
         ratings.forEach { rating ->
             Column(
@@ -346,8 +344,8 @@ fun CharVoiceActorList(
             horizontalArrangement = Arrangement.spacedBy(2.dp),
             contentPadding = PaddingValues(start = 16.dp)
         ) {
-            items(items = animeStaff.characters) { item ->
-                Column() {
+            items(items = animeStaff.characters!!) { item ->
+                Column {
                     NetworkImage(
                         imageUrl = item.image_url,
                         modifier = Modifier
@@ -365,7 +363,7 @@ fun CharVoiceActorList(
                     }
                     Spacer(modifier = Modifier.padding(2.dp))
                     NetworkImage(
-                        imageUrl = _root_ide_package_.com.lexwilliam.risutov2.util.getJpnVoiceActor(
+                        imageUrl = getJpnVoiceActor(
                             item.voice_actors
                         ).image_url,
                         modifier = Modifier
@@ -376,7 +374,7 @@ fun CharVoiceActorList(
                         color = Color.Transparent
                     ) {
                         Text(
-                            text = _root_ide_package_.com.lexwilliam.risutov2.util.getJpnVoiceActor(
+                            text = getJpnVoiceActor(
                                 item.voice_actors
                             ).name + "\n",
                             maxLines = 2, overflow = TextOverflow.Ellipsis,

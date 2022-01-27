@@ -3,7 +3,7 @@ package com.lexwilliam.data.model.remote.detail
 import com.lexwilliam.data.model.common.*
 
 
-data class AnimeRepo(
+data class AnimeDetailRepo(
     val aired: AiredRepo?,
     val airing: Boolean?,
     val background: Any?,

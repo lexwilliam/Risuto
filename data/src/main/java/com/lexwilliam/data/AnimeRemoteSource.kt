@@ -3,10 +3,6 @@ package com.lexwilliam.data
 import com.lexwilliam.data.model.remote.search.SearchRepo
 import com.lexwilliam.data.model.remote.season.SeasonRepo
 import com.lexwilliam.data.model.remote.top.TopRepo
-import com.lexwilliam.domain.model.remote.detail.Anime
-import com.lexwilliam.domain.model.remote.search.Search
-import com.lexwilliam.domain.model.remote.season.Season
-import com.lexwilliam.domain.model.remote.top.Top
 import kotlinx.coroutines.flow.Flow
 
 interface AnimeRemoteSource {

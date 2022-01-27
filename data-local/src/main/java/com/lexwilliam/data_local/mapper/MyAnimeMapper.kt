@@ -21,6 +21,7 @@ class MyAnimeMapperImpl @Inject constructor(): MyAnimeMapper {
             WatchStatusEntity.OnHold -> WatchStatusRepo.OnHold
             WatchStatusEntity.PlanToWatch -> WatchStatusRepo.PlanToWatch
             WatchStatusEntity.Watching -> WatchStatusRepo.Watching
+            WatchStatusEntity.Default -> WatchStatusRepo.Default
         }
     }
 
@@ -34,6 +35,7 @@ class MyAnimeMapperImpl @Inject constructor(): MyAnimeMapper {
             WatchStatusRepo.OnHold -> WatchStatusEntity.OnHold
             WatchStatusRepo.PlanToWatch -> WatchStatusEntity.PlanToWatch
             WatchStatusRepo.Watching -> WatchStatusEntity.Watching
+            WatchStatusRepo.Default -> WatchStatusEntity.Default
         }
     }
 

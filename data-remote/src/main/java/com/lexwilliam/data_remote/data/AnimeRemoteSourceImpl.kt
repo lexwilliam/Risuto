@@ -1,8 +1,6 @@
 package com.lexwilliam.data_remote.data
 
 import com.lexwilliam.data.AnimeRemoteSource
-import com.lexwilliam.data.model.common.*
-import com.lexwilliam.data.model.remote.detail.AnimeRepo
 import com.lexwilliam.data.model.remote.search.SearchRepo
 import com.lexwilliam.data.model.remote.season.SeasonRepo
 import com.lexwilliam.data.model.remote.top.TopRepo

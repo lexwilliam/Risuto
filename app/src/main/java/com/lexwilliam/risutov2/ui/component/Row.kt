@@ -15,13 +15,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.lexwilliam.risutov2.model.AnimeListPresentation
+import com.lexwilliam.risutov2.model.AnimePresentation
 import com.lexwilliam.risutov2.util.generateFakeItem
 import com.lexwilliam.risutov2.util.intToCurrency
 
 @Composable
 fun RowItem(
-    item: AnimeListPresentation,
+    item: AnimePresentation,
     modifier: Modifier = Modifier,
     navToDetail: (Int) -> Unit
 ) {
@@ -29,11 +29,11 @@ fun RowItem(
         modifier
             .fillMaxWidth()
             .clickable {
-                navToDetail(item.mal_id)
+                navToDetail(item.mal_id!!)
             }
             .height(180.dp)) {
         NetworkImage(
-            imageUrl = item.image_url,
+            imageUrl = item.image_url!!,
             modifier = Modifier
                 .size(width = 120.dp, height = 180.dp)
                 .shadow(elevation = 4.dp, shape = MaterialTheme.shapes.medium, true)
@@ -43,7 +43,7 @@ fun RowItem(
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             Text(
-                text = item.title,
+                text = item.title!!,
                 style = MaterialTheme.typography.subtitle1,
                 fontWeight = FontWeight.Bold
             )
@@ -58,10 +58,10 @@ fun RowItem(
                 Icon(Icons.Default.Star, contentDescription = null)
                 Text(text = item.score.toString(), style = MaterialTheme.typography.caption)
                 Icon(Icons.Default.Person, contentDescription = null)
-                Text(text = intToCurrency(item.members), style = MaterialTheme.typography.caption)
+                Text(text = intToCurrency(item.members!!), style = MaterialTheme.typography.caption)
             }
             Text(
-                text = item.synopsis,
+                text = item.synopsis!!,
                 maxLines = 5,
                 overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.overline

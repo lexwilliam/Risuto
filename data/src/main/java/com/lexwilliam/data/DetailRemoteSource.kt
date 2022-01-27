@@ -1,12 +1,11 @@
 package com.lexwilliam.data
 
 import com.lexwilliam.data.model.remote.detail.*
-import com.lexwilliam.data.model.remote.season.SeasonArchiveRepo
 import kotlinx.coroutines.flow.Flow
 
 interface DetailRemoteSource {
 
-    suspend fun anime(id: Int): Flow<AnimeRepo>
+    suspend fun anime(id: Int): Flow<AnimeDetailRepo>
 
     suspend fun characterStaff(id: Int): Flow<CharacterStaffRepo>
 

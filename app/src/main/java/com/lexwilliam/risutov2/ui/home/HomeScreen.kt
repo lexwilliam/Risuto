@@ -15,13 +15,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.lexwilliam.risutov2.model.AnimeListPresentation
+import com.lexwilliam.risutov2.model.AnimePresentation
 import com.lexwilliam.risutov2.ui.component.Header
 import com.lexwilliam.risutov2.ui.component.HorizontalGridList
 import com.lexwilliam.risutov2.ui.component.LoadingScreen
 import com.lexwilliam.risutov2.util.generateFakeItemList
-import com.lexwilliam.risutov2.util.getCurrentSeason
-import com.lexwilliam.risutov2.util.getCurrentYear
 import java.util.*
 
 @Composable
@@ -42,10 +40,10 @@ fun HomeScreen(
 
 @Composable
 fun HomeContent(
-    currentSeasonAnime: List<AnimeListPresentation>,
-    topAiringAnime: List<AnimeListPresentation>,
-    topAnime: List<AnimeListPresentation>,
-    topUpcomingAnime: List<AnimeListPresentation>,
+    currentSeasonAnime: List<AnimePresentation>,
+    topAiringAnime: List<AnimePresentation>,
+    topAnime: List<AnimePresentation>,
+    topUpcomingAnime: List<AnimePresentation>,
     navToDetail: (Int) -> Unit
 ) {
     if(currentSeasonAnime.isEmpty() && topAiringAnime.isEmpty() && topAnime.isEmpty() && topUpcomingAnime.isEmpty()) {
@@ -86,7 +84,7 @@ fun HomeContent(
 @Composable
 fun PosterGridList(
     title: String,
-    items: List<AnimeListPresentation>,
+    items: List<AnimePresentation>,
     navToDetail: (Int) -> Unit,
 ) {
     if(items.isEmpty()) {

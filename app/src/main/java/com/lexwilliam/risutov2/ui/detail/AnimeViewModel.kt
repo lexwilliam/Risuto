@@ -1,13 +1,17 @@
 package com.lexwilliam.risutov2.ui.detail
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
-import com.example.risuto.data.local.Results
+import com.lexwilliam.domain.usecase.local.InsertAnimeHistory
+import com.lexwilliam.domain.usecase.local.InsertMyAnime
+import com.lexwilliam.domain.usecase.remote.GetAnimeDetail
+import com.lexwilliam.domain.usecase.remote.GetCharacterStaff
 import com.lexwilliam.risutov2.base.BaseViewModel
-import com.lexwilliam.risutov2.mapper.toDomain
-import com.lexwilliam.risutov2.model.detail.AnimePresentation
+import com.lexwilliam.risutov2.mapper.DetailMapper
+import com.lexwilliam.risutov2.mapper.HistoryMapper
+import com.lexwilliam.risutov2.mapper.MyAnimeMapper
+import com.lexwilliam.risutov2.model.AnimePresentation
+import com.lexwilliam.risutov2.model.detail.AnimeDetailPresentation
 import com.lexwilliam.risutov2.model.detail.CharacterStaffPresentation
-import com.lexwilliam.risutov2.model.MyAnimePresentation
 import com.lexwilliam.risutov2.util.ExceptionHandler
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -18,10 +22,13 @@ import javax.inject.Inject
 @HiltViewModel
 class AnimeViewModel
 @Inject constructor(
-    private val getAnimeUseCase: GetAnimeUseCase,
-    private val getCharacterStaffUseCase: GetCharacterStaffUseCase,
-    private val insertAnimeHistoryUseCase: InsertAnimeHistoryUseCase,
-    private val insertMyAnimeUseCase: InsertMyAnimeUseCase,
+    private val getAnimeDetail: GetAnimeDetail,
+    private val getCharacterStaff: GetCharacterStaff,
+    private val insertAnimeHistory: InsertAnimeHistory,
+    private val insertMyAnime: InsertMyAnime,
+    private val detailMapper: DetailMapper,
+    private val myAnimeMapper: MyAnimeMapper,
+    private val historyMapper: HistoryMapper,
     savedState: SavedStateHandle
 ): BaseViewModel() {
 
@@ -39,8 +46,8 @@ class AnimeViewModel
 
     private val malIdFromArgs = savedState.get<Int>("mal_id")
 
-    private val animeDetail = MutableStateFlow(AnimePresentation())
-    private val animeStaff = MutableStateFlow(CharacterStaffPresentation())
+    private val animeDetail = MutableStateFlow(AnimeDetailPresentation())
+    private val animeStaff = MutableStateFlow(CharacterStaffPresentation(emptyList(), emptyList()))
     private val _state = MutableStateFlow(AnimeViewState())
     val state = _state.asStateFlow()
 
@@ -49,19 +56,13 @@ class AnimeViewModel
         detailJob = launchCoroutine {
             malIdFromArgs?.let { id ->
                 if (id > 0) {
-                    getAnimeUseCase.invoke(id).collect { results ->
-                        val animes = results.toPresentation()
+                    getAnimeDetail.execute(id).collect { results ->
+                        val animes = detailMapper.toPresentation(results)
                         animeDetail.value = animes
-                        insertAnimeHistoryUseCase.invoke(animes.toDomain()).collect { result ->
-                            if(result == Results.SUCCESS) {
-                                Log.d("TAG", "Saving Success")
-                            } else {
-                                Log.d("TAG", "Saving Failed")
-                            }
-                        }
+                        insertAnimeHistory.execute(historyMapper.toDomain(animes))
                     }
-                    getCharacterStaffUseCase.invoke(id).collect { results ->
-                        val staffs = results.toPresentation()
+                    getCharacterStaff.execute(id).collect { results ->
+                        val staffs = detailMapper.toPresentation(results)
                         animeStaff.value = staffs
                     }
                     combine(
@@ -84,19 +85,17 @@ class AnimeViewModel
     }
 
     fun insertToMyAnime(
-        myAnime: MyAnimePresentation
+        anime: AnimePresentation
     ) {
         insertMyAnimeJob?.cancel()
         insertMyAnimeJob = launchCoroutine {
-            insertMyAnimeUseCase.invoke(myAnime.toDomain()).collect { result ->
-                Log.d("TAG", result.toString())
-            }
+            insertMyAnime.execute(myAnimeMapper.toDomain(anime))
         }
     }
 }
 
 data class AnimeViewState(
-    val animeDetail: AnimePresentation = AnimePresentation(),
-    val animeStaff: CharacterStaffPresentation = CharacterStaffPresentation(),
+    val animeDetail: AnimeDetailPresentation = AnimeDetailPresentation(),
+    val animeStaff: CharacterStaffPresentation = CharacterStaffPresentation(emptyList(), emptyList()),
     val onLoading: Boolean = true
 )

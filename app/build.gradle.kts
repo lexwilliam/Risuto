@@ -1,6 +1,7 @@
 import com.lexwilliam.dependencies.ProjectModules
 import com.lexwilliam.dependencies.Dependencies
 import com.lexwilliam.dependencies.TestDependencies
+import com.lexwilliam.dependencies.Versions.coil
 
 plugins {
     id("com.android.application")
@@ -73,6 +74,9 @@ dependencies {
     implementation(Dependencies.coilCompose)
     implementation(Dependencies.lottie)
     implementation(Dependencies.lottieCompose)
+
+    implementation("io.coil-kt:coil:$coil")
+    implementation("com.google.accompanist:accompanist-coil:0.12.0")
 
     implementation(Dependencies.AndroidX.legacySupport)
     implementation(Dependencies.jodaTime)

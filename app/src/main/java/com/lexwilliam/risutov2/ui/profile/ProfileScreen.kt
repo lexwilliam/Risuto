@@ -19,12 +19,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.risuto.data.local.model.WatchStatus
-import com.lexwilliam.risutov2.model.MyAnimePresentation
-import com.example.risuto.presentation.ui.component.*
-import com.lexwilliam.risutov2.util.bottomNavGap
-import com.lexwilliam.risutov2.util.intToCurrency
-import com.lexwilliam.risutov2.util.watchStatusToString
+import com.lexwilliam.risutov2.model.AnimePresentation
+import com.lexwilliam.risutov2.model.local.WatchStatusPresentation
 import com.lexwilliam.risutov2.ui.component.NetworkImage
 
 @ExperimentalFoundationApi
@@ -43,7 +39,7 @@ fun ProfileScreen(
 @ExperimentalFoundationApi
 @Composable
 fun ProfileContent(
-    myAnimelist: List<MyAnimePresentation>,
+    myAnimelist: List<AnimePresentation>,
     navToDetail: (Int) -> Unit
 ) {
     Column(modifier = Modifier.padding(bottom = _root_ide_package_.com.lexwilliam.risutov2.util.bottomNavGap)) {
@@ -58,14 +54,14 @@ fun ProfileContent(
             status = currentStatus,
             setGroupBy = { currentStatus = it }
         )
-        var filteredList: List<MyAnimePresentation> = emptyList()
+        var filteredList: List<AnimePresentation> = emptyList()
         when(currentStatus) {
             "All" -> filteredList = myAnimelist
-            "Watching" -> filteredList = myAnimelist.filter { it.watchStatus == WatchStatus.Watching }
-            "Completed" -> filteredList = myAnimelist.filter { it.watchStatus == WatchStatus.Completed }
-            "Plan To Watch" -> filteredList = myAnimelist.filter { it.watchStatus == WatchStatus.PlanToWatch }
-            "On Hold" -> filteredList = myAnimelist.filter { it.watchStatus == WatchStatus.OnHold }
-            "Dropped" -> filteredList = myAnimelist.filter { it.watchStatus == WatchStatus.Dropped }
+            "Watching" -> filteredList = myAnimelist.filter { it.watch_status == WatchStatusPresentation.Watching }
+            "Completed" -> filteredList = myAnimelist.filter { it.watch_status == WatchStatusPresentation.Completed }
+            "Plan To Watch" -> filteredList = myAnimelist.filter { it.watch_status == WatchStatusPresentation.PlanToWatch }
+            "On Hold" -> filteredList = myAnimelist.filter { it.watch_status == WatchStatusPresentation.OnHold }
+            "Dropped" -> filteredList = myAnimelist.filter { it.watch_status == WatchStatusPresentation.Dropped }
         }
         MyAnimeGridList(items = filteredList, navToDetail = { navToDetail(it) })
     }
@@ -104,22 +100,22 @@ fun ProfileTabRow(
 @Composable
 fun MyAnimeGrid(
     modifier: Modifier = Modifier,
-    item: MyAnimePresentation,
+    item: AnimePresentation,
     navToDetail: (Int) -> Unit
 ) {
     Column(
         modifier = modifier
             .clickable {
-                navToDetail(item.mal_id)
+                navToDetail(item.mal_id!!)
             }
     ) {
         NetworkImage(
-            imageUrl = item.image_url,
+            imageUrl = item.image_url!!,
             modifier = Modifier
                 .size(width = 180.dp, height = 240.dp)
                 .shadow(elevation = 4.dp, shape = MaterialTheme.shapes.medium, clip = true)
         )
-        Text(text = item.title,
+        Text(text = item.title!!,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier.padding(top = 4.dp),
@@ -130,8 +126,8 @@ fun MyAnimeGrid(
             modifier = Modifier.requiredHeight(IntrinsicSize.Min),
             horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            Text(text = _root_ide_package_.com.lexwilliam.risutov2.util.watchStatusToString(item.watchStatus), style = MaterialTheme.typography.caption)
-            Text(text = _root_ide_package_.com.lexwilliam.risutov2.util.intToCurrency(item.myScore), style = MaterialTheme.typography.caption)
+            Text(text = _root_ide_package_.com.lexwilliam.risutov2.util.watchStatusToString(item.watch_status!!), style = MaterialTheme.typography.caption)
+            Text(text = _root_ide_package_.com.lexwilliam.risutov2.util.intToCurrency(item.my_score!!), style = MaterialTheme.typography.caption)
         }
     }
 }
@@ -141,7 +137,7 @@ fun MyAnimeGrid(
 @Composable
 fun MyAnimeGridList(
     modifier: Modifier = Modifier,
-    items: List<MyAnimePresentation>,
+    items: List<AnimePresentation>,
     navToDetail: (Int) -> Unit
 ) {
     if(items.isEmpty()) {

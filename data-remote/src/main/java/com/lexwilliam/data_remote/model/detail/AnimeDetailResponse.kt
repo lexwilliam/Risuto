@@ -3,7 +3,7 @@ package com.lexwilliam.data_remote.model.detail
 import com.lexwilliam.data_remote.model.common.*
 
 
-data class AnimeResponse(
+data class AnimeDetailResponse(
     val aired: AiredResponse?,
     val airing: Boolean?,
     val background: Any?,

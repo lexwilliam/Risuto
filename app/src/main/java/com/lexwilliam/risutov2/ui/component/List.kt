@@ -8,14 +8,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.lexwilliam.risutov2.model.AnimeListPresentation
+import com.lexwilliam.risutov2.model.AnimePresentation
 import com.lexwilliam.risutov2.util.generateFakeItemList
 
 @ExperimentalFoundationApi
 @Composable
 fun GridList(
     modifier: Modifier = Modifier,
-    items: List<AnimeListPresentation>,
+    items: List<AnimePresentation>,
     navToDetail: (Int) -> Unit
 ) {
     if(items.isEmpty()) {
@@ -37,7 +37,7 @@ fun GridList(
 @Composable
 fun ColumnList(
     modifier: Modifier = Modifier,
-    items: List<AnimeListPresentation>,
+    items: List<AnimePresentation>,
     navToDetail: (Int) -> Unit
 ) {
     LazyColumn(
@@ -53,7 +53,7 @@ fun ColumnList(
 
 @Composable
 fun HorizontalGridList(
-    items: List<AnimeListPresentation>,
+    items: List<AnimePresentation>,
     navToDetail: (Int) -> Unit
 ) {
     LazyRow(

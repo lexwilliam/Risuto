@@ -1,16 +1,31 @@
 package com.lexwilliam.risutov2.model.detail
 
-import com.example.risuto.data.remote.model.detail.Character
-import com.example.risuto.data.remote.model.detail.Staff
-
 data class CharacterStaffPresentation(
-    val characters: List<Character>,
-    val request_cache_expiry: Int,
-    val request_cached: Boolean,
-    val request_hash: String,
-    val staff: List<Staff>
-) {
-    constructor() : this(
-        listOf(), 0, false, "", listOf()
-    )
-}
+    val characters: List<CharacterPresentation>?,
+    val staff: List<StaffPresentation>?
+)
+
+data class CharacterPresentation(
+    val image_url: String,
+    val mal_id: Int,
+    val name: String,
+    val role: String,
+    val url: String,
+    val voice_actors: List<VoiceActorPresentation>
+)
+
+data class StaffPresentation(
+    val image_url: String,
+    val mal_id: Int,
+    val name: String,
+    val positions: List<String>,
+    val url: String
+)
+
+data class VoiceActorPresentation(
+    val image_url: String,
+    val language: String,
+    val mal_id: Int,
+    val name: String,
+    val url: String
+)

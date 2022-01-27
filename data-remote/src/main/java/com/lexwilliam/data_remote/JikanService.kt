@@ -44,7 +44,7 @@ interface JikanService {
     @GET("anime/{id}")
     suspend fun getAnimeResult(
         @Path("id") id: Int
-    ): AnimeResponse
+    ): AnimeDetailResponse
 
     @GET("anime/{id}/characters_staff")
     suspend fun getCharacterStaffResult(

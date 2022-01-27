@@ -1,7 +1,7 @@
 package com.lexwilliam.risutov2.util
 
 import androidx.annotation.StringRes
-import com.example.risuto.R
+import com.lexwilliam.risutov2.R
 import java.net.UnknownHostException
 
 internal object ExceptionHandler {

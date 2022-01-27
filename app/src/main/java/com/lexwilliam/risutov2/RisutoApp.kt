@@ -20,18 +20,15 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavType
 import androidx.navigation.compose.*
+import androidx.navigation.navArgument
 import com.lexwilliam.risutov2.Screens.*
 import com.lexwilliam.risutov2.ui.detail.AnimeScreen
 import com.lexwilliam.risutov2.ui.detail.AnimeViewModel
-import com.lexwilliam.risutov2.ui.genre.GenreScreen
-import com.lexwilliam.risutov2.ui.genre.GenreViewModel
 import com.lexwilliam.risutov2.ui.home.HomeScreen
 import com.lexwilliam.risutov2.ui.home.HomeViewModel
 import com.lexwilliam.risutov2.ui.profile.ProfileScreen
 import com.lexwilliam.risutov2.ui.profile.ProfileViewModel
 import com.lexwilliam.risutov2.ui.search.SearchHomeScreen
-import com.lexwilliam.risutov2.ui.search.SearchScreen
-import com.lexwilliam.risutov2.ui.search.SearchViewModel
 import com.lexwilliam.risutov2.ui.season.SeasonScreen
 import com.lexwilliam.risutov2.ui.season.SeasonViewModel
 
@@ -121,20 +118,20 @@ fun RisutoAppContent() {
                     }
                 )
             }
-            composable(RisutoSearchScreen.route) {
-                val searchViewModel = hiltViewModel<SearchViewModel>()
-                SearchScreen(
-                    viewModel = searchViewModel,
-                    navToDetail = { mal_id ->
-                        navController.navigate(
-                            RisutoAnimeScreen.route.plus("/?mal_id=$mal_id")
-                        )
-                    },
-                    onBackPressed = {
-                        navController.navigateUp()
-                    }
-                )
-            }
+//            composable(RisutoSearchScreen.route) {
+//                val searchViewModel = hiltViewModel<SearchViewModel>()
+//                SearchScreen(
+//                    viewModel = searchViewModel,
+//                    navToDetail = { mal_id ->
+//                        navController.navigate(
+//                            RisutoAnimeScreen.route.plus("/?mal_id=$mal_id")
+//                        )
+//                    },
+//                    onBackPressed = {
+//                        navController.navigateUp()
+//                    }
+//                )
+//            }
             composable(RisutoSeasonScreen.route) {
                 val seasonViewModel = hiltViewModel<SeasonViewModel>()
                 SeasonScreen(
@@ -166,26 +163,26 @@ fun RisutoAppContent() {
                     }
                 )
             }
-            composable(
-                route = RisutoGenreScreen.route.plus("/?genre_id={genre_id}"),
-                arguments = listOf(
-                    navArgument("genre_id") {
-                        type = NavType.IntType
-                        defaultValue = -1
-                    }
-                )
-            ) {
-                val genreViewModel = hiltViewModel<GenreViewModel>()
-                GenreScreen(
-                    viewModel = genreViewModel,
-                    onBackPressed = { navController.navigateUp() },
-                    navToDetail = { mal_id ->
-                        navController.navigate(
-                            RisutoAnimeScreen.route.plus("/?mal_id=$mal_id")
-                        )
-                    }
-                )
-            }
+//            composable(
+//                route = RisutoGenreScreen.route.plus("/?genre_id={genre_id}"),
+//                arguments = listOf(
+//                    navArgument("genre_id") {
+//                        type = NavType.IntType
+//                        defaultValue = -1
+//                    }
+//                )
+//            ) {
+//                val genreViewModel = hiltViewModel<GenreViewModel>()
+//                GenreScreen(
+//                    viewModel = genreViewModel,
+//                    onBackPressed = { navController.navigateUp() },
+//                    navToDetail = { mal_id ->
+//                        navController.navigate(
+//                            RisutoAnimeScreen.route.plus("/?mal_id=$mal_id")
+//                        )
+//                    }
+//                )
+//            }
             composable(RisutoProfileScreen.route) {
                 val profileViewModel = hiltViewModel<ProfileViewModel>()
                 ProfileScreen(
@@ -226,7 +223,7 @@ fun OfflineDialog(onRetry: () -> Unit) {
         text = { Text(text = "Unable to fetch anime list. Please check your connection") },
         confirmButton = {
             TextButton(onClick = onRetry) {
-                Text(stringResource(R.string.retry_label))
+                Text("Retry")
             }
         }
     )

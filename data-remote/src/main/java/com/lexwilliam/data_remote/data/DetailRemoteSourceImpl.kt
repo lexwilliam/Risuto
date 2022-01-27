@@ -39,7 +39,7 @@ class DetailRemoteSourceImpl @Inject constructor(
     private val _videosSharedFlow = MutableStateFlow(getInitialStateVideos())
     private val videosSharedFlow = _videosSharedFlow.asSharedFlow()
 
-    override suspend fun anime(id: Int): Flow<AnimeRepo> {
+    override suspend fun anime(id: Int): Flow<AnimeDetailRepo> {
         try {
             detailMapper.toRepo(jikanService.getAnimeResult(id))
                 .let { anime ->
@@ -172,7 +172,7 @@ class DetailRemoteSourceImpl @Inject constructor(
     }
 
     private fun getInitialStateAnimeDetail() =
-        AnimeRepo(
+        AnimeDetailRepo(
             AiredRepo("", PropRepo(FromRepo(-1,-1,-1), ToRepo(-1,-1,-1)),"", ""),
             false, "", "", "", listOf(""), -1,
             -1, listOf(GenreRepo(-1,"", "", "")), "",

@@ -2,8 +2,11 @@ package com.lexwilliam.risutov2.ui.home
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import com.lexwilliam.domain.usecase.remote.GetSeasonAnime
+import com.lexwilliam.domain.usecase.remote.GetTopAnime
 import com.lexwilliam.risutov2.base.BaseViewModel
-import com.lexwilliam.risutov2.model.AnimeListPresentation
+import com.lexwilliam.risutov2.mapper.AnimeMapper
+import com.lexwilliam.risutov2.model.AnimePresentation
 import com.lexwilliam.risutov2.util.Error
 import com.lexwilliam.risutov2.util.ExceptionHandler
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,9 +19,9 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel
 @Inject constructor(
-    private val getCurrentSeasonAnimeUseCase: GetCurrentSeasonAnimeUseCase,
-    private val topAnimeUseCase: TopAnimeUseCase,
-    private val savedStateHandle: SavedStateHandle
+    private val getSeasonAnime: GetSeasonAnime,
+    private val topAnimeUseCase: GetTopAnime,
+    private val animeMapper: AnimeMapper
 ): BaseViewModel() {
 
     override val coroutineExceptionHandler= CoroutineExceptionHandler { _, exception ->
@@ -33,10 +36,10 @@ class HomeViewModel
         homeJob?.cancel()
     }
 
-    private val currentSeasonAnime = MutableStateFlow<List<AnimeListPresentation>>(listOf())
-    private val topAiringAnime = MutableStateFlow<List<AnimeListPresentation>>(listOf())
-    private val topAnime = MutableStateFlow<List<AnimeListPresentation>>(listOf())
-    private val topUpcomingAnime = MutableStateFlow<List<AnimeListPresentation>>(listOf())
+    private val currentSeasonAnime = MutableStateFlow<List<AnimePresentation>>(listOf())
+    private val topAiringAnime = MutableStateFlow<List<AnimePresentation>>(listOf())
+    private val topAnime = MutableStateFlow<List<AnimePresentation>>(listOf())
+    private val topUpcomingAnime = MutableStateFlow<List<AnimePresentation>>(listOf())
 
     private val _state = MutableStateFlow(HomeViewState(isLoading = false, error = null))
     val state = _state.asStateFlow()
@@ -78,8 +81,8 @@ class HomeViewModel
 
     private fun onCurrentSeasonAnime() {
         viewModelScope.launch {
-            getCurrentSeasonAnimeUseCase.invoke().collect { results ->
-                val animes = results.map { anime -> com.lexwilliam.risutov2.mapper.toPresentation() }
+            getSeasonAnime.execute(null, null).collect { results ->
+                val animes = results.anime.map { anime -> animeMapper.toPresentation(anime) }
                 currentSeasonAnime.value = animes
             }
         }
@@ -87,8 +90,8 @@ class HomeViewModel
 
     private fun onTopAiringAnime() {
         viewModelScope.launch {
-            topAnimeUseCase.invoke(1, "airing").collect { results ->
-                val animes = results.map { anime -> com.lexwilliam.risutov2.mapper.toPresentation() }
+            topAnimeUseCase.execute(1, "airing").collect { results ->
+                val animes = results.top.map { anime -> animeMapper.toPresentation(anime) }
                 topAiringAnime.value = animes
             }
         }
@@ -96,8 +99,8 @@ class HomeViewModel
 
     private fun onTopUpcomingAnime() {
         viewModelScope.launch {
-            topAnimeUseCase.invoke(1, "upcoming").collect { results ->
-                val animes = results.map { anime -> com.lexwilliam.risutov2.mapper.toPresentation() }
+            topAnimeUseCase.execute(1, "upcoming").collect { results ->
+                val animes = results.top.map { anime -> animeMapper.toPresentation(anime) }
                 topUpcomingAnime.value = animes
             }
         }
@@ -105,8 +108,8 @@ class HomeViewModel
 
     private fun onTopAnime() {
         viewModelScope.launch {
-            topAnimeUseCase.invoke(1, "tv").collect { results ->
-                val animes = results.map { anime -> com.lexwilliam.risutov2.mapper.toPresentation() }
+            topAnimeUseCase.execute(1, "tv").collect { results ->
+                val animes = results.top.map { anime -> animeMapper.toPresentation(anime) }
                 topAnime.value = animes
             }
         }
@@ -118,10 +121,10 @@ class HomeViewModel
 }
 
 data class HomeViewState (
-    val currentSeasonAnime: List<AnimeListPresentation> = emptyList(),
-    val topAnime: List<AnimeListPresentation> = emptyList(),
-    val topAiringAnime: List<AnimeListPresentation> = emptyList(),
-    val topUpcomingAnime: List<AnimeListPresentation> = emptyList(),
+    val currentSeasonAnime: List<AnimePresentation> = emptyList(),
+    val topAnime: List<AnimePresentation> = emptyList(),
+    val topAiringAnime: List<AnimePresentation> = emptyList(),
+    val topUpcomingAnime: List<AnimePresentation> = emptyList(),
     val isLoading: Boolean,
     val error: Error?
 )

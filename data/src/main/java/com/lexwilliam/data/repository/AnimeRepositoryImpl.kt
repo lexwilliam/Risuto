@@ -43,7 +43,7 @@ class AnimeRepositoryImpl(
         return animeRemoteSource.topAnime(page, subType).map { animeMapper.toDomain(it) }
     }
 
-    override suspend fun seasonAnime(year: Int, season: String): Flow<Season> {
+    override suspend fun seasonAnime(year: Int?, season: String?): Flow<Season> {
         return animeRemoteSource.seasonAnime(year, season).map { animeMapper.toDomain(it) }
     }
 

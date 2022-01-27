@@ -5,7 +5,7 @@ import com.lexwilliam.data_remote.model.detail.*
 import javax.inject.Inject
 
 interface DetailMapper {
-    fun toRepo(anime: AnimeResponse): AnimeRepo
+    fun toRepo(anime: AnimeDetailResponse): AnimeDetailRepo
     fun toRepo(charStaff: CharacterStaffResponse): CharacterStaffRepo
     fun toRepo(episodes: EpisodesResponse): EpisodesRepo
     fun toRepo(forum: ForumResponse): ForumRepo
@@ -21,8 +21,8 @@ interface DetailMapper {
 class DetailMapperImpl @Inject constructor(
     private val commonMapper: CommonMapper
 ): DetailMapper {
-    override fun toRepo(anime: AnimeResponse): AnimeRepo =
-        AnimeRepo(commonMapper.toRepo(anime.aired!!), anime.airing, anime.background, anime.broadcast, anime.duration, anime.ending_themes, anime.episodes, anime.favorites, anime.genres?.map { commonMapper.toRepo(it) }, anime.image_url, anime.licensors?.map { commonMapper.toRepo(it) }, anime.mal_id, anime.members, anime.opening_themes, anime.popularity, anime.premiered, anime.producers?.map { commonMapper.toRepo(it) }, anime.rank, anime.rating, commonMapper.toRepo(anime.related!!), anime.request_cache_expiry, anime.request_cached, anime.request_hash, anime.score, anime.scored_by, anime.source, anime.status, anime.studios?.map { commonMapper.toRepo(it) }, anime.synopsis, anime.title, anime.title_english, anime.title_japanese, anime.title_synonyms, anime.trailer_url, anime.type, anime.url)
+    override fun toRepo(anime: AnimeDetailResponse): AnimeDetailRepo =
+        AnimeDetailRepo(commonMapper.toRepo(anime.aired!!), anime.airing, anime.background, anime.broadcast, anime.duration, anime.ending_themes, anime.episodes, anime.favorites, anime.genres?.map { commonMapper.toRepo(it) }, anime.image_url, anime.licensors?.map { commonMapper.toRepo(it) }, anime.mal_id, anime.members, anime.opening_themes, anime.popularity, anime.premiered, anime.producers?.map { commonMapper.toRepo(it) }, anime.rank, anime.rating, commonMapper.toRepo(anime.related!!), anime.request_cache_expiry, anime.request_cached, anime.request_hash, anime.score, anime.scored_by, anime.source, anime.status, anime.studios?.map { commonMapper.toRepo(it) }, anime.synopsis, anime.title, anime.title_english, anime.title_japanese, anime.title_synonyms, anime.trailer_url, anime.type, anime.url)
 
     override fun toRepo(charStaff: CharacterStaffResponse): CharacterStaffRepo =
         CharacterStaffRepo(charStaff.characters?.map { toRepo(it) }, charStaff.request_cache_expiry, charStaff.request_cached, charStaff.request_hash, charStaff.staff?.map { toRepo(it) })
