@@ -85,12 +85,12 @@ fun GenreGridList(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         var count = 0
-        val size = _root_ide_package_.com.lexwilliam.risutov2.util.genreList.size - _root_ide_package_.com.lexwilliam.risutov2.util.genreList.size%2
+        val size = genreList.size - genreList.size%2
         while(count < size) {
             Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                 for (i in 0..1) {
                     GenreGrid(
-                        genre = _root_ide_package_.com.lexwilliam.risutov2.util.genreList[count],
+                        genre = genreList[count],
                         navToGenre = {
                             navToGenre(it)
                         }
@@ -99,11 +99,11 @@ fun GenreGridList(
                 }
             }
         }
-        if (_root_ide_package_.com.lexwilliam.risutov2.util.genreList.size - count != 0) {
+        if (genreList.size - count != 0) {
             Row {
-                while (_root_ide_package_.com.lexwilliam.risutov2.util.genreList.size - count != 0) {
+                while (genreList.size - count != 0) {
                     GenreGrid(
-                        genre = _root_ide_package_.com.lexwilliam.risutov2.util.genreList[count],
+                        genre = genreList[count],
                         navToGenre = {
                             navToGenre(it)
                         }
@@ -126,7 +126,7 @@ fun GenreGrid(
         .shadow(elevation = 4.dp, shape = MaterialTheme.shapes.medium, true)
         .background(color = MaterialTheme.colors.primaryVariant)
         .clickable {
-            navToGenre(_root_ide_package_.com.lexwilliam.risutov2.util.getGenre(genre))
+            navToGenre(getGenre(genre))
         },
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center

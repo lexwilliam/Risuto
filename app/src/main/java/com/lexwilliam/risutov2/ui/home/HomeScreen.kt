@@ -19,7 +19,8 @@ import com.lexwilliam.risutov2.model.AnimePresentation
 import com.lexwilliam.risutov2.ui.component.Header
 import com.lexwilliam.risutov2.ui.component.HorizontalGridList
 import com.lexwilliam.risutov2.ui.component.LoadingScreen
-import com.lexwilliam.risutov2.util.generateFakeItemList
+import com.lexwilliam.risutov2.util.getCurrentSeason
+import com.lexwilliam.risutov2.util.getCurrentYear
 import java.util.*
 
 @Composable
@@ -57,8 +58,8 @@ fun HomeContent(
         ) {
             Header(title = "Home", modifier = Modifier.padding(top = 24.dp))
             PosterGridList(
-                title = _root_ide_package_.com.lexwilliam.risutov2.util.getCurrentSeason()
-                    .capitalize(Locale.ROOT) + " " + _root_ide_package_.com.lexwilliam.risutov2.util.getCurrentYear() + " " + "Anime",
+                title = getCurrentSeason()
+                    .capitalize(Locale.ROOT) + " " + getCurrentYear() + " " + "Anime",
                 items = currentSeasonAnime,
                 navToDetail = { navToDetail(it) }
             )
@@ -109,16 +110,16 @@ fun PosterGridList(
     }
 }
 
-@Preview
-@Composable
-fun HomeContentPreview() {
-    HomeContent(
-        currentSeasonAnime = generateFakeItemList(),
-        topAiringAnime = generateFakeItemList(),
-        topAnime = generateFakeItemList(),
-        topUpcomingAnime = generateFakeItemList(),
-        navToDetail = {}
-    )
-}
+//@Preview
+//@Composable
+//fun HomeContentPreview() {
+//    HomeContent(
+//        currentSeasonAnime = generateFakeItemList(),
+//        topAiringAnime = generateFakeItemList(),
+//        topAnime = generateFakeItemList(),
+//        topUpcomingAnime = generateFakeItemList(),
+//        navToDetail = {}
+//    )
+//}
 
 

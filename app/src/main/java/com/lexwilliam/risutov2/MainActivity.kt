@@ -21,9 +21,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             RisutoTheme {
-                Surface(color = MaterialTheme.colors.background) {
-                    RisutoApp()
-                }
+                RisutoApp()
             }
         }
     }

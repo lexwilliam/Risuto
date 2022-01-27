@@ -22,6 +22,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lexwilliam.risutov2.model.AnimePresentation
 import com.lexwilliam.risutov2.model.local.WatchStatusPresentation
 import com.lexwilliam.risutov2.ui.component.NetworkImage
+import com.lexwilliam.risutov2.util.bottomNavGap
+import com.lexwilliam.risutov2.util.intToCurrency
+import com.lexwilliam.risutov2.util.watchStatusToString
 
 @ExperimentalFoundationApi
 @Composable
@@ -42,7 +45,7 @@ fun ProfileContent(
     myAnimelist: List<AnimePresentation>,
     navToDetail: (Int) -> Unit
 ) {
-    Column(modifier = Modifier.padding(bottom = _root_ide_package_.com.lexwilliam.risutov2.util.bottomNavGap)) {
+    Column(modifier = Modifier.padding(bottom = bottomNavGap)) {
         TopAppBar(
             backgroundColor = MaterialTheme.colors.background,
             contentColor = MaterialTheme.colors.secondary,
@@ -126,8 +129,8 @@ fun MyAnimeGrid(
             modifier = Modifier.requiredHeight(IntrinsicSize.Min),
             horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            Text(text = _root_ide_package_.com.lexwilliam.risutov2.util.watchStatusToString(item.watch_status!!), style = MaterialTheme.typography.caption)
-            Text(text = _root_ide_package_.com.lexwilliam.risutov2.util.intToCurrency(item.my_score!!), style = MaterialTheme.typography.caption)
+            Text(text = watchStatusToString(item.watch_status!!), style = MaterialTheme.typography.caption)
+            Text(text = intToCurrency(item.my_score!!), style = MaterialTheme.typography.caption)
         }
     }
 }

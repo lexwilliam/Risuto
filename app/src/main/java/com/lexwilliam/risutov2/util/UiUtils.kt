@@ -62,11 +62,11 @@ fun seasonYearFormat(season: String, year: Int): String {
 }
 
 fun getCurrentSeason(): String {
-    return _root_ide_package_.com.lexwilliam.risutov2.util.seasons[_root_ide_package_.com.lexwilliam.risutov2.util.getCurrentMonth() - 1]
+    return seasons[getCurrentMonth() - 1]
 }
 
 fun getGenre(genre: String): Int {
-    return _root_ide_package_.com.lexwilliam.risutov2.util.genreList.indexOf(genre) + 1
+    return genreList.indexOf(genre) + 1
 }
 
 internal fun intToCurrency(int: Int): String {

@@ -18,6 +18,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lexwilliam.risutov2.model.AnimePresentation
 import com.lexwilliam.risutov2.ui.component.GridList
 import com.lexwilliam.risutov2.ui.component.Header
+import com.lexwilliam.risutov2.util.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.util.*
@@ -75,7 +76,7 @@ fun SeasonContent(
     setSeason: (String) -> Unit,
     navToDetail: (Int) -> Unit
 ) {
-    Column(modifier = Modifier.padding(bottom = _root_ide_package_.com.lexwilliam.risutov2.util.bottomNavGap)) {
+    Column(modifier = Modifier.padding(bottom = bottomNavGap)) {
         SeasonToolBar(
             year = year,
             season = season,
@@ -110,7 +111,7 @@ fun SeasonToolBar(
                         bottomSheetState.bottomSheetState.expand()
                     }
                 },
-            title = _root_ide_package_.com.lexwilliam.risutov2.util.seasonYearFormat(season, year)
+            title = seasonYearFormat(season, year)
         )
         Row(
             modifier = Modifier
@@ -144,13 +145,13 @@ private fun onPreviousSeason(
     season: String,
     setSeason: (String) -> Unit
 ) {
-    val seasonIndex = _root_ide_package_.com.lexwilliam.risutov2.util.allSeason.indexOf(season.capitalize(Locale.ROOT))
+    val seasonIndex = allSeason.indexOf(season.capitalize(Locale.ROOT))
     val previousSeason: String
     if(seasonIndex != 0) {
-        previousSeason = _root_ide_package_.com.lexwilliam.risutov2.util.allSeason[seasonIndex - 1]
+        previousSeason = allSeason[seasonIndex - 1]
         setSeason("$previousSeason $year")
     } else {
-        previousSeason = _root_ide_package_.com.lexwilliam.risutov2.util.allSeason.last()
+        previousSeason = allSeason.last()
         setSeason("$previousSeason ${year-1}")
     }
 
@@ -161,13 +162,13 @@ private fun onNextSeason(
     season: String,
     setSeason: (String) -> Unit
 ) {
-    val seasonIndex = _root_ide_package_.com.lexwilliam.risutov2.util.allSeason.indexOf(season.capitalize(Locale.ROOT))
+    val seasonIndex = allSeason.indexOf(season.capitalize(Locale.ROOT))
     val nextSeason: String
-    if(seasonIndex != _root_ide_package_.com.lexwilliam.risutov2.util.allSeason.size-1) {
-        nextSeason = _root_ide_package_.com.lexwilliam.risutov2.util.allSeason[seasonIndex + 1]
+    if(seasonIndex != allSeason.size-1) {
+        nextSeason = allSeason[seasonIndex + 1]
         setSeason("$nextSeason ${year}")
     } else {
-        nextSeason = _root_ide_package_.com.lexwilliam.risutov2.util.allSeason.first()
+        nextSeason = allSeason.first()
         setSeason("$nextSeason ${year+1}")
     }
 }
@@ -221,7 +222,7 @@ fun SeasonMenu(
                     style = MaterialTheme.typography.subtitle1
                 )
                 DropdownMenu(expanded = seasonExpanded, onDismissRequest = { seasonExpanded = false }) {
-                    _root_ide_package_.com.lexwilliam.risutov2.util.allSeason.forEach {
+                    allSeason.forEach {
                         DropdownMenuItem(onClick = {
                             seasonText = it
                             seasonExpanded = false

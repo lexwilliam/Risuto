@@ -16,7 +16,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.lexwilliam.risutov2.model.AnimePresentation
-import com.lexwilliam.risutov2.util.generateFakeItem
 import com.lexwilliam.risutov2.util.intToCurrency
 
 @Composable
@@ -70,8 +69,8 @@ fun RowItem(
     }
 }
 
-@Preview
-@Composable
-fun RowItemPreview() {
-    RowItem(item = generateFakeItem(), navToDetail = {})
-}
+//@Preview
+//@Composable
+//fun RowItemPreview() {
+//    RowItem(item = generateFakeItem(), navToDetail = {})
+//}

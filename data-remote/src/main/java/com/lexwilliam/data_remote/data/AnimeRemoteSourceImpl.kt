@@ -15,8 +15,7 @@ import javax.inject.Inject
 
 class AnimeRemoteSourceImpl @Inject constructor(
     private val jikanService: JikanService,
-    private val animeMapper: AnimeMapper,
-    private val commonMapper: CommonMapper
+    private val animeMapper: AnimeMapper
 ): AnimeRemoteSource {
 
     private val _searchAnimeSharedFlow = MutableStateFlow(getInitialStateSearchAnime())

@@ -1,10 +1,9 @@
 rootProject.name = "RisutoV2"
 rootProject.buildFileName = "build.gradle.kts"
 include(
-    ":app"
+    ":app",
+    ":data",
+    ":domain",
+    ":data-local",
+    ":data-remote"
 )
-
-include(":data")
-include(":domain")
-include(":data-local")
-include(":data-remote")

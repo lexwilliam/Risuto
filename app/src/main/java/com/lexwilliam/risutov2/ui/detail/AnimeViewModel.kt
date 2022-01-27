@@ -20,8 +20,7 @@ import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 @HiltViewModel
-class AnimeViewModel
-@Inject constructor(
+class AnimeViewModel @Inject constructor(
     private val getAnimeDetail: GetAnimeDetail,
     private val getCharacterStaff: GetCharacterStaff,
     private val insertAnimeHistory: InsertAnimeHistory,

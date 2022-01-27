@@ -1,7 +1,5 @@
 package com.lexwilliam.data_remote.model.detail
 
-import com.lexwilliam.data_remote.model.common.ReviewScoreResponse
-
 data class StatsResponse(
     val completed: Int,
     val dropped: Int,

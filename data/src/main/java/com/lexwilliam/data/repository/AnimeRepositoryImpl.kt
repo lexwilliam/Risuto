@@ -8,8 +8,9 @@ import com.lexwilliam.domain.model.remote.top.Top
 import com.lexwilliam.domain.repository.AnimeRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 
-class AnimeRepositoryImpl(
+class AnimeRepositoryImpl @Inject constructor(
     private val animeRemoteSource: AnimeRemoteSource,
     private val animeMapper: AnimeMapper
 ): AnimeRepository {

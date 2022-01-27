@@ -9,7 +9,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.lexwilliam.risutov2.model.AnimePresentation
-import com.lexwilliam.risutov2.util.generateFakeItemList
 
 @ExperimentalFoundationApi
 @Composable
@@ -70,25 +69,25 @@ fun HorizontalGridList(
         }
     }
 }
-
-@Preview
-@Composable
-fun ColumnListPreview() {
-    ColumnList(items = generateFakeItemList(), navToDetail = {})
-}
-
-@ExperimentalFoundationApi
-@Preview
-@Composable
-fun GridListPreview() {
-    GridList(items = generateFakeItemList(), navToDetail = {})
-}
-
-@Preview
-@Composable
-fun HorizontalGridListPreview() {
-    HorizontalGridList(items = generateFakeItemList(), navToDetail = {})
-}
+//
+//@Preview
+//@Composable
+//fun ColumnListPreview() {
+//    ColumnList(items = generateFakeItemList(), navToDetail = {})
+//}
+//
+//@ExperimentalFoundationApi
+//@Preview
+//@Composable
+//fun GridListPreview() {
+//    GridList(items = generateFakeItemList(), navToDetail = {})
+//}
+//
+//@Preview
+//@Composable
+//fun HorizontalGridListPreview() {
+//    HorizontalGridList(items = generateFakeItemList(), navToDetail = {})
+//}
 
 enum class ListType {
     ColumnList, GridList

@@ -43,10 +43,15 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = com.lexwilliam.dependencies.Versions.compose
     }
+
+    hilt {
+        enableExperimentalClasspathAggregation = true
+    }
 }
 
 dependencies {
     implementation(project(ProjectModules.cache))
+    implementation(project(ProjectModules.api))
     implementation(project(ProjectModules.domain))
     implementation(project(ProjectModules.data))
 

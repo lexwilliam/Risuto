@@ -1,4 +1,3 @@
-import com.lexwilliam.dependencies.ProjectModules
 import com.lexwilliam.dependencies.Dependencies
 
 plugins {
