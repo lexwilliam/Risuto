@@ -1,12 +1,11 @@
 package com.lexwilliam.risutov2.ui.season
 
+import com.lexwilliam.domain.usecase.remote.GetCurrentSeasonAnime
 import com.lexwilliam.domain.usecase.remote.GetSeasonAnime
 import com.lexwilliam.risutov2.base.BaseViewModel
 import com.lexwilliam.risutov2.mapper.AnimeMapper
 import com.lexwilliam.risutov2.model.AnimePresentation
 import com.lexwilliam.risutov2.util.ExceptionHandler
-import com.lexwilliam.risutov2.util.getCurrentSeason
-import com.lexwilliam.risutov2.util.getCurrentYear
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Job
@@ -19,7 +18,8 @@ import javax.inject.Inject
 @HiltViewModel
 class SeasonViewModel
     @Inject constructor(
-        private val seasonAnimeUseCase: GetSeasonAnime,
+        private val getSeasonAnime: GetSeasonAnime,
+        private val getCurrentSeasonAnime: GetCurrentSeasonAnime,
         private val animeMapper: AnimeMapper
     ): BaseViewModel() {
 
@@ -40,7 +40,7 @@ class SeasonViewModel
     init {
         seasonJob?.cancel()
         seasonJob = launchCoroutine {
-            seasonAnimeUseCase.execute(null, null).collect { results ->
+            getCurrentSeasonAnime.execute().collect { results ->
                 _state.value = _state.value.copy(season = results.season_name, year = results.season_year)
                 val animes = results.anime.map { anime -> animeMapper.toPresentation(anime) }
                 _state.value = _state.value.copy(seasonAnimes = animes)
@@ -51,7 +51,7 @@ class SeasonViewModel
     private fun onSeasonAnime() {
         seasonJob?.cancel()
         seasonJob = launchCoroutine {
-            seasonAnimeUseCase.execute(_state.value.year, _state.value.season).collect { results ->
+            getSeasonAnime.execute(_state.value.year, _state.value.season).collect { results ->
                 val animes = results.anime.map { anime -> animeMapper.toPresentation(anime) }
                 _state.value = _state.value.copy(seasonAnimes = animes, year = _state.value.year, season = _state.value.season)
             }

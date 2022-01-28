@@ -44,6 +44,10 @@ class AnimeRepositoryImpl @Inject constructor(
         return animeRemoteSource.topAnime(page, subType).map { animeMapper.toDomain(it) }
     }
 
+    override suspend fun currentSeasonAnime(): Flow<Season> {
+        return animeRemoteSource.currentSeasonAnime().map { animeMapper.toDomain(it) }
+    }
+
     override suspend fun seasonAnime(year: Int?, season: String?): Flow<Season> {
         return animeRemoteSource.seasonAnime(year, season).map { animeMapper.toDomain(it) }
     }

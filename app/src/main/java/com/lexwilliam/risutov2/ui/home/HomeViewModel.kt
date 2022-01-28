@@ -2,6 +2,7 @@ package com.lexwilliam.risutov2.ui.home
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import com.lexwilliam.domain.usecase.remote.GetCurrentSeasonAnime
 import com.lexwilliam.domain.usecase.remote.GetSeasonAnime
 import com.lexwilliam.domain.usecase.remote.GetTopAnime
 import com.lexwilliam.risutov2.base.BaseViewModel
@@ -19,7 +20,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel
 @Inject constructor(
-    private val getSeasonAnime: GetSeasonAnime,
+    private val getCurrentSeasonAnime: GetCurrentSeasonAnime,
     private val topAnimeUseCase: GetTopAnime,
     private val animeMapper: AnimeMapper
 ): BaseViewModel() {
@@ -81,7 +82,7 @@ class HomeViewModel
 
     private fun onCurrentSeasonAnime() {
         viewModelScope.launch {
-            getSeasonAnime.execute(null, null).collect { results ->
+            getCurrentSeasonAnime.execute().collect { results ->
                 val animes = results.anime.map { anime -> animeMapper.toPresentation(anime) }
                 currentSeasonAnime.value = animes
             }

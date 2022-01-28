@@ -81,6 +81,18 @@ class AnimeRemoteSourceImpl @Inject constructor(
         return topAnimeSharedFlow.distinctUntilChanged()
     }
 
+    override suspend fun currentSeasonAnime(): Flow<SeasonRepo> {
+        try {
+            animeMapper.toRepo(jikanService.getCurrentSeasonAnimeResult())
+                .let { seasonRepo ->
+                    _seasonAnimeSharedFlow.emit(seasonRepo)
+                }
+        } catch (connectionException: java.net.UnknownHostException) {
+            throw connectionException
+        }
+        return seasonAnimeSharedFlow.distinctUntilChanged()
+    }
+
     override suspend fun seasonAnime(year: Int?, season: String?): Flow<SeasonRepo> {
         try {
             animeMapper.toRepo(jikanService.getSeasonAnimeResult(year, season))

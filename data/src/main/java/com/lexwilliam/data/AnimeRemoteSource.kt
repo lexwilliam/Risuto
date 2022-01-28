@@ -13,5 +13,7 @@ interface AnimeRemoteSource {
 
     suspend fun topAnime(page: Int, subType: String): Flow<TopRepo>
 
+    suspend fun currentSeasonAnime(): Flow<SeasonRepo>
+
     suspend fun seasonAnime(year: Int?, season: String?): Flow<SeasonRepo>
 }

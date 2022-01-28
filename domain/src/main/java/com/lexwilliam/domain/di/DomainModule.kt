@@ -105,6 +105,11 @@ object DomainModule {
 
     @Singleton
     @Provides
+    fun provideGetCurrentSeasonAnime(animeRepository: AnimeRepository): GetCurrentSeasonAnime =
+        GetCurrentSeasonAnimeImpl(animeRepository)
+
+    @Singleton
+    @Provides
     fun provideGetSeasonAnime(animeRepository: AnimeRepository): GetSeasonAnime =
         GetSeasonAnimeImpl(animeRepository)
 
