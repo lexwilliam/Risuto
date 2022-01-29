@@ -29,12 +29,11 @@ import com.lexwilliam.risutov2.util.watchStatusToString
 @ExperimentalFoundationApi
 @Composable
 fun ProfileScreen(
-    viewModel: ProfileViewModel = viewModel(),
+    state: (ProfileContract.State),
     navToDetail: (Int) -> Unit,
 ) {
-    val viewState by viewModel.state.collectAsState()
     ProfileContent(
-        myAnimelist = viewState.myAnimeList,
+        myAnimelist = state.myAnimes,
         navToDetail = { navToDetail(it) }
     )
 }

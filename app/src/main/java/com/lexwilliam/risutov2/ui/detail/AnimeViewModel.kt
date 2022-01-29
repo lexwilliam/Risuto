@@ -1,6 +1,7 @@
 package com.lexwilliam.risutov2.ui.detail
 
 import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.viewModelScope
 import com.lexwilliam.domain.usecase.local.InsertAnimeHistory
 import com.lexwilliam.domain.usecase.local.InsertMyAnime
 import com.lexwilliam.domain.usecase.remote.GetAnimeDetail
@@ -9,14 +10,16 @@ import com.lexwilliam.risutov2.base.BaseViewModel
 import com.lexwilliam.risutov2.mapper.DetailMapper
 import com.lexwilliam.risutov2.mapper.HistoryMapper
 import com.lexwilliam.risutov2.mapper.MyAnimeMapper
-import com.lexwilliam.risutov2.model.AnimePresentation
+import com.lexwilliam.risutov2.model.common.*
 import com.lexwilliam.risutov2.model.detail.AnimeDetailPresentation
 import com.lexwilliam.risutov2.model.detail.CharacterStaffPresentation
-import com.lexwilliam.risutov2.util.ExceptionHandler
+import com.lexwilliam.risutov2.model.local.MyAnimePresentation
+import com.lexwilliam.risutov2.model.local.WatchStatusPresentation
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -29,72 +32,126 @@ class AnimeViewModel @Inject constructor(
     private val myAnimeMapper: MyAnimeMapper,
     private val historyMapper: HistoryMapper,
     savedState: SavedStateHandle
-): BaseViewModel() {
+): BaseViewModel<AnimeContract.Event, AnimeContract.State, AnimeContract.Effect>() {
 
-    override val coroutineExceptionHandler= CoroutineExceptionHandler { _, exception ->
-        val message = ExceptionHandler.parse(exception)
-    }
-
-    private var detailJob: Job? = null
-    private var insertMyAnimeJob: Job? = null
-
-    override fun onCleared() {
-        super.onCleared()
-        detailJob?.cancel()
+    private val errorHandler = CoroutineExceptionHandler { _, exception ->
+        Timber.e(exception)
+        setState {
+            copy(
+                isLoading = false,
+                isError = true
+            )
+        }
     }
 
     private val malIdFromArgs = savedState.get<Int>("mal_id")
 
-    private val animeDetail = MutableStateFlow(AnimeDetailPresentation())
-    private val animeStaff = MutableStateFlow(CharacterStaffPresentation(emptyList(), emptyList()))
-    private val _state = MutableStateFlow(AnimeViewState())
-    val state = _state.asStateFlow()
+    override fun setInitialState(): AnimeContract.State {
+        return AnimeContract.State(
+            animeDetail = getInitialStateAnimeDetail(),
+            characterStaff = getInitialStateCharacterStaff(),
+            isLoading = true,
+            isError = false
+        )
+    }
+
+    override fun handleEvents(event: AnimeContract.Event) {
+        when(event) {
+            is AnimeContract.Event.InsertAnimeHistory -> insertAnimeHistory(event.anime)
+            is AnimeContract.Event.InsertMyAnime -> insertMyAnime(event.anime)
+        }
+    }
 
     init {
-        detailJob?.cancel()
-        detailJob = launchCoroutine {
-            malIdFromArgs?.let { id ->
-                if (id > 0) {
-                    getAnimeDetail.execute(id).collect { results ->
-                        val animes = detailMapper.toPresentation(results)
-                        animeDetail.value = animes
-                        insertAnimeHistory.execute(historyMapper.toDomain(animes))
+        malIdFromArgs?.let { id ->
+            animeDetail(id)
+            characterStaff(id)
+        }
+    }
+
+    private fun animeDetail(mal_id: Int) {
+        viewModelScope.launch(errorHandler) {
+            try {
+                getAnimeDetail.execute(mal_id)
+                    .catch { throwable ->
+                        handleExceptions(throwable)
                     }
-                    getCharacterStaff.execute(id).collect { results ->
-                        val staffs = detailMapper.toPresentation(results)
-                        animeStaff.value = staffs
+                    .collect { detail ->
+                        detailMapper.toPresentation(detail)
+                            .let { animeDetail ->
+                                setState {
+                                    copy(
+                                        animeDetail = animeDetail
+                                    )
+                                }
+                                insertAnimeHistory(animeDetail)
+                            }
                     }
-                    combine(
-                        animeDetail,
-                        animeStaff
-                    ) { animeDetail, animeStaff ->
-                        AnimeViewState(
-                            animeDetail = animeDetail,
-                            animeStaff = animeStaff,
-                            onLoading = false
-                        )
-                    }.catch {
-                        throw it
-                    }.collect {
-                        _state.value = it
-                    }
-                }
+            } catch (throwable: Throwable) {
+                handleExceptions(throwable)
             }
         }
     }
 
-    fun insertToMyAnime(
-        anime: AnimePresentation
+    private fun characterStaff(mal_id: Int) {
+        viewModelScope.launch(errorHandler) {
+            try {
+                getCharacterStaff.execute(mal_id)
+                    .catch { throwable ->
+                        handleExceptions(throwable)
+                    }
+                    .collect {
+                        detailMapper.toPresentation(it)
+                            .let { characterStaff ->
+                                setState {
+                                    copy(
+                                        characterStaff = characterStaff
+                                    )
+                                }
+                            }
+                    }
+            } catch (throwable: Throwable) {
+                handleExceptions(throwable)
+            }
+        }
+    }
+
+    private fun insertAnimeHistory(anime: AnimeDetailPresentation) {
+        viewModelScope.launch(errorHandler) {
+            insertAnimeHistory.execute(historyMapper.toDomain(anime))
+        }
+    }
+
+    private fun insertMyAnime(
+        myAnime: MyAnimePresentation
     ) {
-        insertMyAnimeJob?.cancel()
-        insertMyAnimeJob = launchCoroutine {
-            insertMyAnime.execute(myAnimeMapper.toDomain(anime))
+        viewModelScope.launch(errorHandler) {
+            insertMyAnime.execute(myAnimeMapper.toDomain(myAnime))
+        }
+    }
+
+    private fun getInitialStateAnimeDetail() =
+        AnimeDetailPresentation(
+            AiredPresentation("", PropPresentation(FromPresentation(-1,-1,-1), ToPresentation(-1,-1,-1)),"", ""),
+            false, "", "", "", listOf(""), -1,
+            -1, listOf(GenrePresentation(-1,"", "", "")), "",
+            listOf(LicensorPresentation(-1, "", "", "")), -1,-1,
+            listOf(""), -1, "", listOf(ProducerPresentation(-1, "","", "" )),
+            -1, "", RelatedPresentation(), -1, false, "", 0.0, -1,
+            "", "", listOf(StudioPresentation(-1, "", "", "")), "",
+            "", "", "", listOf(""), "", "", ""
+        )
+
+    private fun getInitialStateCharacterStaff() =
+        CharacterStaffPresentation(emptyList(), emptyList())
+
+    private fun handleExceptions(throwable: Throwable) {
+        Timber.e(throwable)
+        setState {
+            copy(
+                isLoading = false,
+                isError = true
+            )
         }
     }
 }
-
-data class AnimeViewState(
-    val animeDetail: AnimeDetailPresentation = AnimeDetailPresentation(),
-    val animeStaff: CharacterStaffPresentation = CharacterStaffPresentation(emptyList(), emptyList()),
-    val onLoading: Boolean = true
-)

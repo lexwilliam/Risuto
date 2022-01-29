@@ -25,16 +25,14 @@ import java.util.*
 
 @Composable
 fun HomeScreen(
-    viewModel: HomeViewModel = viewModel(),
+    state: HomeContract.State,
     navToDetail: (Int) -> Unit
 ) {
-    val viewState by viewModel.state.collectAsState()
-
     HomeContent(
-        currentSeasonAnime = viewState.currentSeasonAnime,
-        topAiringAnime = viewState.topAiringAnime,
-        topAnime = viewState.topAnime,
-        topUpcomingAnime = viewState.topUpcomingAnime,
+        currentSeasonAnime = state.seasonAnime,
+        topAiringAnime = state.topAiringAnime,
+        topAnime = state.topAnime,
+        topUpcomingAnime = state.topUpcomingAnime,
         navToDetail = navToDetail
     )
 }

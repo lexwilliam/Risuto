@@ -21,6 +21,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lexwilliam.risutov2.model.AnimePresentation
 import com.lexwilliam.risutov2.model.detail.AnimeDetailPresentation
 import com.lexwilliam.risutov2.model.detail.CharacterStaffPresentation
+import com.lexwilliam.risutov2.model.local.MyAnimePresentation
 import com.lexwilliam.risutov2.model.local.WatchStatusPresentation
 import com.lexwilliam.risutov2.ui.component.Chip
 import com.lexwilliam.risutov2.ui.component.LoadingScreen
@@ -33,11 +34,11 @@ import kotlinx.coroutines.launch
 @ExperimentalMaterialApi
 @Composable
 fun AnimeScreen(
-    viewModel: AnimeViewModel = viewModel(),
+    state: AnimeContract.State,
+    onEventSent: (AnimeContract.Event) -> Unit,
     onBackPressed: () -> Unit,
     navToGenre: (Int) -> Unit
 ) {
-    val viewState by viewModel.state.collectAsState()
     val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(
         bottomSheetState = BottomSheetState(BottomSheetValue.Collapsed)
     )
@@ -48,8 +49,8 @@ fun AnimeScreen(
         scaffoldState = bottomSheetScaffoldState,
         sheetContent = {
             MyAnimeMenu(
-                insertToMyAnime = viewModel::insertToMyAnime,
-                animeDetail = viewState.animeDetail,
+                onEventSent = { onEventSent(it) },
+                state = state,
                 onDoneClicked = {
                     coroutineScope.launch {
                         bottomSheetScaffoldState.bottomSheetState.collapse()
@@ -59,9 +60,7 @@ fun AnimeScreen(
         }
     ) {
         AnimeContent(
-            animeDetail = viewState.animeDetail,
-            animeStaff = viewState.animeStaff,
-            onLoading = viewState.onLoading,
+            state = state,
             onBackPressed = { onBackPressed() },
             navToGenre = navToGenre,
             bottomSheetState = bottomSheetScaffoldState,
@@ -73,15 +72,13 @@ fun AnimeScreen(
 @ExperimentalMaterialApi
 @Composable
 fun AnimeContent(
-    animeDetail: AnimeDetailPresentation,
-    animeStaff: CharacterStaffPresentation,
-    onLoading: Boolean,
+    state: AnimeContract.State,
     onBackPressed: () -> Unit,
     navToGenre: (Int) -> Unit,
     bottomSheetState: BottomSheetScaffoldState,
     coroutineScope: CoroutineScope
 ) {
-    if(onLoading){
+    if(state.isLoading){
         LoadingScreen()
     } else {
         Column(
@@ -99,10 +96,10 @@ fun AnimeContent(
                 },
                 onBackPressed = { onBackPressed() }
             )
-            AnimeDetail(animeDetail = animeDetail)
-            AnimeGenre(animeDetail = animeDetail, navToGenre = { navToGenre(it) })
-            AnimeRating(animeDetail = animeDetail)
-            CharVoiceActorList(animeStaff = animeStaff)
+            AnimeDetail(animeDetail = state.animeDetail)
+            AnimeGenre(animeDetail = state.animeDetail, navToGenre = { navToGenre(it) })
+            AnimeRating(animeDetail = state.animeDetail)
+            CharVoiceActorList(animeStaff = state.characterStaff)
         }
     }
 }
@@ -110,8 +107,8 @@ fun AnimeContent(
 @Composable
 fun MyAnimeMenu(
     onDoneClicked: () -> Unit,
-    animeDetail: AnimeDetailPresentation,
-    insertToMyAnime: (AnimePresentation) -> Unit
+    state: AnimeContract.State,
+    onEventSent: (AnimeContract.Event) -> Unit
 ) {
     var score by remember { mutableStateOf(-1) }
     var watchStateText by remember { mutableStateOf("Plan To Watch")}
@@ -199,13 +196,15 @@ fun MyAnimeMenu(
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
             onClick = {
-                insertToMyAnime(
-                    AnimePresentation(
-                        mal_id = animeDetail.mal_id,
-                        title = animeDetail.title,
-                        image_url = animeDetail.image_url,
-                        my_score = score,
-                        watch_status = watchState
+                onEventSent(
+                    AnimeContract.Event.InsertMyAnime(
+                        anime = MyAnimePresentation(
+                            mal_id = state.animeDetail.mal_id!!,
+                            title = state.animeDetail.title!!,
+                            image_url = state.animeDetail.image_url!!,
+                            myScore = score,
+                            watchStatus = watchState
+                        )
                     )
                 )
                 onDoneClicked()

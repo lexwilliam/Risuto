@@ -3,6 +3,8 @@ package com.lexwilliam.risutov2.mapper
 import com.lexwilliam.domain.model.local.MyAnime
 import com.lexwilliam.domain.model.local.WatchStatus
 import com.lexwilliam.risutov2.model.AnimePresentation
+import com.lexwilliam.risutov2.model.detail.AnimeDetailPresentation
+import com.lexwilliam.risutov2.model.local.MyAnimePresentation
 import com.lexwilliam.risutov2.model.local.WatchStatusPresentation
 import javax.inject.Inject
 
@@ -11,6 +13,7 @@ interface MyAnimeMapper {
     fun toPresentation(myAnime: MyAnime): AnimePresentation
     fun toDomain(watchStatus: WatchStatusPresentation): WatchStatus
     fun toDomain(anime: AnimePresentation): MyAnime
+    fun toDomain(myAnime: MyAnimePresentation): MyAnime
 }
 
 class MyAnimeMapperImpl @Inject constructor(): MyAnimeMapper {
@@ -57,4 +60,13 @@ class MyAnimeMapperImpl @Inject constructor(): MyAnimeMapper {
             timeAdded = anime.timeAdded
         )
 
+    override fun toDomain(myAnime: MyAnimePresentation): MyAnime =
+        MyAnime(
+            mal_id = myAnime.mal_id,
+            image_url = myAnime.image_url,
+            title = myAnime.title,
+            myScore = myAnime.myScore,
+            watchStatus = toDomain(myAnime.watchStatus!!),
+            timeAdded = myAnime.timeAdded
+        )
 }

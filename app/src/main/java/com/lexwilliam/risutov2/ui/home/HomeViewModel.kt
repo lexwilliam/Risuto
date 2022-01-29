@@ -1,20 +1,16 @@
 package com.lexwilliam.risutov2.ui.home
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.lexwilliam.domain.usecase.remote.GetCurrentSeasonAnime
-import com.lexwilliam.domain.usecase.remote.GetSeasonAnime
 import com.lexwilliam.domain.usecase.remote.GetTopAnime
 import com.lexwilliam.risutov2.base.BaseViewModel
 import com.lexwilliam.risutov2.mapper.AnimeMapper
-import com.lexwilliam.risutov2.model.AnimePresentation
-import com.lexwilliam.risutov2.util.Error
-import com.lexwilliam.risutov2.util.ExceptionHandler
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -23,109 +19,102 @@ class HomeViewModel
     private val getCurrentSeasonAnime: GetCurrentSeasonAnime,
     private val topAnimeUseCase: GetTopAnime,
     private val animeMapper: AnimeMapper
-): BaseViewModel() {
+): BaseViewModel<HomeContract.Event, HomeContract.State, HomeContract.Effect>() {
 
-    override val coroutineExceptionHandler= CoroutineExceptionHandler { _, exception ->
-        val message = ExceptionHandler.parse(exception)
-        onError(message)
+    private val errorHandler = CoroutineExceptionHandler { _, exception ->
+        Timber.e(exception)
+        setState {
+            copy(
+                isLoading = false,
+                isError = true
+            )
+        }
     }
 
-    private var homeJob: Job? = null
-
-    override fun onCleared() {
-        super.onCleared()
-        homeJob?.cancel()
+    override fun setInitialState(): HomeContract.State {
+        return HomeContract.State(
+            currentSeason = "",
+            currentYear = -1,
+            seasonAnime = emptyList(),
+            topAiringAnime = emptyList(),
+            topUpcomingAnime = emptyList(),
+            topAnime = emptyList(),
+            isLoading = true,
+            isError = false
+        )
     }
 
-    private val currentSeasonAnime = MutableStateFlow<List<AnimePresentation>>(listOf())
-    private val topAiringAnime = MutableStateFlow<List<AnimePresentation>>(listOf())
-    private val topAnime = MutableStateFlow<List<AnimePresentation>>(listOf())
-    private val topUpcomingAnime = MutableStateFlow<List<AnimePresentation>>(listOf())
-
-    private val _state = MutableStateFlow(HomeViewState(isLoading = false, error = null))
-    val state = _state.asStateFlow()
+    override fun handleEvents(event: HomeContract.Event) {
+        TODO("Not yet implemented")
+    }
 
     init {
-        homeJob?.cancel()
-        homeJob = launchCoroutine {
-            refresh()
-            combine(
-                currentSeasonAnime,
-                topAiringAnime,
-                topAnime,
-                topUpcomingAnime
-            ) { currentSeasonAnime, topAiringAnime, topAnime, topUpcoming ->
-                HomeViewState(
-                    currentSeasonAnime = currentSeasonAnime,
-                    topAiringAnime = topAiringAnime,
-                    topAnime = topAnime,
-                    topUpcomingAnime = topUpcoming,
-                    isLoading = false,
-                    error = null
-                )
-            }.catch { throwable ->
-                throw throwable
-            }.collect {
-                _state.value = it
-            }
-        }
-    }
-
-    private fun refresh() {
-        viewModelScope.launch {
-            onCurrentSeasonAnime()
-            onTopAiringAnime()
-            onTopAnime()
-            onTopUpcomingAnime()
-        }
+        onCurrentSeasonAnime()
+        onTopAnime("airing")
+        onTopAnime("upcoming")
+        onTopAnime("tv")
     }
 
     private fun onCurrentSeasonAnime() {
-        viewModelScope.launch {
-            getCurrentSeasonAnime.execute().collect { results ->
-                val animes = results.anime.map { anime -> animeMapper.toPresentation(anime) }
-                currentSeasonAnime.value = animes
+        viewModelScope.launch(errorHandler) {
+            try {
+                getCurrentSeasonAnime.execute()
+                    .catch { throwable ->
+                        handleExceptions(throwable)
+                    }
+                    .collect {
+                        setState {
+                            copy(
+                                currentSeason = it.season_name,
+                                currentYear = it.season_year
+                            )
+                        }
+                        animeMapper.toPresentation(it)
+                            .let { anime ->
+                                setState {
+                                    copy(
+                                        seasonAnime = anime.anime
+                                    )
+                                }
+                            }
+                }
+            } catch (throwable: Throwable) {
+                handleExceptions(throwable)
             }
         }
     }
 
-    private fun onTopAiringAnime() {
-        viewModelScope.launch {
-            topAnimeUseCase.execute(1, "airing").collect { results ->
-                val animes = results.top.map { anime -> animeMapper.toPresentation(anime) }
-                topAiringAnime.value = animes
+    private fun onTopAnime(subType: String) {
+        viewModelScope.launch(errorHandler) {
+            try {
+                topAnimeUseCase.execute(1, subType)
+                    .catch { throwable ->
+                        handleExceptions(throwable)
+                    }
+                    .collect {
+                        animeMapper.toPresentation(it)
+                            .let { anime ->
+                                when(subType) {
+                                    "airing" -> setState { copy(topAiringAnime = anime.anime) }
+                                    "upcoming" -> setState {  copy(topUpcomingAnime = anime.anime) }
+                                    "tv" -> setState { copy(topAnime = anime.anime) }
+                                    else -> Timber.tag("subType Unknown")
+                                }
+                            }
+                    }
+            } catch (throwable: Throwable) {
+                handleExceptions(throwable)
             }
         }
     }
 
-    private fun onTopUpcomingAnime() {
-        viewModelScope.launch {
-            topAnimeUseCase.execute(1, "upcoming").collect { results ->
-                val animes = results.top.map { anime -> animeMapper.toPresentation(anime) }
-                topUpcomingAnime.value = animes
-            }
+    private fun handleExceptions(throwable: Throwable) {
+        Timber.e(throwable)
+        setState {
+            copy(
+                isLoading = false,
+                isError = true
+            )
         }
-    }
-
-    private fun onTopAnime() {
-        viewModelScope.launch {
-            topAnimeUseCase.execute(1, "tv").collect { results ->
-                val animes = results.top.map { anime -> animeMapper.toPresentation(anime) }
-                topAnime.value = animes
-            }
-        }
-    }
-
-    private fun onError(message: Int){
-        _state.value = _state.value.copy(error = Error(message))
     }
 }
-
-data class HomeViewState (
-    val currentSeasonAnime: List<AnimePresentation> = emptyList(),
-    val topAnime: List<AnimePresentation> = emptyList(),
-    val topAiringAnime: List<AnimePresentation> = emptyList(),
-    val topUpcomingAnime: List<AnimePresentation> = emptyList(),
-    val isLoading: Boolean,
-    val error: Error?
-)

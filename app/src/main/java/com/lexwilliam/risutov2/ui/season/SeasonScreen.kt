@@ -28,39 +28,41 @@ import java.util.*
 @ExperimentalFoundationApi
 @Composable
 fun SeasonScreen(
-    viewModel: SeasonViewModel = viewModel(),
+    state: SeasonContract.State,
+    onEventSent: (SeasonContract.Event) -> Unit,
     navToDetail: (Int) -> Unit
 ) {
-    val viewState by viewModel.state.collectAsState()
     val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(
         bottomSheetState = BottomSheetState(BottomSheetValue.Collapsed)
     )
     val coroutineScope = rememberCoroutineScope()
 
-    BottomSheetScaffold(
-        modifier = Modifier.background(MaterialTheme.colors.background),
-        scaffoldState = bottomSheetScaffoldState,
-        sheetContent = {
-            SeasonMenu(
-                setSeason = viewModel::setSeason,
-                onDoneClicked = {
-                    coroutineScope.launch {
-                        bottomSheetScaffoldState.bottomSheetState.collapse()
-                    }
-                }
-            )
-        }
-    ) {
-        SeasonContent(
-            year = viewState.year,
-            season = viewState.season,
-            animes = viewState.seasonAnimes,
-            bottomSheetState = bottomSheetScaffoldState,
-            coroutineScope = coroutineScope,
-            setSeason = viewModel::setSeason,
-            navToDetail = { navToDetail(it) }
-        )
-    }
+    SeasonContent(
+        year = state.year,
+        season = state.season,
+        animes = state.seasonAnimes,
+        bottomSheetState = bottomSheetScaffoldState,
+        coroutineScope = coroutineScope,
+        onEventSent = { onEventSent(it) },
+        navToDetail = { navToDetail(it) }
+    )
+
+//    BottomSheetScaffold(
+//        modifier = Modifier.background(MaterialTheme.colors.background),
+//        scaffoldState = bottomSheetScaffoldState,
+//        sheetContent = {
+//            SeasonMenu(
+//                onEventSent = { onEventSent(it) },
+//                onDoneClicked = {
+//                    coroutineScope.launch {
+//                        bottomSheetScaffoldState.bottomSheetState.collapse()
+//                    }
+//                }
+//            )
+//        }
+//    ) {
+//
+//    }
 }
 
 @ExperimentalMaterialApi
@@ -73,14 +75,14 @@ fun SeasonContent(
     animes: List<AnimePresentation>,
     bottomSheetState: BottomSheetScaffoldState,
     coroutineScope: CoroutineScope,
-    setSeason: (String) -> Unit,
+    onEventSent: (SeasonContract.Event) -> Unit,
     navToDetail: (Int) -> Unit
 ) {
     Column(modifier = Modifier.padding(bottom = bottomNavGap)) {
         SeasonToolBar(
             year = year,
             season = season,
-            setSeason = { setSeason(it) },
+            onEventSent = { onEventSent(it) },
             bottomSheetState = bottomSheetState,
             coroutineScope = coroutineScope
         )
@@ -93,7 +95,7 @@ fun SeasonContent(
 fun SeasonToolBar(
     year: Int,
     season: String,
-    setSeason: (String) -> Unit,
+    onEventSent: (SeasonContract.Event) -> Unit,
     bottomSheetState: BottomSheetScaffoldState,
     coroutineScope: CoroutineScope
 ) {
@@ -113,139 +115,82 @@ fun SeasonToolBar(
                 },
             title = seasonYearFormat(season, year)
         )
-        Row(
-            modifier = Modifier
-                .weight(1f)
-                .wrapContentWidth(Alignment.End)
-        ) {
-            IconButton(
-                modifier = Modifier
-                    .size(32.dp),
-                onClick = { onPreviousSeason(year, season) { setSeason(it) } }) {
-                Icon(
-                    imageVector = Icons.Default.KeyboardArrowLeft,
-                    contentDescription = null
-                )
-            }
-            IconButton(
-                modifier = Modifier
-                    .size(32.dp),
-                onClick = { onNextSeason(year, season) { setSeason(it) } }) {
-                Icon(
-                    imageVector = Icons.Default.KeyboardArrowRight,
-                    contentDescription = null
-                )
-            }
-        }
     }
 }
 
-private fun onPreviousSeason(
-    year: Int,
-    season: String,
-    setSeason: (String) -> Unit
-) {
-    val seasonIndex = allSeason.indexOf(season.capitalize(Locale.ROOT))
-    val previousSeason: String
-    if(seasonIndex != 0) {
-        previousSeason = allSeason[seasonIndex - 1]
-        setSeason("$previousSeason $year")
-    } else {
-        previousSeason = allSeason.last()
-        setSeason("$previousSeason ${year-1}")
-    }
-
-}
-
-private fun onNextSeason(
-    year: Int,
-    season: String,
-    setSeason: (String) -> Unit
-) {
-    val seasonIndex = allSeason.indexOf(season.capitalize(Locale.ROOT))
-    val nextSeason: String
-    if(seasonIndex != allSeason.size-1) {
-        nextSeason = allSeason[seasonIndex + 1]
-        setSeason("$nextSeason ${year}")
-    } else {
-        nextSeason = allSeason.first()
-        setSeason("$nextSeason ${year+1}")
-    }
-}
-
-@Composable
-fun SeasonMenu(
-    onDoneClicked: () -> Unit,
-    setSeason: (String) -> Unit
-) {
-    var yearText by remember { mutableStateOf("Year") }
-    var seasonText by remember { mutableStateOf("Season") }
-    Column(
-        modifier = Modifier
-            .padding(bottom = 64.dp, top = 24.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        Row(modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-            horizontalArrangement = Arrangement.spacedBy(4.dp)
-        ) {
-            var seasonExpanded by remember { mutableStateOf(false) }
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-                    .height(40.dp)
-                    .background(Color.LightGray)
-                    .clip(MaterialTheme.shapes.medium),
-                contentAlignment = Alignment.Center
-            ) {
-                BasicTextField(
-                    value = yearText,
-                    onValueChange = { yearText = it },
-                    singleLine = true,
-                    textStyle = MaterialTheme.typography.subtitle1
-                )
-            }
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-                    .height(40.dp)
-                    .background(Color.LightGray)
-                    .clip(MaterialTheme.shapes.medium)
-                    .clickable { seasonExpanded = true },
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = seasonText,
-                    style = MaterialTheme.typography.subtitle1
-                )
-                DropdownMenu(expanded = seasonExpanded, onDismissRequest = { seasonExpanded = false }) {
-                    allSeason.forEach {
-                        DropdownMenuItem(onClick = {
-                            seasonText = it
-                            seasonExpanded = false
-                        }) {
-                            Text(it)
-                        }
-                    }
-                }
-            }
-        }
-        Button(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-            onClick = {
-                if(yearText != "Year" && seasonText != "Season")
-                    setSeason("$seasonText $yearText")
-                onDoneClicked()
-            }) {
-            Text("Done")
-        }
-    }
-}
+//@Composable
+//fun SeasonMenu(
+//    onDoneClicked: () -> Unit,
+//    onEventSent: (SeasonContract.Event) -> Unit
+//) {
+//    var yearText by remember { mutableStateOf("Year") }
+//    var seasonText by remember { mutableStateOf("Season") }
+//    Column(
+//        modifier = Modifier
+//            .padding(bottom = 64.dp, top = 24.dp),
+//        verticalArrangement = Arrangement.spacedBy(8.dp)
+//    ) {
+//        Row(modifier = Modifier
+//            .fillMaxWidth()
+//            .padding(horizontal = 16.dp, vertical = 8.dp),
+//            horizontalArrangement = Arrangement.spacedBy(4.dp)
+//        ) {
+//            var seasonExpanded by remember { mutableStateOf(false) }
+//            Box(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .weight(1f)
+//                    .height(40.dp)
+//                    .background(Color.LightGray)
+//                    .clip(MaterialTheme.shapes.medium),
+//                contentAlignment = Alignment.Center
+//            ) {
+//                BasicTextField(
+//                    value = yearText,
+//                    onValueChange = { yearText = it },
+//                    singleLine = true,
+//                    textStyle = MaterialTheme.typography.subtitle1
+//                )
+//            }
+//            Box(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .weight(1f)
+//                    .height(40.dp)
+//                    .background(Color.LightGray)
+//                    .clip(MaterialTheme.shapes.medium)
+//                    .clickable { seasonExpanded = true },
+//                contentAlignment = Alignment.Center
+//            ) {
+//                Text(
+//                    text = seasonText,
+//                    style = MaterialTheme.typography.subtitle1
+//                )
+//                DropdownMenu(expanded = seasonExpanded, onDismissRequest = { seasonExpanded = false }) {
+//                    allSeason.forEach {
+//                        DropdownMenuItem(onClick = {
+//                            seasonText = it
+//                            seasonExpanded = false
+//                        }) {
+//                            Text(it)
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//        Button(
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .padding(horizontal = 16.dp),
+//            onClick = {
+//                if(yearText != "Year" && seasonText != "Season")
+//                    onEventSent("$seasonText $yearText")
+//                onDoneClicked()
+//            }) {
+//            Text("Done")
+//        }
+//    }
+//}
 
 //@Preview
 //@Composable

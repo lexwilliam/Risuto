@@ -7,25 +7,13 @@ import com.lexwilliam.data.model.remote.top.TopRepo
 import com.lexwilliam.data_remote.JikanService
 import com.lexwilliam.data_remote.mapper.AnimeMapper
 import com.lexwilliam.data_remote.mapper.CommonMapper
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 class AnimeRemoteSourceImpl @Inject constructor(
     private val jikanService: JikanService,
     private val animeMapper: AnimeMapper
 ): AnimeRemoteSource {
-
-    private val _searchAnimeSharedFlow = MutableStateFlow(getInitialStateSearchAnime())
-    private val searchAnimeSharedFlow = _searchAnimeSharedFlow.asSharedFlow()
-    private val _topAnimeSharedFlow = MutableStateFlow(getInitialStateTopAnime())
-    private val topAnimeSharedFlow = _topAnimeSharedFlow.asSharedFlow()
-    private val _seasonAnimeSharedFlow = MutableStateFlow(getInitialStateSeasonAnime())
-    private val seasonAnimeSharedFlow = _seasonAnimeSharedFlow.asSharedFlow()
-    private val _genreAnimeSharedFlow = MutableStateFlow(getInitialStateSearchAnime())
-    private val genreAnimeSharedFlow = _genreAnimeSharedFlow.asSharedFlow()
 
     override suspend fun searchAnime(
         q: String?,
@@ -36,16 +24,11 @@ class AnimeRemoteSourceImpl @Inject constructor(
         orderBy: String?,
         sort: String?,
         page: Int?
-    ): Flow<SearchRepo> {
-        try {
-            animeMapper.toRepo(jikanService.getSearchAnimeResult(q, type, status, genre, limit, orderBy, sort, page))
-                .let { searchRepo ->
-                    _searchAnimeSharedFlow.emit(searchRepo)
-                }
-        } catch (connectionException: java.net.UnknownHostException) {
-            throw connectionException
-        }
-        return searchAnimeSharedFlow.distinctUntilChanged()
+    ): Flow<SearchRepo> = flow {
+        val searchResponse = jikanService.getSearchAnimeResult(
+            q, type, status, genre, limit, orderBy, sort, page
+        )
+        emit(animeMapper.toRepo(searchResponse))
     }
 
     override suspend fun genreAnime(
@@ -57,62 +40,26 @@ class AnimeRemoteSourceImpl @Inject constructor(
         orderBy: String?,
         sort: String?,
         page: Int?
-    ): Flow<SearchRepo> {
-        try {
-            animeMapper.toRepo(jikanService.getSearchAnimeResult(q, type, status, genre, limit, orderBy, sort, page))
-                .let { searchRepo ->
-                    _genreAnimeSharedFlow.emit(searchRepo)
-                }
-        } catch (connectionException: java.net.UnknownHostException) {
-            throw connectionException
-        }
-        return genreAnimeSharedFlow.distinctUntilChanged()
+    ): Flow<SearchRepo> = flow {
+        val searchResponse = jikanService.getSearchAnimeResult(
+            q, type, status, genre, limit, orderBy, sort, page
+        )
+        emit(animeMapper.toRepo(searchResponse))
     }
 
-    override suspend fun topAnime(page: Int, subType: String): Flow<TopRepo> {
-        try {
-            animeMapper.toRepo(jikanService.getTopResult(page, subType))
-                .let { topRepo ->
-                    _topAnimeSharedFlow.emit(topRepo)
-                }
-        } catch (connectionException: java.net.UnknownHostException) {
-            throw connectionException
-        }
-        return topAnimeSharedFlow.distinctUntilChanged()
+    override suspend fun topAnime(page: Int, subType: String): Flow<TopRepo> = flow {
+        val topResponse = jikanService.getTopResult(page, subType)
+        emit(animeMapper.toRepo(topResponse))
     }
 
-    override suspend fun currentSeasonAnime(): Flow<SeasonRepo> {
-        try {
-            animeMapper.toRepo(jikanService.getCurrentSeasonAnimeResult())
-                .let { seasonRepo ->
-                    _seasonAnimeSharedFlow.emit(seasonRepo)
-                }
-        } catch (connectionException: java.net.UnknownHostException) {
-            throw connectionException
-        }
-        return seasonAnimeSharedFlow.distinctUntilChanged()
+    override suspend fun currentSeasonAnime(): Flow<SeasonRepo> = flow {
+        val seasonResponse = jikanService.getCurrentSeasonAnimeResult()
+        emit(animeMapper.toRepo(seasonResponse))
     }
 
-    override suspend fun seasonAnime(year: Int?, season: String?): Flow<SeasonRepo> {
-        try {
-            animeMapper.toRepo(jikanService.getSeasonAnimeResult(year, season))
-                .let { seasonRepo ->
-                    _seasonAnimeSharedFlow.emit(seasonRepo)
-                }
-        } catch (connectionException: java.net.UnknownHostException) {
-            throw connectionException
-        }
-        return seasonAnimeSharedFlow.distinctUntilChanged()
+    override suspend fun seasonAnime(year: Int?, season: String?): Flow<SeasonRepo> = flow {
+        val seasonResponse = jikanService.getSeasonAnimeResult(year, season)
+        emit(animeMapper.toRepo(seasonResponse))
     }
-
-    private fun getInitialStateSearchAnime() =
-        SearchRepo("", false, -1, emptyList(), -1)
-
-    private fun getInitialStateTopAnime() =
-        TopRepo("", false, -1, emptyList())
-
-    private fun getInitialStateSeasonAnime() =
-        SeasonRepo("", false, -1, "", -1, emptyList())
-
 
 }

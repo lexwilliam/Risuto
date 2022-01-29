@@ -96,7 +96,7 @@ fun RisutoAppContent() {
             composable(RisutoHomeScreen.route) {
                 val homeViewModel = hiltViewModel<HomeViewModel>()
                 HomeScreen(
-                    viewModel = homeViewModel,
+                    state = homeViewModel.viewState.value,
                     navToDetail = { mal_id ->
                         navController.navigate(
                             RisutoAnimeScreen.route.plus("/?mal_id=$mal_id")
@@ -135,7 +135,8 @@ fun RisutoAppContent() {
             composable(RisutoSeasonScreen.route) {
                 val seasonViewModel = hiltViewModel<SeasonViewModel>()
                 SeasonScreen(
-                    viewModel = seasonViewModel,
+                    state = seasonViewModel.viewState.value,
+                    onEventSent = { event -> seasonViewModel.setEvent(event) },
                     navToDetail = { mal_id ->
                         navController.navigate(
                             RisutoAnimeScreen.route.plus("/?mal_id=$mal_id")
@@ -154,7 +155,8 @@ fun RisutoAppContent() {
             ) {
                 val animeViewModel = hiltViewModel<AnimeViewModel>()
                 AnimeScreen(
-                    viewModel = animeViewModel,
+                    state = animeViewModel.viewState.value,
+                    onEventSent = { event -> animeViewModel.setEvent(event) },
                     onBackPressed = { navController.navigateUp() },
                     navToGenre = { genre_id ->
                         navController.navigate(
@@ -186,7 +188,7 @@ fun RisutoAppContent() {
             composable(RisutoProfileScreen.route) {
                 val profileViewModel = hiltViewModel<ProfileViewModel>()
                 ProfileScreen(
-                    viewModel = profileViewModel,
+                    state = profileViewModel.viewState.value,
                     navToDetail = { mal_id ->
                         navController.navigate(
                             RisutoAnimeScreen.route.plus("/?mal_id=$mal_id")

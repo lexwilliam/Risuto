@@ -1,17 +1,18 @@
 package com.lexwilliam.risutov2.ui.season
 
+import androidx.lifecycle.viewModelScope
 import com.lexwilliam.domain.usecase.remote.GetCurrentSeasonAnime
 import com.lexwilliam.domain.usecase.remote.GetSeasonAnime
 import com.lexwilliam.risutov2.base.BaseViewModel
 import com.lexwilliam.risutov2.mapper.AnimeMapper
 import com.lexwilliam.risutov2.model.AnimePresentation
-import com.lexwilliam.risutov2.util.ExceptionHandler
+import com.lexwilliam.risutov2.ui.detail.AnimeContract
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -21,53 +22,102 @@ class SeasonViewModel
         private val getSeasonAnime: GetSeasonAnime,
         private val getCurrentSeasonAnime: GetCurrentSeasonAnime,
         private val animeMapper: AnimeMapper
-    ): BaseViewModel() {
+    ): BaseViewModel<SeasonContract.Event, SeasonContract.State, SeasonContract.Effect>() {
 
-    override val coroutineExceptionHandler= CoroutineExceptionHandler { _, exception ->
-        val message = ExceptionHandler.parse(exception)
+    private val errorHandler = CoroutineExceptionHandler { _, exception ->
+        Timber.e(exception)
+        setState {
+            copy(
+                isLoading = false,
+                isError = true
+            )
+        }
     }
 
-    private var seasonJob: Job? = null
-
-    override fun onCleared() {
-        super.onCleared()
-        seasonJob?.cancel()
+    override fun setInitialState(): SeasonContract.State {
+        return SeasonContract.State(
+            season = "",
+            year = -1,
+            seasonAnimes = emptyList(),
+            isLoading = true,
+            isError = false
+        )
     }
 
-    private var _state = MutableStateFlow(SeasonViewState())
-    val state = _state.asStateFlow()
+    override fun handleEvents(event: SeasonContract.Event) {
+        TODO("Not yet implemented")
+    }
 
     init {
-        seasonJob?.cancel()
-        seasonJob = launchCoroutine {
-            getCurrentSeasonAnime.execute().collect { results ->
-                _state.value = _state.value.copy(season = results.season_name, year = results.season_year)
-                val animes = results.anime.map { anime -> animeMapper.toPresentation(anime) }
-                _state.value = _state.value.copy(seasonAnimes = animes)
+        onCurrentSeasonAnime()
+    }
+
+    private fun onCurrentSeasonAnime() {
+        viewModelScope.launch(errorHandler) {
+            try {
+                getCurrentSeasonAnime.execute()
+                    .catch { throwable ->
+                        handleExceptions(throwable)
+                    }
+                    .collect {
+                        setState {
+                            copy(
+                                season = it.season_name,
+                                year = it.season_year
+                            )
+                        }
+                        animeMapper.toPresentation(it)
+                            .let { anime ->
+                                setState {
+                                    copy(
+                                        seasonAnimes = anime.anime
+                                    )
+                                }
+                            }
+                    }
+            } catch (throwable: Throwable) {
+                handleExceptions(throwable)
             }
         }
     }
 
-    private fun onSeasonAnime() {
-        seasonJob?.cancel()
-        seasonJob = launchCoroutine {
-            getSeasonAnime.execute(_state.value.year, _state.value.season).collect { results ->
-                val animes = results.anime.map { anime -> animeMapper.toPresentation(anime) }
-                _state.value = _state.value.copy(seasonAnimes = animes, year = _state.value.year, season = _state.value.season)
+    private fun onSeasonAnime(season: String, year: Int, ) {
+        viewModelScope.launch(errorHandler) {
+            try {
+                getSeasonAnime.execute(year, season)
+                    .catch { throwable ->
+                        handleExceptions(throwable)
+                    }
+                    .collect {
+                        setState {
+                            copy(
+                                season = it.season_name,
+                                year = it.season_year
+                            )
+                        }
+                        animeMapper.toPresentation(it)
+                            .let { anime ->
+                                setState {
+                                    copy(
+                                        seasonAnimes = anime.anime
+                                    )
+                                }
+                            }
+                    }
+            } catch (throwable: Throwable) {
+                handleExceptions(throwable)
             }
         }
     }
 
-    fun setSeason(str: String) {
-        val strToSeason = str.split(" ")
-        _state.value = _state.value.copy(season = strToSeason.first().decapitalize(Locale.ROOT))
-        _state.value = _state.value.copy(year = strToSeason.last().toInt())
-        onSeasonAnime()
+    private fun handleExceptions(throwable: Throwable) {
+        Timber.e(throwable)
+        setState {
+            copy(
+                isLoading = false,
+                isError = true
+            )
+        }
     }
+
 }
-
-data class SeasonViewState(
-    val season: String = "",
-    val year: Int = -1,
-    val seasonAnimes: List<AnimePresentation> = emptyList()
-)
