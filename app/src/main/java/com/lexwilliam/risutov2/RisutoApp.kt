@@ -29,6 +29,8 @@ import com.lexwilliam.risutov2.ui.home.HomeViewModel
 import com.lexwilliam.risutov2.ui.profile.ProfileScreen
 import com.lexwilliam.risutov2.ui.profile.ProfileViewModel
 import com.lexwilliam.risutov2.ui.search.SearchHomeScreen
+import com.lexwilliam.risutov2.ui.search.SearchScreen
+import com.lexwilliam.risutov2.ui.search.SearchViewModel
 import com.lexwilliam.risutov2.ui.season.SeasonScreen
 import com.lexwilliam.risutov2.ui.season.SeasonViewModel
 
@@ -118,20 +120,21 @@ fun RisutoAppContent() {
                     }
                 )
             }
-//            composable(RisutoSearchScreen.route) {
-//                val searchViewModel = hiltViewModel<SearchViewModel>()
-//                SearchScreen(
-//                    viewModel = searchViewModel,
-//                    navToDetail = { mal_id ->
-//                        navController.navigate(
-//                            RisutoAnimeScreen.route.plus("/?mal_id=$mal_id")
-//                        )
-//                    },
-//                    onBackPressed = {
-//                        navController.navigateUp()
-//                    }
-//                )
-//            }
+            composable(RisutoSearchScreen.route)  {
+                val searchViewModel = hiltViewModel<SearchViewModel>()
+                SearchScreen(
+                    state = searchViewModel.viewState.value,
+                    onEventSent = { event -> searchViewModel.setEvent(event) },
+                    navToDetail = { mal_id ->
+                        navController.navigate(
+                            RisutoAnimeScreen.route.plus("/?mal_id=$mal_id")
+                        )
+                    },
+                    onBackPressed = {
+                        navController.navigateUp()
+                    }
+                )
+            }
             composable(RisutoSeasonScreen.route) {
                 val seasonViewModel = hiltViewModel<SeasonViewModel>()
                 SeasonScreen(

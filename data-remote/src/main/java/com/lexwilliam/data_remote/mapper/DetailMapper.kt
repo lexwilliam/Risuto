@@ -1,6 +1,8 @@
 package com.lexwilliam.data_remote.mapper
 
+import com.lexwilliam.data.model.common.*
 import com.lexwilliam.data.model.remote.detail.*
+import com.lexwilliam.data_remote.model.common.*
 import com.lexwilliam.data_remote.model.detail.*
 import javax.inject.Inject
 
@@ -22,7 +24,44 @@ class DetailMapperImpl @Inject constructor(
     private val commonMapper: CommonMapper
 ): DetailMapper {
     override fun toRepo(anime: AnimeDetailResponse): AnimeDetailRepo =
-        AnimeDetailRepo(commonMapper.toRepo(anime.aired!!), anime.airing, anime.background, anime.broadcast, anime.duration, anime.ending_themes, anime.episodes, anime.favorites, anime.genres?.map { commonMapper.toRepo(it) }, anime.image_url, anime.licensors?.map { commonMapper.toRepo(it) }, anime.mal_id, anime.members, anime.opening_themes, anime.popularity, anime.premiered, anime.producers?.map { commonMapper.toRepo(it) }, anime.rank, anime.rating, commonMapper.toRepo(anime.related!!), anime.request_cache_expiry, anime.request_cached, anime.request_hash, anime.score, anime.scored_by, anime.source, anime.status, anime.studios?.map { commonMapper.toRepo(it) }, anime.synopsis, anime.title, anime.title_english, anime.title_japanese, anime.title_synonyms, anime.trailer_url, anime.type, anime.url)
+        AnimeDetailRepo(
+            commonMapper.toRepo(anime.aired?: AiredResponse("", PropResponse(FromResponse(0,0,0), ToResponse(0,0,0)),"", "")),
+            anime.airing?: false,
+            anime.background?: "",
+            anime.broadcast?: "",
+            anime.duration?: "",
+            anime.ending_themes?:listOf(""),
+            anime.episodes?:0,
+            anime.favorites?:0,
+            anime.genres?.map { commonMapper.toRepo(it) } ?: listOf(GenreRepo(0, "", "", "")),
+            anime.image_url?:"",
+            anime.licensors?.map { commonMapper.toRepo(it) } ?: listOf(LicensorRepo(0, "", "", "")),
+            anime.mal_id?:0,
+            anime.members?:0,
+            anime.opening_themes?:listOf(""),
+            anime.popularity?:0,
+            anime.premiered?:"",
+            anime.producers?.map { commonMapper.toRepo(it) } ?: listOf(ProducerRepo(0, "", "", "")),
+            anime.rank?:0,
+            anime.rating?:"",
+            commonMapper.toRepo(anime.related?: RelatedResponse()),
+            anime.request_cache_expiry?:0,
+            anime.request_cached?:false,
+            anime.request_hash?:"",
+            anime.score?:0.0,
+            anime.scored_by?:0,
+            anime.source?:"",
+            anime.status?:"",
+            anime.studios?.map { commonMapper.toRepo(it) } ?: listOf(StudioRepo(0, "", "", "")),
+            anime.synopsis?:"",
+            anime.title?:"",
+            anime.title_english?:"",
+            anime.title_japanese?:"",
+            anime.title_synonyms?:listOf(""),
+            anime.trailer_url?:"",
+            anime.type?:"",
+            anime.url?:""
+        )
 
     override fun toRepo(charStaff: CharacterStaffResponse): CharacterStaffRepo =
         CharacterStaffRepo(charStaff.characters?.map { toRepo(it) }, charStaff.request_cache_expiry, charStaff.request_cached, charStaff.request_hash, charStaff.staff?.map { toRepo(it) })

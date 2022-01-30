@@ -17,6 +17,7 @@ import com.lexwilliam.risutov2.model.local.MyAnimePresentation
 import com.lexwilliam.risutov2.model.local.WatchStatusPresentation
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -42,6 +43,14 @@ class AnimeViewModel @Inject constructor(
                 isError = true
             )
         }
+    }
+
+    private var detailJob: Job? = null
+    private var characterStaffJob: Job? = null
+
+    override fun onCleared() {
+        super.onCleared()
+        detailJob?.cancel()
     }
 
     private val malIdFromArgs = savedState.get<Int>("mal_id")
@@ -70,7 +79,8 @@ class AnimeViewModel @Inject constructor(
     }
 
     private fun animeDetail(mal_id: Int) {
-        viewModelScope.launch(errorHandler) {
+        detailJob?.cancel()
+        detailJob = viewModelScope.launch(errorHandler) {
             try {
                 getAnimeDetail.execute(mal_id)
                     .catch { throwable ->
@@ -81,7 +91,8 @@ class AnimeViewModel @Inject constructor(
                             .let { animeDetail ->
                                 setState {
                                     copy(
-                                        animeDetail = animeDetail
+                                        animeDetail = animeDetail,
+                                        isLoading = false
                                     )
                                 }
                                 insertAnimeHistory(animeDetail)
@@ -94,7 +105,8 @@ class AnimeViewModel @Inject constructor(
     }
 
     private fun characterStaff(mal_id: Int) {
-        viewModelScope.launch(errorHandler) {
+        characterStaffJob?.cancel()
+        characterStaffJob = viewModelScope.launch(errorHandler) {
             try {
                 getCharacterStaff.execute(mal_id)
                     .catch { throwable ->

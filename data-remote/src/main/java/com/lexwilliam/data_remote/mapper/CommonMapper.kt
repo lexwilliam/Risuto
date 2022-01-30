@@ -20,7 +20,7 @@ interface CommonMapper {
 
 class CommonMapperImpl @Inject constructor(): CommonMapper {
     override fun toRepo(aired: AiredResponse): AiredRepo =
-        AiredRepo(aired.from, toRepo(aired.prop!!), aired.string, aired.to)
+        AiredRepo(aired.from, toRepo(aired.prop?: PropResponse(FromResponse(0, 0, 0), ToResponse(0, 0, 0))), aired.string, aired.to)
 
     override fun toRepo(demographic: DemographicResponse): DemographicRepo =
         DemographicRepo(demographic.mal_id, demographic.name, demographic.type, demographic.url)
@@ -38,7 +38,7 @@ class CommonMapperImpl @Inject constructor(): CommonMapper {
         ProducerRepo(producer.mal_id, producer.name, producer.type, producer.url)
 
     override fun toRepo(prop: PropResponse): PropRepo =
-        PropRepo(toRepo(prop.from!!), toRepo(prop.to!!))
+        PropRepo(toRepo(prop.from?: FromResponse(0, 0, 0)), toRepo(prop.to?: ToResponse(0, 0, 0)))
 
     override fun toRepo(related: RelatedResponse): RelatedRepo =
         RelatedRepo()

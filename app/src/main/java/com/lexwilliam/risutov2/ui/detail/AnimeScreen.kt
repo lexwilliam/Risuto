@@ -1,5 +1,6 @@
 package com.lexwilliam.risutov2.ui.detail
 
+import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -30,6 +31,7 @@ import com.lexwilliam.risutov2.util.*
 import com.lexwilliam.risutov2.util.intToCurrency
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @ExperimentalMaterialApi
 @Composable
@@ -78,7 +80,7 @@ fun AnimeContent(
     bottomSheetState: BottomSheetScaffoldState,
     coroutineScope: CoroutineScope
 ) {
-    if(state.isLoading){
+    if(state.isLoading) {
         LoadingScreen()
     } else {
         Column(
