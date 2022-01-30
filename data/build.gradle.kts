@@ -9,6 +9,8 @@ plugins {
 dependencies {
     implementation(project(ProjectModules.domain))
 
+    implementation(Dependencies.Paging.runtime)
+
     implementation(Dependencies.Hilt.hiltAndroid)
     implementation(Dependencies.Hilt.hiltAndroidCompiler)
 }

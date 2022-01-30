@@ -70,6 +70,9 @@ dependencies {
     implementation(Dependencies.AndroidX.Compose.runtimeLiveData)
     implementation(Dependencies.AndroidX.Compose.navigation)
 
+    implementation(Dependencies.Paging.runtime)
+    implementation(Dependencies.Paging.compose)
+
     implementation(Dependencies.Hilt.hiltAndroid)
     implementation(Dependencies.Hilt.hiltAndroidCompiler)
     implementation(Dependencies.Hilt.hiltViewModel)

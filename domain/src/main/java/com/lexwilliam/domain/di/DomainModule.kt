@@ -100,6 +100,11 @@ object DomainModule {
 
     @Singleton
     @Provides
+    fun provideGetGenreAnime(animeRepository: AnimeRepository): GetGenreAnime =
+        GetGenreAnimeImpl(animeRepository)
+
+    @Singleton
+    @Provides
     fun provideGetTopAnime(animeRepository: AnimeRepository): GetTopAnime =
         GetTopAnimeImpl(animeRepository)
 

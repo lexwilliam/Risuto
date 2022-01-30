@@ -6,7 +6,7 @@ plugins {
 }
 
 dependencies {
-    implementation(Dependencies.Dagger.daggerAndroid)
+    implementation(Dependencies.Paging.runtime)
 
     implementation(Dependencies.Hilt.hiltAndroid)
     implementation(Dependencies.Hilt.hiltAndroidCompiler)

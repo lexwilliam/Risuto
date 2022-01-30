@@ -89,6 +89,11 @@ object Dependencies {
         const val roomKtx = "androidx.room:room-ktx:${Versions.room}"
     }
 
+    object Paging {
+        const val runtime = "androidx.paging:paging-runtime-ktx:3.1.0"
+        const val compose = "androidx.paging:paging-compose:1.0.0-alpha14"
+    }
+
     const val lottie = "com.airbnb.android:lottie:${Versions.lottie}"
     const val lottieCompose = "com.airbnb.android:lottie-compose:${Versions.lottieCompose}"
 

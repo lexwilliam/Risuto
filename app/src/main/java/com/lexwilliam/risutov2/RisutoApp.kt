@@ -24,6 +24,8 @@ import androidx.navigation.navArgument
 import com.lexwilliam.risutov2.Screens.*
 import com.lexwilliam.risutov2.ui.detail.AnimeScreen
 import com.lexwilliam.risutov2.ui.detail.AnimeViewModel
+import com.lexwilliam.risutov2.ui.genre.GenreScreen
+import com.lexwilliam.risutov2.ui.genre.GenreViewModel
 import com.lexwilliam.risutov2.ui.home.HomeScreen
 import com.lexwilliam.risutov2.ui.home.HomeViewModel
 import com.lexwilliam.risutov2.ui.profile.ProfileScreen
@@ -168,26 +170,26 @@ fun RisutoAppContent() {
                     }
                 )
             }
-//            composable(
-//                route = RisutoGenreScreen.route.plus("/?genre_id={genre_id}"),
-//                arguments = listOf(
-//                    navArgument("genre_id") {
-//                        type = NavType.IntType
-//                        defaultValue = -1
-//                    }
-//                )
-//            ) {
-//                val genreViewModel = hiltViewModel<GenreViewModel>()
-//                GenreScreen(
-//                    viewModel = genreViewModel,
-//                    onBackPressed = { navController.navigateUp() },
-//                    navToDetail = { mal_id ->
-//                        navController.navigate(
-//                            RisutoAnimeScreen.route.plus("/?mal_id=$mal_id")
-//                        )
-//                    }
-//                )
-//            }
+            composable(
+                route = RisutoGenreScreen.route.plus("/?genre_id={genre_id}"),
+                arguments = listOf(
+                    navArgument("genre_id") {
+                        type = NavType.IntType
+                        defaultValue = -1
+                    }
+                )
+            ) {
+                val genreViewModel = hiltViewModel<GenreViewModel>()
+                GenreScreen(
+                    state = genreViewModel.viewState.value,
+                    onBackPressed = { navController.navigateUp() },
+                    navToDetail = { mal_id ->
+                        navController.navigate(
+                            RisutoAnimeScreen.route.plus("/?mal_id=$mal_id")
+                        )
+                    }
+                )
+            }
             composable(RisutoProfileScreen.route) {
                 val profileViewModel = hiltViewModel<ProfileViewModel>()
                 ProfileScreen(
