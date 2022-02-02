@@ -13,9 +13,7 @@ interface AnimeRepository {
 
     suspend fun searchAnime(q: String?, type: String?, status: String?, genre: Int?, limit: Int?, orderBy: String?, sort: String?, page: Int?): Flow<Search>
 
-    suspend fun genreAnime(q: String?, type: String?, status: String?, genre: Int?, limit: Int?, orderBy: String?, sort: String?, page: Int?): Flow<AnimeResult<Search>>
-
-    suspend fun genrePagination(scope: CoroutineScope, genre: Int, perPage: Int): Flow<PagingData<SearchAnime>>
+    fun genreAnime(q: String?, genre: Int?): Flow<PagingData<SearchAnime>>
 
     suspend fun topAnime(page: Int, subType: String): Flow<Top>
 

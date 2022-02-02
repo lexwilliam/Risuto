@@ -10,10 +10,12 @@ import com.lexwilliam.risutov2.ui.search.SearchContract
 import kotlinx.coroutines.flow.Flow
 
 class GenreContract {
-    sealed class Event : ViewEvent {}
+    sealed class Event : ViewEvent {
+        data class GetGenreAnimes(val genreId: Int): Event()
+    }
 
     data class State(
-        val animes: Flow<PagingData<SearchAnime>>? = null,
+        val animes: Flow<PagingData<AnimePresentation>>?,
         val genreId: Int = 0,
         val isLoading: Boolean = false,
         val isError: Boolean = false

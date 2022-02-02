@@ -20,9 +20,11 @@ import com.lexwilliam.risutov2.mapper.AnimeMapper
 import com.lexwilliam.risutov2.mapper.AnimeMapperImpl
 import com.lexwilliam.risutov2.mapper.CommonMapperImpl
 import com.lexwilliam.risutov2.model.AnimePresentation
+import com.lexwilliam.risutov2.ui.component.LoadingScreen
 import com.lexwilliam.risutov2.ui.component.RowItem
 import com.lexwilliam.risutov2.util.bottomNavGap
 import com.lexwilliam.risutov2.util.genreList
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -33,28 +35,31 @@ fun GenreScreen(
     onBackPressed: () -> Unit,
     navToDetail: (Int) -> Unit
 ) {
-    GenreContent(
-        animeList = state.animes!!,
-        genreId = state.genreId,
-        onBackPressed = onBackPressed,
-        navToDetail = navToDetail
-    )
+    if(state.isLoading) {
+        LoadingScreen()
+    } else {
+        GenreContent(
+            animeList = state.animes!!,
+            genreId = state.genreId,
+            onBackPressed = onBackPressed,
+            navToDetail = navToDetail
+        )
+    }
 }
 
 @ExperimentalFoundationApi
 @Composable
 fun GenreContent(
-    animeList: Flow<PagingData<SearchAnime>>,
+    animeList: Flow<PagingData<AnimePresentation>>,
     genreId: Int,
     onBackPressed: () -> Unit,
     navToDetail: (Int) -> Unit
 ) {
-    val animeMapper = AnimeMapperImpl(commonMapper = CommonMapperImpl())
     val lazyAnimeList = animeList.collectAsLazyPagingItems()
     Column(modifier = Modifier.padding(bottom = bottomNavGap)) {
         TopAppBar(
             title = {
-                Text(text = genreList[genreId-1])
+                Text(text = if (genreId > 0) genreList[genreId-1] else "unknown")
             },
             navigationIcon = {
                 IconButton(onClick = { onBackPressed() }) {
@@ -70,7 +75,7 @@ fun GenreContent(
         )
         LazyColumn {
             items(lazyAnimeList) { anime ->
-                RowItem(modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp), item = animeMapper.toPresentation(anime!!), navToDetail = { navToDetail(anime.mal_id) })
+                RowItem(modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp), item = anime!!, navToDetail = { navToDetail(anime.mal_id!!) })
             }
 
             lazyAnimeList.apply {

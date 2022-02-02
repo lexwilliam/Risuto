@@ -100,9 +100,6 @@ open class AndroidPlugin : Plugin<Project> {
 
         implementation(Dependencies.timber)
 
-        kapt(Dependencies.Dagger.daggerCompiler)
-        kapt(Dependencies.Dagger.daggerAndroidProcessor)
-
         kapt(Dependencies.Hilt.hiltAndroid)
         kapt(Dependencies.Hilt.hiltAndroidCompiler)
 

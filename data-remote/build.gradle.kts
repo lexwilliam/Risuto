@@ -15,6 +15,8 @@ dependencies {
     api(Dependencies.Retrofit.moshiKotlin)
     api(Dependencies.Retrofit.retrofitCoroutineAdapter)
 
+    implementation(Dependencies.Paging.runtime)
+
     implementation(Dependencies.Hilt.hiltAndroid)
     implementation(Dependencies.Hilt.hiltAndroidCompiler)
 }
