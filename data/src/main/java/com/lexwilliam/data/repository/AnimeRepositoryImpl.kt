@@ -32,9 +32,13 @@ class AnimeRepositoryImpl @Inject constructor(
 
     override fun genreAnime(
         q: String?,
-        genre: Int?
+        type: String?,
+        status: String?,
+        genre: Int?,
+        orderBy: String?,
+        sort: String?
     ): Flow<PagingData<SearchAnime>> {
-        return animeRemoteSource.genreAnime(q, genre).map { it.map { animeMapper.toDomain(it) } }
+        return animeRemoteSource.genreAnime(q, type, status, genre, orderBy, sort).map { it.map { animeMapper.toDomain(it) } }
     }
 
     override suspend fun topAnime(page: Int, subType: String): Flow<Top> {

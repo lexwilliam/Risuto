@@ -40,10 +40,17 @@ class AnimeRemoteSourceImpl @Inject constructor(
         emit(animeMapper.toRepo(searchResponse))
     }
 
-    override fun genreAnime(q: String?, genre: Int?): Flow<PagingData<SearchAnimeRepo>> {
+    override fun genreAnime(
+        q: String?,
+        type: String?,
+        status: String?,
+        genre: Int?,
+        orderBy: String?,
+        sort: String?
+    ): Flow<PagingData<SearchAnimeRepo>> {
         return Pager(
             config = getDefaultPageConfig(),
-            pagingSourceFactory = { SearchPagingSource(jikanService, genre) }
+            pagingSourceFactory = { SearchPagingSource(jikanService, q, type, status, genre, orderBy, sort) }
         ).flow.map { it.map { animeMapper.toRepo(it) } }
     }
 

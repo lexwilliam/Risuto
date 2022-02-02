@@ -14,9 +14,9 @@ class SearchPagingSource @Inject constructor(
     private val q: String?,
     private val type: String?,
     private val status: String?,
+    private val genre: Int?,
     private val orderBy: String?,
     private val sort: String?,
-    private val genre: Int?
 ): PagingSource<Int, SearchAnimeResponse>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, SearchAnimeResponse> {

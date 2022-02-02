@@ -4,6 +4,7 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -25,12 +26,18 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.paging.LoadState
+import androidx.paging.PagingData
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.items
 import com.lexwilliam.risutov2.model.AnimePresentation
 import com.lexwilliam.risutov2.model.local.SearchHistoryPresentation
 import com.lexwilliam.risutov2.ui.component.GridList
 import com.lexwilliam.risutov2.ui.component.HorizontalGridList
+import com.lexwilliam.risutov2.ui.component.LoadingScreen
+import com.lexwilliam.risutov2.ui.component.RowItem
 import com.lexwilliam.risutov2.util.bottomNavGap
+import kotlinx.coroutines.flow.Flow
 
 @ExperimentalFoundationApi
 @ExperimentalComposeUiApi
@@ -41,14 +48,14 @@ fun SearchScreen(
     navToDetail: (Int) -> Unit,
     onBackPressed: () -> Unit
 ) {
-
     var query by rememberSaveable { mutableStateOf("") }
     var resultState by rememberSaveable { mutableStateOf(ResultType.History) }
     if(query.isEmpty()) {
         resultState = ResultType.History
     }
     SearchContent(
-        items = state.searchAnimes,
+        searchSuggestions = state.searchAnimes,
+        animes = state.searchAnimesPaging,
         searchHistory = state.searchHistory,
         animeHistory = state.animeHistory,
         onEventSent = { onEventSent(it) },
@@ -64,7 +71,8 @@ fun SearchScreen(
 @ExperimentalComposeUiApi
 @Composable
 fun SearchContent(
-    items: List<AnimePresentation>,
+    searchSuggestions: List<AnimePresentation>,
+    animes: Flow<PagingData<AnimePresentation>>?,
     searchHistory: List<SearchHistoryPresentation>,
     animeHistory: List<AnimePresentation>,
     onEventSent: (SearchContract.Event) -> Unit,
@@ -77,7 +85,6 @@ fun SearchContent(
 ) {
     var cursorColor by remember { mutableStateOf(Color.Black) }
     val keyboardController = LocalSoftwareKeyboardController.current
-
     Column(
         modifier = Modifier
             .padding(bottom = 64.dp)
@@ -98,14 +105,44 @@ fun SearchContent(
         when(resultState){
             ResultType.FullResult -> {
                 keyboardController?.hide()
-                GridList(items = items, navToDetail = { navToDetail(it) })
+                if(animes != null) {
+                    val lazyAnimeList = animes.collectAsLazyPagingItems()
+                    LazyColumn {
+                        items(lazyAnimeList) { anime ->
+                            RowItem(modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp), item = anime!!, navToDetail = { navToDetail(anime.mal_id!!) })
+                        }
+                        lazyAnimeList.apply {
+                            when {
+                                loadState.refresh is LoadState.Loading -> { }
+                                loadState.append is LoadState.Loading -> { }
+                                loadState.refresh is LoadState.Error -> {
+                                    val e = lazyAnimeList.loadState.refresh as LoadState.Error
+                                    item {
+                                        Text(
+                                            text = e.error.localizedMessage!!,
+                                            modifier = Modifier.fillParentMaxSize()
+                                        )
+                                    }
+                                }
+                                loadState.append is LoadState.Error -> {
+                                    val e = lazyAnimeList.loadState.append as LoadState.Error
+                                    item {
+                                        Text(
+                                            text = e.error.localizedMessage!!
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
             ResultType.Result -> {
                 QueryList(
-                    items = items.map { SearchHistoryPresentation(query = it.title!!) },
+                    items = searchSuggestions.map { SearchHistoryPresentation(query = it.title!!) },
                     onSelectItem = {
                         onQueryChanged(it.query)
-                        onEventSent(SearchContract.Event.SearchAnime(it.query, null, null, null, null, null, null, null))
+                        onEventSent(SearchContract.Event.SearchAnimePaging(it.query, null, null, null, null, null))
                         onEventSent(SearchContract.Event.InsertSearchHistory(query))
                         cursorColor = Color.Transparent
                         onResultChange(ResultType.FullResult)
@@ -164,7 +201,7 @@ fun SearchContent(
                             items = searchHistory.map { SearchHistoryPresentation(query = it.query) },
                             onSelectItem = {
                                 onQueryChanged(it.query)
-                                onEventSent(SearchContract.Event.SearchAnime(query, null, null, null, null, null, null, null))
+                                onEventSent(SearchContract.Event.SearchAnimePaging(it.query, null, null, null, null, null))
                                 onResultChange(ResultType.FullResult)
                                 cursorColor = Color.Transparent
                             },
@@ -215,7 +252,7 @@ fun SearchBar(
                 onValueChange = {
                     onQueryChanged(it)
                     onResultChange(ResultType.Result)
-                    onEventSent(SearchContract.Event.SearchAnime(query, null, null, null, 6, null, null, null))
+                    onEventSent(SearchContract.Event.SearchAnime(query))
                 },
                 interactionSource = interactionSource,
                 textStyle = MaterialTheme.typography.subtitle1,
@@ -226,7 +263,7 @@ fun SearchBar(
                     imeAction = ImeAction.Done
                 ),
                 keyboardActions = KeyboardActions( onDone = {
-                    onEventSent(SearchContract.Event.SearchAnime(query, null, null, null, null, null, null, null))
+                    onEventSent(SearchContract.Event.SearchAnimePaging(query, null, null, null, null, null))
                     onEventSent(SearchContract.Event.InsertSearchHistory(query))
                     onDone()
                     onCursorChanged(Color.Transparent)

@@ -8,13 +8,13 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 interface GetGenreAnime {
-    fun execute(q: String?, genre: Int?): Flow<PagingData<SearchAnime>>
+    fun execute(q: String?, type: String?, status: String?, genre: Int?, orderBy: String?, sort: String?): Flow<PagingData<SearchAnime>>
 }
 
 class GetGenreAnimeImpl @Inject constructor(
     private val animeRepository: AnimeRepository
 ): GetGenreAnime {
-    override fun execute(q: String?, genre: Int?): Flow<PagingData<SearchAnime>> {
-        return animeRepository.genreAnime(q, genre)
+    override fun execute(q: String?, type: String?, status: String?, genre: Int?, orderBy: String?, sort: String?): Flow<PagingData<SearchAnime>> {
+        return animeRepository.genreAnime(q, type, status, genre, orderBy, sort)
     }
 }

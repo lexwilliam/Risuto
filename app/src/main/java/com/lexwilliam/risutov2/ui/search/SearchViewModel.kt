@@ -1,18 +1,24 @@
 package com.lexwilliam.risutov2.ui.search
 
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import androidx.paging.map
 import com.lexwilliam.domain.usecase.local.*
+import com.lexwilliam.domain.usecase.remote.GetGenreAnime
 import com.lexwilliam.domain.usecase.remote.GetSearchAnime
 import com.lexwilliam.risutov2.base.BaseViewModel
 import com.lexwilliam.risutov2.mapper.AnimeMapper
 import com.lexwilliam.risutov2.mapper.HistoryMapper
+import com.lexwilliam.risutov2.model.AnimePresentation
 import com.lexwilliam.risutov2.model.local.SearchHistoryPresentation
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -20,6 +26,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SearchViewModel @Inject constructor(
     private val getSearchAnime: GetSearchAnime,
+    private val getGenreAnime: GetGenreAnime,
     private val getAllSearchHistory: GetSearchHistory,
     private val getAllAnimeHistory: GetAnimeHistory,
     private val insertSearchHistory: InsertSearchHistory,
@@ -46,6 +53,7 @@ class SearchViewModel @Inject constructor(
     override fun setInitialState(): SearchContract.State {
         return SearchContract.State(
             searchAnimes = emptyList(),
+            searchAnimesPaging = null,
             animeHistory = emptyList(),
             searchHistory = emptyList(),
             isLoading = true,
@@ -55,8 +63,13 @@ class SearchViewModel @Inject constructor(
 
     override fun handleEvents(event: SearchContract.Event) {
         when(event) {
+            is SearchContract.Event.SearchAnimePaging ->
+                setState {
+                    copy(searchAnimesPaging = searchAnimePaging(event.q, event.type, event.status, event.genre, event.orderBy, event.sort))
+                }
+
             is SearchContract.Event.SearchAnime ->
-                onSearchAnime(event.q, event.type, event.status, event.genre, event.limit, event.orderBy, event.sort, event.page)
+                searchAnime(event.q)
 
             is SearchContract.Event.InsertSearchHistory ->
                 insertSearchHistory(event.query)
@@ -80,15 +93,8 @@ class SearchViewModel @Inject constructor(
         searchHistory()
     }
 
-    private fun onSearchAnime(
+    private fun searchAnime(
         q: String?,
-        type: String?,
-        status: String?,
-        genre: Int?,
-        limit: Int?,
-        orderBy: String?,
-        sort: String?,
-        page: Int?
     ) {
         if(q?.length!! > 3) {
             searchJob?.cancel()
@@ -99,7 +105,7 @@ class SearchViewModel @Inject constructor(
                             searchAnimes = emptyList()
                         )
                     }
-                    getSearchAnime.execute(q, type, status, genre, limit, orderBy, sort, page)
+                    getSearchAnime.execute(q, null, null, null, 6, null, null, null)
                         .catch { throwable ->
                             handleExceptions(throwable)
                         }
@@ -108,7 +114,7 @@ class SearchViewModel @Inject constructor(
                                 .let { anime ->
                                     setState {
                                         copy(
-                                            searchAnimes = anime.anime
+                                            searchAnimes = anime.anime,
                                         )
                                     }
                                 }
@@ -118,6 +124,12 @@ class SearchViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    private fun searchAnimePaging(q: String?, type: String?, status: String?, genre: Int?, orderBy: String?, sort: String?): Flow<PagingData<AnimePresentation>> {
+        return getGenreAnime.execute(q, type, status, genre, orderBy, sort)
+            .map { it.map { animeMapper.toPresentation(it) } }
+            .cachedIn(viewModelScope)
     }
 
     private fun animeHistory() {

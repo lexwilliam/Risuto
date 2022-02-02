@@ -57,7 +57,6 @@ class GenreViewModel
 
     init {
         genreIdFromArgs?.let {
-            Timber.d(it.toString())
             setState {
                 copy(
                     animes = genreAnimes(it),
@@ -71,7 +70,7 @@ class GenreViewModel
     override fun handleEvents(event: GenreContract.Event) {}
 
     private fun genreAnimes(genre: Int): Flow<PagingData<AnimePresentation>> {
-        return getGenreAnime.execute(null, genre)
+        return getGenreAnime.execute(null, null, null, genre, "members", "desc")
             .map { it.map { animeMapper.toPresentation(it) } }
             .cachedIn(viewModelScope)
     }

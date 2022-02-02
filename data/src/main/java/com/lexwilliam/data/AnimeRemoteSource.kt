@@ -12,7 +12,7 @@ interface AnimeRemoteSource {
 
     suspend fun searchAnime(q: String?, type: String?, status: String?, genre: Int?, limit: Int?, orderBy: String?, sort: String?, page: Int?): Flow<SearchRepo>
 
-    fun genreAnime(q: String?, genre: Int?): Flow<PagingData<SearchAnimeRepo>>
+    fun genreAnime(q: String?, type: String?, status: String?, genre: Int?, orderBy: String?, sort: String?): Flow<PagingData<SearchAnimeRepo>>
 
     suspend fun topAnime(page: Int, subType: String): Flow<TopRepo>
 
