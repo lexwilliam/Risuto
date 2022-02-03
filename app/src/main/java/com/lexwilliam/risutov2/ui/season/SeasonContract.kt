@@ -9,7 +9,9 @@ import com.lexwilliam.risutov2.model.detail.CharacterStaffPresentation
 import com.lexwilliam.risutov2.model.local.MyAnimePresentation
 
 class SeasonContract {
-    sealed class Event : ViewEvent {}
+    sealed class Event : ViewEvent {
+        data class SetSeason(val season: String, val year: Int): Event()
+    }
 
     data class State(
         val season: String,

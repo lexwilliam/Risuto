@@ -135,6 +135,8 @@ fun SearchContent(
                             }
                         }
                     }
+                } else {
+                    LoadingScreen()
                 }
             }
             ResultType.Result -> {

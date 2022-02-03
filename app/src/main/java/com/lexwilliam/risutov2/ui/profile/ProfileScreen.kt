@@ -18,7 +18,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lexwilliam.risutov2.model.AnimePresentation
 import com.lexwilliam.risutov2.model.local.WatchStatusPresentation
 import com.lexwilliam.risutov2.ui.component.NetworkImage
@@ -33,7 +32,7 @@ fun ProfileScreen(
     navToDetail: (Int) -> Unit,
 ) {
     ProfileContent(
-        myAnimelist = state.myAnimes,
+        myAnimeList = state.myAnimes,
         navToDetail = { navToDetail(it) }
     )
 }
@@ -41,7 +40,7 @@ fun ProfileScreen(
 @ExperimentalFoundationApi
 @Composable
 fun ProfileContent(
-    myAnimelist: List<AnimePresentation>,
+    myAnimeList: List<AnimePresentation>,
     navToDetail: (Int) -> Unit
 ) {
     Column(modifier = Modifier.padding(bottom = bottomNavGap)) {
@@ -58,12 +57,12 @@ fun ProfileContent(
         )
         var filteredList: List<AnimePresentation> = emptyList()
         when(currentStatus) {
-            "All" -> filteredList = myAnimelist
-            "Watching" -> filteredList = myAnimelist.filter { it.watch_status == WatchStatusPresentation.Watching }
-            "Completed" -> filteredList = myAnimelist.filter { it.watch_status == WatchStatusPresentation.Completed }
-            "Plan To Watch" -> filteredList = myAnimelist.filter { it.watch_status == WatchStatusPresentation.PlanToWatch }
-            "On Hold" -> filteredList = myAnimelist.filter { it.watch_status == WatchStatusPresentation.OnHold }
-            "Dropped" -> filteredList = myAnimelist.filter { it.watch_status == WatchStatusPresentation.Dropped }
+            "All" -> filteredList = myAnimeList
+            "Watching" -> filteredList = myAnimeList.filter { it.watch_status == WatchStatusPresentation.Watching }
+            "Completed" -> filteredList = myAnimeList.filter { it.watch_status == WatchStatusPresentation.Completed }
+            "Plan To Watch" -> filteredList = myAnimeList.filter { it.watch_status == WatchStatusPresentation.PlanToWatch }
+            "On Hold" -> filteredList = myAnimeList.filter { it.watch_status == WatchStatusPresentation.OnHold }
+            "Dropped" -> filteredList = myAnimeList.filter { it.watch_status == WatchStatusPresentation.Dropped }
         }
         MyAnimeGridList(items = filteredList, navToDetail = { navToDetail(it) })
     }

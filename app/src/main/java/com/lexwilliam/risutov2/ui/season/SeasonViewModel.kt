@@ -1,5 +1,6 @@
 package com.lexwilliam.risutov2.ui.season
 
+import androidx.compose.ui.text.decapitalize
 import androidx.lifecycle.viewModelScope
 import com.lexwilliam.domain.usecase.remote.GetCurrentSeasonAnime
 import com.lexwilliam.domain.usecase.remote.GetSeasonAnime
@@ -45,7 +46,20 @@ class SeasonViewModel
     }
 
     override fun handleEvents(event: SeasonContract.Event) {
-        TODO("Not yet implemented")
+        when(event) {
+            is SeasonContract.Event.SetSeason -> {
+                setState {
+                    copy(
+                        season = event.season,
+                        year = event.year,
+                        isLoading = true,
+                        seasonAnimes = emptyList()
+                    )
+                }
+                onSeasonAnime(event.season, event.year)
+            }
+
+        }
     }
 
     init {
@@ -70,7 +84,8 @@ class SeasonViewModel
                             .let { anime ->
                                 setState {
                                     copy(
-                                        seasonAnimes = anime.anime
+                                        seasonAnimes = anime.anime,
+                                        isLoading = false
                                     )
                                 }
                             }
@@ -81,10 +96,10 @@ class SeasonViewModel
         }
     }
 
-    private fun onSeasonAnime(season: String, year: Int, ) {
+    private fun onSeasonAnime(season: String, year: Int) {
         viewModelScope.launch(errorHandler) {
             try {
-                getSeasonAnime.execute(year, season)
+                getSeasonAnime.execute(year, season.replaceFirstChar { it.lowercase(Locale.ROOT) })
                     .catch { throwable ->
                         handleExceptions(throwable)
                     }
@@ -99,7 +114,8 @@ class SeasonViewModel
                             .let { anime ->
                                 setState {
                                     copy(
-                                        seasonAnimes = anime.anime
+                                        seasonAnimes = anime.anime,
+                                        isLoading = false
                                     )
                                 }
                             }
