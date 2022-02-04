@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">RisutoV2</string>
+    <string name="app_name">Risuto</string>
     <string name="error_check_internet_connection">Check Your Internet Conneciton!</string>
     <string name="error_oops_error_occured">Oops! there is an error</string>
     <string name="connection_error_title">Connection error</string>
