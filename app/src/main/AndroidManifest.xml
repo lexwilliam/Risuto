@@ -16,7 +16,6 @@
         <activity
             android:name="com.lexwilliam.risuto.MainActivity"
             android:exported="true"
-            android:label="@string/app_name"
             android:theme="@style/Theme.Risuto.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

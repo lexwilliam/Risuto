@@ -9,6 +9,7 @@ class HomeContract {
     sealed class Event : ViewEvent {}
 
     data class State(
+        val airingTodayAnime: List<AnimePresentation>,
         val currentSeason: String,
         val currentYear: Int,
         val seasonAnime: List<AnimePresentation>,

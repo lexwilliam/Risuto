@@ -24,7 +24,11 @@ fun HomeScreen(
     state: HomeContract.State,
     navToDetail: (Int) -> Unit
 ) {
+    if(state.isLoading) {
+        LoadingScreen()
+    }
     HomeContent(
+        airingTodayAnime = state.airingTodayAnime,
         currentSeasonAnime = state.seasonAnime,
         topAiringAnime = state.topAiringAnime,
         topAnime = state.topAnime,
@@ -35,44 +39,46 @@ fun HomeScreen(
 
 @Composable
 fun HomeContent(
+    airingTodayAnime: List<AnimePresentation>,
     currentSeasonAnime: List<AnimePresentation>,
     topAiringAnime: List<AnimePresentation>,
     topAnime: List<AnimePresentation>,
     topUpcomingAnime: List<AnimePresentation>,
     navToDetail: (Int) -> Unit
 ) {
-    if(currentSeasonAnime.isEmpty() && topAiringAnime.isEmpty() && topAnime.isEmpty() && topUpcomingAnime.isEmpty()) {
-        LoadingScreen()
-    } else {
-        Column(
-            modifier = Modifier
-                .verticalScroll(rememberScrollState())
-                .padding(start = 16.dp, bottom = 64.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            Header(title = "Home", modifier = Modifier.padding(top = 24.dp))
-            PosterGridList(
-                title = getCurrentSeason()
-                    .capitalize(Locale.ROOT) + " " + getCurrentYear() + " " + "Anime",
-                items = currentSeasonAnime,
-                navToDetail = { navToDetail(it) }
-            )
-            PosterGridList(
-                title = "Top Airing",
-                items = topAiringAnime,
-                navToDetail = { navToDetail(it) }
-            )
-            PosterGridList(
-                title = "Top Upcoming",
-                items = topUpcomingAnime,
-                navToDetail = { navToDetail(it) }
-            )
-            PosterGridList(
-                title = "Top Anime",
-                items = topAnime,
-                navToDetail = { navToDetail(it) }
-            )
-        }
+    Column(
+        modifier = Modifier
+            .verticalScroll(rememberScrollState())
+            .padding(start = 16.dp, bottom = 64.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        Header(title = "Home", modifier = Modifier.padding(top = 24.dp))
+        PosterGridList(
+            title = "Airing Today",
+            items = airingTodayAnime,
+            navToDetail = { navToDetail(it) }
+        )
+        PosterGridList(
+            title = getCurrentSeason()
+                .capitalize(Locale.ROOT) + " " + getCurrentYear() + " " + "Anime",
+            items = currentSeasonAnime,
+            navToDetail = { navToDetail(it) }
+        )
+        PosterGridList(
+            title = "Top Airing",
+            items = topAiringAnime,
+            navToDetail = { navToDetail(it) }
+        )
+        PosterGridList(
+            title = "Top Upcoming",
+            items = topUpcomingAnime,
+            navToDetail = { navToDetail(it) }
+        )
+        PosterGridList(
+            title = "Top Anime",
+            items = topAnime,
+            navToDetail = { navToDetail(it) }
+        )
     }
 }
 

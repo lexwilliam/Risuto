@@ -5,6 +5,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.lexwilliam.risuto.model.detail.VoiceActorPresentation
 import com.lexwilliam.risuto.model.local.WatchStatusPresentation
+import org.joda.time.LocalDate
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -71,6 +72,10 @@ fun getGenre(genre: String): Int {
 
 internal fun intToCurrency(int: Int): String {
     return NumberFormat.getNumberInstance(Locale.ENGLISH).format(int)
+}
+
+fun getCurrentDate(): String {
+    return LocalDate().dayOfWeek().getAsText(Locale.ROOT)
 }
 
 @SuppressLint("SimpleDateFormat")
