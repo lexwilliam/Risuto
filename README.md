@@ -7,11 +7,10 @@ All of the anime data comes from [MyAnimeList](https://myanimelist.net/) and usi
 <br><img src= "readme/home.png" width="240"></img> <img src= "readme/searchhome.png" width="240"></img> <img src= "readme/search.png" width="240"></img> <br>
 <br><img src= "readme/season.png" width="240"></img> <img src= "readme/myanime.png" width="240"></img> <img src= "readme/detail.png" width="240"></img> <br>
 
-
 # Project Structure
 
-In this project i'm trying to use Clean Architecture and it heavily inspired by odaridavid code                                                                                     
-URL: https://github.com/odaridavid/Clean-MVVM-ArchComponents
+This project is a multi module project and build with package by layer strategy. Which mean there are 3 main layer: data, domain, presentation. 
+I learn it in ferPrieto spaceX project : https://github.com/ferPrieto/SpaceX-prepare-for-Clean-Architecture-liftoff
 
 # Libraries
 
