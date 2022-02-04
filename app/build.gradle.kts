@@ -16,7 +16,7 @@ androidPlugin {
 
 android {
     defaultConfig {
-        applicationId = "com.lexwilliam.hanki"
+        applicationId = "com.lexwilliam.risuto"
         minSdk = com.lexwilliam.dependencies.AndroidSettings.minSdk
         targetSdk = com.lexwilliam.dependencies.AndroidSettings.targetSdk
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

@@ -1,6 +1,5 @@
 package com.lexwilliam.risutov2.ui.detail
 
-import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -18,8 +17,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.lexwilliam.risutov2.model.AnimePresentation
 import com.lexwilliam.risutov2.model.detail.AnimeDetailPresentation
 import com.lexwilliam.risutov2.model.detail.CharacterStaffPresentation
 import com.lexwilliam.risutov2.model.local.MyAnimePresentation
@@ -28,10 +25,8 @@ import com.lexwilliam.risutov2.ui.component.Chip
 import com.lexwilliam.risutov2.ui.component.LoadingScreen
 import com.lexwilliam.risutov2.ui.component.NetworkImage
 import com.lexwilliam.risutov2.util.*
-import com.lexwilliam.risutov2.util.intToCurrency
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @ExperimentalMaterialApi
 @Composable
@@ -201,9 +196,9 @@ fun MyAnimeMenu(
                 onEventSent(
                     AnimeContract.Event.InsertMyAnime(
                         anime = MyAnimePresentation(
-                            mal_id = state.animeDetail.mal_id!!,
-                            title = state.animeDetail.title!!,
-                            image_url = state.animeDetail.image_url!!,
+                            mal_id = state.animeDetail.mal_id,
+                            title = state.animeDetail.title,
+                            image_url = state.animeDetail.image_url,
                             myScore = score,
                             watchStatus = watchState
                         )
@@ -254,24 +249,24 @@ fun AnimeDetail(
             modifier = Modifier
                 .size(width = 120.dp, height = 180.dp)
                 .shadow(elevation = 4.dp, shape = MaterialTheme.shapes.medium, true),
-            imageUrl = animeDetail.image_url!!
+            imageUrl = animeDetail.image_url
         )
         Column(
             modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(4.dp)
 
         ) {
-            Text(text = animeDetail.title!!, style = MaterialTheme.typography.h6)
+            Text(text = animeDetail.title, style = MaterialTheme.typography.h6)
             Text(text = animeDetail.premiered+" | "+animeDetail.type+"("+animeDetail.episodes+")", style = MaterialTheme.typography.caption)
             Row {
                 Text(text = "Studio: ", style = MaterialTheme.typography.button)
-                animeDetail.studios?.forEach {
+                animeDetail.studios.forEach {
                     it.name?.let { it1 -> Text(text = "$it1 ", style = MaterialTheme.typography.button) }
                 }
             }
 //            Text(text = genresToString(animeDetail.genres), style = MaterialTheme.typography.button)
             Divider()
-            Text(text = animeDetail.synopsis!!, style = MaterialTheme.typography.body2, maxLines = 5, overflow = TextOverflow.Ellipsis)
+            Text(text = animeDetail.synopsis, style = MaterialTheme.typography.body2, maxLines = 5, overflow = TextOverflow.Ellipsis)
         }
     }
 }
@@ -288,7 +283,7 @@ fun AnimeGenre(
     ) {
         Spacer(modifier = Modifier.padding(8.dp))
         Text(text = "Genre: ", style = MaterialTheme.typography.subtitle1)
-        animeDetail.genres?.forEach { genre ->
+        animeDetail.genres.forEach { genre ->
             Chip(modifier = Modifier.padding(end = 8.dp), text = genre.name,
                 onClick = {
                     navToGenre(getGenre(it))
@@ -310,11 +305,11 @@ fun AnimeRating(
         data class Rating(val string: String, val int: String)
         val ratings = listOf(
             Rating("Score", animeDetail.score.toString()),
-            Rating("Members", intToCurrency(animeDetail.members!!)),
-            Rating("Rank", "#"+ intToCurrency(animeDetail.rank!!)),
-            Rating("Popularity", "#"+ intToCurrency(animeDetail.popularity!!)),
-            Rating("Favorited", intToCurrency(animeDetail.favorites!!)),
-            Rating("Rated", animeDetail.rating!!)
+            Rating("Members", intToCurrency(animeDetail.members)),
+            Rating("Rank", "#"+ intToCurrency(animeDetail.rank)),
+            Rating("Popularity", "#"+ intToCurrency(animeDetail.popularity)),
+            Rating("Favorited", intToCurrency(animeDetail.favorites)),
+            Rating("Rated", animeDetail.rating)
         )
         ratings.forEach { rating ->
             Column(
