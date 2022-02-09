@@ -21,29 +21,35 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.*
 import androidx.navigation.navArgument
 import com.lexwilliam.risuto.Screens.*
-import com.lexwilliam.risuto.ui.detail.AnimeScreen
-import com.lexwilliam.risuto.ui.detail.AnimeViewModel
-import com.lexwilliam.risuto.ui.genre.GenreScreen
-import com.lexwilliam.risuto.ui.genre.GenreViewModel
-import com.lexwilliam.risuto.ui.home.HomeScreen
-import com.lexwilliam.risuto.ui.home.HomeViewModel
-import com.lexwilliam.risuto.ui.profile.ProfileScreen
-import com.lexwilliam.risuto.ui.profile.ProfileViewModel
-import com.lexwilliam.risuto.ui.search.SearchHomeScreen
-import com.lexwilliam.risuto.ui.search.SearchScreen
-import com.lexwilliam.risuto.ui.search.SearchViewModel
-import com.lexwilliam.risuto.ui.season.SeasonScreen
-import com.lexwilliam.risuto.ui.season.SeasonViewModel
+import com.lexwilliam.risuto.ui.screens.detail.AnimeScreen
+import com.lexwilliam.risuto.ui.screens.detail.AnimeViewModel
+import com.lexwilliam.risuto.ui.screens.genre.GenreScreen
+import com.lexwilliam.risuto.ui.screens.genre.GenreViewModel
+import com.lexwilliam.risuto.ui.screens.home.HomeScreen
+import com.lexwilliam.risuto.ui.screens.home.HomeViewModel
+import com.lexwilliam.risuto.ui.screens.login.LoginScreen
+import com.lexwilliam.risuto.ui.screens.login.LoginViewModel
+import com.lexwilliam.risuto.ui.screens.profile.ProfileScreen
+import com.lexwilliam.risuto.ui.screens.profile.ProfileViewModel
+import com.lexwilliam.risuto.ui.screens.search.SearchHomeScreen
+import com.lexwilliam.risuto.ui.screens.search.SearchScreen
+import com.lexwilliam.risuto.ui.screens.search.SearchViewModel
+import com.lexwilliam.risuto.ui.screens.season.SeasonScreen
+import com.lexwilliam.risuto.ui.screens.season.SeasonViewModel
 
 @ExperimentalMaterialApi
 @ExperimentalComposeUiApi
 @ExperimentalFoundationApi
 @Composable
-fun RisutoApp() {
+fun RisutoApp(
+    authCode: String?
+) {
     val context = LocalContext.current
     var isOnline by remember { mutableStateOf(checkIfOnline(context)) }
     if (isOnline) {
-        RisutoAppContent()
+        RisutoAppContent(
+            authCode = authCode
+        )
     } else {
         OfflineDialog { isOnline = checkIfOnline(context) }
     }
@@ -53,7 +59,9 @@ fun RisutoApp() {
 @ExperimentalComposeUiApi
 @ExperimentalFoundationApi
 @Composable
-fun RisutoAppContent() {
+fun RisutoAppContent(
+    authCode: String?
+) {
     val navController = rememberNavController()
 
     data class BottomNavItem(
@@ -89,13 +97,21 @@ fun RisutoAppContent() {
                                 launchSingleTop = true
                             }
                         },
-                        label = { Text(screen.description) }
+                        label = { Text(text = screen.description) }
                     )
                 }
             }
         }
     ) {
-        NavHost(navController = navController, startDestination = "home") {
+        NavHost(navController = navController, startDestination = "login") {
+            composable(RisutoLoginScreen.route) {
+                val loginViewModel = hiltViewModel<LoginViewModel>()
+                LoginScreen(
+                    authCode = authCode,
+                    state = loginViewModel.viewState.value,
+                    onEventSent = { event -> loginViewModel.setEvent(event)}
+                )
+            }
             composable(RisutoHomeScreen.route) {
                 val homeViewModel = hiltViewModel<HomeViewModel>()
                 HomeScreen(
@@ -205,6 +221,7 @@ fun RisutoAppContent() {
 }
 
 sealed class Screens(val route: String) {
+    object RisutoLoginScreen: Screens("login")
     object RisutoHomeScreen: Screens("home")
     object RisutoSearchHomeScreen: Screens("searchHome")
     object RisutoSearchScreen: Screens("search")

@@ -6,6 +6,7 @@ import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterF
 import com.lexwilliam.data.AnimeRemoteSource
 import com.lexwilliam.data.DetailRemoteSource
 import com.lexwilliam.data_remote.JikanService
+import com.lexwilliam.data_remote.MyAnimeListService
 import com.lexwilliam.data_remote.data.AnimeRemoteSourceImpl
 import com.lexwilliam.data_remote.data.DetailRemoteSourceImpl
 import com.lexwilliam.data_remote.mapper.AnimeMapper
@@ -49,17 +50,23 @@ object NetworkModule {
 
     @Singleton
     @Provides
-    fun provideRetrofit(moshi: Moshi, okHttpClient: OkHttpClient): Retrofit {
-        return Retrofit.Builder()
+    fun provideJikanService(moshi: Moshi, okHttpClient: OkHttpClient): JikanService =
+        Retrofit.Builder()
             .baseUrl("https://api.jikan.moe/v3/")
             .client(okHttpClient)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .addCallAdapterFactory(CoroutineCallAdapterFactory())
             .build()
-    }
+            .create(JikanService::class.java)
 
     @Singleton
     @Provides
-    fun provideAnimeService(retrofit: Retrofit): JikanService =
-        retrofit.create(JikanService::class.java)
+    fun provideMyAnimeListService(moshi: Moshi, okHttpClient: OkHttpClient): MyAnimeListService =
+        Retrofit.Builder()
+            .baseUrl("https://api.myanimelist.net/v2/")
+            .client(okHttpClient)
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .addCallAdapterFactory(CoroutineCallAdapterFactory())
+            .build()
+            .create(MyAnimeListService::class.java)
 }

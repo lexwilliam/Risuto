@@ -13,6 +13,9 @@ dependencies {
     kapt(Dependencies.Room.roomCompiler)
     api(Dependencies.Room.roomKtx)
 
+    api(Dependencies.DataStore.datastore)
+    api(Dependencies.DataStore.preferences)
+
     implementation(Dependencies.Hilt.hiltAndroid)
     implementation(Dependencies.Hilt.hiltAndroidCompiler)
 }

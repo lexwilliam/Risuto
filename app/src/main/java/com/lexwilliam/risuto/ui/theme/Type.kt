@@ -9,86 +9,75 @@ import androidx.compose.ui.unit.sp
 import com.lexwilliam.risuto.R
 
 val ProximaNova = FontFamily(
-    Font(R.font.proximanova_alt_light, FontWeight.Light),
+    Font(R.font.proximanova_thin, FontWeight.Light),
     Font(R.font.proximanova_regular, FontWeight.Normal),
-    Font(R.font.proximanova_alt_bold, FontWeight.Medium),
-    Font(R.font.proximanova_bold, FontWeight.SemiBold)
+    Font(R.font.proximanova_bold, FontWeight.Bold),
+    Font(R.font.proximanova_black, FontWeight.Black)
 )
 
 val RisutoTypography = Typography(
     defaultFontFamily = ProximaNova,
     h1 = TextStyle(
-        fontSize = 96.sp,
+        fontSize = 104.sp,
         fontWeight = FontWeight.Light,
-        lineHeight = 117.sp,
         letterSpacing = (-1.5).sp
     ),
     h2 = TextStyle(
-        fontSize = 60.sp,
+        fontSize = 65.sp,
         fontWeight = FontWeight.Light,
-        lineHeight = 73.sp,
         letterSpacing = (-0.5).sp
     ),
     h3 = TextStyle(
-        fontSize = 48.sp,
-        fontWeight = FontWeight.Normal,
-        lineHeight = 59.sp
+        fontSize = 52.sp,
+        fontWeight = FontWeight.Normal
     ),
     h4 = TextStyle(
-        fontSize = 30.sp,
-        fontWeight = FontWeight.SemiBold,
-        lineHeight = 37.sp
+        fontSize = 37.sp,
+        fontWeight = FontWeight.Normal,
+        letterSpacing = 0.25.sp
     ),
     h5 = TextStyle(
-        fontSize = 24.sp,
-        fontWeight = FontWeight.SemiBold,
-        lineHeight = 29.sp
+        fontSize = 26.sp,
+        fontWeight = FontWeight.Normal
     ),
     h6 = TextStyle(
-        fontSize = 20.sp,
-        fontWeight = FontWeight.SemiBold,
-        lineHeight = 24.sp
+        fontSize = 22.sp,
+        fontWeight = FontWeight.Bold,
+        letterSpacing = 0.15.sp
     ),
     subtitle1 = TextStyle(
-        fontSize = 16.sp,
-        fontWeight = FontWeight.SemiBold,
-        lineHeight = 20.sp,
-        letterSpacing = 0.5.sp
+        fontSize = 17.sp,
+        fontWeight = FontWeight.Normal,
+        letterSpacing = 0.15.sp
     ),
     subtitle2 = TextStyle(
-        fontSize = 14.sp,
-        fontWeight = FontWeight.Medium,
-        lineHeight = 17.sp,
+        fontSize = 15.sp,
+        fontWeight = FontWeight.Bold,
         letterSpacing = 0.1.sp
     ),
     body1 = TextStyle(
-        fontSize = 16.sp,
-        fontWeight = FontWeight.Medium,
-        lineHeight = 20.sp,
-        letterSpacing = 0.15.sp
+        fontSize = 17.sp,
+        fontWeight = FontWeight.Normal,
+        letterSpacing = 0.5.sp
     ),
     body2 = TextStyle(
-        fontSize = 14.sp,
-        fontWeight = FontWeight.SemiBold,
-        lineHeight = 20.sp,
+        fontSize = 15.sp,
+        fontWeight = FontWeight.Normal,
         letterSpacing = 0.25.sp
     ),
     button = TextStyle(
-        fontSize = 14.sp,
-        fontWeight = FontWeight.SemiBold,
-        lineHeight = 16.sp,
+        fontSize = 15.sp,
+        fontWeight = FontWeight.Bold,
         letterSpacing = 1.25.sp
     ),
     caption = TextStyle(
-        fontSize = 12.sp,
-        fontWeight = FontWeight.SemiBold,
-        lineHeight = 16.sp,
-        letterSpacing = 0.sp
+        fontSize = 13.sp,
+        fontWeight = FontWeight.Normal,
+        letterSpacing = 0.4.sp
     ),
     overline = TextStyle(
-        fontSize = 12.sp,
-        fontWeight = FontWeight.SemiBold,
-        lineHeight = 16.sp,
-        letterSpacing = 1.sp
+        fontSize = 11.sp,
+        fontWeight = FontWeight.Normal,
+        letterSpacing = 1.5.sp
     )
 )

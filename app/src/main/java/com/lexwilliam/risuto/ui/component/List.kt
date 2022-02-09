@@ -66,6 +66,9 @@ fun HorizontalGridList(
                 navToDetail = { navToDetail(it) }
             )
         }
+        item {
+            Spacer(modifier = Modifier.padding(0.dp))
+        }
     }
 }
 //

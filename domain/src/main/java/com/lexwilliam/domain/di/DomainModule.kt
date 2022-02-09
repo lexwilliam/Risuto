@@ -2,10 +2,7 @@ package com.lexwilliam.domain.di
 
 import com.lexwilliam.domain.model.local.MyAnime
 import com.lexwilliam.domain.model.remote.season.SeasonAnime
-import com.lexwilliam.domain.repository.AnimeRepository
-import com.lexwilliam.domain.repository.DetailRepository
-import com.lexwilliam.domain.repository.HistoryRepository
-import com.lexwilliam.domain.repository.MyAnimeRepository
+import com.lexwilliam.domain.repository.*
 import com.lexwilliam.domain.usecase.local.*
 import com.lexwilliam.domain.usecase.remote.*
 import dagger.Module
@@ -85,16 +82,6 @@ object DomainModule {
 
     @Singleton
     @Provides
-    fun provideGetAnimeDetail(detailRepository: DetailRepository): GetAnimeDetail =
-        GetAnimeDetailImpl(detailRepository)
-
-    @Singleton
-    @Provides
-    fun provideGetCharacterStaff(detailRepository: DetailRepository): GetCharacterStaff =
-        GetCharacterStaffImpl(detailRepository)
-
-    @Singleton
-    @Provides
     fun provideGetSearchAnime(animeRepository: AnimeRepository): GetSearchAnime =
         GetSearchAnimeImpl(animeRepository)
 
@@ -118,5 +105,84 @@ object DomainModule {
     fun provideGetSeasonAnime(animeRepository: AnimeRepository): GetSeasonAnime =
         GetSeasonAnimeImpl(animeRepository)
 
+    @Singleton
+    @Provides
+    fun provideGetAnimeDetail(detailRepository: DetailRepository): GetAnimeDetail =
+        GetAnimeDetailImpl(detailRepository)
+
+    @Singleton
+    @Provides
+    fun provideGetCharacterStaff(detailRepository: DetailRepository): GetCharacterStaff =
+        GetCharacterStaffImpl(detailRepository)
+
+    @Singleton
+    @Provides
+    fun provideGetEpisodes(detailRepository: DetailRepository): GetEpisodes =
+        GetEpisodesImpl(detailRepository)
+
+    @Singleton
+    @Provides
+    fun provideGetForum(detailRepository: DetailRepository): GetForum =
+        GetForumImpl(detailRepository)
+
+    @Singleton
+    @Provides
+    fun provideGetMoreInfo(detailRepository: DetailRepository): GetMoreInfo =
+        GetMoreInfoImpl(detailRepository)
+
+    @Singleton
+    @Provides
+    fun provideGetNews(detailRepository: DetailRepository): GetNews =
+        GetNewsImpl(detailRepository)
+
+    @Singleton
+    @Provides
+    fun provideGetPictures(detailRepository: DetailRepository): GetPictures =
+        GetPicturesImpl(detailRepository)
+
+    @Singleton
+    @Provides
+    fun provideGetRecommendations(detailRepository: DetailRepository): GetRecommendations =
+        GetRecommendationsImpl(detailRepository)
+
+    @Singleton
+    @Provides
+    fun provideGetReviews(detailRepository: DetailRepository): GetReviews =
+        GetReviewsImpl(detailRepository)
+
+    @Singleton
+    @Provides
+    fun provideGetStats(detailRepository: DetailRepository): GetStats =
+        GetStatsImpl(detailRepository)
+
+    @Singleton
+    @Provides
+    fun provideGetVideos(detailRepository: DetailRepository): GetVideos =
+        GetVideosImpl(detailRepository)
+
+    @Singleton
+    @Provides
+    fun provideGetAccessToken(oAuthRepository: OAuthRepository): GetAccessToken =
+        GetAccessTokenImpl(oAuthRepository)
+
+    @Singleton
+    @Provides
+    fun provideGetAuthTokenLink(oAuthRepository: OAuthRepository): GetAuthTokenLink =
+        GetAuthTokenLinkImpl(oAuthRepository)
+
+    @Singleton
+    @Provides
+    fun provideGetAuthState(oAuthRepository: OAuthRepository): GetAuthState =
+        GetAuthStateImpl(oAuthRepository)
+
+    @Singleton
+    @Provides
+    fun provideGetCodeChallenge(oAuthRepository: OAuthRepository): GetCodeChallenge =
+        GetCodeChallengeImpl(oAuthRepository)
+
+    @Singleton
+    @Provides
+    fun provideSetCodeChallengeAndState(oAuthRepository: OAuthRepository): SetCodeChallenge =
+        SetCodeChallengeImpl(oAuthRepository)
 
 }

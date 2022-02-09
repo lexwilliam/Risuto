@@ -1,6 +1,7 @@
 package com.lexwilliam.dependencies
 
 object Versions {
+    const val apacheCommons = "3.12.0"
     const val core = "1.3.2"
     const val fragment = "1.2.5"
     const val material = "1.4.0"

@@ -89,10 +89,17 @@ object Dependencies {
         const val roomKtx = "androidx.room:room-ktx:${Versions.room}"
     }
 
+    object DataStore {
+        const val datastore = "androidx.datastore:datastore:1.0.0"
+        const val preferences = "androidx.datastore:datastore-preferences:1.0.0"
+    }
+
     object Paging {
         const val runtime = "androidx.paging:paging-runtime-ktx:3.1.0"
         const val compose = "androidx.paging:paging-compose:1.0.0-alpha14"
     }
+
+    const val apacheLang3 = "org.apache.commons:commons-lang3:${Versions.apacheCommons}"
 
     const val lottie = "com.airbnb.android:lottie:${Versions.lottie}"
     const val lottieCompose = "com.airbnb.android:lottie-compose:${Versions.lottieCompose}"

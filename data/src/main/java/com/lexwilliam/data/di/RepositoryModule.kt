@@ -1,18 +1,9 @@
 package com.lexwilliam.data.di
 
-import com.lexwilliam.data.AnimeRemoteSource
-import com.lexwilliam.data.DetailRemoteSource
-import com.lexwilliam.data.HistoryLocalSource
-import com.lexwilliam.data.MyAnimeLocalSource
+import com.lexwilliam.data.*
 import com.lexwilliam.data.mapper.*
-import com.lexwilliam.data.repository.AnimeRepositoryImpl
-import com.lexwilliam.data.repository.DetailRepositoryImpl
-import com.lexwilliam.data.repository.HistoryRepositoryImpl
-import com.lexwilliam.data.repository.MyAnimeRepositoryImpl
-import com.lexwilliam.domain.repository.AnimeRepository
-import com.lexwilliam.domain.repository.DetailRepository
-import com.lexwilliam.domain.repository.HistoryRepository
-import com.lexwilliam.domain.repository.MyAnimeRepository
+import com.lexwilliam.data.repository.*
+import com.lexwilliam.domain.repository.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -54,6 +45,14 @@ object RepositoryModule {
         detailMapper: DetailMapper
     ): DetailRepository =
         DetailRepositoryImpl(detailRemoteSource, detailMapper)
+
+    @Singleton
+    @Provides
+    fun provideOAuthRepository(
+        oAuthRemoteSource: OAuthRemoteSource,
+        oAuthLocalSource: OAuthLocalSource
+    ): OAuthRepository =
+        OAuthRepositoryImpl(oAuthRemoteSource, oAuthLocalSource)
 
     @Singleton
     @Provides
