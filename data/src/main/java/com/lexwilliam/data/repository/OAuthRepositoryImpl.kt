@@ -1,14 +1,13 @@
 package com.lexwilliam.data.repository
 
-import com.lexwilliam.data.ClientId
+import com.lexwilliam.data.BuildConfig
+import com.lexwilliam.data.DataConstant
 import com.lexwilliam.data.OAuthLocalSource
 import com.lexwilliam.data.OAuthRemoteSource
+import com.lexwilliam.domain.model.remote.auth.AccessToken
 import com.lexwilliam.domain.repository.OAuthRepository
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
@@ -19,25 +18,44 @@ class OAuthRepositoryImpl @Inject constructor(
 ): OAuthRepository {
     override suspend fun getAuthTokenLink(code: String, codeVerifier: String): String =
         oAuthRemoteSource.getAuthTokenLink(
-            clientId = ClientId.CLIENT_ID,
+            clientId = BuildConfig.CLIENT_ID,
             code = code,
             codeVerifier = codeVerifier,
-            redirectUri = ClientId.REDIRECT_URI
+            redirectUri = DataConstant.REDIRECT_URI
         )
 
-    override suspend fun getAccessToken(code: String, codeVerifier: String){
-        withContext(Dispatchers.IO) {
-            val response = oAuthRemoteSource.getAccessToken(
-                clientId = ClientId.CLIENT_ID,
-                code = code,
-                codeVerifier = codeVerifier
+    override suspend fun refreshToken(): Int {
+        var result: Int = -1
+        oAuthLocalSource.refreshTokenFlow.collect {
+            val response = oAuthRemoteSource.refreshToken(
+                clientId = BuildConfig.CLIENT_ID,
+                refreshToken = it
             )
             if(response.accessToken != "") {
                 Timber.d(response.accessToken)
                 oAuthLocalSource.setAccessToken(response.accessToken)
-                oAuthLocalSource.setExpireIn()
+                oAuthLocalSource.setExpireIn(response.expiresIn)
                 oAuthLocalSource.setRefreshToken(response.refreshToken)
+                result = 0
             }
+        }
+        return result
+    }
+
+    override suspend fun getAccessToken(code: String, codeVerifier: String): Int {
+        val response = oAuthRemoteSource.getAccessToken(
+            clientId = BuildConfig.CLIENT_ID,
+            code = code,
+            codeVerifier = codeVerifier
+        )
+        if(response.accessToken != "") {
+            Timber.d(response.accessToken)
+            oAuthLocalSource.setAccessToken(response.accessToken)
+            oAuthLocalSource.setExpireIn(response.expiresIn)
+            oAuthLocalSource.setRefreshToken(response.refreshToken)
+            return 0
+        } else {
+            return -1
         }
     }
 
@@ -45,6 +63,16 @@ class OAuthRepositoryImpl @Inject constructor(
         if(codeVerifier != null) {
             oAuthLocalSource.setCodeVerifier(codeVerifier)
         }
+    }
+
+    override suspend fun getTokenInfo(): AccessToken {
+        var accessToken: String? = null
+        var refreshToken: String? = null
+        var expiredIn: Int? = null
+        oAuthLocalSource.accessTokenFlow.collect { accessToken = it }
+        oAuthLocalSource.refreshTokenFlow.collect { refreshToken = it }
+        oAuthLocalSource.expiresInFlow.collect { expiredIn = it }
+        return AccessToken(accessToken, expiredIn, refreshToken, "")
     }
 
     override suspend fun getCodeChallenge(): Flow<String?> {

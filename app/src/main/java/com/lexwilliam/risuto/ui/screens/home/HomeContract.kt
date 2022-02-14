@@ -9,6 +9,8 @@ class HomeContract {
     sealed class Event : ViewEvent {}
 
     data class State(
+        val username: String,
+        val isTokenValid: Boolean?,
         val airingTodayAnime: List<AnimePresentation>,
         val currentSeason: String,
         val currentYear: Int,

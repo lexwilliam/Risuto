@@ -56,6 +56,14 @@ object RepositoryModule {
 
     @Singleton
     @Provides
+    fun provideUserRepository(
+        userRemoteSource: UserRemoteSource,
+        oAuthLocalSource: OAuthLocalSource
+    ): UserRepository =
+        UserRepositoryImpl(userRemoteSource, oAuthLocalSource)
+
+    @Singleton
+    @Provides
     fun provideMyAnimeMapper(): MyAnimeMapper = MyAnimeMapperImpl()
 
     @Singleton

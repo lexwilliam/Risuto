@@ -8,12 +8,12 @@ interface OAuthLocalSource {
     val state: Flow<String?>
     val accessTokenFlow: Flow<String?>
     val refreshTokenFlow: Flow<String>
-    val expiresInFlow: Flow<Date>
+    val expiresInFlow: Flow<Int?>
 
     suspend fun setCodeVerifier(code: String)
     suspend fun setState(state: String)
     suspend fun setAccessToken(token: String)
     suspend fun setRefreshToken(token: String)
-    suspend fun setExpireIn()
+    suspend fun setExpireIn(time: Int)
     suspend fun clearDataStore()
 }

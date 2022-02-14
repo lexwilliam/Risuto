@@ -8,6 +8,7 @@ plugins {
     kotlin("android")
     id("com.lexwilliam.android.plugin")
     id("dagger.hilt.android.plugin")
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
 
 androidPlugin {

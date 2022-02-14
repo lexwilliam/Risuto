@@ -4,6 +4,7 @@ import com.lexwilliam.dependencies.Dependencies
 plugins {
     id("com.android.library")
     id("com.lexwilliam.android.plugin")
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
 
 dependencies {

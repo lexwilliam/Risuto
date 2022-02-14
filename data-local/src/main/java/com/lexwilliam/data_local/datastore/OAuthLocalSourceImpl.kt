@@ -75,18 +75,14 @@ class OAuthLocalSourceImpl(
         }
     }.flowOn(Dispatchers.IO)
 
-    override val expiresInFlow: Flow<Date> = dataStore.data.catch { exception ->
+    override val expiresInFlow: Flow<Int?> = dataStore.data.catch { exception ->
         if (exception is IOException) {
             emit(emptyPreferences())
         } else {
             throw exception
         }
     }.map { preferences ->
-        val expiredIn = preferences[EXPIRES_IN] ?: 0
-        val date = Calendar.getInstance().apply {
-            timeInMillis = expiredIn
-        }
-        date.time
+        preferences[EXPIRES_IN]
     }.flowOn(Dispatchers.IO)
 
     override suspend fun setCodeVerifier(code: String): Unit = withContext(Dispatchers.IO) {
@@ -115,12 +111,9 @@ class OAuthLocalSourceImpl(
         }
     }
 
-    override suspend fun setExpireIn(): Unit = withContext(Dispatchers.IO) {
-        val date = Calendar.getInstance().apply {
-            add(Calendar.DATE, 31)
-        }
+    override suspend fun setExpireIn(time: Int): Unit = withContext(Dispatchers.IO) {
         dataStore.edit { preferences ->
-            preferences[EXPIRES_IN] = date.timeInMillis
+            preferences[EXPIRES_IN] = time
         }
     }
 

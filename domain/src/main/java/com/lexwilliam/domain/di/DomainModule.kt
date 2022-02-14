@@ -185,4 +185,19 @@ object DomainModule {
     fun provideSetCodeChallengeAndState(oAuthRepository: OAuthRepository): SetCodeChallenge =
         SetCodeChallengeImpl(oAuthRepository)
 
+    @Singleton
+    @Provides
+    fun provideRefreshToken(oAuthRepository: OAuthRepository): RefreshToken =
+        RefreshTokenImpl(oAuthRepository)
+
+    @Singleton
+    @Provides
+    fun provideGetTokenInfo(oAuthRepository: OAuthRepository): GetTokenInfo =
+        GetTokenInfoImpl(oAuthRepository)
+
+    @Singleton
+    @Provides
+    fun provideGetUserInfo(userRepository: UserRepository): GetUserInfo =
+        GetUserInfoImpl(userRepository)
+
 }

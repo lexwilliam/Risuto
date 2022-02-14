@@ -7,7 +7,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -15,15 +15,13 @@ import androidx.compose.ui.unit.dp
 import com.lexwilliam.risuto.model.AnimePresentation
 import com.lexwilliam.risuto.ui.component.Header
 import com.lexwilliam.risuto.ui.component.HorizontalGridList
-import com.lexwilliam.risuto.ui.component.LoadingScreen
-import com.lexwilliam.risuto.util.getCurrentSeason
-import com.lexwilliam.risuto.util.getCurrentYear
-import java.util.*
+import timber.log.Timber
 
 @Composable
 fun HomeScreen(
     state: HomeContract.State,
-    navToDetail: (Int) -> Unit
+    navToDetail: (Int) -> Unit,
+    navToLogin: () -> Unit
 ) {
     HomeContent(
         airingTodayAnime = state.airingTodayAnime,
@@ -31,8 +29,18 @@ fun HomeScreen(
         topAiringAnime = state.topAiringAnime,
         topAnime = state.topAnime,
         topUpcomingAnime = state.topUpcomingAnime,
+        username = state.username,
         navToDetail = navToDetail
     )
+//    Timber.d("isToken = ${state.isTokenValid}")
+//    if(state.isTokenValid != null) {
+//        if(state.isTokenValid == false) {
+//            navToLogin()
+//        } else {
+//
+//        }
+//    }
+
 }
 
 @Composable
@@ -42,6 +50,7 @@ fun HomeContent(
     topAiringAnime: List<AnimePresentation>,
     topAnime: List<AnimePresentation>,
     topUpcomingAnime: List<AnimePresentation>,
+    username: String,
     navToDetail: (Int) -> Unit
 ) {
     Column(
@@ -50,7 +59,24 @@ fun HomeContent(
             .padding(start = 16.dp, bottom = 64.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Header(title = "Home", modifier = Modifier.padding(top = 24.dp))
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 24.dp, end = 16.dp)
+        ) {
+            Header(
+                modifier = Modifier
+                    .weight(2f)
+                    .wrapContentWidth(Alignment.Start),
+                title = "Home"
+            )
+            Text(
+                modifier = Modifier
+                    .weight(1f)
+                    .wrapContentWidth(Alignment.End),
+                text = username
+            )
+        }
         PosterGridList(
             title = "Airing Today",
             items = airingTodayAnime,

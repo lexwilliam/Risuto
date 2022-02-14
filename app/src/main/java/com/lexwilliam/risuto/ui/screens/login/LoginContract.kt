@@ -8,7 +8,7 @@ class LoginContract {
     sealed class Event : ViewEvent {
         object RedirectToAuth: Event()
         data class ReceivedAuthToken(val code: String): Event()
-        object AuthCodeGotten: Event()
+        object Done: Event()
     }
 
     data class State(
@@ -27,6 +27,7 @@ sealed class OAuthState {
     object Idle : OAuthState()
     data class RedirectToAuth(val codeChallenge: String, val state: String) : OAuthState()
     object CodeGotten : OAuthState()
+    object Done: OAuthState()
     object OAuthSuccess : OAuthState()
     data class OAuthFailure(val message: String) : OAuthState()
 }

@@ -3,11 +3,13 @@ package com.lexwilliam.data_remote.di
 import com.lexwilliam.data.AnimeRemoteSource
 import com.lexwilliam.data.DetailRemoteSource
 import com.lexwilliam.data.OAuthRemoteSource
+import com.lexwilliam.data.UserRemoteSource
 import com.lexwilliam.data_remote.JikanService
 import com.lexwilliam.data_remote.MyAnimeListService
 import com.lexwilliam.data_remote.data.AnimeRemoteSourceImpl
 import com.lexwilliam.data_remote.data.DetailRemoteSourceImpl
 import com.lexwilliam.data_remote.data.OAuthRemoteSourceImpl
+import com.lexwilliam.data_remote.data.UserRemoteSourceImpl
 import com.lexwilliam.data_remote.mapper.*
 import dagger.Module
 import dagger.Provides
@@ -42,6 +44,13 @@ object RemoteModule {
         oAuthMapper: OAuthMapper
     ): OAuthRemoteSource =
         OAuthRemoteSourceImpl(malService, oAuthMapper)
+
+    @Singleton
+    @Provides
+    fun provideUserRemoteSource(
+        malService: MyAnimeListService
+    ): UserRemoteSource =
+        UserRemoteSourceImpl(malService)
 
     @Singleton
     @Provides

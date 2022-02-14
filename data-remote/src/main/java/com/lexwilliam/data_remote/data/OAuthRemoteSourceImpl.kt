@@ -20,6 +20,16 @@ class OAuthRemoteSourceImpl @Inject constructor(
     ): String =
         MyAnimeListService.getAuthTokenLink(clientId, code, codeVerifier, redirectUri)
 
+    override suspend fun refreshToken(
+        clientId: String,
+        refreshToken: String
+    ): AccessTokenRepo =
+        oAuthMapper.toRepo(
+            malService.refreshTokenAsync(
+                clientId = clientId,
+                refreshToken = refreshToken
+            ).body()!!
+        )
 
     override suspend fun getAccessToken(clientId: String, code: String, codeVerifier: String): AccessTokenRepo =
         oAuthMapper.toRepo(
@@ -29,4 +39,6 @@ class OAuthRemoteSourceImpl @Inject constructor(
                 codeVerifier = codeVerifier
             ).body()!!
         )
+
+
 }

@@ -60,7 +60,9 @@ class LoginViewModel @Inject constructor(
                 receivedAuthToken(event.code)
                 setState { copy(oAuthState = OAuthState.CodeGotten) }
             }
-
+            is LoginContract.Event.Done -> {
+                setState { copy(oAuthState = OAuthState.Done) }
+            }
         }
     }
 

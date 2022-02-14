@@ -21,15 +21,19 @@ import timber.log.Timber
 fun LoginScreen(
     authCode: String?,
     state: LoginContract.State,
-    onEventSent: (LoginContract.Event) -> Unit
+    onEventSent: (LoginContract.Event) -> Unit,
+    navToHome: () -> Unit
 ) {
-    LoginContent(
-        authCode = authCode,
-        authTokenLink = state.authTokenLink,
-        oAuthState = state.oAuthState,
-        onEventSent = { onEventSent(it) },
-        isLoading = state.isLoading
-    )
+    if(!state.isLoading) {
+        LoginContent(
+            authCode = authCode,
+            authTokenLink = state.authTokenLink,
+            oAuthState = state.oAuthState,
+            onEventSent = { onEventSent(it) },
+            isLoading = state.isLoading,
+            navToHome = { navToHome() }
+        )
+    }
 }
 
 @Composable
@@ -38,11 +42,12 @@ fun LoginContent(
     authTokenLink: String,
     oAuthState: OAuthState,
     onEventSent: (LoginContract.Event) -> Unit,
-    isLoading: Boolean
+    isLoading: Boolean,
+    navToHome: () -> Unit
 ) {
     val context = LocalContext.current
 
-    if(authCode != null && oAuthState == OAuthState.Idle && !isLoading) {
+    if(authCode != null && oAuthState == OAuthState.Idle) {
         onEventSent(LoginContract.Event.ReceivedAuthToken(authCode))
     }
 
@@ -53,6 +58,8 @@ fun LoginContent(
         }
         is OAuthState.OAuthSuccess -> {
             Timber.d("OAUTH SUCCESS")
+            navToHome()
+            onEventSent(LoginContract.Event.Done)
         }
         is OAuthState.OAuthFailure -> {
             Timber.d("OAUTH ERROR")

@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.*
 import androidx.navigation.navArgument
@@ -77,41 +78,35 @@ fun RisutoAppContent(
         BottomNavItem(Icons.Filled.Person, RisutoProfileScreen.route, "Profile")
     )
 
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination
+
     Scaffold(
         bottomBar = {
-            BottomNavigation(
-                backgroundColor = MaterialTheme.colors.background,
-                contentColor = MaterialTheme.colors.secondary,
-                elevation = 16.dp
-            ) {
-                val navBackStackEntry by navController.currentBackStackEntryAsState()
-                val currentRoute = navBackStackEntry?.destination
-
-                bottomNavIcons.forEach { screen ->
-                    BottomNavigationItem(
-                        icon = { Icon(screen.icon, contentDescription = null) },
-                        selected = currentRoute?.hierarchy?.any { it.route == screen.route } == true,
-                        onClick = {
-                            navController.navigate(screen.route) {
-                                popUpTo(navController.graph.findStartDestination().id)
-                                launchSingleTop = true
-                            }
-                        },
-                        label = { Text(text = screen.description) }
-                    )
+            if(currentRoute?.route != RisutoLoginScreen.route) {
+                BottomNavigation(
+                    backgroundColor = MaterialTheme.colors.background,
+                    contentColor = MaterialTheme.colors.secondary,
+                    elevation = 16.dp
+                ) {
+                    bottomNavIcons.forEach { screen ->
+                        BottomNavigationItem(
+                            icon = { Icon(screen.icon, contentDescription = null) },
+                            selected = currentRoute?.hierarchy?.any { it.route == screen.route } == true,
+                            onClick = {
+                                navController.navigate(screen.route) {
+                                    popUpTo(navController.graph.findStartDestination().id)
+                                    launchSingleTop = true
+                                }
+                            },
+                            label = { Text(text = screen.description) }
+                        )
+                    }
                 }
             }
         }
     ) {
-        NavHost(navController = navController, startDestination = "login") {
-            composable(RisutoLoginScreen.route) {
-                val loginViewModel = hiltViewModel<LoginViewModel>()
-                LoginScreen(
-                    authCode = authCode,
-                    state = loginViewModel.viewState.value,
-                    onEventSent = { event -> loginViewModel.setEvent(event)}
-                )
-            }
+        NavHost(navController = navController, startDestination = "home") {
             composable(RisutoHomeScreen.route) {
                 val homeViewModel = hiltViewModel<HomeViewModel>()
                 HomeScreen(
@@ -120,6 +115,20 @@ fun RisutoAppContent(
                         navController.navigate(
                             RisutoAnimeScreen.route.plus("/?mal_id=$mal_id")
                         )
+                    },
+                    navToLogin = {
+                        navController.navigate(RisutoLoginScreen.route)
+                    }
+                )
+            }
+            composable(RisutoLoginScreen.route) {
+                val loginViewModel = hiltViewModel<LoginViewModel>()
+                LoginScreen(
+                    authCode = authCode,
+                    state = loginViewModel.viewState.value,
+                    onEventSent = { event -> loginViewModel.setEvent(event) },
+                    navToHome = {
+                        navController.navigate(RisutoHomeScreen.route)
                     }
                 )
             }

@@ -1,16 +1,12 @@
 package com.lexwilliam.risuto.ui.screens.home
 
 import androidx.lifecycle.viewModelScope
-import com.lexwilliam.domain.usecase.remote.GetCurrentSeasonAnime
-import com.lexwilliam.domain.usecase.remote.GetSearchAnime
-import com.lexwilliam.domain.usecase.remote.GetTopAnime
+import com.lexwilliam.domain.usecase.remote.*
 import com.lexwilliam.risuto.base.BaseViewModel
 import com.lexwilliam.risuto.mapper.AnimeMapper
 import com.lexwilliam.risuto.util.getCurrentDate
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -25,6 +21,9 @@ class HomeViewModel
     private val getCurrentSeasonAnime: GetCurrentSeasonAnime,
     private val getSearchAnime: GetSearchAnime,
     private val getTopAnime: GetTopAnime,
+    private val getTokenInfo: GetTokenInfo,
+    private val getUserInfo: GetUserInfo,
+    private val refreshToken: RefreshToken,
     private val animeMapper: AnimeMapper
 ): BaseViewModel<HomeContract.Event, HomeContract.State, HomeContract.Effect>() {
 
@@ -40,6 +39,8 @@ class HomeViewModel
 
     override fun setInitialState(): HomeContract.State {
         return HomeContract.State(
+            username = "",
+            isTokenValid = null,
             currentSeason = "",
             currentYear = -1,
             airingTodayAnime = emptyList(),
@@ -57,12 +58,20 @@ class HomeViewModel
     }
 
     init {
+//        setupOAuth()
+//        if(viewState.value.isTokenValid != null) {
+//            if(viewState.value.isTokenValid!!) {
+//
+//            }
+//        }
         viewModelScope.launch {
+            getUserInfo()
             onAiringToday()
             onTopAiring()
             onTopUpcoming()
             onTopAnime()
         }
+
     }
 
     private fun onAiringToday() {
@@ -171,6 +180,39 @@ class HomeViewModel
                     }
             } catch (throwable: Throwable) {
                 handleExceptions(throwable)
+            }
+        }
+    }
+
+    private fun setupOAuth() {
+        viewModelScope.launch(errorHandler) {
+            val currentTime = System.currentTimeMillis()
+            val token = getTokenInfo.execute()
+            Timber.d("tokenInfo : $token")
+            if(token.expiresIn != null) {
+                if(token.expiresIn!! < currentTime) {
+                    refreshToken()
+                }
+                setState { copy(isTokenValid = true) }
+            } else {
+                setState { copy(isTokenValid = false) }
+            }
+        }
+    }
+
+    private fun refreshToken() {
+        viewModelScope.launch(errorHandler) {
+            refreshToken.execute()
+        }
+    }
+
+    private fun getUserInfo() {
+        viewModelScope.launch(errorHandler) {
+            val name = getUserInfo.execute()
+            if(name == null) {
+                setState { copy(username = "") }
+            } else {
+                setState { copy(username = name) }
             }
         }
     }

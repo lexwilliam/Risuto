@@ -11,6 +11,7 @@ import com.lexwilliam.data.model.remote.season.SeasonRepo
 import com.lexwilliam.data.model.remote.top.TopRepo
 import com.lexwilliam.data_remote.JikanService
 import com.lexwilliam.data_remote.mapper.AnimeMapper
+import com.lexwilliam.data_remote.paging.SearchPagingSource
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 

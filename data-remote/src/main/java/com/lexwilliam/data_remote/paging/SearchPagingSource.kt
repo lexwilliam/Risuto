@@ -1,4 +1,4 @@
-package com.lexwilliam.data_remote.data
+package com.lexwilliam.data_remote.paging
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState

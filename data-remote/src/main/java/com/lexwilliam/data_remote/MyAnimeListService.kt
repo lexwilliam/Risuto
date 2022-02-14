@@ -2,10 +2,10 @@ package com.lexwilliam.data_remote
 
 import com.lexwilliam.data_remote.model.auth.AccessTokenResponse
 import com.lexwilliam.data_remote.model.auth.OAuthGrantType
+import com.lexwilliam.data_remote.model.user.UserAnimeListResponse
+import com.lexwilliam.data_remote.model.user.UserInfoResponse
 import retrofit2.Response
-import retrofit2.http.Field
-import retrofit2.http.FormUrlEncoded
-import retrofit2.http.POST
+import retrofit2.http.*
 
 interface MyAnimeListService {
 
@@ -27,7 +27,7 @@ interface MyAnimeListService {
         @Field("client_id") clientId: String,
         @Field("refresh_token") refreshToken: String,
         @Field("grant_type") grantType: String = OAuthGrantType.refresh_token.name
-    ): AccessTokenResponse
+    ): Response<AccessTokenResponse>
 
     @POST("$AUTH_BASE_URL/oauth2/token")
     @FormUrlEncoded
@@ -38,4 +38,22 @@ interface MyAnimeListService {
         @Field("grant_type") grantType: String = OAuthGrantType.authorization_code.name,
         @Field("redirect_uri") redirectUri: String = "risuto://auth"
     ): Response<AccessTokenResponse>
+
+//    @GET("users/{username}/animelist")
+//    fun getAnimeListOfUserAsync(
+//        @Header("Authorization") authHeader: String,
+//        @Path("username") username: String = ApiConstants.ME_IDENTIFIER,
+//        @Query("status") status: String? = null,
+//        @Query("sort") sort: String = UserAnimeSortType.list_updated_at.name,
+//        @Query("limit") limit: Int = ApiConstants.API_PAGE_LIMIT,
+//        @Query("offset") offset: Int = ApiConstants.API_START_OFFSET,
+//        @Query("nsfw") nsfw: Int = ApiConstants.NSFW_ALSO,
+//        @Query("fields") fields: String = ApiConstants.USER_ANIME_EXTRA_FIELDS
+//    ): Response<UserAnimeListResponse>
+
+    @GET("users/{username}")
+    suspend fun getUserInfo(
+        @Header("Authorization") authHeader: String,
+        @Path("username") username: String = "@me"
+    ): Response<UserInfoResponse>
 }
