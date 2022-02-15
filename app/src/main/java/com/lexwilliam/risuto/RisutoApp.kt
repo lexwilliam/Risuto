@@ -37,6 +37,8 @@ import com.lexwilliam.risuto.ui.screens.search.SearchScreen
 import com.lexwilliam.risuto.ui.screens.search.SearchViewModel
 import com.lexwilliam.risuto.ui.screens.season.SeasonScreen
 import com.lexwilliam.risuto.ui.screens.season.SeasonViewModel
+import com.lexwilliam.risuto.ui.screens.splash.SplashScreen
+import com.lexwilliam.risuto.ui.screens.splash.SplashViewModel
 
 @ExperimentalMaterialApi
 @ExperimentalComposeUiApi
@@ -106,7 +108,19 @@ fun RisutoAppContent(
             }
         }
     ) {
-        NavHost(navController = navController, startDestination = "home") {
+        NavHost(navController = navController, startDestination = "splash") {
+            composable(RisutoSplashScreen.route) {
+                val splashViewModel = hiltViewModel<SplashViewModel>()
+                SplashScreen(
+                    state = splashViewModel.viewState.value,
+                    navToLogin = {
+                        navController.navigate(RisutoLoginScreen.route)
+                    },
+                    navToHome = {
+                        navController.navigate(RisutoHomeScreen.route)
+                    }
+                )
+            }
             composable(RisutoHomeScreen.route) {
                 val homeViewModel = hiltViewModel<HomeViewModel>()
                 HomeScreen(
@@ -230,6 +244,7 @@ fun RisutoAppContent(
 }
 
 sealed class Screens(val route: String) {
+    object RisutoSplashScreen: Screens("splash")
     object RisutoLoginScreen: Screens("login")
     object RisutoHomeScreen: Screens("home")
     object RisutoSearchHomeScreen: Screens("searchHome")

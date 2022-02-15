@@ -9,7 +9,7 @@ object DataStoreConstant {
     val STATE = stringPreferencesKey("state")
     val ACCESS_TOKEN = stringPreferencesKey("access_token")
     val REFRESH_TOKEN = stringPreferencesKey("refresh_token")
-    val EXPIRES_IN = intPreferencesKey("expires_in")
+    val EXPIRES_IN = longPreferencesKey("expires_in")
 
     const val PREFERENCES_NAME = "oauth_preferences"
 }

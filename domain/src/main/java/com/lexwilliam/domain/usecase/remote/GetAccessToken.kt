@@ -4,13 +4,13 @@ import com.lexwilliam.domain.repository.OAuthRepository
 import javax.inject.Inject
 
 interface GetAccessToken {
-    suspend fun execute(code: String, codeVerifier: String): Int
+    suspend fun execute(clientId: String, code: String, codeVerifier: String): Int
 }
 
 class GetAccessTokenImpl @Inject constructor(
     private val oAuthRepository: OAuthRepository
 ): GetAccessToken {
-    override suspend fun execute(code: String, codeVerifier: String): Int {
-        return oAuthRepository.getAccessToken(code, codeVerifier)
+    override suspend fun execute(clientId: String, code: String, codeVerifier: String): Int {
+        return oAuthRepository.getAccessToken(clientId, code, codeVerifier)
     }
 }

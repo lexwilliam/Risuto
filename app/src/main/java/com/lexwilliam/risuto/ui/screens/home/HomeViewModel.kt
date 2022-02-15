@@ -1,12 +1,17 @@
 package com.lexwilliam.risuto.ui.screens.home
 
 import androidx.lifecycle.viewModelScope
+import com.lexwilliam.domain.usecase.local.GetAccessTokenFromCache
+import com.lexwilliam.domain.usecase.local.GetExpiresInFromCache
+import com.lexwilliam.domain.usecase.local.GetRefreshTokenFromCache
 import com.lexwilliam.domain.usecase.remote.*
+import com.lexwilliam.risuto.BuildConfig
 import com.lexwilliam.risuto.base.BaseViewModel
 import com.lexwilliam.risuto.mapper.AnimeMapper
 import com.lexwilliam.risuto.util.getCurrentDate
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -21,7 +26,9 @@ class HomeViewModel
     private val getCurrentSeasonAnime: GetCurrentSeasonAnime,
     private val getSearchAnime: GetSearchAnime,
     private val getTopAnime: GetTopAnime,
-    private val getTokenInfo: GetTokenInfo,
+    private val getAccessTokenFromCache: GetAccessTokenFromCache,
+    private val getRefreshTokenFromCache: GetRefreshTokenFromCache,
+    private val getExpiresInFromCache: GetExpiresInFromCache,
     private val getUserInfo: GetUserInfo,
     private val refreshToken: RefreshToken,
     private val animeMapper: AnimeMapper
@@ -57,21 +64,17 @@ class HomeViewModel
         TODO("Not yet implemented")
     }
 
-    init {
-//        setupOAuth()
-//        if(viewState.value.isTokenValid != null) {
-//            if(viewState.value.isTokenValid!!) {
-//
-//            }
-//        }
-        viewModelScope.launch {
-            getUserInfo()
-            onAiringToday()
-            onTopAiring()
-            onTopUpcoming()
-            onTopAnime()
-        }
+    private var accessTokenFlow: MutableStateFlow<String> = MutableStateFlow("")
 
+    init {
+        setupOAuth()
+        getAccessTokenFromCache()
+        getUserInfo(accessTokenFlow.value)
+        onAiringToday()
+        onTopAiring()
+        onTopUpcoming()
+        onTopAnime()
+        setState { copy(isLoading = false) }
     }
 
     private fun onAiringToday() {
@@ -98,34 +101,34 @@ class HomeViewModel
         }
     }
 
-    private fun onCurrentSeasonAnime() {
-        viewModelScope.launch(errorHandler) {
-            try {
-                getCurrentSeasonAnime.execute()
-                    .catch { throwable ->
-                        handleExceptions(throwable)
-                    }
-                    .collect {
-                        setState {
-                            copy(
-                                currentSeason = it.season_name,
-                                currentYear = it.season_year
-                            )
-                        }
-                        animeMapper.toPresentation(it)
-                            .let { anime ->
-                                setState {
-                                    copy(
-                                        seasonAnime = anime.anime
-                                    )
-                                }
-                            }
-                    }
-            } catch (throwable: Throwable) {
-                handleExceptions(throwable)
-            }
-        }
-    }
+//    private fun onCurrentSeasonAnime() {
+//        viewModelScope.launch(errorHandler) {
+//            try {
+//                getCurrentSeasonAnime.execute()
+//                    .catch { throwable ->
+//                        handleExceptions(throwable)
+//                    }
+//                    .collect {
+//                        setState {
+//                            copy(
+//                                currentSeason = it.season_name,
+//                                currentYear = it.season_year
+//                            )
+//                        }
+//                        animeMapper.toPresentation(it)
+//                            .let { anime ->
+//                                setState {
+//                                    copy(
+//                                        seasonAnime = anime.anime
+//                                    )
+//                                }
+//                            }
+//                    }
+//            } catch (throwable: Throwable) {
+//                handleExceptions(throwable)
+//            }
+//        }
+//    }
 
     private fun onTopAiring() {
         viewModelScope.launch(errorHandler) {
@@ -186,13 +189,12 @@ class HomeViewModel
 
     private fun setupOAuth() {
         viewModelScope.launch(errorHandler) {
-            val currentTime = System.currentTimeMillis()
-            val token = getTokenInfo.execute()
-            Timber.d("tokenInfo : $token")
-            if(token.expiresIn != null) {
-                if(token.expiresIn!! < currentTime) {
-                    refreshToken()
-                }
+            getExpiresInFromCache()
+            Timber.d("expire : ${expiresInFlow.value}")
+            if(expiresInFlow.value < System.currentTimeMillis()) {
+                getRefreshTokenFromCache()
+                Timber.d("refresh : ${refreshTokenFlow.value}")
+                refreshToken.execute(BuildConfig.CLIENT_ID, refreshTokenFlow.value)
                 setState { copy(isTokenValid = true) }
             } else {
                 setState { copy(isTokenValid = false) }
@@ -200,15 +202,46 @@ class HomeViewModel
         }
     }
 
-    private fun refreshToken() {
+    private fun getAccessTokenFromCache() {
         viewModelScope.launch(errorHandler) {
-            refreshToken.execute()
+            getAccessTokenFromCache.execute().collect {
+                if(it != null) {
+                    accessTokenFlow.value = it
+                } else {
+                    Timber.d("Access Token Not Found")
+                }
+            }
         }
     }
 
-    private fun getUserInfo() {
+    private fun getRefreshTokenFromCache() {
         viewModelScope.launch(errorHandler) {
-            val name = getUserInfo.execute()
+            getRefreshTokenFromCache.execute().collect {
+                if(it != null) {
+                    refreshTokenFlow.value = it
+                } else {
+                    Timber.d("Refresh Token Not Found")
+                }
+            }
+        }
+    }
+
+    private fun getExpiresInFromCache() {
+        viewModelScope.launch(errorHandler) {
+            getExpiresInFromCache.execute().collect {
+                if(it != null) {
+                    expiresInFlow.value = it
+                } else {
+                    Timber.d("Expires In Not Found")
+                }
+            }
+        }
+    }
+
+    private fun getUserInfo(accessToken: String) {
+        viewModelScope.launch(errorHandler) {
+            Timber.d("access : ${accessTokenFlow.value}")
+            val name = getUserInfo.execute(accessTokenFlow.value)
             if(name == null) {
                 setState { copy(username = "") }
             } else {

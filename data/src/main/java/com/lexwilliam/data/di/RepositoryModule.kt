@@ -57,10 +57,9 @@ object RepositoryModule {
     @Singleton
     @Provides
     fun provideUserRepository(
-        userRemoteSource: UserRemoteSource,
-        oAuthLocalSource: OAuthLocalSource
+        userRemoteSource: UserRemoteSource
     ): UserRepository =
-        UserRepositoryImpl(userRemoteSource, oAuthLocalSource)
+        UserRepositoryImpl(userRemoteSource)
 
     @Singleton
     @Provides

@@ -1,78 +1,74 @@
 package com.lexwilliam.data.repository
 
-import com.lexwilliam.data.BuildConfig
-import com.lexwilliam.data.DataConstant
+import com.lexwilliam.data.constant.DataConstant
 import com.lexwilliam.data.OAuthLocalSource
 import com.lexwilliam.data.OAuthRemoteSource
-import com.lexwilliam.domain.model.remote.auth.AccessToken
 import com.lexwilliam.domain.repository.OAuthRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
 import timber.log.Timber
-import java.util.*
 import javax.inject.Inject
 
 class OAuthRepositoryImpl @Inject constructor(
     private val oAuthRemoteSource: OAuthRemoteSource,
     private val oAuthLocalSource: OAuthLocalSource
 ): OAuthRepository {
-    override suspend fun getAuthTokenLink(code: String, codeVerifier: String): String =
+    override suspend fun getAuthTokenLink(clientId: String, code: String, codeVerifier: String): String =
         oAuthRemoteSource.getAuthTokenLink(
-            clientId = BuildConfig.CLIENT_ID,
+            clientId = clientId,
             code = code,
             codeVerifier = codeVerifier,
             redirectUri = DataConstant.REDIRECT_URI
         )
 
-    override suspend fun refreshToken(): Int {
-        var result: Int = -1
-        oAuthLocalSource.refreshTokenFlow.collect {
-            val response = oAuthRemoteSource.refreshToken(
-                clientId = BuildConfig.CLIENT_ID,
-                refreshToken = it
-            )
-            if(response.accessToken != "") {
-                Timber.d(response.accessToken)
-                oAuthLocalSource.setAccessToken(response.accessToken)
-                oAuthLocalSource.setExpireIn(response.expiresIn)
-                oAuthLocalSource.setRefreshToken(response.refreshToken)
-                result = 0
-            }
+    override suspend fun refreshToken(clientId: String, refreshToken: String): Int {
+        val response = oAuthRemoteSource.refreshToken(
+            clientId = clientId,
+            refreshToken = refreshToken
+        )
+        return if(response.accessToken != "") {
+            Timber.d(response.accessToken)
+            oAuthLocalSource.setAccessToken(response.accessToken)
+            oAuthLocalSource.setExpireIn(response.expiresIn.toLong())
+            oAuthLocalSource.setRefreshToken(response.refreshToken)
+            0
+        } else {
+            -1
         }
-        return result
     }
 
-    override suspend fun getAccessToken(code: String, codeVerifier: String): Int {
+    override suspend fun getAccessToken(clientId: String, code: String, codeVerifier: String): Int {
         val response = oAuthRemoteSource.getAccessToken(
-            clientId = BuildConfig.CLIENT_ID,
+            clientId = clientId,
             code = code,
             codeVerifier = codeVerifier
         )
-        if(response.accessToken != "") {
+        return if(response.accessToken != "") {
             Timber.d(response.accessToken)
             oAuthLocalSource.setAccessToken(response.accessToken)
-            oAuthLocalSource.setExpireIn(response.expiresIn)
+            oAuthLocalSource.setExpireIn(response.expiresIn.toLong())
             oAuthLocalSource.setRefreshToken(response.refreshToken)
-            return 0
+            0
         } else {
-            return -1
+            -1
         }
     }
 
-    override suspend fun setCodeChallengeAndState(codeVerifier: String?) {
+    override suspend fun setCodeChallenge(codeVerifier: String?) {
         if(codeVerifier != null) {
             oAuthLocalSource.setCodeVerifier(codeVerifier)
         }
     }
 
-    override suspend fun getTokenInfo(): AccessToken {
-        var accessToken: String? = null
-        var refreshToken: String? = null
-        var expiredIn: Int? = null
-        oAuthLocalSource.accessTokenFlow.collect { accessToken = it }
-        oAuthLocalSource.refreshTokenFlow.collect { refreshToken = it }
-        oAuthLocalSource.expiresInFlow.collect { expiredIn = it }
-        return AccessToken(accessToken, expiredIn, refreshToken, "")
+    override fun getAccessTokenFromCache(): Flow<String?> {
+        return oAuthLocalSource.accessTokenFlow
+    }
+
+    override fun getRefreshTokenFromCache(): Flow<String?> {
+        return oAuthLocalSource.refreshTokenFlow
+    }
+
+    override fun getExpiresInFromCache(): Flow<Long?> {
+        return oAuthLocalSource.expiresInFlow
     }
 
     override suspend fun getCodeChallenge(): Flow<String?> {

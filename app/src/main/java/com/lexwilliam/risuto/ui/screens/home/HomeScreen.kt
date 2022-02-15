@@ -23,24 +23,25 @@ fun HomeScreen(
     navToDetail: (Int) -> Unit,
     navToLogin: () -> Unit
 ) {
-    HomeContent(
-        airingTodayAnime = state.airingTodayAnime,
-        currentSeasonAnime = state.seasonAnime,
-        topAiringAnime = state.topAiringAnime,
-        topAnime = state.topAnime,
-        topUpcomingAnime = state.topUpcomingAnime,
-        username = state.username,
-        navToDetail = navToDetail
-    )
-//    Timber.d("isToken = ${state.isTokenValid}")
-//    if(state.isTokenValid != null) {
-//        if(state.isTokenValid == false) {
-//            navToLogin()
-//        } else {
-//
-//        }
-//    }
-
+    Timber.d("${state.isTokenValid}")
+    if(!state.isLoading) {
+        if(state.isTokenValid != null) {
+            if(state.isTokenValid) {
+                HomeContent(
+                    airingTodayAnime = state.airingTodayAnime,
+                    currentSeasonAnime = state.seasonAnime,
+                    topAiringAnime = state.topAiringAnime,
+                    topAnime = state.topAnime,
+                    topUpcomingAnime = state.topUpcomingAnime,
+                    username = state.username,
+                    navToDetail = navToDetail
+                )
+            }
+            else {
+                navToLogin()
+            }
+        }
+    }
 }
 
 @Composable

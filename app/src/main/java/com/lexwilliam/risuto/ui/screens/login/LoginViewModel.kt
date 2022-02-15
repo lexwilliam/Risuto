@@ -1,15 +1,15 @@
 package com.lexwilliam.risuto.ui.screens.login
 
 import androidx.lifecycle.viewModelScope
+import com.lexwilliam.domain.usecase.local.SetCodeChallenge
 import com.lexwilliam.domain.usecase.remote.*
+import com.lexwilliam.risuto.BuildConfig
 import com.lexwilliam.risuto.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.*
 import javax.inject.Inject
 import kotlin.random.Random
 
@@ -96,7 +96,7 @@ class LoginViewModel @Inject constructor(
 
     private fun getAuthTokenLink() {
         viewModelScope.launch(errorHandler) {
-            val link = getAuthTokenLink.execute(state!!, codeChallenge!!)
+            val link = getAuthTokenLink.execute(BuildConfig.CLIENT_ID, state, codeChallenge!!)
             Timber.d("Link : $link")
             setState {
                 copy(
@@ -117,7 +117,7 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch(errorHandler) {
             Timber.d("challenge retrieved: $codeChallenge")
             Timber.d("code received: $code")
-            val result = getAccessToken.execute(code, codeChallenge!!)
+            val result = getAccessToken.execute(BuildConfig.CLIENT_ID, code, codeChallenge!!)
             if (result != -1) {
                 setState { copy(oAuthState = OAuthState.OAuthSuccess) }
             } else {

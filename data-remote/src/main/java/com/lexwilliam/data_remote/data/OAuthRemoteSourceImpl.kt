@@ -24,21 +24,25 @@ class OAuthRemoteSourceImpl @Inject constructor(
         clientId: String,
         refreshToken: String
     ): AccessTokenRepo =
-        oAuthMapper.toRepo(
-            malService.refreshTokenAsync(
-                clientId = clientId,
-                refreshToken = refreshToken
-            ).body()!!
-        )
+        withContext(Dispatchers.IO) {
+            oAuthMapper.toRepo(
+                malService.refreshTokenAsync(
+                    clientId = clientId,
+                    refreshToken = refreshToken
+                ).body()!!
+            )
+        }
 
     override suspend fun getAccessToken(clientId: String, code: String, codeVerifier: String): AccessTokenRepo =
-        oAuthMapper.toRepo(
-            malService.getAccessTokenAsync(
-                clientId = clientId,
-                code = code,
-                codeVerifier = codeVerifier
-            ).body()!!
-        )
+        withContext(Dispatchers.IO) {
+            oAuthMapper.toRepo(
+                malService.getAccessTokenAsync(
+                    clientId = clientId,
+                    code = code,
+                    codeVerifier = codeVerifier
+                ).body()!!
+            )
+        }
 
 
 }

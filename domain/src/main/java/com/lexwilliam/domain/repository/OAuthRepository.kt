@@ -6,15 +6,19 @@ import java.util.*
 
 interface OAuthRepository {
 
-    suspend fun getAuthTokenLink(code: String, codeVerifier: String): String
+    suspend fun getAuthTokenLink(clientId: String, code: String, codeVerifier: String): String
 
-    suspend fun refreshToken(): Int
+    suspend fun refreshToken(clientId: String, refreshToken: String): Int
 
-    suspend fun getAccessToken(code: String, codeVerifier: String): Int
+    suspend fun getAccessToken(clientId: String, code: String, codeVerifier: String): Int
 
-    suspend fun setCodeChallengeAndState(codeVerifier: String?)
+    suspend fun setCodeChallenge(codeVerifier: String?)
 
-    suspend fun getTokenInfo(): AccessToken
+    fun getAccessTokenFromCache(): Flow<String?>
+
+    fun getRefreshTokenFromCache(): Flow<String?>
+
+    fun getExpiresInFromCache(): Flow<Long?>
 
     suspend fun getCodeChallenge(): Flow<String?>
 

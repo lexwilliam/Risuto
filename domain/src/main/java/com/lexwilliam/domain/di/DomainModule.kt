@@ -1,7 +1,5 @@
 package com.lexwilliam.domain.di
 
-import com.lexwilliam.domain.model.local.MyAnime
-import com.lexwilliam.domain.model.remote.season.SeasonAnime
 import com.lexwilliam.domain.repository.*
 import com.lexwilliam.domain.usecase.local.*
 import com.lexwilliam.domain.usecase.remote.*
@@ -192,12 +190,23 @@ object DomainModule {
 
     @Singleton
     @Provides
-    fun provideGetTokenInfo(oAuthRepository: OAuthRepository): GetTokenInfo =
-        GetTokenInfoImpl(oAuthRepository)
+    fun provideGetUserInfo(userRepository: UserRepository): GetUserInfo =
+        GetUserInfoImpl(userRepository)
 
     @Singleton
     @Provides
-    fun provideGetUserInfo(userRepository: UserRepository): GetUserInfo =
-        GetUserInfoImpl(userRepository)
+    fun provideGetAccessTokenFromCache(oAuthRepository: OAuthRepository): GetAccessTokenFromCache =
+        GetAccessTokenFromCacheImpl(oAuthRepository)
+
+    @Singleton
+    @Provides
+    fun provideGetRefreshTokenFromCache(oAuthRepository: OAuthRepository): GetRefreshTokenFromCache =
+        GetRefreshTokenFromCacheImpl(oAuthRepository)
+
+    @Singleton
+    @Provides
+    fun provideGetExpiresInFromCache(oAuthRepository: OAuthRepository): GetExpiresInFromCache =
+        GetExpiresInFromCacheImpl(oAuthRepository)
+
 
 }

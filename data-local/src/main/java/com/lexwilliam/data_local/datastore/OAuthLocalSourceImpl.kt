@@ -75,7 +75,7 @@ class OAuthLocalSourceImpl(
         }
     }.flowOn(Dispatchers.IO)
 
-    override val expiresInFlow: Flow<Int?> = dataStore.data.catch { exception ->
+    override val expiresInFlow: Flow<Long?> = dataStore.data.catch { exception ->
         if (exception is IOException) {
             emit(emptyPreferences())
         } else {
@@ -94,7 +94,6 @@ class OAuthLocalSourceImpl(
     override suspend fun setState(state: String) : Unit = withContext(Dispatchers.IO) {
         dataStore.edit { preferences ->
             preferences[STATE] = state
-            Timber.d("edited : $state")
         }
     }
 
@@ -111,7 +110,7 @@ class OAuthLocalSourceImpl(
         }
     }
 
-    override suspend fun setExpireIn(time: Int): Unit = withContext(Dispatchers.IO) {
+    override suspend fun setExpireIn(time: Long): Unit = withContext(Dispatchers.IO) {
         dataStore.edit { preferences ->
             preferences[EXPIRES_IN] = time
         }
