@@ -113,6 +113,7 @@ fun RisutoAppContent(
                 val splashViewModel = hiltViewModel<SplashViewModel>()
                 SplashScreen(
                     state = splashViewModel.viewState.value,
+                    onEventSent = { event -> splashViewModel.setEvent(event) },
                     navToLogin = {
                         navController.navigate(RisutoLoginScreen.route)
                     },

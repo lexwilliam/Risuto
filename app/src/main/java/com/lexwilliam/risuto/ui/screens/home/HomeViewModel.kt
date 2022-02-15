@@ -27,10 +27,7 @@ class HomeViewModel
     private val getSearchAnime: GetSearchAnime,
     private val getTopAnime: GetTopAnime,
     private val getAccessTokenFromCache: GetAccessTokenFromCache,
-    private val getRefreshTokenFromCache: GetRefreshTokenFromCache,
-    private val getExpiresInFromCache: GetExpiresInFromCache,
     private val getUserInfo: GetUserInfo,
-    private val refreshToken: RefreshToken,
     private val animeMapper: AnimeMapper
 ): BaseViewModel<HomeContract.Event, HomeContract.State, HomeContract.Effect>() {
 
@@ -47,7 +44,6 @@ class HomeViewModel
     override fun setInitialState(): HomeContract.State {
         return HomeContract.State(
             username = "",
-            isTokenValid = null,
             currentSeason = "",
             currentYear = -1,
             airingTodayAnime = emptyList(),
@@ -65,10 +61,10 @@ class HomeViewModel
     }
 
     private var accessTokenFlow: MutableStateFlow<String> = MutableStateFlow("")
+    private var refreshTokenFlow: MutableStateFlow<String> = MutableStateFlow("")
+    private var expiresInFlow: MutableStateFlow<Long> = MutableStateFlow(-1L)
 
     init {
-        setupOAuth()
-        getAccessTokenFromCache()
         getUserInfo(accessTokenFlow.value)
         onAiringToday()
         onTopAiring()
@@ -187,52 +183,13 @@ class HomeViewModel
         }
     }
 
-    private fun setupOAuth() {
-        viewModelScope.launch(errorHandler) {
-            getExpiresInFromCache()
-            Timber.d("expire : ${expiresInFlow.value}")
-            if(expiresInFlow.value < System.currentTimeMillis()) {
-                getRefreshTokenFromCache()
-                Timber.d("refresh : ${refreshTokenFlow.value}")
-                refreshToken.execute(BuildConfig.CLIENT_ID, refreshTokenFlow.value)
-                setState { copy(isTokenValid = true) }
-            } else {
-                setState { copy(isTokenValid = false) }
-            }
-        }
-    }
-
     private fun getAccessTokenFromCache() {
         viewModelScope.launch(errorHandler) {
             getAccessTokenFromCache.execute().collect {
                 if(it != null) {
-                    accessTokenFlow.value = it
+                    setState { copy(accessToken = it) }
                 } else {
                     Timber.d("Access Token Not Found")
-                }
-            }
-        }
-    }
-
-    private fun getRefreshTokenFromCache() {
-        viewModelScope.launch(errorHandler) {
-            getRefreshTokenFromCache.execute().collect {
-                if(it != null) {
-                    refreshTokenFlow.value = it
-                } else {
-                    Timber.d("Refresh Token Not Found")
-                }
-            }
-        }
-    }
-
-    private fun getExpiresInFromCache() {
-        viewModelScope.launch(errorHandler) {
-            getExpiresInFromCache.execute().collect {
-                if(it != null) {
-                    expiresInFlow.value = it
-                } else {
-                    Timber.d("Expires In Not Found")
                 }
             }
         }

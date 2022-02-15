@@ -10,7 +10,7 @@ class HomeContract {
 
     data class State(
         val username: String,
-        val isTokenValid: Boolean?,
+        val accessToken: String,
         val airingTodayAnime: List<AnimePresentation>,
         val currentSeason: String,
         val currentYear: Int,
