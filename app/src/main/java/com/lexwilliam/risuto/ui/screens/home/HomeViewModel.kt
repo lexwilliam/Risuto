@@ -58,20 +58,22 @@ class HomeViewModel
     }
 
     override fun handleEvents(event: HomeContract.Event) {
-        TODO("Not yet implemented")
+        when(event) {
+            is HomeContract.Event.LoadingDone -> {
+                setState { copy(isLoading = false) }
+            }
+            is HomeContract.Event.GetUserInfo -> {
+                getUserInfo(event.accessToken)
+            }
+        }
     }
 
-    private var accessTokenFlow: MutableStateFlow<String> = MutableStateFlow("")
-    private var refreshTokenFlow: MutableStateFlow<String> = MutableStateFlow("")
-    private var expiresInFlow: MutableStateFlow<Long> = MutableStateFlow(-1L)
-
     init {
-        getUserInfo(accessTokenFlow.value)
+        getAccessTokenFromCache()
         onAiringToday()
         onTopAiring()
         onTopUpcoming()
         onTopAnime()
-        setState { copy(isLoading = false) }
     }
 
     private fun onAiringToday() {
@@ -198,8 +200,8 @@ class HomeViewModel
 
     private fun getUserInfo(accessToken: String) {
         viewModelScope.launch(errorHandler) {
-            Timber.d("access : ${accessTokenFlow.value}")
-            val name = getUserInfo.execute(accessTokenFlow.value)
+            Timber.d("access : $accessToken")
+            val name = getUserInfo.execute(accessToken)
             if(name == null) {
                 setState { copy(username = "") }
             } else {

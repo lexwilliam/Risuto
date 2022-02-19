@@ -15,7 +15,7 @@ import kotlin.random.Random
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val getAccessToken: GetAccessToken,
+    private val setAccessToken: SetAccessToken,
     private val getAuthTokenLink: GetAuthTokenLink,
     private val getCodeChallenge: GetCodeChallenge,
     private val setCodeChallenge: SetCodeChallenge
@@ -116,12 +116,8 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch(errorHandler) {
             Timber.d("challenge retrieved: $codeChallenge")
             Timber.d("code received: $code")
-            val result = getAccessToken.execute(BuildConfig.CLIENT_ID, code, codeChallenge!!)
-            if (result != -1) {
-                setState { copy(oAuthState = OAuthState.OAuthSuccess) }
-            } else {
-                setState { copy(oAuthState = OAuthState.OAuthFailure("Error")) }
-            }
+            setAccessToken.execute(BuildConfig.CLIENT_ID, code, codeChallenge!!)
+            setState { copy(oAuthState = OAuthState.OAuthSuccess) }
         }
     }
 

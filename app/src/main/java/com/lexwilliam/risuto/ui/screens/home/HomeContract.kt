@@ -6,7 +6,10 @@ import com.lexwilliam.risuto.base.ViewState
 import com.lexwilliam.risuto.model.AnimePresentation
 
 class HomeContract {
-    sealed class Event : ViewEvent {}
+    sealed class Event : ViewEvent {
+        data class GetUserInfo(val accessToken: String): Event()
+        object LoadingDone: Event()
+    }
 
     data class State(
         val username: String,

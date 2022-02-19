@@ -3,7 +3,7 @@ package com.lexwilliam.risuto.ui.screens.splash
 import androidx.lifecycle.viewModelScope
 import com.lexwilliam.domain.usecase.local.GetExpiresInFromCache
 import com.lexwilliam.domain.usecase.local.GetRefreshTokenFromCache
-import com.lexwilliam.domain.usecase.remote.RefreshAccessToken
+import com.lexwilliam.domain.usecase.remote.SetRefreshToken
 import com.lexwilliam.risuto.BuildConfig
 import com.lexwilliam.risuto.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,7 +17,7 @@ import javax.inject.Inject
 class SplashViewModel @Inject constructor(
     private val getRefreshTokenFromCache: GetRefreshTokenFromCache,
     private val getExpiresInFromCache: GetExpiresInFromCache,
-    private val refreshAccessAccessToken: RefreshAccessToken
+    private val setRefreshAccessToken: SetRefreshToken
 ): BaseViewModel<SplashContract.Event, SplashContract.State, SplashContract.Effect>() {
 
     private val errorHandler = CoroutineExceptionHandler { _, exception ->
@@ -95,7 +95,7 @@ class SplashViewModel @Inject constructor(
 
     private fun refreshAccessToken(refreshToken: String) {
         viewModelScope.launch(errorHandler) {
-            refreshAccessAccessToken.execute(
+            setRefreshAccessToken.execute(
                 clientId = BuildConfig.CLIENT_ID,
                 refreshToken = refreshToken
             )

@@ -52,8 +52,8 @@ interface MyAnimeListService {
 //    ): Response<UserAnimeListResponse>
 
     @GET("users/{username}")
-    fun getUserInfo(
+    suspend fun getUserInfo(
         @Header("Authorization") authHeader: String,
         @Path("username") username: String = "@me"
-    ): UserInfoResponse
+    ): Response<UserInfoResponse>
 }

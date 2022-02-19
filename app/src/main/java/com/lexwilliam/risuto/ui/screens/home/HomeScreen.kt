@@ -6,7 +6,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -20,8 +20,15 @@ import timber.log.Timber
 @Composable
 fun HomeScreen(
     state: HomeContract.State,
+    onEventSent: (HomeContract.Event) -> Unit,
     navToDetail: (Int) -> Unit
 ) {
+    Timber.d("isLoading : ${state.isLoading}")
+    if(state.accessToken != "" && state.isLoading) {
+        Timber.d("accessToken : ${state.accessToken}")
+        onEventSent(HomeContract.Event.GetUserInfo(state.accessToken))
+        onEventSent(HomeContract.Event.LoadingDone)
+    }
     HomeContent(
         airingTodayAnime = state.airingTodayAnime,
         currentSeasonAnime = state.seasonAnime,

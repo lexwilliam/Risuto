@@ -160,7 +160,7 @@ object DomainModule {
 
     @Singleton
     @Provides
-    fun provideGetAccessToken(oAuthRepository: OAuthRepository): GetAccessToken =
+    fun provideGetAccessToken(oAuthRepository: OAuthRepository): SetAccessToken =
         GetAccessTokenImpl(oAuthRepository)
 
     @Singleton
@@ -185,8 +185,8 @@ object DomainModule {
 
     @Singleton
     @Provides
-    fun provideRefreshToken(oAuthRepository: OAuthRepository): RefreshAccessToken =
-        RefreshAccessTokenImpl(oAuthRepository)
+    fun provideRefreshToken(oAuthRepository: OAuthRepository): SetRefreshToken =
+        SetRefreshTokenImpl(oAuthRepository)
 
     @Singleton
     @Provides
@@ -207,6 +207,4 @@ object DomainModule {
     @Provides
     fun provideGetExpiresInFromCache(oAuthRepository: OAuthRepository): GetExpiresInFromCache =
         GetExpiresInFromCacheImpl(oAuthRepository)
-
-
 }

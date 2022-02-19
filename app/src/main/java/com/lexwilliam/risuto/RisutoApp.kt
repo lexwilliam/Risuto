@@ -131,6 +131,7 @@ fun RisutoAppContent(
                 val homeViewModel = hiltViewModel<HomeViewModel>()
                 HomeScreen(
                     state = homeViewModel.viewState.value,
+                    onEventSent = { event -> homeViewModel.setEvent(event)},
                     navToDetail = { mal_id ->
                         navController.navigate(
                             RisutoAnimeScreen.route.plus("/?mal_id=$mal_id")
