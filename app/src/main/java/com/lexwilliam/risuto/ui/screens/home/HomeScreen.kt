@@ -20,28 +20,17 @@ import timber.log.Timber
 @Composable
 fun HomeScreen(
     state: HomeContract.State,
-    navToDetail: (Int) -> Unit,
-    navToLogin: () -> Unit
+    navToDetail: (Int) -> Unit
 ) {
-    Timber.d("${state.isTokenValid}")
-    if(!state.isLoading) {
-        if(state.isTokenValid != null) {
-            if(state.isTokenValid) {
-                HomeContent(
-                    airingTodayAnime = state.airingTodayAnime,
-                    currentSeasonAnime = state.seasonAnime,
-                    topAiringAnime = state.topAiringAnime,
-                    topAnime = state.topAnime,
-                    topUpcomingAnime = state.topUpcomingAnime,
-                    username = state.username,
-                    navToDetail = navToDetail
-                )
-            }
-            else {
-                navToLogin()
-            }
-        }
-    }
+    HomeContent(
+        airingTodayAnime = state.airingTodayAnime,
+        currentSeasonAnime = state.seasonAnime,
+        topAiringAnime = state.topAiringAnime,
+        topAnime = state.topAnime,
+        topUpcomingAnime = state.topUpcomingAnime,
+        username = state.username,
+        navToDetail = navToDetail
+    )
 }
 
 @Composable

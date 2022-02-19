@@ -8,9 +8,9 @@ interface OAuthRepository {
 
     suspend fun getAuthTokenLink(clientId: String, code: String, codeVerifier: String): String
 
-    suspend fun refreshToken(clientId: String, refreshToken: String): Int
+    suspend fun refreshToken(clientId: String, refreshToken: String): Flow<AccessToken>
 
-    suspend fun getAccessToken(clientId: String, code: String, codeVerifier: String): Int
+    suspend fun getAccessToken(clientId: String, code: String, codeVerifier: String): Flow<AccessToken>
 
     suspend fun setCodeChallenge(codeVerifier: String?)
 

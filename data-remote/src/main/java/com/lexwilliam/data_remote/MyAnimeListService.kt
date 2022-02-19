@@ -23,7 +23,7 @@ interface MyAnimeListService {
 
     @POST("$AUTH_BASE_URL/oauth2/token")
     @FormUrlEncoded
-    fun refreshTokenAsync(
+    suspend fun refreshTokenAsync(
         @Field("client_id") clientId: String,
         @Field("refresh_token") refreshToken: String,
         @Field("grant_type") grantType: String = OAuthGrantType.refresh_token.name
@@ -52,8 +52,8 @@ interface MyAnimeListService {
 //    ): Response<UserAnimeListResponse>
 
     @GET("users/{username}")
-    suspend fun getUserInfo(
+    fun getUserInfo(
         @Header("Authorization") authHeader: String,
         @Path("username") username: String = "@me"
-    ): Response<UserInfoResponse>
+    ): UserInfoResponse
 }

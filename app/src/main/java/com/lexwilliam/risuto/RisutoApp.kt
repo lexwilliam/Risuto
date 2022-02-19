@@ -80,12 +80,17 @@ fun RisutoAppContent(
         BottomNavItem(Icons.Filled.Person, RisutoProfileScreen.route, "Profile")
     )
 
+    val bottomNavException = listOf(
+        RisutoSplashScreen.route,
+        RisutoLoginScreen.route
+    )
+
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination
 
     Scaffold(
         bottomBar = {
-            if(currentRoute?.route != RisutoLoginScreen.route) {
+            if(!bottomNavException.contains(currentRoute?.route)) {
                 BottomNavigation(
                     backgroundColor = MaterialTheme.colors.background,
                     contentColor = MaterialTheme.colors.secondary,
@@ -130,9 +135,6 @@ fun RisutoAppContent(
                         navController.navigate(
                             RisutoAnimeScreen.route.plus("/?mal_id=$mal_id")
                         )
-                    },
-                    navToLogin = {
-                        navController.navigate(RisutoLoginScreen.route)
                     }
                 )
             }

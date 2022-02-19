@@ -1,10 +1,9 @@
 package com.lexwilliam.risuto.ui.screens.splash
 
 import androidx.lifecycle.viewModelScope
-import com.lexwilliam.domain.usecase.local.GetAccessTokenFromCache
 import com.lexwilliam.domain.usecase.local.GetExpiresInFromCache
 import com.lexwilliam.domain.usecase.local.GetRefreshTokenFromCache
-import com.lexwilliam.domain.usecase.remote.RefreshToken
+import com.lexwilliam.domain.usecase.remote.RefreshAccessToken
 import com.lexwilliam.risuto.BuildConfig
 import com.lexwilliam.risuto.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,7 +17,7 @@ import javax.inject.Inject
 class SplashViewModel @Inject constructor(
     private val getRefreshTokenFromCache: GetRefreshTokenFromCache,
     private val getExpiresInFromCache: GetExpiresInFromCache,
-    private val refreshToken: RefreshToken
+    private val refreshAccessAccessToken: RefreshAccessToken
 ): BaseViewModel<SplashContract.Event, SplashContract.State, SplashContract.Effect>() {
 
     private val errorHandler = CoroutineExceptionHandler { _, exception ->
@@ -33,8 +32,7 @@ class SplashViewModel @Inject constructor(
 
     override fun setInitialState(): SplashContract.State {
         return SplashContract.State(
-            isTokenValid = null,
-            accessToken = "",
+            isUserLoggedIn = null,
             refreshToken = "",
             expiresIn = -1L,
             isLoading = true,
@@ -45,25 +43,31 @@ class SplashViewModel @Inject constructor(
     override fun handleEvents(event: SplashContract.Event) {
         when(event) {
             is SplashContract.Event.SetupOAuth ->
-               setupOAuth(event.accessToken, event.refreshToken, event.expiresIn)
+               checkUserSignInState( event.refreshToken, event.expiresIn)
         }
     }
 
     init {
         getRefreshTokenFromCache()
         getExpiresInFromCache()
-
     }
 
-    private fun setupOAuth(accessToken: String, refreshToken: String, expiresIn: Long) {
+    private fun checkUserSignInState(refreshToken: String?, expiresIn: Long) {
         viewModelScope.launch(errorHandler) {
-            Timber.d("expire : ${viewState.value.expiresIn}")
-            if(viewState.value.expiresIn < System.currentTimeMillis()) {
-                Timber.d("refresh : ${viewState.value.refreshToken}")
-                refreshToken()
-                setState { copy(isTokenValid = true) }
+            if(refreshToken == "" && expiresIn == -1L) {
+                setState { copy(isUserLoggedIn = false) }
             } else {
-                setState { copy(isTokenValid = false) }
+                if(refreshToken != null) {
+                    if(expiresIn < System.currentTimeMillis()) {
+                        Timber.d("currentTime : ${System.currentTimeMillis()}")
+                        Timber.d("expire : $expiresIn")
+                        Timber.d("refresh : $refreshToken")
+                        refreshAccessToken(refreshToken)
+                    }
+                } else {
+                    Timber.d("Refresh Token Not Found")
+                }
+                setState { copy(isUserLoggedIn = true) }
             }
         }
     }
@@ -71,11 +75,7 @@ class SplashViewModel @Inject constructor(
     private fun getRefreshTokenFromCache() {
         viewModelScope.launch(errorHandler) {
             getRefreshTokenFromCache.execute().collect {
-                if(it != null) {
-                    setState { copy(refreshToken = it) }
-                } else {
-                    Timber.d("Refresh Token Not Found")
-                }
+                setState { copy(refreshToken = it) }
             }
         }
     }
@@ -88,16 +88,16 @@ class SplashViewModel @Inject constructor(
                 } else {
                     Timber.d("Expires In Not Found")
                 }
+                setState { copy(isLoading = false) }
             }
-            setState { copy(isLoading = false) }
         }
     }
 
-    private fun refreshToken() {
+    private fun refreshAccessToken(refreshToken: String) {
         viewModelScope.launch(errorHandler) {
-            refreshToken.execute(
+            refreshAccessAccessToken.execute(
                 clientId = BuildConfig.CLIENT_ID,
-                refreshToken = viewState.value.refreshToken
+                refreshToken = refreshToken
             )
         }
     }

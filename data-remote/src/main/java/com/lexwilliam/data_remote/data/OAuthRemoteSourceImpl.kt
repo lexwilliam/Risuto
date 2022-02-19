@@ -4,8 +4,13 @@ import com.lexwilliam.data.OAuthRemoteSource
 import com.lexwilliam.data.model.remote.auth.AccessTokenRepo
 import com.lexwilliam.data_remote.MyAnimeListService
 import com.lexwilliam.data_remote.mapper.OAuthMapper
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import javax.inject.Inject
 
 class OAuthRemoteSourceImpl @Inject constructor(
@@ -23,26 +28,37 @@ class OAuthRemoteSourceImpl @Inject constructor(
     override suspend fun refreshToken(
         clientId: String,
         refreshToken: String
-    ): AccessTokenRepo =
-        withContext(Dispatchers.IO) {
-            oAuthMapper.toRepo(
-                malService.refreshTokenAsync(
-                    clientId = clientId,
-                    refreshToken = refreshToken
-                ).body()!!
-            )
+    ): Flow<AccessTokenRepo> = flow {
+        val response = malService.refreshTokenAsync(
+            clientId = clientId,
+            refreshToken = refreshToken
+        ).body()
+        if(response != null) {
+            emit(oAuthMapper.toRepo(response))
+        } else {
+            Timber.d("Response is Null")
+        }
+    }
+
+
+    override suspend fun getAccessToken(
+        clientId: String,
+        code: String,
+        codeVerifier: String
+    ): Flow<AccessTokenRepo> = flow {
+        val response = malService.getAccessTokenAsync(
+            clientId = clientId,
+            code = code,
+            codeVerifier = codeVerifier
+        ).body()
+        if(response != null) {
+            emit(oAuthMapper.toRepo(response))
+        } else {
+            Timber.d("Response is Null")
         }
 
-    override suspend fun getAccessToken(clientId: String, code: String, codeVerifier: String): AccessTokenRepo =
-        withContext(Dispatchers.IO) {
-            oAuthMapper.toRepo(
-                malService.getAccessTokenAsync(
-                    clientId = clientId,
-                    code = code,
-                    codeVerifier = codeVerifier
-                ).body()!!
-            )
-        }
+    }
+
 
 
 }

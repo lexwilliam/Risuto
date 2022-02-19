@@ -18,7 +18,6 @@ class LoginViewModel @Inject constructor(
     private val getAccessToken: GetAccessToken,
     private val getAuthTokenLink: GetAuthTokenLink,
     private val getCodeChallenge: GetCodeChallenge,
-    private val getAuthState: GetAuthState,
     private val setCodeChallenge: SetCodeChallenge
 ): BaseViewModel<LoginContract.Event, LoginContract.State, LoginContract.Effect>() {
 

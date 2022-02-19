@@ -3,13 +3,13 @@ package com.lexwilliam.domain.usecase.remote
 import com.lexwilliam.domain.repository.OAuthRepository
 import javax.inject.Inject
 
-interface RefreshToken {
+interface RefreshAccessToken {
     suspend fun execute(clientId: String, refreshToken: String): Int
 }
 
-class RefreshTokenImpl @Inject constructor(
+class RefreshAccessTokenImpl @Inject constructor(
     private val oAuthRepository: OAuthRepository
-): RefreshToken {
+): RefreshAccessToken {
     override suspend fun execute(clientId: String, refreshToken: String): Int {
         return oAuthRepository.refreshToken(clientId, refreshToken)
     }

@@ -2,19 +2,13 @@ package com.lexwilliam.risuto.ui.screens.login
 
 import android.content.Intent
 import android.net.Uri
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.LifecycleOwner
-import com.lexwilliam.risuto.MainActivity
-import com.lexwilliam.risuto.util.Constants
+import androidx.compose.ui.viewinterop.AndroidView
 import timber.log.Timber
 
 @Composable

@@ -44,6 +44,7 @@ class HomeViewModel
     override fun setInitialState(): HomeContract.State {
         return HomeContract.State(
             username = "",
+            accessToken = "",
             currentSeason = "",
             currentYear = -1,
             airingTodayAnime = emptyList(),

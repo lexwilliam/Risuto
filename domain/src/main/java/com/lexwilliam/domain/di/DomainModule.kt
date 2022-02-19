@@ -185,8 +185,8 @@ object DomainModule {
 
     @Singleton
     @Provides
-    fun provideRefreshToken(oAuthRepository: OAuthRepository): RefreshToken =
-        RefreshTokenImpl(oAuthRepository)
+    fun provideRefreshToken(oAuthRepository: OAuthRepository): RefreshAccessToken =
+        RefreshAccessTokenImpl(oAuthRepository)
 
     @Singleton
     @Provides
