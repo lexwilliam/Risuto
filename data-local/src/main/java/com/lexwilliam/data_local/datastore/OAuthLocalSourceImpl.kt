@@ -112,7 +112,7 @@ class OAuthLocalSourceImpl(
 
     override suspend fun setExpireIn(time: Long): Unit = withContext(Dispatchers.IO) {
         dataStore.edit { preferences ->
-            preferences[EXPIRES_IN] = time
+            preferences[EXPIRES_IN] = System.currentTimeMillis() + time
         }
     }
 

@@ -9,7 +9,7 @@ class UserRemoteSourceImpl @Inject constructor(
     private val malService: MyAnimeListService
 ): UserRemoteSource {
 
-    override suspend fun getUserInfo(authHeader: String): String =
-        malService.getUserInfo(authHeader).name
+    override suspend fun getUserInfo(authHeader: String): String? =
+        malService.getUserInfo(authHeader).body()?.name
 
 }
