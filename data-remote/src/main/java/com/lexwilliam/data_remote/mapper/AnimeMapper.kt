@@ -6,12 +6,14 @@ import com.lexwilliam.data.model.remote.season.SeasonAnimeRepo
 import com.lexwilliam.data.model.remote.season.SeasonRepo
 import com.lexwilliam.data.model.remote.top.TopAnimeRepo
 import com.lexwilliam.data.model.remote.top.TopRepo
+import com.lexwilliam.data.model.remote.user.UserAnimeListRepo
 import com.lexwilliam.data_remote.model.search.SearchAnimeResponse
 import com.lexwilliam.data_remote.model.search.SearchResponse
 import com.lexwilliam.data_remote.model.season.SeasonAnimeResponse
 import com.lexwilliam.data_remote.model.season.SeasonResponse
 import com.lexwilliam.data_remote.model.top.TopAnimeResponse
 import com.lexwilliam.data_remote.model.top.TopResponse
+import com.lexwilliam.data_remote.model.user.UserAnimeListResponse
 import javax.inject.Inject
 
 interface AnimeMapper {
@@ -21,6 +23,7 @@ interface AnimeMapper {
     fun toRepo(topAnime: TopAnimeResponse): TopAnimeRepo
     fun toRepo(season: SeasonResponse): SeasonRepo
     fun toRepo(seasonAnime: SeasonAnimeResponse): SeasonAnimeRepo
+    fun toRepo(userAnime: UserAnimeListResponse): UserAnimeListRepo
 }
 
 class AnimeMapperImpl @Inject constructor(
@@ -29,13 +32,11 @@ class AnimeMapperImpl @Inject constructor(
     override fun toRepo(search: SearchResponse): SearchRepo =
         SearchRepo(search.request_hash, search.request_cached, search.request_cache_expiry, search.results.map { toRepo(it) }, search.last_page)
 
-
     override fun toRepo(searchAnime: SearchAnimeResponse): SearchAnimeRepo =
         SearchAnimeRepo(searchAnime.mal_id, searchAnime.url, searchAnime.image_url, searchAnime.title, searchAnime.airing, searchAnime.synopsis, searchAnime.type, searchAnime.episodes, searchAnime.score, searchAnime.start_date, searchAnime.end_date, searchAnime.members, searchAnime.rated)
 
     override fun toRepo(top: TopResponse): TopRepo =
         TopRepo(top.request_hash, top.request_cached, top.request_cache_expiry, top.top.map { toRepo(it) })
-
 
     override fun toRepo(topAnime: TopAnimeResponse): TopAnimeRepo =
         TopAnimeRepo(topAnime.mal_id, topAnime.rank, topAnime.title, topAnime.url, topAnime.image_url, topAnime.type, topAnime.episodes, topAnime.start_date, topAnime.end_date, topAnime.members, topAnime.score)
@@ -45,4 +46,19 @@ class AnimeMapperImpl @Inject constructor(
 
     override fun toRepo(seasonAnime: SeasonAnimeResponse): SeasonAnimeRepo =
         SeasonAnimeRepo(seasonAnime.airing_start, seasonAnime.continuing, seasonAnime.demographics.map { commonMapper.toRepo(it) }, seasonAnime.episodes, seasonAnime.explicit_genres, seasonAnime.genres.map { commonMapper.toRepo(it) }, seasonAnime.image_url, seasonAnime.kids, seasonAnime.licensors, seasonAnime.mal_id, seasonAnime.members, seasonAnime.producers.map { commonMapper.toRepo(it) }, seasonAnime.r18, seasonAnime.score, seasonAnime.source, seasonAnime.synopsis, seasonAnime.themes.map { commonMapper.toRepo(it) }, seasonAnime.title, seasonAnime.type, seasonAnime.url)
+
+    override fun toRepo(userAnime: UserAnimeListResponse): UserAnimeListRepo =
+        UserAnimeListRepo(userAnime.data.map { toRepo(it) })
+
+    private fun toRepo(data: UserAnimeListResponse.Data): UserAnimeListRepo.Data =
+        UserAnimeListRepo.Data(toRepo(data.listStatus), toRepo(data.node))
+
+    private fun toRepo(listStatus: UserAnimeListResponse.Data.ListStatus): UserAnimeListRepo.Data.ListStatus =
+        UserAnimeListRepo.Data.ListStatus(listStatus.isReWatching, listStatus.numWatchedEpisodes, listStatus.score, listStatus.status, listStatus.updatedAt)
+
+    private fun toRepo(node: UserAnimeListResponse.Data.Node): UserAnimeListRepo.Data.Node =
+        UserAnimeListRepo.Data.Node(node.id, node.numTotalEpisodes, toRepo(node.mainPicture?: UserAnimeListResponse.Data.Node.MainPicture("", "")), node.title)
+
+    private fun toRepo(mainPicture: UserAnimeListResponse.Data.Node.MainPicture): UserAnimeListRepo.Data.Node.MainPicture =
+        UserAnimeListRepo.Data.Node.MainPicture(mainPicture.large, mainPicture.medium)
 }

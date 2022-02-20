@@ -6,10 +6,15 @@ import com.lexwilliam.risuto.base.ViewState
 import com.lexwilliam.risuto.model.AnimePresentation
 
 class ProfileContract {
-    sealed class Event : ViewEvent {}
+    sealed class Event : ViewEvent {
+        data class GetUserInfo(val accessToken: String): Event()
+        data class GetUserAnimeList(val accessToken: String): Event()
+    }
 
     data class State(
-        val myAnimes: List<AnimePresentation>,
+        val animes: List<AnimePresentation>,
+        val accessToken: String,
+        val username: String,
         val isLoading: Boolean = false,
         val isError: Boolean = false
     ) : ViewState

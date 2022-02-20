@@ -1,6 +1,6 @@
 package com.lexwilliam.data.mapper
 
-import com.lexwilliam.data.model.common.*
+import com.lexwilliam.data.model.common.jikan.*
 import com.lexwilliam.domain.model.common.*
 import javax.inject.Inject
 

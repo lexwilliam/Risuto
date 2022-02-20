@@ -6,7 +6,9 @@ import com.lexwilliam.domain.model.remote.season.Season
 import com.lexwilliam.domain.model.remote.season.SeasonAnime
 import com.lexwilliam.domain.model.remote.top.Top
 import com.lexwilliam.domain.model.remote.top.TopAnime
+import com.lexwilliam.domain.model.remote.user.UserAnimeList
 import com.lexwilliam.risuto.model.AnimePresentation
+import com.lexwilliam.risuto.model.local.WatchStatusPresentation
 import com.lexwilliam.risuto.model.remote.AnimeRequestPresentation
 import javax.inject.Inject
 
@@ -17,6 +19,7 @@ interface AnimeMapper {
     fun toPresentation(topAnime: TopAnime): AnimePresentation
     fun toPresentation(season: Season): AnimeRequestPresentation
     fun toPresentation(seasonAnime: SeasonAnime): AnimePresentation
+    fun toPresentation(userAnime: UserAnimeList.Data): AnimePresentation
 }
 
 class AnimeMapperImpl @Inject constructor(
@@ -104,4 +107,24 @@ class AnimeMapperImpl @Inject constructor(
             type = seasonAnime.type,
             url = seasonAnime.url
         )
+
+    override fun toPresentation(userAnime: UserAnimeList.Data): AnimePresentation =
+        AnimePresentation(
+            mal_id = userAnime.node.id,
+            title = userAnime.node.title,
+            image_url = userAnime.node.mainPicture?.medium,
+            watch_status = toPresentation(userAnime.listStatus.status?:""),
+            my_score = userAnime.listStatus.score
+        )
+
+    private fun toPresentation(status: String): WatchStatusPresentation {
+        return when(status) {
+            "plan_to_watch" -> WatchStatusPresentation.PlanToWatch
+            "watching" -> WatchStatusPresentation.Watching
+            "completed" -> WatchStatusPresentation.Completed
+            "on_hold" -> WatchStatusPresentation.OnHold
+            "dropped" -> WatchStatusPresentation.Dropped
+            else -> WatchStatusPresentation.Default
+        }
+    }
 }

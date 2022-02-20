@@ -7,7 +7,6 @@ import com.lexwilliam.risuto.model.AnimePresentation
 
 class HomeContract {
     sealed class Event : ViewEvent {
-        data class GetUserInfo(val accessToken: String): Event()
         object LoadingDone: Event()
     }
 

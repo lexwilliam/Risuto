@@ -1,6 +1,9 @@
 package com.lexwilliam.data_remote.mapper
 
-import com.lexwilliam.data.model.common.*
+import com.lexwilliam.data.model.common.jikan.GenreRepo
+import com.lexwilliam.data.model.common.jikan.LicensorRepo
+import com.lexwilliam.data.model.common.jikan.ProducerRepo
+import com.lexwilliam.data.model.common.jikan.StudioRepo
 import com.lexwilliam.data.model.remote.detail.*
 import com.lexwilliam.data_remote.model.common.*
 import com.lexwilliam.data_remote.model.detail.*

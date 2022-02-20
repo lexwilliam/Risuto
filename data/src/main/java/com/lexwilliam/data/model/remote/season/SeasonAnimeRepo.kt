@@ -1,9 +1,9 @@
 package com.lexwilliam.data.model.remote.season
 
-import com.lexwilliam.data.model.common.DemographicRepo
-import com.lexwilliam.data.model.common.GenreRepo
-import com.lexwilliam.data.model.common.ProducerRepo
-import com.lexwilliam.data.model.common.ThemeRepo
+import com.lexwilliam.data.model.common.jikan.DemographicRepo
+import com.lexwilliam.data.model.common.jikan.GenreRepo
+import com.lexwilliam.data.model.common.jikan.ProducerRepo
+import com.lexwilliam.data.model.common.jikan.ThemeRepo
 
 data class SeasonAnimeRepo(
     val airing_start: String,

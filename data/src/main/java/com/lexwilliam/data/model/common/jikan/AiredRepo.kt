@@ -1,6 +1,4 @@
-package com.lexwilliam.data.model.common
-
-import com.lexwilliam.domain.model.common.Prop
+package com.lexwilliam.data.model.common.jikan
 
 data class AiredRepo(
     val from: String?,

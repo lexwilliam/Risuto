@@ -29,10 +29,16 @@ import com.lexwilliam.risuto.util.watchStatusToString
 @Composable
 fun ProfileScreen(
     state: (ProfileContract.State),
+    onEventSent: (ProfileContract.Event) -> Unit,
     navToDetail: (Int) -> Unit,
 ) {
+    if(state.isLoading && state.accessToken != "") {
+        onEventSent(ProfileContract.Event.GetUserInfo(state.accessToken))
+        onEventSent(ProfileContract.Event.GetUserAnimeList(state.accessToken))
+    }
     ProfileContent(
-        myAnimeList = state.myAnimes,
+        myAnimeList = state.animes,
+        username = state.username,
         navToDetail = { navToDetail(it) }
     )
 }
@@ -41,13 +47,14 @@ fun ProfileScreen(
 @Composable
 fun ProfileContent(
     myAnimeList: List<AnimePresentation>,
+    username: String,
     navToDetail: (Int) -> Unit
 ) {
     Column(modifier = Modifier.padding(bottom = bottomNavGap)) {
         TopAppBar(
             backgroundColor = MaterialTheme.colors.background,
             contentColor = MaterialTheme.colors.secondary,
-            title = { Text("My Anime List")},
+            title = { Text("$username Anime List")},
             actions = { Icon(imageVector = Icons.Default.Notifications, contentDescription = null)}
         )
         var currentStatus by remember { mutableStateOf("All")}

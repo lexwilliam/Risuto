@@ -1,6 +1,6 @@
 package com.lexwilliam.data_remote.mapper
 
-import com.lexwilliam.data.model.common.*
+import com.lexwilliam.data.model.common.jikan.*
 import com.lexwilliam.data_remote.model.common.*
 import javax.inject.Inject
 

@@ -1,5 +1,7 @@
 package com.lexwilliam.data_remote
 
+import com.lexwilliam.data_remote.model.ApiConstants
+import com.lexwilliam.data_remote.model.UserAnimeSortType
 import com.lexwilliam.data_remote.model.auth.AccessTokenResponse
 import com.lexwilliam.data_remote.model.auth.OAuthGrantType
 import com.lexwilliam.data_remote.model.user.UserAnimeListResponse
@@ -39,17 +41,17 @@ interface MyAnimeListService {
         @Field("redirect_uri") redirectUri: String = "risuto://auth"
     ): Response<AccessTokenResponse>
 
-//    @GET("users/{username}/animelist")
-//    fun getAnimeListOfUserAsync(
-//        @Header("Authorization") authHeader: String,
-//        @Path("username") username: String = ApiConstants.ME_IDENTIFIER,
-//        @Query("status") status: String? = null,
-//        @Query("sort") sort: String = UserAnimeSortType.list_updated_at.name,
-//        @Query("limit") limit: Int = ApiConstants.API_PAGE_LIMIT,
-//        @Query("offset") offset: Int = ApiConstants.API_START_OFFSET,
-//        @Query("nsfw") nsfw: Int = ApiConstants.NSFW_ALSO,
-//        @Query("fields") fields: String = ApiConstants.USER_ANIME_EXTRA_FIELDS
-//    ): Response<UserAnimeListResponse>
+    @GET("users/{username}/animelist")
+    suspend fun getAnimeListOfUserAsync(
+        @Header("Authorization") authHeader: String,
+        @Path("username") username: String = ApiConstants.ME_IDENTIFIER,
+        @Query("status") status: String? = null,
+        @Query("sort") sort: String = UserAnimeSortType.list_updated_at.name,
+        @Query("limit") limit: Int = ApiConstants.API_PAGE_LIMIT,
+        @Query("offset") offset: Int = ApiConstants.API_START_OFFSET,
+        @Query("nsfw") nsfw: Int = ApiConstants.NSFW_ALSO,
+        @Query("fields") fields: String = ApiConstants.USER_ANIME_EXTRA_FIELDS
+    ): Response<UserAnimeListResponse>
 
     @GET("users/{username}")
     suspend fun getUserInfo(

@@ -57,9 +57,10 @@ object RepositoryModule {
     @Singleton
     @Provides
     fun provideUserRepository(
-        userRemoteSource: UserRemoteSource
+        userRemoteSource: UserRemoteSource,
+        animeMapper: AnimeMapper
     ): UserRepository =
-        UserRepositoryImpl(userRemoteSource)
+        UserRepositoryImpl(userRemoteSource, animeMapper)
 
     @Singleton
     @Provides

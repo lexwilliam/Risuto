@@ -121,5 +121,4 @@ class OAuthLocalSourceImpl(
             preferences.clear()
         }
     }
-
 }

@@ -48,9 +48,10 @@ object RemoteModule {
     @Singleton
     @Provides
     fun provideUserRemoteSource(
-        malService: MyAnimeListService
+        malService: MyAnimeListService,
+        animeMapper: AnimeMapper
     ): UserRemoteSource =
-        UserRemoteSourceImpl(malService)
+        UserRemoteSourceImpl(malService, animeMapper)
 
     @Singleton
     @Provides

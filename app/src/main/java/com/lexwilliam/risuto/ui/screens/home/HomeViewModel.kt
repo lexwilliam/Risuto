@@ -62,14 +62,10 @@ class HomeViewModel
             is HomeContract.Event.LoadingDone -> {
                 setState { copy(isLoading = false) }
             }
-            is HomeContract.Event.GetUserInfo -> {
-                getUserInfo(event.accessToken)
-            }
         }
     }
 
     init {
-        getAccessTokenFromCache()
         onAiringToday()
         onTopAiring()
         onTopUpcoming()
@@ -182,30 +178,6 @@ class HomeViewModel
                     }
             } catch (throwable: Throwable) {
                 handleExceptions(throwable)
-            }
-        }
-    }
-
-    private fun getAccessTokenFromCache() {
-        viewModelScope.launch(errorHandler) {
-            getAccessTokenFromCache.execute().collect {
-                if(it != null) {
-                    setState { copy(accessToken = it) }
-                } else {
-                    Timber.d("Access Token Not Found")
-                }
-            }
-        }
-    }
-
-    private fun getUserInfo(accessToken: String) {
-        viewModelScope.launch(errorHandler) {
-            Timber.d("access : $accessToken")
-            val name = getUserInfo.execute(accessToken)
-            if(name == null) {
-                setState { copy(username = "") }
-            } else {
-                setState { copy(username = name) }
             }
         }
     }

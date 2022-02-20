@@ -1,4 +1,4 @@
-package com.lexwilliam.data.model.common
+package com.lexwilliam.data.model.common.jikan
 
 data class FromRepo(
     val day: Int?,

@@ -1,6 +1,6 @@
 package com.lexwilliam.data.model.remote.detail
 
-import com.lexwilliam.data.model.common.*
+import com.lexwilliam.data.model.common.jikan.*
 
 
 data class AnimeDetailRepo(

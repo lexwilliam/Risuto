@@ -207,4 +207,9 @@ object DomainModule {
     @Provides
     fun provideGetExpiresInFromCache(oAuthRepository: OAuthRepository): GetExpiresInFromCache =
         GetExpiresInFromCacheImpl(oAuthRepository)
+
+    @Singleton
+    @Provides
+    fun provideGetUserAnimeList(userRepository: UserRepository): GetUserAnimeList =
+        GetUserAnimeListImpl(userRepository)
 }

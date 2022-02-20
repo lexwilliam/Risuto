@@ -236,6 +236,7 @@ fun RisutoAppContent(
                 val profileViewModel = hiltViewModel<ProfileViewModel>()
                 ProfileScreen(
                     state = profileViewModel.viewState.value,
+                    onEventSent = { event -> profileViewModel.setEvent(event)},
                     navToDetail = { mal_id ->
                         navController.navigate(
                             RisutoAnimeScreen.route.plus("/?mal_id=$mal_id")

@@ -23,12 +23,6 @@ fun HomeScreen(
     onEventSent: (HomeContract.Event) -> Unit,
     navToDetail: (Int) -> Unit
 ) {
-    Timber.d("isLoading : ${state.isLoading}")
-    if(state.accessToken != "" && state.isLoading) {
-        Timber.d("accessToken : ${state.accessToken}")
-        onEventSent(HomeContract.Event.GetUserInfo(state.accessToken))
-        onEventSent(HomeContract.Event.LoadingDone)
-    }
     HomeContent(
         airingTodayAnime = state.airingTodayAnime,
         currentSeasonAnime = state.seasonAnime,
