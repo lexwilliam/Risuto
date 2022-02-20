@@ -24,14 +24,6 @@ object RepositoryModule {
 
     @Singleton
     @Provides
-    fun provideMyAnimeRepository(
-        myAnimeLocalSource: MyAnimeLocalSource,
-        myAnimeMapper: MyAnimeMapper
-    ): MyAnimeRepository =
-        MyAnimeRepositoryImpl(myAnimeLocalSource, myAnimeMapper)
-
-    @Singleton
-    @Provides
     fun provideAnimeRepository(
         animeRemoteSource: AnimeRemoteSource,
         animeMapper: AnimeMapper
@@ -61,10 +53,6 @@ object RepositoryModule {
         animeMapper: AnimeMapper
     ): UserRepository =
         UserRepositoryImpl(userRemoteSource, animeMapper)
-
-    @Singleton
-    @Provides
-    fun provideMyAnimeMapper(): MyAnimeMapper = MyAnimeMapperImpl()
 
     @Singleton
     @Provides

@@ -13,10 +13,6 @@ object PresentationModule {
 
     @Singleton
     @Provides
-    fun provideMyAnimeMapper(): MyAnimeMapper = MyAnimeMapperImpl()
-
-    @Singleton
-    @Provides
     fun provideHistoryMapper(): HistoryMapper = HistoryMapperImpl()
 
     @Singleton

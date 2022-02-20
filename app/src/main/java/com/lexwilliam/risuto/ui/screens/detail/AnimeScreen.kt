@@ -19,7 +19,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.lexwilliam.risuto.model.detail.AnimeDetailPresentation
 import com.lexwilliam.risuto.model.detail.CharacterStaffPresentation
-import com.lexwilliam.risuto.model.local.MyAnimePresentation
 import com.lexwilliam.risuto.model.local.WatchStatusPresentation
 import com.lexwilliam.risuto.ui.component.Chip
 import com.lexwilliam.risuto.ui.component.LoadingScreen
@@ -193,17 +192,6 @@ fun MyAnimeMenu(
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
             onClick = {
-                onEventSent(
-                    AnimeContract.Event.InsertMyAnime(
-                        anime = MyAnimePresentation(
-                            mal_id = state.animeDetail.mal_id,
-                            title = state.animeDetail.title,
-                            image_url = state.animeDetail.image_url,
-                            myScore = score,
-                            watchStatus = watchState
-                        )
-                    )
-                )
                 onDoneClicked()
             }) {
             Text("Done")

@@ -24,7 +24,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class SearchViewModel @Inject constructor(
+class  SearchViewModel @Inject constructor(
     private val getSearchAnime: GetSearchAnime,
     private val getGenreAnime: GetGenreAnime,
     private val getAllSearchHistory: GetSearchHistory,

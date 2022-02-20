@@ -1,6 +1,5 @@
 package com.lexwilliam.domain.usecase.local
 
-import com.lexwilliam.domain.model.local.MyAnime
 import com.lexwilliam.domain.repository.HistoryRepository
 import javax.inject.Inject
 

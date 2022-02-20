@@ -2,20 +2,15 @@ package com.lexwilliam.risuto.ui.screens.detail
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import com.lexwilliam.domain.model.remote.detail.Episodes
 import com.lexwilliam.domain.usecase.local.InsertAnimeHistory
-import com.lexwilliam.domain.usecase.local.InsertMyAnime
 import com.lexwilliam.domain.usecase.remote.*
 import com.lexwilliam.risuto.base.BaseViewModel
 import com.lexwilliam.risuto.mapper.DetailMapper
 import com.lexwilliam.risuto.mapper.HistoryMapper
-import com.lexwilliam.risuto.mapper.MyAnimeMapper
 import com.lexwilliam.risuto.model.common.*
 import com.lexwilliam.risuto.model.detail.*
-import com.lexwilliam.risuto.model.local.MyAnimePresentation
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -35,9 +30,7 @@ class AnimeViewModel @Inject constructor(
     private val getStats: GetStats,
     private val getVideos: GetVideos,
     private val insertAnimeHistory: InsertAnimeHistory,
-    private val insertMyAnime: InsertMyAnime,
     private val detailMapper: DetailMapper,
-    private val myAnimeMapper: MyAnimeMapper,
     private val historyMapper: HistoryMapper,
     savedState: SavedStateHandle
 ): BaseViewModel<AnimeContract.Event, AnimeContract.State, AnimeContract.Effect>() {
@@ -74,7 +67,6 @@ class AnimeViewModel @Inject constructor(
     override fun handleEvents(event: AnimeContract.Event) {
         when(event) {
             is AnimeContract.Event.InsertAnimeHistory -> insertAnimeHistory(event.anime)
-            is AnimeContract.Event.InsertMyAnime -> insertMyAnime(event.anime)
         }
     }
 
@@ -334,14 +326,6 @@ class AnimeViewModel @Inject constructor(
     private fun insertAnimeHistory(anime: AnimeDetailPresentation) {
         viewModelScope.launch(errorHandler) {
             insertAnimeHistory.execute(historyMapper.toDomain(anime))
-        }
-    }
-
-    private fun insertMyAnime(
-        myAnime: MyAnimePresentation
-    ) {
-        viewModelScope.launch(errorHandler) {
-            insertMyAnime.execute(myAnimeMapper.toDomain(myAnime))
         }
     }
 

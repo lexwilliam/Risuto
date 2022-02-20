@@ -30,11 +30,6 @@ object DomainModule {
 
     @Singleton
     @Provides
-    fun provideDeleteMyAnime(myAnimeRepository: MyAnimeRepository): DeleteMyAnime =
-        DeleteMyAnimeImpl(myAnimeRepository)
-
-    @Singleton
-    @Provides
     fun provideDeleteSearchHistory(historyRepository: HistoryRepository): DeleteSearchHistory =
         DeleteSearchHistoryImpl(historyRepository)
 
@@ -42,16 +37,6 @@ object DomainModule {
     @Provides
     fun provideGetAnimeHistory(historyRepository: HistoryRepository): GetAnimeHistory =
         GetAnimeHistoryImpl(historyRepository)
-
-    @Singleton
-    @Provides
-    fun provideGetMyAnimes(myAnimeRepository: MyAnimeRepository): GetMyAnimes =
-        GetMyAnimesImpl(myAnimeRepository)
-
-    @Singleton
-    @Provides
-    fun provideGetMyAnimeWithWatchStatus(myAnimeRepository: MyAnimeRepository): GetMyAnimeWithWatchStatus =
-        GetMyAnimeWithWatchStatusImpl(myAnimeRepository)
 
     @Singleton
     @Provides
@@ -65,18 +50,8 @@ object DomainModule {
 
     @Singleton
     @Provides
-    fun provideInsertMyAnime(myAnimeRepository: MyAnimeRepository): InsertMyAnime =
-        InsertMyAnimeImpl(myAnimeRepository)
-
-    @Singleton
-    @Provides
     fun provideInsertSearchHistory(historyRepository: HistoryRepository): InsertSearchHistory =
         InsertSearchHistoryImpl(historyRepository)
-
-    @Singleton
-    @Provides
-    fun provideUpdateMyAnime(myAnimeRepository: MyAnimeRepository): UpdateMyAnime =
-        UpdateMyAnimeImpl(myAnimeRepository)
 
     @Singleton
     @Provides

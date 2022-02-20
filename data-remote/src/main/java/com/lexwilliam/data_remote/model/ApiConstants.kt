@@ -3,7 +3,7 @@ package com.lexwilliam.data_remote.model
 object ApiConstants {
     const val BEARER_SEPARATOR = "Bearer "
     const val API_START_OFFSET = 0
-    const val API_PAGE_LIMIT = 10
+    const val API_PAGE_LIMIT = 1000
     const val NSFW_ALSO = 1
     const val SFW_ONLY = 0
     const val ME_IDENTIFIER = "@me"
