@@ -2,16 +2,12 @@ package com.lexwilliam.risuto.ui.screens.profile
 
 import androidx.lifecycle.viewModelScope
 import com.lexwilliam.domain.usecase.local.GetAccessTokenFromCache
-import com.lexwilliam.domain.usecase.local.GetMyAnimes
 import com.lexwilliam.domain.usecase.remote.GetUserAnimeList
 import com.lexwilliam.domain.usecase.remote.GetUserInfo
 import com.lexwilliam.risuto.base.BaseViewModel
 import com.lexwilliam.risuto.mapper.AnimeMapper
-import com.lexwilliam.risuto.mapper.MyAnimeMapper
-import com.lexwilliam.risuto.model.AnimePresentation
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -20,7 +16,6 @@ import javax.inject.Inject
 @HiltViewModel
 class ProfileViewModel
 @Inject constructor(
-    private val getMyAnimes: GetMyAnimes,
     private val getAccessTokenFromCache: GetAccessTokenFromCache,
     private val getUserInfo: GetUserInfo,
     private val getUserAnimeList: GetUserAnimeList,

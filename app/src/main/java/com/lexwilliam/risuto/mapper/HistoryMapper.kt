@@ -33,14 +33,14 @@ class HistoryMapperImpl @Inject constructor(): HistoryMapper {
 
     override fun toDomain(anime: AnimeDetailPresentation): AnimeHistory =
         AnimeHistory(
-            mal_id = anime.mal_id!!,
-            image_url = anime.image_url!!,
-            title = anime.title!!,
-            synopsis = anime.synopsis!!,
-            type = anime.type!!,
-            episodes = anime.episodes!!,
-            score = anime.score!!,
-            members = anime.members!!
+            mal_id = anime.mal_id,
+            image_url = anime.image_url,
+            title = anime.title,
+            synopsis = anime.synopsis,
+            type = anime.type,
+            episodes = anime.episodes,
+            score = anime.score,
+            members = anime.members
         )
 
     override fun toPresentation(anime: AnimeHistory): AnimePresentation =
