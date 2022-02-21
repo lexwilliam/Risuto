@@ -4,10 +4,16 @@ import android.content.Intent
 import android.net.Uri
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import timber.log.Timber
 
@@ -24,7 +30,6 @@ fun LoginScreen(
             authTokenLink = state.authTokenLink,
             oAuthState = state.oAuthState,
             onEventSent = { onEventSent(it) },
-            isLoading = state.isLoading,
             navToHome = { navToHome() }
         )
     }
@@ -36,7 +41,6 @@ fun LoginContent(
     authTokenLink: String,
     oAuthState: OAuthState,
     onEventSent: (LoginContract.Event) -> Unit,
-    isLoading: Boolean,
     navToHome: () -> Unit
 ) {
     val context = LocalContext.current
@@ -61,7 +65,38 @@ fun LoginContent(
         else -> Unit
     }
 
-    Button(onClick = { onEventSent(LoginContract.Event.RedirectToAuth) }) {
-        Text(text = "Sign in")
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        Spacer(modifier = Modifier.padding(40.dp))
+        Text(text = "Risuto", style = MaterialTheme.typography.h3)
+        Box(
+            modifier = Modifier.fillMaxHeight(),
+            contentAlignment = Alignment.BottomCenter
+        ) {
+            Button(
+                modifier = Modifier.fillMaxWidth(),
+                onClick = { onEventSent(LoginContract.Event.RedirectToAuth) }
+            ) {
+                Text(text = "Sign in with MyAnimeList")
+            }
+        }
     }
+
+
+}
+
+@Preview
+@Composable
+fun LoginScreenPreview() {
+    LoginContent(
+        authCode = "",
+        authTokenLink = "",
+        oAuthState = OAuthState.Idle,
+        onEventSent = {},
+        navToHome = {}
+    )
 }
