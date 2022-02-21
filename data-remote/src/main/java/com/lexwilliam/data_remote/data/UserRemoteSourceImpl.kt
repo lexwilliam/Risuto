@@ -6,7 +6,6 @@ import com.lexwilliam.data_remote.MyAnimeListService
 import com.lexwilliam.data_remote.mapper.AnimeMapper
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import retrofit2.http.Header
 import javax.inject.Inject
 
 class UserRemoteSourceImpl @Inject constructor(
@@ -18,7 +17,7 @@ class UserRemoteSourceImpl @Inject constructor(
         malService.getUserInfo(authHeader).body()?.name
 
     override suspend fun getUserAnimeList(authHeader: String): Flow<UserAnimeListRepo> = flow {
-        val response = malService.getAnimeListOfUserAsync(authHeader).body()
+        val response = malService.getAnimeListOfUser(authHeader).body()
         emit(animeMapper.toRepo(response!!))
     }
 

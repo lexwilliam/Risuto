@@ -4,12 +4,8 @@ import com.lexwilliam.data.OAuthRemoteSource
 import com.lexwilliam.data.model.remote.auth.AccessTokenRepo
 import com.lexwilliam.data_remote.MyAnimeListService
 import com.lexwilliam.data_remote.mapper.OAuthMapper
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -29,7 +25,7 @@ class OAuthRemoteSourceImpl @Inject constructor(
         clientId: String,
         refreshToken: String
     ): Flow<AccessTokenRepo> = flow {
-        val response = malService.refreshTokenAsync(
+        val response = malService.refreshToken(
             clientId = clientId,
             refreshToken = refreshToken
         ).body()
@@ -46,7 +42,7 @@ class OAuthRemoteSourceImpl @Inject constructor(
         code: String,
         codeVerifier: String
     ): Flow<AccessTokenRepo> = flow {
-        val response = malService.getAccessTokenAsync(
+        val response = malService.getAccessToken(
             clientId = clientId,
             code = code,
             codeVerifier = codeVerifier

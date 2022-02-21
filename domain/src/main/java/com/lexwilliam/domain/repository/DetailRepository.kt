@@ -27,4 +27,6 @@ interface DetailRepository {
     suspend fun stats(id: Int): Flow<Stats>
 
     suspend fun videos(id: Int): Flow<Videos>
+
+    suspend fun status(accessToken: String, id: Int): Flow<MyAnimeStatus>
 }

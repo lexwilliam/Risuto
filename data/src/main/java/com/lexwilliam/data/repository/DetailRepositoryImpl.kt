@@ -57,4 +57,8 @@ class DetailRepositoryImpl @Inject constructor(
         return detailRemoteSource.videos(id).map { detailMapper.toDomain(it) }
     }
 
+    override suspend fun status(accessToken: String, id: Int): Flow<MyAnimeStatus> {
+        return detailRemoteSource.status(accessToken, id).map { detailMapper.toDomain(it) }
+    }
+
 }

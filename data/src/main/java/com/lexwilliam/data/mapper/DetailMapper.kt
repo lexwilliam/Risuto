@@ -16,6 +16,7 @@ interface DetailMapper {
     fun toDomain(reviews: ReviewsRepo): Reviews
     fun toDomain(stats: StatsRepo): Stats
     fun toDomain(videos: VideosRepo): Videos
+    fun toDomain(status: MyAnimeStatusRepo): MyAnimeStatus
 }
 
 class DetailMapperImpl @Inject constructor(
@@ -53,6 +54,10 @@ class DetailMapperImpl @Inject constructor(
 
     override fun toDomain(videos: VideosRepo): Videos =
         Videos(videos.episodes, videos.promo.map { toDomain(it) }, videos.request_cache_expiry, videos.request_cached, videos.request_hash)
+
+    override fun toDomain(status: MyAnimeStatusRepo): MyAnimeStatus =
+        MyAnimeStatus(status.status, status.score, status.numEpisodesWatched, status.isRewatching, status.updatedAt)
+
 
     private fun toDomain(character: CharacterRepo): Character =
         Character(character.image_url, character.mal_id, character.name, character.role, character.url, character.voice_actors.map { toDomain(it) })

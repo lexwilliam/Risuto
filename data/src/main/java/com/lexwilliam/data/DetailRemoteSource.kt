@@ -27,4 +27,6 @@ interface DetailRemoteSource {
 
     suspend fun videos(id: Int): Flow<VideosRepo>
 
+    suspend fun status(accessToken: String, id: Int): Flow<MyAnimeStatusRepo>
+
 }

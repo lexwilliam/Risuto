@@ -187,4 +187,9 @@ object DomainModule {
     @Provides
     fun provideGetUserAnimeList(userRepository: UserRepository): GetUserAnimeList =
         GetUserAnimeListImpl(userRepository)
+
+    @Singleton
+    @Provides
+    fun provideGetMyAnimeStatus(detailRepository: DetailRepository): GetMyAnimeStatus =
+        GetMyAnimeStatusImpl(detailRepository)
 }

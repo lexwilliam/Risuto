@@ -4,6 +4,8 @@ import com.lexwilliam.data_remote.model.ApiConstants
 import com.lexwilliam.data_remote.model.UserAnimeSortType
 import com.lexwilliam.data_remote.model.auth.AccessTokenResponse
 import com.lexwilliam.data_remote.model.auth.OAuthGrantType
+import com.lexwilliam.data_remote.model.detail.AnimeDetailResponse
+import com.lexwilliam.data_remote.model.detail.MyAnimeStatusResponse
 import com.lexwilliam.data_remote.model.user.UserAnimeListResponse
 import com.lexwilliam.data_remote.model.user.UserInfoResponse
 import retrofit2.Response
@@ -25,7 +27,7 @@ interface MyAnimeListService {
 
     @POST("$AUTH_BASE_URL/oauth2/token")
     @FormUrlEncoded
-    suspend fun refreshTokenAsync(
+    suspend fun refreshToken(
         @Field("client_id") clientId: String,
         @Field("refresh_token") refreshToken: String,
         @Field("grant_type") grantType: String = OAuthGrantType.refresh_token.name
@@ -33,7 +35,7 @@ interface MyAnimeListService {
 
     @POST("$AUTH_BASE_URL/oauth2/token")
     @FormUrlEncoded
-    suspend fun getAccessTokenAsync(
+    suspend fun getAccessToken(
         @Field("client_id") clientId: String,
         @Field("code") code: String,
         @Field("code_verifier") codeVerifier: String,
@@ -41,8 +43,15 @@ interface MyAnimeListService {
         @Field("redirect_uri") redirectUri: String = "risuto://auth"
     ): Response<AccessTokenResponse>
 
+    @GET("anime/{mal_id}")
+    suspend fun getMyAnimeStatus(
+        @Header("Authorization") authHeader: String,
+        @Path("mal_id") malId: Int,
+        @Query("fields") fields: String = "my_list_status"
+    ): Response<MyAnimeStatusResponse>
+
     @GET("users/{username}/animelist")
-    suspend fun getAnimeListOfUserAsync(
+    suspend fun getAnimeListOfUser(
         @Header("Authorization") authHeader: String,
         @Path("username") username: String = ApiConstants.ME_IDENTIFIER,
         @Query("status") status: String? = null,

@@ -21,6 +21,7 @@ interface DetailMapper {
     fun toRepo(reviews: ReviewsResponse): ReviewsRepo
     fun toRepo(stats: StatsResponse): StatsRepo
     fun toRepo(videos: VideosResponse): VideosRepo
+    fun toRepo(status: MyAnimeStatusResponse): MyAnimeStatusRepo
 }
 
 class DetailMapperImpl @Inject constructor(
@@ -134,4 +135,8 @@ class DetailMapperImpl @Inject constructor(
 
     private fun toRepo(promo: PromoResponse): PromoRepo =
         PromoRepo(promo.image_url, promo.title, promo.video_url)
+
+    override fun toRepo(status: MyAnimeStatusResponse): MyAnimeStatusRepo =
+        MyAnimeStatusRepo(status.status, status.score, status.numEpisodesWatched, status.isRewatching, status.updatedAt)
+
 }
