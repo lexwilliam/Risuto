@@ -7,13 +7,14 @@ import androidx.compose.material.Divider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.lexwilliam.risuto.model.AnimePresentation
+import com.lexwilliam.risuto.model.AnimeListPresentation
+import com.lexwilliam.risuto.model.remote.AnimePresentation
 
 @ExperimentalFoundationApi
 @Composable
 fun GridList(
     modifier: Modifier = Modifier,
-    items: List<AnimePresentation>,
+    items: List<AnimeListPresentation>,
     navToDetail: (Int) -> Unit
 ) {
     if(items.isEmpty()) {
@@ -35,7 +36,7 @@ fun GridList(
 @Composable
 fun ColumnList(
     modifier: Modifier = Modifier,
-    items: List<AnimePresentation>,
+    items: List<AnimeListPresentation>,
     navToDetail: (Int) -> Unit
 ) {
     LazyColumn(
@@ -51,7 +52,7 @@ fun ColumnList(
 
 @Composable
 fun HorizontalGridList(
-    items: List<AnimePresentation>,
+    items: List<AnimeListPresentation>,
     navToDetail: (Int) -> Unit
 ) {
     LazyRow(
@@ -62,6 +63,29 @@ fun HorizontalGridList(
     ){
         items(items = items){ item ->
             SmallGrid(
+                item = item,
+                navToDetail = { navToDetail(it) }
+            )
+        }
+        item {
+            Spacer(modifier = Modifier.padding(0.dp))
+        }
+    }
+}
+
+@Composable
+fun HorizontalGridListV4(
+    items: List<AnimePresentation.Data>,
+    navToDetail: (Int) -> Unit
+) {
+    LazyRow(
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp)
+    ){
+        items(items = items){ item ->
+            SmallGridV4(
                 item = item,
                 navToDetail = { navToDetail(it) }
             )

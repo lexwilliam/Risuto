@@ -8,7 +8,7 @@ import androidx.paging.map
 import com.lexwilliam.domain.usecase.remote.GetGenreAnime
 import com.lexwilliam.risuto.base.BaseViewModel
 import com.lexwilliam.risuto.mapper.AnimeMapper
-import com.lexwilliam.risuto.model.AnimePresentation
+import com.lexwilliam.risuto.model.AnimeListPresentation
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Job
@@ -66,7 +66,7 @@ class GenreViewModel
 
     override fun handleEvents(event: GenreContract.Event) {}
 
-    private fun genreAnimes(genre: Int): Flow<PagingData<AnimePresentation>> {
+    private fun genreAnimes(genre: Int): Flow<PagingData<AnimeListPresentation>> {
         return getGenreAnime.execute(null, null, null, genre, "members", "desc")
             .map { it.map { animeMapper.toPresentation(it) } }
             .cachedIn(viewModelScope)

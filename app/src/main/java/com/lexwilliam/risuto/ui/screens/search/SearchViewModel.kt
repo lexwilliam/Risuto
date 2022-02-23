@@ -10,7 +10,7 @@ import com.lexwilliam.domain.usecase.remote.GetSearchAnime
 import com.lexwilliam.risuto.base.BaseViewModel
 import com.lexwilliam.risuto.mapper.AnimeMapper
 import com.lexwilliam.risuto.mapper.HistoryMapper
-import com.lexwilliam.risuto.model.AnimePresentation
+import com.lexwilliam.risuto.model.AnimeListPresentation
 import com.lexwilliam.risuto.model.local.SearchHistoryPresentation
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -126,7 +126,7 @@ class  SearchViewModel @Inject constructor(
         }
     }
 
-    private fun searchAnimePaging(q: String?, type: String?, status: String?, genre: Int?, orderBy: String?, sort: String?): Flow<PagingData<AnimePresentation>> {
+    private fun searchAnimePaging(q: String?, type: String?, status: String?, genre: Int?, orderBy: String?, sort: String?): Flow<PagingData<AnimeListPresentation>> {
         return getGenreAnime.execute(q, type, status, genre, orderBy, sort)
             .map { it.map { animeMapper.toPresentation(it) } }
             .cachedIn(viewModelScope)

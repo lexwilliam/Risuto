@@ -6,7 +6,7 @@ import com.lexwilliam.risuto.model.common.ProducerPresentation
 import com.lexwilliam.risuto.model.common.ThemePresentation
 import com.lexwilliam.risuto.model.local.WatchStatusPresentation
 
-data class AnimePresentation(
+data class AnimeListPresentation(
     val airing: Boolean? = false,
     val airing_start: String? = "",
     val continuing: Boolean? = false,

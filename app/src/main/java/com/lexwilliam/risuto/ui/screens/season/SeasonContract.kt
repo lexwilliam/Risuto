@@ -3,7 +3,7 @@ package com.lexwilliam.risuto.ui.screens.season
 import com.lexwilliam.risuto.base.ViewEvent
 import com.lexwilliam.risuto.base.ViewSideEffect
 import com.lexwilliam.risuto.base.ViewState
-import com.lexwilliam.risuto.model.AnimePresentation
+import com.lexwilliam.risuto.model.AnimeListPresentation
 
 class SeasonContract {
     sealed class Event : ViewEvent {
@@ -13,7 +13,7 @@ class SeasonContract {
     data class State(
         val season: String,
         val year: Int,
-        val seasonAnimes: List<AnimePresentation>,
+        val seasonAnimes: List<AnimeListPresentation>,
         val isLoading: Boolean = false,
         val isError: Boolean = false
     ) : ViewState

@@ -30,7 +30,7 @@ import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
-import com.lexwilliam.risuto.model.AnimePresentation
+import com.lexwilliam.risuto.model.AnimeListPresentation
 import com.lexwilliam.risuto.model.local.SearchHistoryPresentation
 import com.lexwilliam.risuto.ui.component.HorizontalGridList
 import com.lexwilliam.risuto.ui.component.LoadingScreen
@@ -70,10 +70,10 @@ fun SearchScreen(
 @ExperimentalComposeUiApi
 @Composable
 fun SearchContent(
-    searchSuggestions: List<AnimePresentation>,
-    animes: Flow<PagingData<AnimePresentation>>?,
+    searchSuggestions: List<AnimeListPresentation>,
+    animes: Flow<PagingData<AnimeListPresentation>>?,
     searchHistory: List<SearchHistoryPresentation>,
-    animeHistory: List<AnimePresentation>,
+    animeHistory: List<AnimeListPresentation>,
     onEventSent: (SearchContract.Event) -> Unit,
     query: String,
     onQueryChanged: (String) -> Unit,

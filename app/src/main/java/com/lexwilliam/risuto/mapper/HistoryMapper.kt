@@ -2,21 +2,21 @@ package com.lexwilliam.risuto.mapper
 
 import com.lexwilliam.domain.model.local.AnimeHistory
 import com.lexwilliam.domain.model.local.SearchHistory
-import com.lexwilliam.risuto.model.AnimePresentation
+import com.lexwilliam.risuto.model.AnimeListPresentation
 import com.lexwilliam.risuto.model.detail.AnimeDetailPresentation
 import com.lexwilliam.risuto.model.local.SearchHistoryPresentation
 import javax.inject.Inject
 
 interface HistoryMapper {
-    fun toDomain(anime: AnimePresentation): AnimeHistory
+    fun toDomain(anime: AnimeListPresentation): AnimeHistory
     fun toDomain(search: SearchHistoryPresentation): SearchHistory
     fun toDomain(anime: AnimeDetailPresentation): AnimeHistory
-    fun toPresentation(anime: AnimeHistory): AnimePresentation
+    fun toPresentation(anime: AnimeHistory): AnimeListPresentation
     fun toPresentation(search: SearchHistory): SearchHistoryPresentation
 }
 
 class HistoryMapperImpl @Inject constructor(): HistoryMapper {
-    override fun toDomain(anime: AnimePresentation): AnimeHistory =
+    override fun toDomain(anime: AnimeListPresentation): AnimeHistory =
         AnimeHistory(
             mal_id = anime.mal_id!!,
             image_url = anime.image_url!!,
@@ -43,8 +43,8 @@ class HistoryMapperImpl @Inject constructor(): HistoryMapper {
             members = anime.members
         )
 
-    override fun toPresentation(anime: AnimeHistory): AnimePresentation =
-        AnimePresentation(
+    override fun toPresentation(anime: AnimeHistory): AnimeListPresentation =
+        AnimeListPresentation(
             mal_id = anime.mal_id,
             image_url = anime.image_url,
             title = anime.title,

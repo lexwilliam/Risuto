@@ -5,11 +5,13 @@ import androidx.paging.PagingData
 import androidx.paging.Pager
 import androidx.paging.map
 import com.lexwilliam.data.AnimeRemoteSource
+import com.lexwilliam.data.model.remote.anime.AnimeRepo
 import com.lexwilliam.data.model.remote.search.SearchAnimeRepo
 import com.lexwilliam.data.model.remote.search.SearchRepo
 import com.lexwilliam.data.model.remote.season.SeasonRepo
 import com.lexwilliam.data.model.remote.top.TopRepo
 import com.lexwilliam.data_remote.JikanService
+import com.lexwilliam.data_remote.JikanV4Service
 import com.lexwilliam.data_remote.MyAnimeListService
 import com.lexwilliam.data_remote.mapper.AnimeMapper
 import com.lexwilliam.data_remote.paging.SearchPagingSource
@@ -18,6 +20,7 @@ import javax.inject.Inject
 
 class AnimeRemoteSourceImpl @Inject constructor(
     private val jikanService: JikanService,
+    private val jikanV4Service: JikanV4Service,
     private val animeMapper: AnimeMapper
 ): AnimeRemoteSource {
 
@@ -59,6 +62,11 @@ class AnimeRemoteSourceImpl @Inject constructor(
     override suspend fun topAnime(page: Int, subType: String): Flow<TopRepo> = flow {
         val topResponse = jikanService.getTopResult(page, subType)
         emit(animeMapper.toRepo(topResponse))
+    }
+
+    override suspend fun getTopAnime(): Flow<AnimeRepo> = flow {
+        val response = jikanV4Service.getTopAnime()
+        emit(animeMapper.toRepo(response))
     }
 
     override suspend fun currentSeasonAnime(): Flow<SeasonRepo> = flow {

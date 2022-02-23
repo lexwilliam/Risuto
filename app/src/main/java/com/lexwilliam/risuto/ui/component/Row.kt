@@ -14,12 +14,12 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.lexwilliam.risuto.model.AnimePresentation
+import com.lexwilliam.risuto.model.AnimeListPresentation
 import com.lexwilliam.risuto.util.intToCurrency
 
 @Composable
 fun RowItem(
-    item: AnimePresentation,
+    item: AnimeListPresentation,
     modifier: Modifier = Modifier,
     navToDetail: (Int) -> Unit
 ) {

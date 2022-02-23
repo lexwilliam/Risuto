@@ -3,6 +3,7 @@ package com.lexwilliam.data.repository
 import androidx.paging.*
 import com.lexwilliam.data.AnimeRemoteSource
 import com.lexwilliam.data.mapper.AnimeMapper
+import com.lexwilliam.domain.model.remote.anime.Anime
 import com.lexwilliam.domain.model.remote.search.Search
 import com.lexwilliam.domain.model.remote.search.SearchAnime
 import com.lexwilliam.domain.model.remote.season.Season
@@ -43,6 +44,10 @@ class AnimeRepositoryImpl @Inject constructor(
 
     override suspend fun topAnime(page: Int, subType: String): Flow<Top> {
         return animeRemoteSource.topAnime(page, subType).map { animeMapper.toDomain(it) }
+    }
+
+    override suspend fun getTopAnime(): Flow<Anime> {
+        return animeRemoteSource.getTopAnime().map { animeMapper.toDomain(it) }
     }
 
     override suspend fun currentSeasonAnime(): Flow<Season> {

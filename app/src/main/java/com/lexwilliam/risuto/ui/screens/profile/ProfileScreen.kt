@@ -18,7 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.lexwilliam.risuto.model.AnimePresentation
+import com.lexwilliam.risuto.model.AnimeListPresentation
 import com.lexwilliam.risuto.model.local.WatchStatusPresentation
 import com.lexwilliam.risuto.ui.component.NetworkImage
 import com.lexwilliam.risuto.util.bottomNavGap
@@ -46,7 +46,7 @@ fun ProfileScreen(
 @ExperimentalFoundationApi
 @Composable
 fun ProfileContent(
-    myAnimeList: List<AnimePresentation>,
+    myAnimeList: List<AnimeListPresentation>,
     username: String,
     navToDetail: (Int) -> Unit
 ) {
@@ -62,7 +62,7 @@ fun ProfileContent(
             status = currentStatus,
             setGroupBy = { currentStatus = it }
         )
-        var filteredList: List<AnimePresentation> = emptyList()
+        var filteredList: List<AnimeListPresentation> = emptyList()
         when(currentStatus) {
             "All" -> filteredList = myAnimeList
             "Watching" -> filteredList = myAnimeList.filter { it.watch_status == WatchStatusPresentation.Watching }
@@ -108,7 +108,7 @@ fun ProfileTabRow(
 @Composable
 fun MyAnimeGrid(
     modifier: Modifier = Modifier,
-    item: AnimePresentation,
+    item: AnimeListPresentation,
     navToDetail: (Int) -> Unit
 ) {
     Column(
@@ -145,7 +145,7 @@ fun MyAnimeGrid(
 @Composable
 fun MyAnimeGridList(
     modifier: Modifier = Modifier,
-    items: List<AnimePresentation>,
+    items: List<AnimeListPresentation>,
     navToDetail: (Int) -> Unit
 ) {
     if(items.isEmpty()) {

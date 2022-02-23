@@ -2,6 +2,7 @@ package com.lexwilliam.data
 
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import com.lexwilliam.data.model.remote.anime.AnimeRepo
 import com.lexwilliam.data.model.remote.search.SearchAnimeRepo
 import com.lexwilliam.data.model.remote.search.SearchRepo
 import com.lexwilliam.data.model.remote.season.SeasonRepo
@@ -15,6 +16,8 @@ interface AnimeRemoteSource {
     fun genreAnime(q: String?, type: String?, status: String?, genre: Int?, orderBy: String?, sort: String?): Flow<PagingData<SearchAnimeRepo>>
 
     suspend fun topAnime(page: Int, subType: String): Flow<TopRepo>
+
+    suspend fun getTopAnime(): Flow<AnimeRepo>
 
     suspend fun currentSeasonAnime(): Flow<SeasonRepo>
 

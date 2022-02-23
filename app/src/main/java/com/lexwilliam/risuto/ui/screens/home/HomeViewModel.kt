@@ -26,6 +26,7 @@ class HomeViewModel
     private val getCurrentSeasonAnime: GetCurrentSeasonAnime,
     private val getSearchAnime: GetSearchAnime,
     private val getTopAnime: GetTopAnime,
+    private val getTopAnimeV4: GetTopAnimeV4,
     private val getAccessTokenFromCache: GetAccessTokenFromCache,
     private val getUserInfo: GetUserInfo,
     private val animeMapper: AnimeMapper
@@ -166,14 +167,14 @@ class HomeViewModel
     private fun onTopAnime() {
         viewModelScope.launch(errorHandler) {
             try {
-                getTopAnime.execute(1, "tv")
+                getTopAnimeV4.execute()
                     .catch { throwable ->
                         handleExceptions(throwable)
                     }
                     .collect {
                         animeMapper.toPresentation(it)
                             .let { anime ->
-                                setState { copy(topAnime = anime.anime) }
+                                setState { copy(topAnime = anime.data) }
                             }
                     }
             } catch (throwable: Throwable) {

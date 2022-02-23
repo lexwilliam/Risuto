@@ -11,7 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.lexwilliam.risuto.model.AnimePresentation
+import com.lexwilliam.risuto.model.AnimeListPresentation
 import com.lexwilliam.risuto.ui.component.GridList
 import com.lexwilliam.risuto.ui.component.Header
 import com.lexwilliam.risuto.util.*
@@ -41,7 +41,7 @@ fun SeasonScreen(
 fun SeasonContent(
     year: Int,
     season: String,
-    animes: List<AnimePresentation>,
+    animes: List<AnimeListPresentation>,
     onEventSent: (SeasonContract.Event) -> Unit,
     navToDetail: (Int) -> Unit
 ) {

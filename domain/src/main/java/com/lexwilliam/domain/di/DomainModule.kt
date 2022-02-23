@@ -192,4 +192,9 @@ object DomainModule {
     @Provides
     fun provideGetMyAnimeStatus(detailRepository: DetailRepository): GetMyAnimeStatus =
         GetMyAnimeStatusImpl(detailRepository)
+
+    @Singleton
+    @Provides
+    fun provideGetTopAnimeV4(animeRepository: AnimeRepository): GetTopAnimeV4 =
+        GetTopAnimeV4Impl(animeRepository)
 }

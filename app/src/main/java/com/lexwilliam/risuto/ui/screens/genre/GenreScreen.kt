@@ -14,7 +14,7 @@ import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
-import com.lexwilliam.risuto.model.AnimePresentation
+import com.lexwilliam.risuto.model.AnimeListPresentation
 import com.lexwilliam.risuto.ui.component.LoadingScreen
 import com.lexwilliam.risuto.ui.component.RowItem
 import com.lexwilliam.risuto.util.bottomNavGap
@@ -43,7 +43,7 @@ fun GenreScreen(
 @ExperimentalFoundationApi
 @Composable
 fun GenreContent(
-    animeList: Flow<PagingData<AnimePresentation>>,
+    animeList: Flow<PagingData<AnimeListPresentation>>,
     genreId: Int,
     onBackPressed: () -> Unit,
     navToDetail: (Int) -> Unit

@@ -5,6 +5,7 @@ import com.lexwilliam.data.DetailRemoteSource
 import com.lexwilliam.data.OAuthRemoteSource
 import com.lexwilliam.data.UserRemoteSource
 import com.lexwilliam.data_remote.JikanService
+import com.lexwilliam.data_remote.JikanV4Service
 import com.lexwilliam.data_remote.MyAnimeListService
 import com.lexwilliam.data_remote.data.AnimeRemoteSourceImpl
 import com.lexwilliam.data_remote.data.DetailRemoteSourceImpl
@@ -25,9 +26,10 @@ object RemoteModule {
     @Provides
     fun provideAnimeRemoteSource(
         jikanService: JikanService,
+        jikanV4Service: JikanV4Service,
         animeMapper: AnimeMapper
     ): AnimeRemoteSource =
-        AnimeRemoteSourceImpl(jikanService, animeMapper)
+        AnimeRemoteSourceImpl(jikanService, jikanV4Service,  animeMapper)
 
     @Singleton
     @Provides
