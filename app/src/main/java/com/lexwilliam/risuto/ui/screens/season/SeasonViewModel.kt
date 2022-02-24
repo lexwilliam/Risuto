@@ -1,8 +1,8 @@
 package com.lexwilliam.risuto.ui.screens.season
 
 import androidx.lifecycle.viewModelScope
-import com.lexwilliam.domain.usecase.remote.GetCurrentSeasonAnime
-import com.lexwilliam.domain.usecase.remote.GetSeasonAnime
+import com.lexwilliam.domain.usecase.remote.anime.GetSeason
+import com.lexwilliam.domain.usecase.remote.anime.GetSeasonNow
 import com.lexwilliam.risuto.base.BaseViewModel
 import com.lexwilliam.risuto.mapper.AnimeMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,11 +15,10 @@ import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
-class SeasonViewModel
-    @Inject constructor(
-        private val getSeasonAnime: GetSeasonAnime,
-        private val getCurrentSeasonAnime: GetCurrentSeasonAnime,
-        private val animeMapper: AnimeMapper
+class SeasonViewModel @Inject constructor(
+    private val getSeasonNow: GetSeasonNow,
+    private val getSeason: GetSeason,
+    private val animeMapper: AnimeMapper
     ): BaseViewModel<SeasonContract.Event, SeasonContract.State, SeasonContract.Effect>() {
 
     private val errorHandler = CoroutineExceptionHandler { _, exception ->
@@ -36,7 +35,7 @@ class SeasonViewModel
         return SeasonContract.State(
             season = "",
             year = -1,
-            seasonAnimes = emptyList(),
+            seasonAnime = emptyList(),
             isLoading = true,
             isError = false
         )
@@ -50,39 +49,34 @@ class SeasonViewModel
                         season = event.season,
                         year = event.year,
                         isLoading = true,
-                        seasonAnimes = emptyList()
+                        seasonAnime = emptyList()
                     )
                 }
-                onSeasonAnime(event.season, event.year)
+                getSeason(event.year, event.season)
             }
 
         }
     }
 
     init {
-        onCurrentSeasonAnime()
+        getSeasonNow()
     }
 
-    private fun onCurrentSeasonAnime() {
+    private fun getSeasonNow() {
         viewModelScope.launch(errorHandler) {
             try {
-                getCurrentSeasonAnime.execute()
+                getSeasonNow.execute()
                     .catch { throwable ->
                         handleExceptions(throwable)
                     }
                     .collect {
-                        setState {
-                            copy(
-                                season = it.season_name,
-                                year = it.season_year
-                            )
-                        }
                         animeMapper.toPresentation(it)
                             .let { anime ->
                                 setState {
                                     copy(
-                                        seasonAnimes = anime.anime,
-                                        isLoading = false
+                                        seasonAnime = anime.data,
+                                        season = anime.data.first().season,
+                                        year = anime.data.first().year
                                     )
                                 }
                             }
@@ -93,25 +87,21 @@ class SeasonViewModel
         }
     }
 
-    private fun onSeasonAnime(season: String, year: Int) {
+    private fun getSeason(year: Int, season: String) {
         viewModelScope.launch(errorHandler) {
             try {
-                getSeasonAnime.execute(year, season.replaceFirstChar { it.lowercase(Locale.ROOT) })
+                getSeason.execute(year, season.replaceFirstChar { it.lowercase(Locale.ROOT) })
                     .catch { throwable ->
                         handleExceptions(throwable)
                     }
                     .collect {
-                        setState {
-                            copy(
-                                season = it.season_name,
-                                year = it.season_year
-                            )
-                        }
                         animeMapper.toPresentation(it)
                             .let { anime ->
                                 setState {
                                     copy(
-                                        seasonAnimes = anime.anime,
+                                        seasonAnime = anime.data,
+                                        season = anime.data.first().season,
+                                        year = anime.data.first().year,
                                         isLoading = false
                                     )
                                 }

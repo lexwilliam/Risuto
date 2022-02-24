@@ -10,11 +10,14 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.unit.dp
-import com.lexwilliam.risuto.model.AnimeListPresentation
+import com.lexwilliam.risuto.model.remote.AnimePresentation
 import com.lexwilliam.risuto.ui.component.GridList
 import com.lexwilliam.risuto.ui.component.Header
 import com.lexwilliam.risuto.util.*
+import timber.log.Timber
+import java.util.*
 
 @ExperimentalMaterialApi
 @ExperimentalComposeUiApi
@@ -28,7 +31,7 @@ fun SeasonScreen(
     SeasonContent(
         year = state.year,
         season = state.season,
-        animes = state.seasonAnimes,
+        animes = state.seasonAnime,
         onEventSent = { onEventSent(it) },
         navToDetail = { navToDetail(it) }
     )
@@ -41,19 +44,21 @@ fun SeasonScreen(
 fun SeasonContent(
     year: Int,
     season: String,
-    animes: List<AnimeListPresentation>,
+    animes: List<AnimePresentation.Data>,
     onEventSent: (SeasonContract.Event) -> Unit,
     navToDetail: (Int) -> Unit
 ) {
+    Timber.d("year : $year")
+    Timber.d("season: $season")
     Column(modifier = Modifier.padding(bottom = bottomNavGap)) {
-        if(year > 0 && season != "") {
+        if(year != -1 && season != "") {
             SeasonToolBar(
                 year = year,
                 season = season,
                 onEventSent = { onEventSent(it) }
             )
         }
-        GridList(items = animes, navToDetail = { navToDetail(it)} )
+        GridList(isLoading = false, items = animes, navToDetail = { navToDetail(it)} )
     }
 }
 
@@ -116,11 +121,13 @@ data class SeasonAndYear(
     val year: Int
 )
 
+val allSeason = listOf("Winter", "Spring", "Summer", "Fall")
+
 private fun onPreviousSeason(
     year: Int,
     season: String
 ): SeasonAndYear {
-    val seasonIndex = allSeason.indexOf(season)
+    val seasonIndex = allSeason.indexOf(season.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() })
     val previousSeason: String
     return if(seasonIndex != 0) {
         previousSeason = allSeason[seasonIndex - 1]
@@ -136,7 +143,7 @@ private fun onNextSeason(
     year: Int,
     season: String
 ): SeasonAndYear {
-    val seasonIndex = allSeason.indexOf(season)
+    val seasonIndex = allSeason.indexOf(season.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() })
     val nextSeason: String
     return if(seasonIndex != allSeason.size-1) {
         nextSeason = allSeason[seasonIndex + 1]

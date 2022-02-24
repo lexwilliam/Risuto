@@ -12,10 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.lexwilliam.risuto.model.AnimeListPresentation
 import com.lexwilliam.risuto.model.remote.AnimePresentation
 import com.lexwilliam.risuto.ui.component.Header
-import com.lexwilliam.risuto.ui.component.HorizontalGridList
 import com.lexwilliam.risuto.ui.component.HorizontalGridListV4
 import java.util.*
 
@@ -62,17 +60,17 @@ fun HomeContent(
                 title = "Home"
             )
         }
-        PosterGridListV4(
-            title = "Anime Schedules",
+        PosterGridList(
+            title = "Airing Today",
             items = schedules,
             navToDetail = { navToDetail(it) }
         )
-        PosterGridListV4(
+        PosterGridList(
             title = "${currentSeason.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() }} $currentYear",
             items = seasonAnime,
             navToDetail = { navToDetail(it) }
         )
-        PosterGridListV4(
+        PosterGridList(
             title = "Top Anime",
             items = topAnime,
             navToDetail = { navToDetail(it) }
@@ -82,35 +80,6 @@ fun HomeContent(
 
 @Composable
 fun PosterGridList(
-    title: String,
-    items: List<AnimeListPresentation>,
-    navToDetail: (Int) -> Unit,
-) {
-    if(items.isEmpty()) {
-        Box(modifier = Modifier
-            .size(240.dp)
-            .background(Color.Transparent))
-    } else {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(4.dp)
-        ) {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.h5,
-                fontWeight = FontWeight.Bold
-            )
-            HorizontalGridList(
-                items = items,
-                navToDetail = { navToDetail(it) }
-            )
-        }
-    }
-}
-
-@Composable
-fun PosterGridListV4(
     title: String,
     items: List<AnimePresentation.Data>,
     navToDetail: (Int) -> Unit,

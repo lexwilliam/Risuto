@@ -33,6 +33,38 @@ fun GridList(
     }
 }
 
+@ExperimentalFoundationApi
+@Composable
+fun GridList(
+    modifier: Modifier = Modifier,
+    isLoading: Boolean,
+    items: List<AnimePresentation.Data>,
+    navToDetail: (Int) -> Unit
+) {
+    if(items.isEmpty()) {
+        LoadingScreen()
+    } else {
+        LazyVerticalGrid(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(start = 16.dp),
+            cells = GridCells.Adaptive(minSize = 136.dp),
+        ) {
+            items(items = items) { item ->
+                MediumGrid(
+                    modifier = Modifier.padding(top = 16.dp, end = 16.dp),
+                    id = item.mal_id,
+                    imageUrl = item.images.jpg.image_url,
+                    title = item.title,
+                    score = item.score,
+                    members = item.members,
+                    navToDetail = { navToDetail(it) }
+                )
+            }
+        }
+    }
+}
+
 @Composable
 fun ColumnList(
     modifier: Modifier = Modifier,

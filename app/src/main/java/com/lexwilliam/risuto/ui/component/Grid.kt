@@ -113,6 +113,47 @@ fun MediumGrid(
     }
 }
 
+@Composable
+fun MediumGrid(
+    modifier: Modifier = Modifier,
+    id: Int,
+    imageUrl: String,
+    title: String,
+    score: Double,
+    members: Int,
+    navToDetail: (Int) -> Unit
+) {
+    Column(
+        modifier = modifier
+            .clickable {
+                navToDetail(id)
+            }
+    ) {
+        NetworkImage(
+            imageUrl = imageUrl,
+            modifier = Modifier
+                .size(width = 180.dp, height = 240.dp)
+                .shadow(elevation = 4.dp, shape = MaterialTheme.shapes.medium, clip = true)
+        )
+        Text(text = title,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.padding(top = 4.dp),
+            style = MaterialTheme.typography.subtitle1,
+            fontWeight = FontWeight.Bold
+        )
+        Row(
+            modifier = Modifier.requiredHeight(IntrinsicSize.Min),
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            Icon(Icons.Default.Star, contentDescription = null)
+            Text(text = score.toString(), style = MaterialTheme.typography.caption)
+            Icon(Icons.Default.Person, contentDescription = null)
+            Text(text = intToCurrency(members), style = MaterialTheme.typography.caption)
+        }
+    }
+}
+
 //@Preview
 //@Composable
 //fun SmallGridPreview() {

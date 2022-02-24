@@ -56,8 +56,6 @@ fun getWatchStatusColor(watchStatus: WatchStatusPresentation): Color {
 
 }
 
-val allSeason = arrayListOf("Winter", "Spring", "Summer", "Fall")
-
 fun seasonYearFormat(season: String, year: Int): String {
     return season.capitalize(Locale.ROOT) + " " + year.toString()
 }
