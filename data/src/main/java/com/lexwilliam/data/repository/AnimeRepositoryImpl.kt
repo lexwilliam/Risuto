@@ -43,20 +43,8 @@ class AnimeRepositoryImpl @Inject constructor(
         return animeRemoteSource.genreAnime(q, type, status, genre, orderBy, sort).map { it.map { animeMapper.toDomain(it) } }
     }
 
-    override suspend fun topAnime(page: Int, subType: String): Flow<Top> {
-        return animeRemoteSource.topAnime(page, subType).map { animeMapper.toDomain(it) }
-    }
-
     override suspend fun getTopAnime(): Flow<Anime> {
         return animeRemoteSource.getTopAnime().map { animeMapper.toDomain(it) }
-    }
-
-    override suspend fun currentSeasonAnime(): Flow<Season> {
-        return animeRemoteSource.currentSeasonAnime().map { animeMapper.toDomain(it) }
-    }
-
-    override suspend fun seasonAnime(year: Int?, season: String?): Flow<Season> {
-        return animeRemoteSource.seasonAnime(year, season).map { animeMapper.toDomain(it) }
     }
 
     override suspend fun getSeasonNow(): Flow<Anime> {

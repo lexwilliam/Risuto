@@ -14,12 +14,6 @@ interface AnimeRepository {
 
     fun genreAnime(q: String?, type: String?, status: String?, genre: Int?, orderBy: String?, sort: String?,): Flow<PagingData<SearchAnime>>
 
-    suspend fun topAnime(page: Int, subType: String): Flow<Top>
-
-    suspend fun currentSeasonAnime(): Flow<Season>
-
-    suspend fun seasonAnime(year: Int?, season: String?): Flow<Season>
-
     suspend fun getAnimeById(id: Int): Flow<Anime.Data>
 
     suspend fun getTopAnime(): Flow<Anime>

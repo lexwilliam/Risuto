@@ -21,8 +21,6 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel
 @Inject constructor(
-    private val getSearchAnime: GetSearchAnime,
-    private val getTopAnime: GetTopAnime,
     private val getTopAnimeV4: GetTopAnimeV4,
     private val getSchedules: GetSchedules,
     private val getSeasonNow: GetSeasonNow,

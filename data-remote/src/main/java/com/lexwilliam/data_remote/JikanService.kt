@@ -2,9 +2,6 @@ package com.lexwilliam.data_remote
 
 import com.lexwilliam.data_remote.model.detail.*
 import com.lexwilliam.data_remote.model.search.SearchResponse
-import com.lexwilliam.data_remote.model.season.SeasonArchiveResponse
-import com.lexwilliam.data_remote.model.season.SeasonResponse
-import com.lexwilliam.data_remote.model.top.TopResponse
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -22,24 +19,6 @@ interface JikanService {
         @Query("sort") sort: String?,
         @Query("page") page: Int?
     ): SearchResponse
-
-    @GET("top/anime/{page}/{subType}")
-    suspend fun getTopResult(
-        @Path("page") page: Int,
-        @Path("subType") subType: String
-    ): TopResponse
-
-    @GET("season")
-    suspend fun getCurrentSeasonAnimeResult(): SeasonResponse
-
-    @GET("season/{year}/{season}")
-    suspend fun getSeasonAnimeResult(
-        @Path("year") year: Int?,
-        @Path("season") season: String?
-    ): SeasonResponse
-
-    @GET("season/archive")
-    suspend fun getSeasonArchiveResult(): SeasonArchiveResponse
 
     @GET("anime/{id}")
     suspend fun getAnimeResult(

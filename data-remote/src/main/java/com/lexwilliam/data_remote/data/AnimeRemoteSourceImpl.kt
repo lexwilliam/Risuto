@@ -1,21 +1,20 @@
 package com.lexwilliam.data_remote.data
 
+import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import androidx.paging.Pager
 import androidx.paging.map
 import com.lexwilliam.data.AnimeRemoteSource
 import com.lexwilliam.data.model.remote.anime.AnimeRepo
 import com.lexwilliam.data.model.remote.search.SearchAnimeRepo
 import com.lexwilliam.data.model.remote.search.SearchRepo
-import com.lexwilliam.data.model.remote.season.SeasonRepo
-import com.lexwilliam.data.model.remote.top.TopRepo
 import com.lexwilliam.data_remote.JikanService
 import com.lexwilliam.data_remote.JikanV4Service
-import com.lexwilliam.data_remote.MyAnimeListService
 import com.lexwilliam.data_remote.mapper.AnimeMapper
 import com.lexwilliam.data_remote.paging.SearchPagingSource
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class AnimeRemoteSourceImpl @Inject constructor(
@@ -59,11 +58,6 @@ class AnimeRemoteSourceImpl @Inject constructor(
         ).flow.map { it.map { animeMapper.toRepo(it) } }
     }
 
-    override suspend fun topAnime(page: Int, subType: String): Flow<TopRepo> = flow {
-        val topResponse = jikanService.getTopResult(page, subType)
-        emit(animeMapper.toRepo(topResponse))
-    }
-
     override suspend fun getTopAnime(): Flow<AnimeRepo> = flow {
         val response = jikanV4Service.getTopAnime()
         emit(animeMapper.toRepo(response))
@@ -104,16 +98,6 @@ class AnimeRemoteSourceImpl @Inject constructor(
     ): Flow<AnimeRepo> = flow {
         val response = jikanV4Service.getSearchAnime(page, limit, q, type, score, minScore, maxScore, status, rating, sfw, genres, genresExclude, orderBy, sort, letter, producer)
         emit(animeMapper.toRepo(response))
-    }
-
-    override suspend fun currentSeasonAnime(): Flow<SeasonRepo> = flow {
-        val seasonResponse = jikanService.getCurrentSeasonAnimeResult()
-        emit(animeMapper.toRepo(seasonResponse))
-    }
-
-    override suspend fun seasonAnime(year: Int?, season: String?): Flow<SeasonRepo> = flow {
-        val seasonResponse = jikanService.getSeasonAnimeResult(year, season)
-        emit(animeMapper.toRepo(seasonResponse))
     }
 
     override suspend fun getAnimeById(id: Int): Flow<AnimeRepo.Data> = flow {
