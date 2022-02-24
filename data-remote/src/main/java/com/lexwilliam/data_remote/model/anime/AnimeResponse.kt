@@ -13,10 +13,10 @@ data class AnimeResponse(
         val airing: Boolean,
         val background: String?,
         val broadcast: Broadcast,
-        val demographics: List<Demographic>,
+        val demographics: List<Demographic>?,
         val duration: String,
         val episodes: Int?,
-        val explicit_genres: List<ExplicitGenre>,
+        val explicit_genres: List<ExplicitGenre>?,
         val favorites: Int,
         val genres: List<Genre>,
         val images: Images,
@@ -27,14 +27,14 @@ data class AnimeResponse(
         val producers: List<Producer>,
         val rank: Int,
         val rating: String,
-        val score: Double,
-        val scored_by: Double,
+        val score: Double?,
+        val scored_by: Double?,
         val season: String?,
         val source: String,
         val status: String,
         val studios: List<Studio>,
-        val synopsis: String,
-        val themes: List<Theme>,
+        val synopsis: String?,
+        val themes: List<Theme>?,
         val title: String,
         val title_english: String?,
         val title_japanese: String?,
@@ -45,7 +45,7 @@ data class AnimeResponse(
         val year: Int?
     ) {
         data class Aired(
-            val from: String,
+            val from: String?,
             val prop: Prop,
             val to: String?
         ) {
@@ -55,9 +55,9 @@ data class AnimeResponse(
                 val to: To
             ) {
                 data class From(
-                    val day: Int,
-                    val month: Int,
-                    val year: Int
+                    val day: Int?,
+                    val month: Int?,
+                    val year: Int?
                 )
                 data class To(
                     val day: Int?,

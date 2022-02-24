@@ -17,9 +17,36 @@ interface AnimeRemoteSource {
 
     suspend fun topAnime(page: Int, subType: String): Flow<TopRepo>
 
-    suspend fun getTopAnime(): Flow<AnimeRepo>
-
     suspend fun currentSeasonAnime(): Flow<SeasonRepo>
 
     suspend fun seasonAnime(year: Int?, season: String?): Flow<SeasonRepo>
+
+    suspend fun getAnimeById(id: Int): Flow<AnimeRepo.Data>
+
+    suspend fun getTopAnime(): Flow<AnimeRepo>
+
+    suspend fun getSeasonNow(): Flow<AnimeRepo>
+
+    suspend fun getSeason(year: Int, season: String): Flow<AnimeRepo>
+
+    suspend fun getSchedules(dayOfWeek: String): Flow<AnimeRepo>
+
+    suspend fun getSearchAnime(
+        page: Int,
+        limit: Int,
+        q: String,
+        type: String,
+        score: Double,
+        minScore: Double,
+        maxScore: Double,
+        status: String,
+        rating: String,
+        sfw: Boolean,
+        genres: String,
+        genresExclude: String,
+        orderBy: String,
+        sort: String,
+        letter: String,
+        producer: String
+    ): Flow<AnimeRepo>
 }

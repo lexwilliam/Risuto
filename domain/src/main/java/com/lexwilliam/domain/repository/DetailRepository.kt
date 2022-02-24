@@ -1,6 +1,7 @@
 package com.lexwilliam.domain.repository
 
 import com.lexwilliam.data.model.remote.detail.Pictures
+import com.lexwilliam.domain.model.remote.anime.Anime
 import com.lexwilliam.domain.model.remote.detail.*
 import kotlinx.coroutines.flow.Flow
 

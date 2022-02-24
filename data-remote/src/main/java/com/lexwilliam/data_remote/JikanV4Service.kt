@@ -30,8 +30,10 @@ interface JikanV4Service {
         @Query("producer") producer: String
     ): AnimeResponse
 
-    @GET("recommendations/anime")
-    suspend fun getRecentAnimeRecommendations(): AnimeResponse
+    @GET("schedules")
+    suspend fun getSchedules(
+        @Query("filter") dayOfWeek: String
+    ): AnimeResponse
 
     @GET("seasons/{year}/{season}")
     suspend fun getSeason(
@@ -51,8 +53,8 @@ interface JikanV4Service {
 //    suspend fun getAnimeCharacters(
 //        @Path("id") id:
 //    ):
-
-    @GET("genres/anime")
-    suspend fun getAnimesGenres(): AnimeResponse.Data.Genre
+//
+//    @GET("genres/anime")
+//    suspend fun getAnimesGenres(): AnimeResponse.Data.Genre
 
 }

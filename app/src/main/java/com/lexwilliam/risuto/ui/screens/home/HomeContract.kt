@@ -17,10 +17,9 @@ class HomeContract {
         val airingTodayAnime: List<AnimeListPresentation>,
         val currentSeason: String,
         val currentYear: Int,
-        val seasonAnime: List<AnimeListPresentation>,
-        val topAiringAnime: List<AnimeListPresentation>,
-        val topUpcomingAnime: List<AnimeListPresentation>,
+        val seasonAnime: List<AnimePresentation.Data>,
         val topAnime: List<AnimePresentation.Data>,
+        val schedules: List<AnimePresentation.Data>,
         val isLoading: Boolean = false,
         val isError: Boolean = false
     ) : ViewState

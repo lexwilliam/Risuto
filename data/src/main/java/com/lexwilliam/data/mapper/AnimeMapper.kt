@@ -23,6 +23,7 @@ interface AnimeMapper {
     fun toDomain(searchAnime: SearchAnimeRepo): SearchAnime
     fun toDomain(top: TopRepo): Top
     fun toDomain(anime: AnimeRepo): Anime
+    fun toDomain(data: AnimeRepo.Data): Anime.Data
     fun toDomain(topAnime: TopAnimeRepo): TopAnime
     fun toDomain(season: SeasonRepo): Season
     fun toDomain(seasonAnime: SeasonAnimeRepo): SeasonAnime
@@ -47,7 +48,7 @@ class AnimeMapperImpl @Inject constructor(
     private fun toDomain(pagination: AnimeRepo.Pagination): Anime.Pagination =
         Anime.Pagination(pagination.has_next_page, pagination.last_visible_page)
 
-    private fun toDomain(data: AnimeRepo.Data): Anime.Data =
+    override fun toDomain(data: AnimeRepo.Data): Anime.Data =
         Anime.Data(toDomain(data.aired), data.airing, data.background, toDomain(data.broadcast), data.demographics.map { toDomain(it) }, data.duration, data.episodes, data.explicit_genres.map { toDomain(it) }, data.favorites, data.genres.map { toDomain(it) }, toDomain(data.images), data.licensors.map { toDomain(it) }, data.mal_id, data.members, data.popularity, data.producers.map { toDomain(it) }, data.rank, data.rating, data.score, data.scored_by, data.season, data.source, data.status, data.studios.map { toDomain(it) }, data.synopsis, data.themes.map { toDomain(it) }, data.title, data.title_english, data.title_japanese, data.title_synonyms, toDomain(data.trailer), data.type, data.url, data.year)
 
     private fun toDomain(aired: AnimeRepo.Data.Aired): Anime.Data.Aired =

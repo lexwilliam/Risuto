@@ -11,6 +11,7 @@ import com.lexwilliam.domain.model.remote.top.Top
 import com.lexwilliam.domain.repository.AnimeRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import java.time.DayOfWeek
 import javax.inject.Inject
 
 class AnimeRepositoryImpl @Inject constructor(
@@ -56,6 +57,43 @@ class AnimeRepositoryImpl @Inject constructor(
 
     override suspend fun seasonAnime(year: Int?, season: String?): Flow<Season> {
         return animeRemoteSource.seasonAnime(year, season).map { animeMapper.toDomain(it) }
+    }
+
+    override suspend fun getSeasonNow(): Flow<Anime> {
+        return animeRemoteSource.getSeasonNow().map { animeMapper.toDomain(it) }
+    }
+
+    override suspend fun getSeason(year: Int, season: String): Flow<Anime> {
+        return animeRemoteSource.getSeason(year, season).map { animeMapper.toDomain(it) }
+    }
+
+    override suspend fun getSchedules(dayOfWeek: String): Flow<Anime> {
+        return animeRemoteSource.getSchedules(dayOfWeek).map { animeMapper.toDomain(it) }
+    }
+
+    override suspend fun getSearchAnime(
+        page: Int,
+        limit: Int,
+        q: String,
+        type: String,
+        score: Double,
+        minScore: Double,
+        maxScore: Double,
+        status: String,
+        rating: String,
+        sfw: Boolean,
+        genres: String,
+        genresExclude: String,
+        orderBy: String,
+        sort: String,
+        letter: String,
+        producer: String
+    ): Flow<Anime> {
+        return animeRemoteSource.getSearchAnime(page, limit, q, type, score, minScore, maxScore, status, rating, sfw, genres, genresExclude, orderBy, sort, letter, producer).map { animeMapper.toDomain(it) }
+    }
+
+    override suspend fun getAnimeById(id: Int): Flow<Anime.Data> {
+        return animeRemoteSource.getAnimeById(id).map { animeMapper.toDomain(it) }
     }
 
 

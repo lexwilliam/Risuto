@@ -2,6 +2,7 @@ package com.lexwilliam.data_remote.data
 
 import com.lexwilliam.data.DetailRemoteSource
 import com.lexwilliam.data.model.common.jikan.*
+import com.lexwilliam.data.model.remote.anime.AnimeRepo
 import com.lexwilliam.data.model.remote.detail.*
 import com.lexwilliam.data_remote.JikanService
 import com.lexwilliam.data_remote.MyAnimeListService

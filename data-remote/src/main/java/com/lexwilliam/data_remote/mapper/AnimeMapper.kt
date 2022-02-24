@@ -25,6 +25,7 @@ interface AnimeMapper {
     fun toRepo(searchAnime: SearchAnimeResponse): SearchAnimeRepo
     fun toRepo(top: TopResponse): TopRepo
     fun toRepo(anime: AnimeResponse): AnimeRepo
+    fun toRepo(data: AnimeResponse.Data): AnimeRepo.Data
     fun toRepo(topAnime: TopAnimeResponse): TopAnimeRepo
     fun toRepo(season: SeasonResponse): SeasonRepo
     fun toRepo(seasonAnime: SeasonAnimeResponse): SeasonAnimeRepo
@@ -49,17 +50,17 @@ class AnimeMapperImpl @Inject constructor(
     private fun toRepo(pagination: AnimeResponse.Pagination): AnimeRepo.Pagination =
         AnimeRepo.Pagination(pagination.has_next_page, pagination.last_visible_page)
 
-    private fun toRepo(data: AnimeResponse.Data): AnimeRepo.Data =
-        AnimeRepo.Data(toRepo(data.aired), data.airing, data.background?:"", toRepo(data.broadcast), data.demographics.map { toRepo(it) }, data.duration, data.episodes?:0, data.explicit_genres.map { toRepo(it) }, data.favorites, data.genres.map { toRepo(it) }, toRepo(data.images), data.licensors.map { toRepo(it) }, data.mal_id, data.members, data.popularity, data.producers.map { toRepo(it) }, data.rank, data.rating, data.score, data.scored_by, data.season?:"", data.source, data.status, data.studios.map { toRepo(it) }, data.synopsis, data.themes.map { toRepo(it) }, data.title, data.title_english?:"", data.title_japanese?:"", data.title_synonyms?: emptyList(), toRepo(data.trailer), data.type, data.url, data.year?:-1)
+    override fun toRepo(data: AnimeResponse.Data): AnimeRepo.Data =
+        AnimeRepo.Data(toRepo(data.aired), data.airing, data.background?:"", toRepo(data.broadcast), data.demographics?.map { toRepo(it) } ?: emptyList(), data.duration, data.episodes?:0, data.explicit_genres?.map { toRepo(it) } ?: emptyList(), data.favorites, data.genres.map { toRepo(it) }, toRepo(data.images), data.licensors.map { toRepo(it) }, data.mal_id, data.members, data.popularity, data.producers.map { toRepo(it) }, data.rank, data.rating, data.score?:-1.0, data.scored_by?:-1.0, data.season?:"", data.source, data.status, data.studios.map { toRepo(it) }, data.synopsis?:"", data.themes?.map { toRepo(it) } ?: emptyList(), data.title, data.title_english?:"", data.title_japanese?:"", data.title_synonyms?: emptyList(), toRepo(data.trailer), data.type, data.url, data.year?:-1)
 
     private fun toRepo(aired: AnimeResponse.Data.Aired): AnimeRepo.Data.Aired =
-        AnimeRepo.Data.Aired(aired.from, toRepo(aired.prop), aired.to?:"")
+        AnimeRepo.Data.Aired(aired.from?:"", toRepo(aired.prop), aired.to?:"")
 
     private fun toRepo(prop: AnimeResponse.Data.Aired.Prop): AnimeRepo.Data.Aired.Prop =
         AnimeRepo.Data.Aired.Prop(toRepo(prop.from), prop.string?:"", toRepo(prop.to))
 
     private fun toRepo(from: AnimeResponse.Data.Aired.Prop.From): AnimeRepo.Data.Aired.Prop.From =
-        AnimeRepo.Data.Aired.Prop.From(from.day, from.month, from.year)
+        AnimeRepo.Data.Aired.Prop.From(from.day?:-1, from.month?:-1, from.year?:-1)
 
     private fun toRepo(to: AnimeResponse.Data.Aired.Prop.To): AnimeRepo.Data.Aired.Prop.To =
         AnimeRepo.Data.Aired.Prop.To(to.day?:-1, to.month?:-1, to.year?:-1)

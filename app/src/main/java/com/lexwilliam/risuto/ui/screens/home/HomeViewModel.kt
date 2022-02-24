@@ -1,17 +1,15 @@
 package com.lexwilliam.risuto.ui.screens.home
 
 import androidx.lifecycle.viewModelScope
-import com.lexwilliam.domain.usecase.local.GetAccessTokenFromCache
-import com.lexwilliam.domain.usecase.local.GetExpiresInFromCache
-import com.lexwilliam.domain.usecase.local.GetRefreshTokenFromCache
 import com.lexwilliam.domain.usecase.remote.*
-import com.lexwilliam.risuto.BuildConfig
+import com.lexwilliam.domain.usecase.remote.anime.GetSchedules
+import com.lexwilliam.domain.usecase.remote.anime.GetSeasonNow
+import com.lexwilliam.domain.usecase.remote.anime.GetTopAnimeV4
 import com.lexwilliam.risuto.base.BaseViewModel
 import com.lexwilliam.risuto.mapper.AnimeMapper
 import com.lexwilliam.risuto.util.getCurrentDate
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -23,12 +21,11 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel
 @Inject constructor(
-    private val getCurrentSeasonAnime: GetCurrentSeasonAnime,
     private val getSearchAnime: GetSearchAnime,
     private val getTopAnime: GetTopAnime,
     private val getTopAnimeV4: GetTopAnimeV4,
-    private val getAccessTokenFromCache: GetAccessTokenFromCache,
-    private val getUserInfo: GetUserInfo,
+    private val getSchedules: GetSchedules,
+    private val getSeasonNow: GetSeasonNow,
     private val animeMapper: AnimeMapper
 ): BaseViewModel<HomeContract.Event, HomeContract.State, HomeContract.Effect>() {
 
@@ -50,9 +47,8 @@ class HomeViewModel
             currentYear = -1,
             airingTodayAnime = emptyList(),
             seasonAnime = emptyList(),
-            topAiringAnime = emptyList(),
-            topUpcomingAnime = emptyList(),
             topAnime = emptyList(),
+            schedules = emptyList(),
             isLoading = true,
             isError = false
         )
@@ -67,26 +63,45 @@ class HomeViewModel
     }
 
     init {
-        onAiringToday()
-        onTopAiring()
-        onTopUpcoming()
-        onTopAnime()
+        getSchedules()
+        getSeasonNow()
+        getTopAnime()
     }
 
-    private fun onAiringToday() {
+    private fun getSchedules() {
         viewModelScope.launch(errorHandler) {
             try {
-                getSearchAnime.execute(null, null, "airing", null, null, "members", "desc", null)
+                getSchedules.execute(getCurrentDayOfWeek().replaceFirstChar { it.lowercase(Locale.ROOT) })
                     .catch { throwable ->
                         handleExceptions(throwable)
                     }
                     .collect {
                         animeMapper.toPresentation(it)
                             .let { anime ->
-                                val filterToday = anime.anime.filter { convertDateToNameOfDay(it.start_date!!) == getCurrentDate() }
+                                setState { copy(schedules = anime.data.sortedByDescending { item -> item.members }) }
+                            }
+                    }
+            } catch (throwable: Throwable) {
+                handleExceptions(throwable)
+            }
+        }
+    }
+
+    private fun getSeasonNow() {
+        viewModelScope.launch(errorHandler) {
+            try {
+                getSeasonNow.execute()
+                    .catch { throwable ->
+                        handleExceptions(throwable)
+                    }
+                    .collect {
+                        animeMapper.toPresentation(it)
+                            .let { anime ->
                                 setState {
                                     copy(
-                                        airingTodayAnime = filterToday,
+                                        seasonAnime = anime.data,
+                                        currentSeason = anime.data.first().season,
+                                        currentYear = anime.data.first().year
                                     )
                                 }
                             }
@@ -97,74 +112,7 @@ class HomeViewModel
         }
     }
 
-//    private fun onCurrentSeasonAnime() {
-//        viewModelScope.launch(errorHandler) {
-//            try {
-//                getCurrentSeasonAnime.execute()
-//                    .catch { throwable ->
-//                        handleExceptions(throwable)
-//                    }
-//                    .collect {
-//                        setState {
-//                            copy(
-//                                currentSeason = it.season_name,
-//                                currentYear = it.season_year
-//                            )
-//                        }
-//                        animeMapper.toPresentation(it)
-//                            .let { anime ->
-//                                setState {
-//                                    copy(
-//                                        seasonAnime = anime.anime
-//                                    )
-//                                }
-//                            }
-//                    }
-//            } catch (throwable: Throwable) {
-//                handleExceptions(throwable)
-//            }
-//        }
-//    }
-
-    private fun onTopAiring() {
-        viewModelScope.launch(errorHandler) {
-            try {
-                getTopAnime.execute(1, "airing")
-                    .catch { throwable ->
-                        handleExceptions(throwable)
-                    }
-                    .collect {
-                        animeMapper.toPresentation(it)
-                            .let { anime ->
-                                setState { copy(topAiringAnime = anime.anime) }
-                            }
-                    }
-            } catch (throwable: Throwable) {
-                handleExceptions(throwable)
-            }
-        }
-    }
-
-    private fun onTopUpcoming() {
-        viewModelScope.launch(errorHandler) {
-            try {
-                getTopAnime.execute(1, "upcoming")
-                    .catch { throwable ->
-                        handleExceptions(throwable)
-                    }
-                    .collect {
-                        animeMapper.toPresentation(it)
-                            .let { anime ->
-                                setState {  copy(topUpcomingAnime = anime.anime) }
-                            }
-                    }
-            } catch (throwable: Throwable) {
-                handleExceptions(throwable)
-            }
-        }
-    }
-
-    private fun onTopAnime() {
+    private fun getTopAnime() {
         viewModelScope.launch(errorHandler) {
             try {
                 getTopAnimeV4.execute()
@@ -187,6 +135,9 @@ class HomeViewModel
         val onlyDate = date.removeRange(date.indexOf("T"), date.length)
         return DateTime.parse(onlyDate).dayOfWeek().getAsText(Locale.ROOT)
     }
+
+    private fun getCurrentDayOfWeek(): String =
+        DateTime.now().dayOfWeek().asText
 
     private fun handleExceptions(throwable: Throwable) {
         Timber.e(throwable)

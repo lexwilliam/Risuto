@@ -1,5 +1,6 @@
 package com.lexwilliam.data
 
+import com.lexwilliam.data.model.remote.anime.AnimeRepo
 import com.lexwilliam.data.model.remote.detail.*
 import kotlinx.coroutines.flow.Flow
 

@@ -17,6 +17,7 @@ import com.lexwilliam.risuto.model.remote.AnimePresentation
 import com.lexwilliam.risuto.ui.component.Header
 import com.lexwilliam.risuto.ui.component.HorizontalGridList
 import com.lexwilliam.risuto.ui.component.HorizontalGridListV4
+import java.util.*
 
 @Composable
 fun HomeScreen(
@@ -25,24 +26,22 @@ fun HomeScreen(
     navToDetail: (Int) -> Unit
 ) {
     HomeContent(
-        airingTodayAnime = state.airingTodayAnime,
-        currentSeasonAnime = state.seasonAnime,
-        topAiringAnime = state.topAiringAnime,
+        currentSeason = state.currentSeason,
+        currentYear = state.currentYear,
+        schedules = state.schedules,
+        seasonAnime = state.seasonAnime,
         topAnime = state.topAnime,
-        topUpcomingAnime = state.topUpcomingAnime,
-        username = state.username,
         navToDetail = navToDetail
     )
 }
 
 @Composable
 fun HomeContent(
-    airingTodayAnime: List<AnimeListPresentation>,
-    currentSeasonAnime: List<AnimeListPresentation>,
-    topAiringAnime: List<AnimeListPresentation>,
+    currentSeason: String,
+    currentYear: Int,
+    schedules: List<AnimePresentation.Data>,
+    seasonAnime: List<AnimePresentation.Data>,
     topAnime: List<AnimePresentation.Data>,
-    topUpcomingAnime: List<AnimeListPresentation>,
-    username: String,
     navToDetail: (Int) -> Unit
 ) {
     Column(
@@ -62,26 +61,15 @@ fun HomeContent(
                     .wrapContentWidth(Alignment.Start),
                 title = "Home"
             )
-            Text(
-                modifier = Modifier
-                    .weight(1f)
-                    .wrapContentWidth(Alignment.End),
-                text = username
-            )
         }
-        PosterGridList(
-            title = "Airing Today",
-            items = airingTodayAnime,
+        PosterGridListV4(
+            title = "Anime Schedules",
+            items = schedules,
             navToDetail = { navToDetail(it) }
         )
-        PosterGridList(
-            title = "Top Airing",
-            items = topAiringAnime,
-            navToDetail = { navToDetail(it) }
-        )
-        PosterGridList(
-            title = "Top Upcoming",
-            items = topUpcomingAnime,
+        PosterGridListV4(
+            title = "${currentSeason.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() }} $currentYear",
+            items = seasonAnime,
             navToDetail = { navToDetail(it) }
         )
         PosterGridListV4(

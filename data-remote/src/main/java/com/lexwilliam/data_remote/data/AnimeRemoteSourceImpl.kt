@@ -69,6 +69,43 @@ class AnimeRemoteSourceImpl @Inject constructor(
         emit(animeMapper.toRepo(response))
     }
 
+    override suspend fun getSeasonNow(): Flow<AnimeRepo> = flow {
+        val response = jikanV4Service.getSeasonNow()
+        emit(animeMapper.toRepo(response))
+    }
+
+    override suspend fun getSeason(year: Int, season: String): Flow<AnimeRepo> = flow {
+        val response = jikanV4Service.getSeason(year, season)
+        emit(animeMapper.toRepo(response))
+    }
+
+    override suspend fun getSchedules(dayOfWeek: String): Flow<AnimeRepo> = flow {
+        val response = jikanV4Service.getSchedules(dayOfWeek)
+        emit(animeMapper.toRepo(response))
+    }
+
+    override suspend fun getSearchAnime(
+        page: Int,
+        limit: Int,
+        q: String,
+        type: String,
+        score: Double,
+        minScore: Double,
+        maxScore: Double,
+        status: String,
+        rating: String,
+        sfw: Boolean,
+        genres: String,
+        genresExclude: String,
+        orderBy: String,
+        sort: String,
+        letter: String,
+        producer: String
+    ): Flow<AnimeRepo> = flow {
+        val response = jikanV4Service.getSearchAnime(page, limit, q, type, score, minScore, maxScore, status, rating, sfw, genres, genresExclude, orderBy, sort, letter, producer)
+        emit(animeMapper.toRepo(response))
+    }
+
     override suspend fun currentSeasonAnime(): Flow<SeasonRepo> = flow {
         val seasonResponse = jikanService.getCurrentSeasonAnimeResult()
         emit(animeMapper.toRepo(seasonResponse))
@@ -77,6 +114,11 @@ class AnimeRemoteSourceImpl @Inject constructor(
     override suspend fun seasonAnime(year: Int?, season: String?): Flow<SeasonRepo> = flow {
         val seasonResponse = jikanService.getSeasonAnimeResult(year, season)
         emit(animeMapper.toRepo(seasonResponse))
+    }
+
+    override suspend fun getAnimeById(id: Int): Flow<AnimeRepo.Data> = flow {
+        val response = jikanV4Service.getAnimeById(id)
+        emit(animeMapper.toRepo(response))
     }
 
     private fun getDefaultPageConfig(): PagingConfig {
