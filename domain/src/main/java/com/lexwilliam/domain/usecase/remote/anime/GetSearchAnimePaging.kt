@@ -1,14 +1,13 @@
 package com.lexwilliam.domain.usecase.remote.anime
 
+import androidx.paging.PagingData
 import com.lexwilliam.domain.model.remote.anime.Anime
 import com.lexwilliam.domain.repository.AnimeRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-interface GetSearchAnimeV4 {
-    suspend fun execute(
-        page: Int?,
-        limit: Int?,
+interface GetSearchAnimePaging {
+    fun execute(
         q: String?,
         type: String?,
         score: Double?,
@@ -23,15 +22,13 @@ interface GetSearchAnimeV4 {
         sort: String?,
         letter: String?,
         producer: String?
-    ): Flow<Anime>
+    ): Flow<PagingData<Anime.Data>>
 }
 
-class GetSearchAnimeV4Impl @Inject constructor(
+class GetSearchAnimePagingImpl @Inject constructor(
     private val animeRepository: AnimeRepository
-): GetSearchAnimeV4 {
-    override suspend fun execute(
-        page: Int?,
-        limit: Int?,
+): GetSearchAnimePaging {
+    override fun execute(
         q: String?,
         type: String?,
         score: Double?,
@@ -46,7 +43,7 @@ class GetSearchAnimeV4Impl @Inject constructor(
         sort: String?,
         letter: String?,
         producer: String?
-    ): Flow<Anime> {
-        return animeRepository.getSearchAnime(page, limit, q, type, score, minScore, maxScore, status, rating, sfw, genres, genresExclude, orderBy, sort, letter, producer)
+    ): Flow<PagingData<Anime.Data>> {
+        return animeRepository.getSearchAnimePaging(q, type, score, minScore, maxScore, status, rating, sfw, genres, genresExclude, orderBy, sort, letter, producer)
     }
 }

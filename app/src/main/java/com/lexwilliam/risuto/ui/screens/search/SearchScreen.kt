@@ -32,6 +32,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.lexwilliam.risuto.model.AnimeListPresentation
 import com.lexwilliam.risuto.model.local.SearchHistoryPresentation
+import com.lexwilliam.risuto.model.remote.AnimePresentation
 import com.lexwilliam.risuto.ui.component.HorizontalGridList
 import com.lexwilliam.risuto.ui.component.LoadingScreen
 import com.lexwilliam.risuto.ui.component.RowItem
@@ -70,8 +71,8 @@ fun SearchScreen(
 @ExperimentalComposeUiApi
 @Composable
 fun SearchContent(
-    searchSuggestions: List<AnimeListPresentation>,
-    animes: Flow<PagingData<AnimeListPresentation>>?,
+    searchSuggestions: List<AnimePresentation.Data>,
+    animes: Flow<PagingData<AnimePresentation.Data>>?,
     searchHistory: List<SearchHistoryPresentation>,
     animeHistory: List<AnimeListPresentation>,
     onEventSent: (SearchContract.Event) -> Unit,
@@ -108,7 +109,7 @@ fun SearchContent(
                     val lazyAnimeList = animes.collectAsLazyPagingItems()
                     LazyColumn {
                         items(lazyAnimeList) { anime ->
-                            RowItem(modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp), item = anime!!, navToDetail = { navToDetail(anime.mal_id!!) })
+                            RowItem(modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp), item = anime!!, navToDetail = { navToDetail(anime.mal_id) })
                         }
                         lazyAnimeList.apply {
                             when {
@@ -140,10 +141,27 @@ fun SearchContent(
             }
             ResultType.Result -> {
                 QueryList(
-                    items = searchSuggestions.map { SearchHistoryPresentation(query = it.title!!) },
+                    items = searchSuggestions.map { SearchHistoryPresentation(query = it.title) },
                     onSelectItem = {
                         onQueryChanged(it.query)
-                        onEventSent(SearchContract.Event.SearchAnimePaging(it.query, null, null, null, null, null))
+                        onEventSent(
+                            SearchContract.Event.SearchAnimePaging(
+                                q = it.query,
+                                type = null,
+                                score = null,
+                                minScore = null,
+                                maxScore = null,
+                                status = null,
+                                rating = null,
+                                sfw = null,
+                                genres = null,
+                                genresExclude = null,
+                                orderBy = null,
+                                sort = null,
+                                letter = null,
+                                producer = null
+                            )
+                        )
                         onEventSent(SearchContract.Event.InsertSearchHistory(query))
                         cursorColor = Color.Transparent
                         onResultChange(ResultType.FullResult)
@@ -202,7 +220,24 @@ fun SearchContent(
                             items = searchHistory.map { SearchHistoryPresentation(query = it.query) },
                             onSelectItem = {
                                 onQueryChanged(it.query)
-                                onEventSent(SearchContract.Event.SearchAnimePaging(it.query, null, null, null, null, null))
+                                onEventSent(
+                                    SearchContract.Event.SearchAnimePaging(
+                                        q = it.query,
+                                        type = null,
+                                        score = null,
+                                        minScore = null,
+                                        maxScore = null,
+                                        status = null,
+                                        rating = null,
+                                        sfw = null,
+                                        genres = null,
+                                        genresExclude = null,
+                                        orderBy = null,
+                                        sort = null,
+                                        letter = null,
+                                        producer = null
+                                    )
+                                )
                                 onResultChange(ResultType.FullResult)
                                 cursorColor = Color.Transparent
                             },
@@ -253,7 +288,24 @@ fun SearchBar(
                 onValueChange = {
                     onQueryChanged(it)
                     onResultChange(ResultType.Result)
-                    onEventSent(SearchContract.Event.SearchAnime(query))
+                    onEventSent(
+                        SearchContract.Event.SearchAnime(
+                            q = query,
+                            type = null,
+                            score = null,
+                            minScore = null,
+                            maxScore = null,
+                            status = null,
+                            rating = null,
+                            sfw = null,
+                            genres = null,
+                            genresExclude = null,
+                            orderBy = null,
+                            sort = null,
+                            letter = null,
+                            producer = null
+                        )
+                    )
                 },
                 interactionSource = interactionSource,
                 textStyle = MaterialTheme.typography.subtitle1,
@@ -266,12 +318,20 @@ fun SearchBar(
                 keyboardActions = KeyboardActions( onDone = {
                     onEventSent(
                         SearchContract.Event.SearchAnimePaging(
-                            query,
-                            null,
-                            null,
-                            null,
-                            null,
-                            null
+                            q = query,
+                            type = null,
+                            score = null,
+                            minScore = null,
+                            maxScore = null,
+                            status = null,
+                            rating = null,
+                            sfw = null,
+                            genres = null,
+                            genresExclude = null,
+                            orderBy = null,
+                            sort = null,
+                            letter = null,
+                            producer = null
                         )
                     )
                     onEventSent(SearchContract.Event.InsertSearchHistory(query))

@@ -25,7 +25,7 @@ data class AnimeResponse(
         val members: Int,
         val popularity: Int,
         val producers: List<Producer>,
-        val rank: Int,
+        val rank: Int?,
         val rating: String,
         val score: Double?,
         val scored_by: Double?,

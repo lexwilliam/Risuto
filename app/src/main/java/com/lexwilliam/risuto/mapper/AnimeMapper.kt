@@ -21,6 +21,7 @@ interface AnimeMapper {
     fun toPresentation(top: Top): AnimeRequestPresentation
     fun toPresentation(topAnime: TopAnime): AnimeListPresentation
     fun toPresentation(anime: Anime): AnimePresentation
+    fun toPresentation(data: Anime.Data): AnimePresentation.Data
     fun toPresentation(season: Season): AnimeRequestPresentation
     fun toPresentation(seasonAnime: SeasonAnime): AnimeListPresentation
     fun toPresentation(userAnime: UserAnimeList.Data): AnimeListPresentation
@@ -86,7 +87,7 @@ class AnimeMapperImpl @Inject constructor(
     private fun toPresentation(pagination: Anime.Pagination): AnimePresentation.Pagination =
         AnimePresentation.Pagination(pagination.has_next_page, pagination.last_visible_page)
 
-    private fun toPresentation(data: Anime.Data): AnimePresentation.Data =
+    override fun toPresentation(data: Anime.Data): AnimePresentation.Data =
         AnimePresentation.Data(
             toPresentation(data.aired), data.airing, data.background,
             toPresentation(data.broadcast), data.demographics.map { toPresentation(it) }, data.duration, data.episodes, data.explicit_genres.map { toPresentation(it) }, data.favorites, data.genres.map { toPresentation(it) },

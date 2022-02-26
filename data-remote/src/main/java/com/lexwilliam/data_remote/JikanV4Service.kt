@@ -12,22 +12,22 @@ interface JikanV4Service {
 
     @GET("anime")
     suspend fun getSearchAnime(
-        @Query("page") page: Int,
-        @Query("limit") limit: Int,
-        @Query("q") q: String,
-        @Query("type") type: String,
-        @Query("score") score: Double,
-        @Query("min_score") minScore: Double,
-        @Query("max_score") maxScore: Double,
-        @Query("status") status: String,
-        @Query("rating") rating: String,
-        @Query("sfw") sfw: Boolean,
-        @Query("genres") genres: String,
-        @Query("genres_exclude") genresExclude: String,
-        @Query("order_by") orderBy: String,
-        @Query("sort") sort: String,
-        @Query("letter") letter: String,
-        @Query("producer") producer: String
+        @Query("page") page: Int?,
+        @Query("limit") limit: Int?,
+        @Query("q") q: String?,
+        @Query("type") type: String?,
+        @Query("score") score: Double?,
+        @Query("min_score") minScore: Double?,
+        @Query("max_score") maxScore: Double?,
+        @Query("status") status: String?,
+        @Query("rating") rating: String?,
+        @Query("sfw") sfw: Boolean?,
+        @Query("genres") genres: String?,
+        @Query("genres_exclude") genresExclude: String?,
+        @Query("order_by") orderBy: String?,
+        @Query("sort") sort: String?,
+        @Query("letter") letter: String?,
+        @Query("producer") producer: String?
     ): AnimeResponse
 
     @GET("schedules")

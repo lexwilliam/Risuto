@@ -60,24 +60,43 @@ class AnimeRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getSearchAnime(
-        page: Int,
-        limit: Int,
-        q: String,
-        type: String,
-        score: Double,
-        minScore: Double,
-        maxScore: Double,
-        status: String,
-        rating: String,
-        sfw: Boolean,
-        genres: String,
-        genresExclude: String,
-        orderBy: String,
-        sort: String,
-        letter: String,
-        producer: String
+        page: Int?,
+        limit: Int?,
+        q: String?,
+        type: String?,
+        score: Double?,
+        minScore: Double?,
+        maxScore: Double?,
+        status: String?,
+        rating: String?,
+        sfw: Boolean?,
+        genres: String?,
+        genresExclude: String?,
+        orderBy: String?,
+        sort: String?,
+        letter: String?,
+        producer: String?
     ): Flow<Anime> {
         return animeRemoteSource.getSearchAnime(page, limit, q, type, score, minScore, maxScore, status, rating, sfw, genres, genresExclude, orderBy, sort, letter, producer).map { animeMapper.toDomain(it) }
+    }
+
+    override fun getSearchAnimePaging(
+        q: String?,
+        type: String?,
+        score: Double?,
+        minScore: Double?,
+        maxScore: Double?,
+        status: String?,
+        rating: String?,
+        sfw: Boolean?,
+        genres: String?,
+        genresExclude: String?,
+        orderBy: String?,
+        sort: String?,
+        letter: String?,
+        producer: String?
+    ): Flow<PagingData<Anime.Data>> {
+        return animeRemoteSource.getSearchAnimePaging(q, type, score, minScore, maxScore, status, rating, sfw, genres, genresExclude, orderBy, sort, letter, producer).map { it.map { animeMapper.toDomain(it) } }
     }
 
     override suspend fun getAnimeById(id: Int): Flow<Anime.Data> {

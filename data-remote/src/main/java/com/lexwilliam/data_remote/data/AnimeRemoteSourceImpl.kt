@@ -12,6 +12,7 @@ import com.lexwilliam.data_remote.JikanService
 import com.lexwilliam.data_remote.JikanV4Service
 import com.lexwilliam.data_remote.mapper.AnimeMapper
 import com.lexwilliam.data_remote.paging.SearchPagingSource
+import com.lexwilliam.data_remote.paging.SearchV4PagingSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
@@ -79,25 +80,47 @@ class AnimeRemoteSourceImpl @Inject constructor(
     }
 
     override suspend fun getSearchAnime(
-        page: Int,
-        limit: Int,
-        q: String,
-        type: String,
-        score: Double,
-        minScore: Double,
-        maxScore: Double,
-        status: String,
-        rating: String,
-        sfw: Boolean,
-        genres: String,
-        genresExclude: String,
-        orderBy: String,
-        sort: String,
-        letter: String,
-        producer: String
+        page: Int?,
+        limit: Int?,
+        q: String?,
+        type: String?,
+        score: Double?,
+        minScore: Double?,
+        maxScore: Double?,
+        status: String?,
+        rating: String?,
+        sfw: Boolean?,
+        genres: String?,
+        genresExclude: String?,
+        orderBy: String?,
+        sort: String?,
+        letter: String?,
+        producer: String?
     ): Flow<AnimeRepo> = flow {
         val response = jikanV4Service.getSearchAnime(page, limit, q, type, score, minScore, maxScore, status, rating, sfw, genres, genresExclude, orderBy, sort, letter, producer)
         emit(animeMapper.toRepo(response))
+    }
+
+    override fun getSearchAnimePaging(
+        q: String?,
+        type: String?,
+        score: Double?,
+        minScore: Double?,
+        maxScore: Double?,
+        status: String?,
+        rating: String?,
+        sfw: Boolean?,
+        genres: String?,
+        genresExclude: String?,
+        orderBy: String?,
+        sort: String?,
+        letter: String?,
+        producer: String?
+    ): Flow<PagingData<AnimeRepo.Data>> {
+        return Pager(
+            config = getDefaultPageConfig(),
+            pagingSourceFactory = { SearchV4PagingSource(jikanV4Service, q, type, score, minScore, maxScore, status, rating, sfw, genres, genresExclude, orderBy, sort, letter, producer) }
+        ).flow.map { it.map { animeMapper.toRepo(it) } }
     }
 
     override suspend fun getAnimeById(id: Int): Flow<AnimeRepo.Data> = flow {

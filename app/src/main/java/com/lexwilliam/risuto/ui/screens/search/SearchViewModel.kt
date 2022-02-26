@@ -1,17 +1,21 @@
 package com.lexwilliam.risuto.ui.screens.search
 
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
 import com.lexwilliam.domain.usecase.local.*
 import com.lexwilliam.domain.usecase.remote.GetGenreAnime
 import com.lexwilliam.domain.usecase.remote.GetSearchAnime
+import com.lexwilliam.domain.usecase.remote.anime.GetSearchAnimePaging
+import com.lexwilliam.domain.usecase.remote.anime.GetSearchAnimeV4
 import com.lexwilliam.risuto.base.BaseViewModel
 import com.lexwilliam.risuto.mapper.AnimeMapper
 import com.lexwilliam.risuto.mapper.HistoryMapper
 import com.lexwilliam.risuto.model.AnimeListPresentation
 import com.lexwilliam.risuto.model.local.SearchHistoryPresentation
+import com.lexwilliam.risuto.model.remote.AnimePresentation
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Job
@@ -25,8 +29,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class  SearchViewModel @Inject constructor(
-    private val getSearchAnime: GetSearchAnime,
-    private val getGenreAnime: GetGenreAnime,
+    private val getSearchAnimeV4: GetSearchAnimeV4,
+    private val getSearchAnimePaging: GetSearchAnimePaging,
     private val getAllSearchHistory: GetSearchHistory,
     private val getAllAnimeHistory: GetAnimeHistory,
     private val insertSearchHistory: InsertSearchHistory,
@@ -65,11 +69,13 @@ class  SearchViewModel @Inject constructor(
         when(event) {
             is SearchContract.Event.SearchAnimePaging ->
                 setState {
-                    copy(searchAnimesPaging = searchAnimePaging(event.q, event.type, event.status, event.genre, event.orderBy, event.sort))
+                    copy(searchAnimesPaging = getSearchAnimePaging(event.q, event.type, event.score, event.minScore, event.maxScore, event.status, event.rating, event.sfw, event.genres, event.genresExclude, event.orderBy, event.sort, event.letter, event.producer))
                 }
 
             is SearchContract.Event.SearchAnime ->
-                searchAnime(event.q)
+                if(event.q?.length!! > 3) {
+                    getSearchAnime(event.q, event.type, event.score, event.minScore, event.maxScore, event.status, event.rating, event.sfw, event.genres, event.genresExclude, event.orderBy, event.sort, event.letter, event.producer)
+                }
 
             is SearchContract.Event.InsertSearchHistory ->
                 insertSearchHistory(event.query)
@@ -93,43 +99,69 @@ class  SearchViewModel @Inject constructor(
         searchHistory()
     }
 
-    private fun searchAnime(
+    private fun getSearchAnime(
         q: String?,
+        type: String?,
+        score: Double?,
+        minScore: Double?,
+        maxScore: Double?,
+        status: String?,
+        rating: String?,
+        sfw: Boolean?,
+        genres: String?,
+        genresExclude: String?,
+        orderBy: String?,
+        sort: String?,
+        letter: String?,
+        producer: String?
     ) {
-        if(q?.length!! > 3) {
-            searchJob?.cancel()
-            searchJob = viewModelScope.launch(errorHandler) {
-                try {
-                    setState {
-                        copy(
-                            searchAnimes = emptyList()
-                        )
-                    }
-                    getSearchAnime.execute(q, null, null, null, 6, null, null, null)
-                        .catch { throwable ->
-                            handleExceptions(throwable)
-                        }
-                        .collect {
-                            animeMapper.toPresentation(it)
-                                .let { anime ->
-                                    setState {
-                                        copy(
-                                            searchAnimes = anime.anime,
-                                        )
-                                    }
-                                }
-                        }
-                } catch (throwable: Throwable) {
-                    handleExceptions(throwable)
+        viewModelScope.launch(errorHandler) {
+            try {
+                setState {
+                    copy(
+                        searchAnimes = emptyList()
+                    )
                 }
+                getSearchAnimeV4.execute(1, 6, q, type, score, minScore, maxScore, status, rating, sfw, genres, genresExclude, orderBy, sort, letter, producer)
+                    .catch { throwable ->
+                        handleExceptions(throwable)
+                    }
+                    .collect {
+                        animeMapper.toPresentation(it)
+                            .let { anime ->
+                                setState {
+                                    copy(
+                                        searchAnimes = anime.data,
+                                    )
+                                }
+                            }
+                    }
+            } catch (throwable: Throwable) {
+                handleExceptions(throwable)
             }
         }
     }
 
-    private fun searchAnimePaging(q: String?, type: String?, status: String?, genre: Int?, orderBy: String?, sort: String?): Flow<PagingData<AnimeListPresentation>> {
-        return getGenreAnime.execute(q, type, status, genre, orderBy, sort)
+    private fun getSearchAnimePaging(
+        q: String?,
+        type: String?,
+        score: Double?,
+        minScore: Double?,
+        maxScore: Double?,
+        status: String?,
+        rating: String?,
+        sfw: Boolean?,
+        genres: String?,
+        genresExclude: String?,
+        orderBy: String?,
+        sort: String?,
+        letter: String?,
+        producer: String?
+    ): Flow<PagingData<AnimePresentation.Data>> {
+        return getSearchAnimePaging.execute(q, type, score, minScore, maxScore, status, rating, sfw, genres, genresExclude, orderBy, sort, letter, producer)
             .map { it.map { animeMapper.toPresentation(it) } }
             .cachedIn(viewModelScope)
+
     }
 
     private fun animeHistory() {
