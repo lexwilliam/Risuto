@@ -1,17 +1,13 @@
 package com.lexwilliam.data.repository
 
-import androidx.paging.*
+import androidx.paging.PagingData
+import androidx.paging.map
 import com.lexwilliam.data.AnimeRemoteSource
 import com.lexwilliam.data.mapper.AnimeMapper
 import com.lexwilliam.domain.model.remote.anime.Anime
-import com.lexwilliam.domain.model.remote.search.Search
-import com.lexwilliam.domain.model.remote.search.SearchAnime
-import com.lexwilliam.domain.model.remote.season.Season
-import com.lexwilliam.domain.model.remote.top.Top
 import com.lexwilliam.domain.repository.AnimeRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import java.time.DayOfWeek
 import javax.inject.Inject
 
 class AnimeRepositoryImpl @Inject constructor(

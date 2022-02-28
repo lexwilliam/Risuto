@@ -2,10 +2,6 @@ package com.lexwilliam.domain.repository
 
 import androidx.paging.PagingData
 import com.lexwilliam.domain.model.remote.anime.Anime
-import com.lexwilliam.domain.model.remote.search.Search
-import com.lexwilliam.domain.model.remote.search.SearchAnime
-import com.lexwilliam.domain.model.remote.season.Season
-import com.lexwilliam.domain.model.remote.top.Top
 import kotlinx.coroutines.flow.Flow
 
 interface AnimeRepository {

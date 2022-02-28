@@ -7,6 +7,7 @@ import com.lexwilliam.data_remote.model.auth.OAuthGrantType
 import com.lexwilliam.data_remote.model.detail.MyAnimeStatusResponse
 import com.lexwilliam.data.model.remote.user.UserAnimeListRepo
 import com.lexwilliam.data.model.remote.user.UserInfoRepo
+import com.lexwilliam.data_remote.model.user.UserAnimeListResponse
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -59,7 +60,7 @@ interface MyAnimeListService {
         @Query("offset") offset: Int = ApiConstants.API_START_OFFSET,
         @Query("nsfw") nsfw: Int = ApiConstants.NSFW_ALSO,
         @Query("fields") fields: String = ApiConstants.USER_ANIME_EXTRA_FIELDS
-    ): Response<UserAnimeListRepo>
+    ): Response<UserAnimeListResponse>
 
     @GET("users/{username}")
     suspend fun getUserInfo(

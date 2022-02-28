@@ -3,12 +3,13 @@ package com.lexwilliam.data_remote.mapper
 import com.lexwilliam.data.model.remote.anime.AnimeRepo
 import com.lexwilliam.data_remote.model.anime.AnimeResponse
 import com.lexwilliam.data.model.remote.user.UserAnimeListRepo
+import com.lexwilliam.data_remote.model.user.UserAnimeListResponse
 import javax.inject.Inject
 
 interface AnimeMapper {
     fun toRepo(anime: AnimeResponse): AnimeRepo
     fun toRepo(data: AnimeResponse.Data): AnimeRepo.Data
-    fun toRepo(userAnime: UserAnimeListRepo): UserAnimeListRepo
+    fun toRepo(userAnime: UserAnimeListResponse): UserAnimeListRepo
 }
 
 class AnimeMapperImpl @Inject constructor(): AnimeMapper {
@@ -70,18 +71,18 @@ class AnimeMapperImpl @Inject constructor(): AnimeMapper {
     private fun toRepo(trailer: AnimeResponse.Data.Trailer): AnimeRepo.Data.Trailer =
         AnimeRepo.Data.Trailer(trailer.embed_url?:"", trailer.url?:"", trailer.youtube_id?:"")
 
-    override fun toRepo(userAnime: UserAnimeListRepo): UserAnimeListRepo =
+    override fun toRepo(userAnime: UserAnimeListResponse): UserAnimeListRepo =
         UserAnimeListRepo(userAnime.data.map { toRepo(it) })
 
-    private fun toRepo(data: UserAnimeListRepo.Data): UserAnimeListRepo.Data =
+    private fun toRepo(data: UserAnimeListResponse.Data): UserAnimeListRepo.Data =
         UserAnimeListRepo.Data(toRepo(data.listStatus), toRepo(data.node))
 
-    private fun toRepo(listStatus: UserAnimeListRepo.Data.ListStatus): UserAnimeListRepo.Data.ListStatus =
+    private fun toRepo(listStatus: UserAnimeListResponse.Data.ListStatus): UserAnimeListRepo.Data.ListStatus =
         UserAnimeListRepo.Data.ListStatus(listStatus.isReWatching, listStatus.numWatchedEpisodes, listStatus.score, listStatus.status, listStatus.updatedAt)
 
-    private fun toRepo(node: UserAnimeListRepo.Data.Node): UserAnimeListRepo.Data.Node =
-        UserAnimeListRepo.Data.Node(node.id, node.numTotalEpisodes, toRepo(node.mainPicture?: UserAnimeListRepo.Data.Node.MainPicture("", "")), node.title)
+    private fun toRepo(node: UserAnimeListResponse.Data.Node): UserAnimeListRepo.Data.Node =
+        UserAnimeListRepo.Data.Node(node.id, node.numTotalEpisodes, toRepo(node.mainPicture?: UserAnimeListResponse.Data.Node.MainPicture("", "")), node.title)
 
-    private fun toRepo(mainPicture: UserAnimeListRepo.Data.Node.MainPicture): UserAnimeListRepo.Data.Node.MainPicture =
+    private fun toRepo(mainPicture: UserAnimeListResponse.Data.Node.MainPicture): UserAnimeListRepo.Data.Node.MainPicture =
         UserAnimeListRepo.Data.Node.MainPicture(mainPicture.large, mainPicture.medium)
 }
