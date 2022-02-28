@@ -64,7 +64,7 @@ object RepositoryModule {
 
     @Singleton
     @Provides
-    fun provideAnimeMapper(commonMapper: CommonMapper): AnimeMapper = AnimeMapperImpl(commonMapper)
+    fun provideAnimeMapper(): AnimeMapper = AnimeMapperImpl()
 
     @Singleton
     @Provides

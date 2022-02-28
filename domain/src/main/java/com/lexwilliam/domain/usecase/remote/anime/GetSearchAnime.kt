@@ -1,22 +1,12 @@
-package com.lexwilliam.data
+package com.lexwilliam.domain.usecase.remote.anime
 
-import androidx.paging.PagingData
-import com.lexwilliam.data.model.remote.anime.AnimeRepo
+import com.lexwilliam.domain.model.remote.anime.Anime
+import com.lexwilliam.domain.repository.AnimeRepository
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-interface AnimeRemoteSource {
-
-    suspend fun getAnimeById(id: Int): Flow<AnimeRepo.Data>
-
-    suspend fun getTopAnime(): Flow<AnimeRepo>
-
-    suspend fun getSeasonNow(): Flow<AnimeRepo>
-
-    suspend fun getSeason(year: Int, season: String): Flow<AnimeRepo>
-
-    suspend fun getSchedules(dayOfWeek: String): Flow<AnimeRepo>
-
-    suspend fun getSearchAnime(
+interface GetSearchAnime {
+    suspend fun execute(
         page: Int?,
         limit: Int?,
         q: String?,
@@ -33,9 +23,15 @@ interface AnimeRemoteSource {
         sort: String?,
         letter: String?,
         producer: String?
-    ): Flow<AnimeRepo>
+    ): Flow<Anime>
+}
 
-    fun getSearchAnimePaging(
+class GetSearchAnimeImpl @Inject constructor(
+    private val animeRepository: AnimeRepository
+): GetSearchAnime {
+    override suspend fun execute(
+        page: Int?,
+        limit: Int?,
         q: String?,
         type: String?,
         score: Double?,
@@ -50,5 +46,7 @@ interface AnimeRemoteSource {
         sort: String?,
         letter: String?,
         producer: String?
-    ): Flow<PagingData<AnimeRepo.Data>>
+    ): Flow<Anime> {
+        return animeRepository.getSearchAnime(page, limit, q, type, score, minScore, maxScore, status, rating, sfw, genres, genresExclude, orderBy, sort, letter, producer)
+    }
 }

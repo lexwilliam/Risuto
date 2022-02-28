@@ -1,24 +1,10 @@
 package com.lexwilliam.data_remote
 
 import com.lexwilliam.data_remote.model.detail.*
-import com.lexwilliam.data_remote.model.search.SearchResponse
 import retrofit2.http.GET
 import retrofit2.http.Path
-import retrofit2.http.Query
 
 interface JikanService {
-
-    @GET("search/anime")
-    suspend fun getSearchAnimeResult(
-        @Query("q") q: String?,
-        @Query("type") type: String?,
-        @Query("status") status: String?,
-        @Query("genre") genre: Int?,
-        @Query("limit") limit: Int?,
-        @Query("order_by") orderBy: String?,
-        @Query("sort") sort: String?,
-        @Query("page") page: Int?
-    ): SearchResponse
 
     @GET("anime/{id}")
     suspend fun getAnimeResult(

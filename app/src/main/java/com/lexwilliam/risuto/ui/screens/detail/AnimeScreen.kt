@@ -33,7 +33,7 @@ fun AnimeScreen(
     state: AnimeContract.State,
     onEventSent: (AnimeContract.Event) -> Unit,
     onBackPressed: () -> Unit,
-    navToGenre: (Int) -> Unit
+    navToSearchWithGenre: (Int) -> Unit
 ) {
     val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(
         bottomSheetState = BottomSheetState(BottomSheetValue.Collapsed)
@@ -58,7 +58,7 @@ fun AnimeScreen(
         AnimeContent(
             state = state,
             onBackPressed = { onBackPressed() },
-            navToGenre = navToGenre,
+            navToSearchWithGenre = navToSearchWithGenre,
             bottomSheetState = bottomSheetScaffoldState,
             coroutineScope = coroutineScope
         )
@@ -70,7 +70,7 @@ fun AnimeScreen(
 fun AnimeContent(
     state: AnimeContract.State,
     onBackPressed: () -> Unit,
-    navToGenre: (Int) -> Unit,
+    navToSearchWithGenre: (Int) -> Unit,
     bottomSheetState: BottomSheetScaffoldState,
     coroutineScope: CoroutineScope
 ) {
@@ -93,7 +93,7 @@ fun AnimeContent(
                 onBackPressed = { onBackPressed() }
             )
             AnimeDetail(animeDetail = state.animeDetail)
-            AnimeGenre(animeDetail = state.animeDetail, navToGenre = { navToGenre(it) })
+            AnimeGenre(animeDetail = state.animeDetail, navToSearchWithGenre = { navToSearchWithGenre(it) })
             AnimeRating(animeDetail = state.animeDetail)
             CharVoiceActorList(animeStaff = state.characterStaff)
         }
@@ -262,7 +262,7 @@ fun AnimeDetail(
 @Composable
 fun AnimeGenre(
     animeDetail: AnimeDetailPresentation,
-    navToGenre: (Int) -> Unit
+    navToSearchWithGenre: (Int) -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -274,7 +274,7 @@ fun AnimeGenre(
         animeDetail.genres.forEach { genre ->
             Chip(modifier = Modifier.padding(end = 8.dp), text = genre.name,
                 onClick = {
-                    navToGenre(getGenre(it))
+                    navToSearchWithGenre(getGenre(it))
                 })
         }
     }

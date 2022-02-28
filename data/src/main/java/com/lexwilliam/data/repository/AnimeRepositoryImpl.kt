@@ -19,30 +19,6 @@ class AnimeRepositoryImpl @Inject constructor(
     private val animeMapper: AnimeMapper
 ): AnimeRepository {
 
-    override suspend fun searchAnime(
-        q: String?,
-        type: String?,
-        status: String?,
-        genre: Int?,
-        limit: Int?,
-        orderBy: String?,
-        sort: String?,
-        page: Int?
-    ): Flow<Search> {
-        return animeRemoteSource.searchAnime(q, type, status, genre, limit, orderBy, sort, page).map { animeMapper.toDomain(it) }
-    }
-
-    override fun genreAnime(
-        q: String?,
-        type: String?,
-        status: String?,
-        genre: Int?,
-        orderBy: String?,
-        sort: String?
-    ): Flow<PagingData<SearchAnime>> {
-        return animeRemoteSource.genreAnime(q, type, status, genre, orderBy, sort).map { it.map { animeMapper.toDomain(it) } }
-    }
-
     override suspend fun getTopAnime(): Flow<Anime> {
         return animeRemoteSource.getTopAnime().map { animeMapper.toDomain(it) }
     }

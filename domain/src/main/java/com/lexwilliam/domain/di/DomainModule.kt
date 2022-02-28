@@ -2,8 +2,16 @@ package com.lexwilliam.domain.di
 
 import com.lexwilliam.domain.repository.*
 import com.lexwilliam.domain.usecase.local.*
+import com.lexwilliam.domain.usecase.local.auth.*
+import com.lexwilliam.domain.usecase.local.history.*
 import com.lexwilliam.domain.usecase.remote.*
 import com.lexwilliam.domain.usecase.remote.anime.*
+import com.lexwilliam.domain.usecase.remote.auth.*
+import com.lexwilliam.domain.usecase.remote.detail.*
+import com.lexwilliam.domain.usecase.remote.user.GetUserAnimeList
+import com.lexwilliam.domain.usecase.remote.user.GetUserAnimeListImpl
+import com.lexwilliam.domain.usecase.remote.user.GetUserInfo
+import com.lexwilliam.domain.usecase.remote.user.GetUserInfoImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -58,11 +66,6 @@ object DomainModule {
     @Provides
     fun provideGetSearchAnime(animeRepository: AnimeRepository): GetSearchAnime =
         GetSearchAnimeImpl(animeRepository)
-
-    @Singleton
-    @Provides
-    fun provideGetGenreAnime(animeRepository: AnimeRepository): GetGenreAnime =
-        GetGenreAnimeImpl(animeRepository)
 
     @Singleton
     @Provides
@@ -181,8 +184,8 @@ object DomainModule {
 
     @Singleton
     @Provides
-    fun provideGetTopAnimeV4(animeRepository: AnimeRepository): GetTopAnimeV4 =
-        GetTopAnimeV4Impl(animeRepository)
+    fun provideGetTopAnimeV4(animeRepository: AnimeRepository): GetTopAnime =
+        GetTopAnimeImpl(animeRepository)
 
     @Singleton
     @Provides
@@ -193,11 +196,6 @@ object DomainModule {
     @Provides
     fun provideGetRecentAnimeRecommendation(animeRepository: AnimeRepository): GetSchedules =
         GetSchedulesImpl(animeRepository)
-
-    @Singleton
-    @Provides
-    fun provideGetSearchAnimeV4(animeRepository: AnimeRepository): GetSearchAnimeV4 =
-        GetSearchAnimeV4Impl(animeRepository)
 
     @Singleton
     @Provides

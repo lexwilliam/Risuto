@@ -1,8 +1,10 @@
 package com.lexwilliam.risuto.ui.screens.login
 
 import androidx.lifecycle.viewModelScope
-import com.lexwilliam.domain.usecase.local.SetCodeChallenge
-import com.lexwilliam.domain.usecase.remote.*
+import com.lexwilliam.domain.usecase.local.auth.SetCodeChallenge
+import com.lexwilliam.domain.usecase.remote.auth.GetAuthTokenLink
+import com.lexwilliam.domain.usecase.remote.auth.GetCodeChallenge
+import com.lexwilliam.domain.usecase.remote.auth.SetAccessToken
 import com.lexwilliam.risuto.BuildConfig
 import com.lexwilliam.risuto.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel

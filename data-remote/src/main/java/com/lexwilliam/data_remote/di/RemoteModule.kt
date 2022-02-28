@@ -25,11 +25,10 @@ object RemoteModule {
     @Singleton
     @Provides
     fun provideAnimeRemoteSource(
-        jikanService: JikanService,
         jikanV4Service: JikanV4Service,
         animeMapper: AnimeMapper
     ): AnimeRemoteSource =
-        AnimeRemoteSourceImpl(jikanService, jikanV4Service,  animeMapper)
+        AnimeRemoteSourceImpl(jikanV4Service,  animeMapper)
 
     @Singleton
     @Provides
@@ -62,7 +61,7 @@ object RemoteModule {
 
     @Singleton
     @Provides
-    fun provideAnimeMapper(commonMapper: CommonMapper): AnimeMapper = AnimeMapperImpl(commonMapper)
+    fun provideAnimeMapper(): AnimeMapper = AnimeMapperImpl()
 
     @Singleton
     @Provides

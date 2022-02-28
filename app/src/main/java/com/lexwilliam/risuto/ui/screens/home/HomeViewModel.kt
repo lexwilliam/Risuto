@@ -1,13 +1,11 @@
 package com.lexwilliam.risuto.ui.screens.home
 
 import androidx.lifecycle.viewModelScope
-import com.lexwilliam.domain.usecase.remote.*
 import com.lexwilliam.domain.usecase.remote.anime.GetSchedules
 import com.lexwilliam.domain.usecase.remote.anime.GetSeasonNow
-import com.lexwilliam.domain.usecase.remote.anime.GetTopAnimeV4
+import com.lexwilliam.domain.usecase.remote.anime.GetTopAnime
 import com.lexwilliam.risuto.base.BaseViewModel
 import com.lexwilliam.risuto.mapper.AnimeMapper
-import com.lexwilliam.risuto.util.getCurrentDate
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.catch
@@ -21,7 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel
 @Inject constructor(
-    private val getTopAnimeV4: GetTopAnimeV4,
+    private val getTopAnime: GetTopAnime,
     private val getSchedules: GetSchedules,
     private val getSeasonNow: GetSeasonNow,
     private val animeMapper: AnimeMapper
@@ -113,7 +111,7 @@ class HomeViewModel
     private fun getTopAnime() {
         viewModelScope.launch(errorHandler) {
             try {
-                getTopAnimeV4.execute()
+                getTopAnime.execute()
                     .catch { throwable ->
                         handleExceptions(throwable)
                     }

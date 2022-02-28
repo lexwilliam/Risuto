@@ -17,15 +17,12 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.*
 import androidx.navigation.navArgument
 import com.lexwilliam.risuto.Screens.*
 import com.lexwilliam.risuto.ui.screens.detail.AnimeScreen
 import com.lexwilliam.risuto.ui.screens.detail.AnimeViewModel
-import com.lexwilliam.risuto.ui.screens.genre.GenreScreen
-import com.lexwilliam.risuto.ui.screens.genre.GenreViewModel
 import com.lexwilliam.risuto.ui.screens.home.HomeScreen
 import com.lexwilliam.risuto.ui.screens.home.HomeViewModel
 import com.lexwilliam.risuto.ui.screens.login.LoginScreen
@@ -114,6 +111,7 @@ fun RisutoAppContent(
         }
     ) {
         NavHost(navController = navController, startDestination = "splash") {
+
             composable(RisutoSplashScreen.route) {
                 val splashViewModel = hiltViewModel<SplashViewModel>()
                 SplashScreen(
@@ -127,6 +125,7 @@ fun RisutoAppContent(
                     }
                 )
             }
+
             composable(RisutoHomeScreen.route) {
                 val homeViewModel = hiltViewModel<HomeViewModel>()
                 HomeScreen(
@@ -139,6 +138,7 @@ fun RisutoAppContent(
                     }
                 )
             }
+
             composable(RisutoLoginScreen.route) {
                 val loginViewModel = hiltViewModel<LoginViewModel>()
                 LoginScreen(
@@ -150,21 +150,31 @@ fun RisutoAppContent(
                     }
                 )
             }
+
             composable(RisutoSearchHomeScreen.route) {
                 SearchHomeScreen(
                     navToSearch = {
                         navController.navigate(
-                            RisutoSearchScreen.route
+                            RisutoSearchScreen.route.plus("/?genre=")
                         )
                     },
-                    navToGenre = { genre_id ->
+                    navToSearchWithGenre = { genre ->
                         navController.navigate(
-                            RisutoGenreScreen.route.plus("/?genre_id=$genre_id")
+                            RisutoSearchScreen.route.plus("/?genre=$genre")
                         )
                     }
                 )
             }
-            composable(RisutoSearchScreen.route)  {
+
+            composable(
+                route = RisutoSearchScreen.route.plus("/?genre={genre}"),
+                arguments = listOf(
+                    navArgument("genre") {
+                        type = NavType.IntType
+                        defaultValue = -1
+                    }
+                )
+            )  {
                 val searchViewModel = hiltViewModel<SearchViewModel>()
                 SearchScreen(
                     state = searchViewModel.viewState.value,
@@ -179,6 +189,7 @@ fun RisutoAppContent(
                     }
                 )
             }
+
             composable(RisutoSeasonScreen.route) {
                 val seasonViewModel = hiltViewModel<SeasonViewModel>()
                 SeasonScreen(
@@ -191,6 +202,7 @@ fun RisutoAppContent(
                     }
                 )
             }
+
             composable(
                 route = RisutoAnimeScreen.route.plus("/?mal_id={mal_id}"),
                 arguments = listOf(
@@ -205,29 +217,9 @@ fun RisutoAppContent(
                     state = animeViewModel.viewState.value,
                     onEventSent = { event -> animeViewModel.setEvent(event) },
                     onBackPressed = { navController.navigateUp() },
-                    navToGenre = { genre_id ->
+                    navToSearchWithGenre = { genre ->
                         navController.navigate(
-                            RisutoGenreScreen.route.plus("/?genre_id=$genre_id")
-                        )
-                    }
-                )
-            }
-            composable(
-                route = RisutoGenreScreen.route.plus("/?genre_id={genre_id}"),
-                arguments = listOf(
-                    navArgument("genre_id") {
-                        type = NavType.IntType
-                        defaultValue = -1
-                    }
-                )
-            ) {
-                val genreViewModel = hiltViewModel<GenreViewModel>()
-                GenreScreen(
-                    state = genreViewModel.viewState.value,
-                    onBackPressed = { navController.navigateUp() },
-                    navToDetail = { mal_id ->
-                        navController.navigate(
-                            RisutoAnimeScreen.route.plus("/?mal_id=$mal_id")
+                            RisutoSearchScreen.route.plus("/?genre=$genre")
                         )
                     }
                 )
@@ -256,7 +248,6 @@ sealed class Screens(val route: String) {
     object RisutoSearchScreen: Screens("search")
     object RisutoSeasonScreen: Screens("season")
     object RisutoAnimeScreen: Screens("anime")
-    object RisutoGenreScreen: Screens("genre")
     object RisutoProfileScreen: Screens("profile")
 }
 

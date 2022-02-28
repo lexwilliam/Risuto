@@ -21,18 +21,18 @@ import com.lexwilliam.risuto.util.getGenre
 @Composable
 fun SearchHomeScreen(
     navToSearch: () -> Unit,
-    navToGenre: (Int) -> Unit
+    navToSearchWithGenre: (Int) -> Unit
 ) {
     SearchHomeContent(
         navToSearch = { navToSearch() },
-        navToGenre = { navToGenre(it) }
+        navToSearchWithGenre = { navToSearchWithGenre(it) }
     )
 }
 
 @Composable
 fun SearchHomeContent(
     navToSearch: () -> Unit,
-    navToGenre: (Int) -> Unit
+    navToSearchWithGenre: (Int) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -43,8 +43,8 @@ fun SearchHomeContent(
         Header(title = "Search", modifier = Modifier.padding(top = 24.dp))
         SearchHomeBar(navToSearch = { navToSearch() })
         Text(text = "Genre", style = MaterialTheme.typography.h6)
-        GenreGridList(navToGenre = {
-            navToGenre(it)
+        GenreGridList(navToSearchWithGenre = {
+            navToSearchWithGenre(it)
         })
     }
 }
@@ -78,7 +78,7 @@ fun SearchHomeBar(
 
 @Composable
 fun GenreGridList(
-    navToGenre: (Int) -> Unit
+    navToSearchWithGenre: (Int) -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -91,8 +91,8 @@ fun GenreGridList(
                 for (i in 0..1) {
                     GenreGrid(
                         genre = genreList[count],
-                        navToGenre = {
-                            navToGenre(it)
+                        navToSearchWithGenre = {
+                            navToSearchWithGenre(it)
                         }
                     )
                     count++
@@ -104,8 +104,8 @@ fun GenreGridList(
                 while (genreList.size - count != 0) {
                     GenreGrid(
                         genre = genreList[count],
-                        navToGenre = {
-                            navToGenre(it)
+                        navToSearchWithGenre = {
+                            navToSearchWithGenre(it)
                         }
                     )
                     count++
@@ -119,14 +119,14 @@ fun GenreGridList(
 fun GenreGrid(
     modifier: Modifier = Modifier,
     genre: String,
-    navToGenre: (Int) -> Unit
+    navToSearchWithGenre: (Int) -> Unit
 ) {
     Column(modifier = modifier
         .size(width = 172.dp, height = 64.dp)
         .shadow(elevation = 4.dp, shape = MaterialTheme.shapes.medium, true)
         .background(color = MaterialTheme.colors.primaryVariant)
         .clickable {
-            navToGenre(getGenre(genre))
+            navToSearchWithGenre(getGenre(genre))
         },
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center

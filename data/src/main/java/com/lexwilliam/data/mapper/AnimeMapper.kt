@@ -1,32 +1,18 @@
 package com.lexwilliam.data.mapper
 
 import com.lexwilliam.data.model.remote.anime.AnimeRepo
-import com.lexwilliam.data.model.remote.search.SearchAnimeRepo
-import com.lexwilliam.data.model.remote.search.SearchRepo
 import com.lexwilliam.data.model.remote.user.UserAnimeListRepo
 import com.lexwilliam.domain.model.remote.anime.Anime
-import com.lexwilliam.domain.model.remote.search.Search
-import com.lexwilliam.domain.model.remote.search.SearchAnime
 import com.lexwilliam.domain.model.remote.user.UserAnimeList
 import javax.inject.Inject
 
 interface AnimeMapper {
-    fun toDomain(search: SearchRepo): Search
-    fun toDomain(searchAnime: SearchAnimeRepo): SearchAnime
     fun toDomain(anime: AnimeRepo): Anime
     fun toDomain(data: AnimeRepo.Data): Anime.Data
     fun toDomain(userAnime: UserAnimeListRepo): UserAnimeList
 }
 
-class AnimeMapperImpl @Inject constructor(
-    private val commonMapper: CommonMapper
-): AnimeMapper {
-    override fun toDomain(search: SearchRepo): Search =
-        Search(search.request_hash, search.request_cached, search.request_cache_expiry, search.results.map { this.toDomain(it) }, search.last_page)
-
-    override fun toDomain(searchAnime: SearchAnimeRepo): SearchAnime =
-        SearchAnime(searchAnime.mal_id, searchAnime.url, searchAnime.image_url, searchAnime.title, searchAnime.airing, searchAnime.synopsis, searchAnime.type, searchAnime.episodes, searchAnime.score, searchAnime.start_date, searchAnime.end_date, searchAnime.members, searchAnime.rated)
-
+class AnimeMapperImpl @Inject constructor(): AnimeMapper {
     override fun toDomain(anime: AnimeRepo): Anime =
         Anime(anime.data.map { toDomain(it) }, toDomain(anime.pagination))
 

@@ -1,31 +1,17 @@
 package com.lexwilliam.data_remote.mapper
 
 import com.lexwilliam.data.model.remote.anime.AnimeRepo
-import com.lexwilliam.data.model.remote.search.SearchAnimeRepo
-import com.lexwilliam.data.model.remote.search.SearchRepo
-import com.lexwilliam.data.model.remote.user.UserAnimeListRepo
 import com.lexwilliam.data_remote.model.anime.AnimeResponse
-import com.lexwilliam.data_remote.model.search.SearchAnimeResponse
-import com.lexwilliam.data_remote.model.search.SearchResponse
-import com.lexwilliam.data_remote.model.user.UserAnimeListResponse
+import com.lexwilliam.data.model.remote.user.UserAnimeListRepo
 import javax.inject.Inject
 
 interface AnimeMapper {
-    fun toRepo(search: SearchResponse): SearchRepo
-    fun toRepo(searchAnime: SearchAnimeResponse): SearchAnimeRepo
     fun toRepo(anime: AnimeResponse): AnimeRepo
     fun toRepo(data: AnimeResponse.Data): AnimeRepo.Data
-    fun toRepo(userAnime: UserAnimeListResponse): UserAnimeListRepo
+    fun toRepo(userAnime: UserAnimeListRepo): UserAnimeListRepo
 }
 
-class AnimeMapperImpl @Inject constructor(
-    private val commonMapper: CommonMapper
-): AnimeMapper {
-    override fun toRepo(search: SearchResponse): SearchRepo =
-        SearchRepo(search.request_hash, search.request_cached, search.request_cache_expiry, search.results.map { toRepo(it) }, search.last_page)
-
-    override fun toRepo(searchAnime: SearchAnimeResponse): SearchAnimeRepo =
-        SearchAnimeRepo(searchAnime.mal_id, searchAnime.url, searchAnime.image_url, searchAnime.title, searchAnime.airing, searchAnime.synopsis, searchAnime.type, searchAnime.episodes, searchAnime.score, searchAnime.start_date, searchAnime.end_date, searchAnime.members, searchAnime.rated)
+class AnimeMapperImpl @Inject constructor(): AnimeMapper {
 
     override fun toRepo(anime: AnimeResponse): AnimeRepo =
         AnimeRepo(anime.data.map { toRepo(it) }, toRepo(anime.pagination))
@@ -84,18 +70,18 @@ class AnimeMapperImpl @Inject constructor(
     private fun toRepo(trailer: AnimeResponse.Data.Trailer): AnimeRepo.Data.Trailer =
         AnimeRepo.Data.Trailer(trailer.embed_url?:"", trailer.url?:"", trailer.youtube_id?:"")
 
-    override fun toRepo(userAnime: UserAnimeListResponse): UserAnimeListRepo =
+    override fun toRepo(userAnime: UserAnimeListRepo): UserAnimeListRepo =
         UserAnimeListRepo(userAnime.data.map { toRepo(it) })
 
-    private fun toRepo(data: UserAnimeListResponse.Data): UserAnimeListRepo.Data =
+    private fun toRepo(data: UserAnimeListRepo.Data): UserAnimeListRepo.Data =
         UserAnimeListRepo.Data(toRepo(data.listStatus), toRepo(data.node))
 
-    private fun toRepo(listStatus: UserAnimeListResponse.Data.ListStatus): UserAnimeListRepo.Data.ListStatus =
+    private fun toRepo(listStatus: UserAnimeListRepo.Data.ListStatus): UserAnimeListRepo.Data.ListStatus =
         UserAnimeListRepo.Data.ListStatus(listStatus.isReWatching, listStatus.numWatchedEpisodes, listStatus.score, listStatus.status, listStatus.updatedAt)
 
-    private fun toRepo(node: UserAnimeListResponse.Data.Node): UserAnimeListRepo.Data.Node =
-        UserAnimeListRepo.Data.Node(node.id, node.numTotalEpisodes, toRepo(node.mainPicture?: UserAnimeListResponse.Data.Node.MainPicture("", "")), node.title)
+    private fun toRepo(node: UserAnimeListRepo.Data.Node): UserAnimeListRepo.Data.Node =
+        UserAnimeListRepo.Data.Node(node.id, node.numTotalEpisodes, toRepo(node.mainPicture?: UserAnimeListRepo.Data.Node.MainPicture("", "")), node.title)
 
-    private fun toRepo(mainPicture: UserAnimeListResponse.Data.Node.MainPicture): UserAnimeListRepo.Data.Node.MainPicture =
+    private fun toRepo(mainPicture: UserAnimeListRepo.Data.Node.MainPicture): UserAnimeListRepo.Data.Node.MainPicture =
         UserAnimeListRepo.Data.Node.MainPicture(mainPicture.large, mainPicture.medium)
 }

@@ -56,6 +56,7 @@ class SearchContract {
         val searchAnimesPaging: Flow<PagingData<AnimePresentation.Data>>?,
         val animeHistory: List<AnimeListPresentation>,
         val searchHistory: List<SearchHistoryPresentation>,
+        val genreFromArgs: String,
         val isLoading: Boolean = false,
         val isError: Boolean = false
     ) : ViewState

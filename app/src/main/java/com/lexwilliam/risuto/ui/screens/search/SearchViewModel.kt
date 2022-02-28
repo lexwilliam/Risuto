@@ -1,19 +1,17 @@
 package com.lexwilliam.risuto.ui.screens.search
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
 import com.lexwilliam.domain.usecase.local.*
-import com.lexwilliam.domain.usecase.remote.GetGenreAnime
-import com.lexwilliam.domain.usecase.remote.GetSearchAnime
+import com.lexwilliam.domain.usecase.local.history.*
 import com.lexwilliam.domain.usecase.remote.anime.GetSearchAnimePaging
-import com.lexwilliam.domain.usecase.remote.anime.GetSearchAnimeV4
+import com.lexwilliam.domain.usecase.remote.anime.GetSearchAnime
 import com.lexwilliam.risuto.base.BaseViewModel
 import com.lexwilliam.risuto.mapper.AnimeMapper
 import com.lexwilliam.risuto.mapper.HistoryMapper
-import com.lexwilliam.risuto.model.AnimeListPresentation
 import com.lexwilliam.risuto.model.local.SearchHistoryPresentation
 import com.lexwilliam.risuto.model.remote.AnimePresentation
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,7 +27,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class  SearchViewModel @Inject constructor(
-    private val getSearchAnimeV4: GetSearchAnimeV4,
+    private val getSearchAnime: GetSearchAnime,
     private val getSearchAnimePaging: GetSearchAnimePaging,
     private val getAllSearchHistory: GetSearchHistory,
     private val getAllAnimeHistory: GetAnimeHistory,
@@ -39,7 +37,8 @@ class  SearchViewModel @Inject constructor(
     private val deleteAnimeHistory: DeleteAnimeByTitle,
     private val deleteAllAnimeHistory: DeleteAllAnimeHistory,
     private val animeMapper: AnimeMapper,
-    private val historyMapper: HistoryMapper
+    private val historyMapper: HistoryMapper,
+    savedStateHandle: SavedStateHandle
 ): BaseViewModel<SearchContract.Event, SearchContract.State, SearchContract.Effect>() {
 
     private val errorHandler = CoroutineExceptionHandler { _, exception ->
@@ -52,7 +51,7 @@ class  SearchViewModel @Inject constructor(
         }
     }
 
-    private var searchJob: Job? = null
+    private val genreFromArgs = savedStateHandle.get<Int>("genre")
 
     override fun setInitialState(): SearchContract.State {
         return SearchContract.State(
@@ -60,9 +59,20 @@ class  SearchViewModel @Inject constructor(
             searchAnimesPaging = null,
             animeHistory = emptyList(),
             searchHistory = emptyList(),
+            genreFromArgs = "",
             isLoading = true,
             isError = false
         )
+    }
+
+    init {
+        genreFromArgs.let {
+            if(genreFromArgs != null) {
+                setState {
+                    copy(genreFromArgs = it.toString())
+                }
+            }
+        }
     }
 
     override fun handleEvents(event: SearchContract.Event) {
@@ -122,7 +132,7 @@ class  SearchViewModel @Inject constructor(
                         searchAnimes = emptyList()
                     )
                 }
-                getSearchAnimeV4.execute(1, 6, q, type, score, minScore, maxScore, status, rating, sfw, genres, genresExclude, orderBy, sort, letter, producer)
+                getSearchAnime.execute(1, 6, q, type, score, minScore, maxScore, status, rating, sfw, genres, genresExclude, orderBy, sort, letter, producer)
                     .catch { throwable ->
                         handleExceptions(throwable)
                     }

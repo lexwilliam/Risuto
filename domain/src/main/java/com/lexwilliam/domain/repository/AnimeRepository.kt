@@ -10,10 +10,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface AnimeRepository {
 
-    suspend fun searchAnime(q: String?, type: String?, status: String?, genre: Int?, limit: Int?, orderBy: String?, sort: String?, page: Int?): Flow<Search>
-
-    fun genreAnime(q: String?, type: String?, status: String?, genre: Int?, orderBy: String?, sort: String?,): Flow<PagingData<SearchAnime>>
-
     suspend fun getAnimeById(id: Int): Flow<Anime.Data>
 
     suspend fun getTopAnime(): Flow<Anime>
