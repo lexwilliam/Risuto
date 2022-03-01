@@ -1,9 +1,9 @@
 package com.lexwilliam.risuto.ui.screens.splash
 
 import androidx.lifecycle.viewModelScope
-import com.lexwilliam.domain.usecase.local.auth.GetExpiresInFromCache
-import com.lexwilliam.domain.usecase.local.auth.GetRefreshTokenFromCache
-import com.lexwilliam.domain.usecase.remote.auth.SetRefreshToken
+import com.lexwilliam.domain.usecase.GetExpiresInFromCache
+import com.lexwilliam.domain.usecase.GetRefreshTokenFromCache
+import com.lexwilliam.domain.usecase.SetRefreshToken
 import com.lexwilliam.risuto.BuildConfig
 import com.lexwilliam.risuto.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel

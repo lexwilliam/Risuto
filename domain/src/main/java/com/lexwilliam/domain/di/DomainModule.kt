@@ -1,17 +1,9 @@
 package com.lexwilliam.domain.di
 
 import com.lexwilliam.domain.repository.*
-import com.lexwilliam.domain.usecase.local.*
-import com.lexwilliam.domain.usecase.local.auth.*
-import com.lexwilliam.domain.usecase.local.history.*
-import com.lexwilliam.domain.usecase.remote.*
-import com.lexwilliam.domain.usecase.remote.anime.*
-import com.lexwilliam.domain.usecase.remote.auth.*
-import com.lexwilliam.domain.usecase.remote.detail.*
-import com.lexwilliam.domain.usecase.remote.user.GetUserAnimeList
-import com.lexwilliam.domain.usecase.remote.user.GetUserAnimeListImpl
-import com.lexwilliam.domain.usecase.remote.user.GetUserInfo
-import com.lexwilliam.domain.usecase.remote.user.GetUserInfoImpl
+import com.lexwilliam.domain.usecase.DeleteAllAnimeHistory
+import com.lexwilliam.domain.usecase.DeleteAllAnimeHistoryImpl
+import com.lexwilliam.domain.usecase.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

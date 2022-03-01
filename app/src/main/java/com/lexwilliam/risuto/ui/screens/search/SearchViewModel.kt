@@ -5,10 +5,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
-import com.lexwilliam.domain.usecase.local.*
-import com.lexwilliam.domain.usecase.local.history.*
-import com.lexwilliam.domain.usecase.remote.anime.GetSearchAnimePaging
-import com.lexwilliam.domain.usecase.remote.anime.GetSearchAnime
+import com.lexwilliam.domain.usecase.DeleteAllAnimeHistory
+import com.lexwilliam.domain.usecase.*
 import com.lexwilliam.risuto.base.BaseViewModel
 import com.lexwilliam.risuto.mapper.AnimeMapper
 import com.lexwilliam.risuto.mapper.HistoryMapper
@@ -16,7 +14,6 @@ import com.lexwilliam.risuto.model.local.SearchHistoryPresentation
 import com.lexwilliam.risuto.model.remote.AnimePresentation
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect

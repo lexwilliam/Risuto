@@ -2,9 +2,7 @@ package com.lexwilliam.risuto.ui.screens.detail
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import com.lexwilliam.domain.usecase.local.history.InsertAnimeHistory
-import com.lexwilliam.domain.usecase.remote.*
-import com.lexwilliam.domain.usecase.remote.detail.*
+import com.lexwilliam.domain.usecase.*
 import com.lexwilliam.risuto.base.BaseViewModel
 import com.lexwilliam.risuto.mapper.DetailMapper
 import com.lexwilliam.risuto.mapper.HistoryMapper

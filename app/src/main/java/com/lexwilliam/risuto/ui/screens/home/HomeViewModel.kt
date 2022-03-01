@@ -1,9 +1,9 @@
 package com.lexwilliam.risuto.ui.screens.home
 
 import androidx.lifecycle.viewModelScope
-import com.lexwilliam.domain.usecase.remote.anime.GetSchedules
-import com.lexwilliam.domain.usecase.remote.anime.GetSeasonNow
-import com.lexwilliam.domain.usecase.remote.anime.GetTopAnime
+import com.lexwilliam.domain.usecase.GetSchedules
+import com.lexwilliam.domain.usecase.GetSeasonNow
+import com.lexwilliam.domain.usecase.GetTopAnime
 import com.lexwilliam.risuto.base.BaseViewModel
 import com.lexwilliam.risuto.mapper.AnimeMapper
 import dagger.hilt.android.lifecycle.HiltViewModel

@@ -8,6 +8,7 @@ import com.lexwilliam.data_remote.model.detail.MyAnimeStatusResponse
 import com.lexwilliam.data.model.remote.user.UserAnimeListRepo
 import com.lexwilliam.data.model.remote.user.UserInfoRepo
 import com.lexwilliam.data_remote.model.user.UserAnimeListResponse
+import com.lexwilliam.data_remote.model.user.UserAnimeUpdateResponse
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -49,6 +50,22 @@ interface MyAnimeListService {
         @Path("mal_id") malId: Int,
         @Query("fields") fields: String = "my_list_status"
     ): Response<MyAnimeStatusResponse>
+
+    @PATCH("anime/{id}/my_list_status")
+    @FormUrlEncoded
+    fun updateAnimeStatus(
+        @Header("Authorization") authHeader: String,
+        @Path("id") animeId: Int,
+        @Field("status") animeStatus: String? = null,
+        @Field("is_rewatching") isReWatching: Boolean? = null,
+        @Field("score") score: Int? = null,
+        @Field("num_watched_episodes") numWatchedEps: Int? = null,
+        @Field("priority") priority: Int? = null,
+        @Field("num_times_rewatched") numReWatchedEps: Int? = null,
+        @Field("rewatch_value") reWatchValue: Int? = null,
+        @Field("tags") tags: String? = null,
+        @Field("comments") comments: String? = null
+    ): Response<UserAnimeUpdateResponse>
 
     @GET("users/{username}/animelist")
     suspend fun getAnimeListOfUser(
