@@ -35,7 +35,7 @@ fun AnimeScreen(
     navToSearchWithGenre: (Int) -> Unit
 ) {
     var isDone by remember { mutableStateOf(false) }
-    if(state.isLoading && !isDone) {
+    if(!state.isLoading && !isDone) {
         onEventSent(AnimeContract.Event.InsertAnimeHistory(state.animeDetail))
         isDone = true
     }
