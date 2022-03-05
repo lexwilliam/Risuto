@@ -1,5 +1,10 @@
 package com.lexwilliam.data_remote.model.anime
 
+import androidx.annotation.Keep
+import com.squareup.moshi.JsonClass
+
+@Keep
+@JsonClass(generateAdapter = true)
 data class AnimeDetailResponse(
     val alternative_titles: AlternativeTitles?,
     val average_episode_duration: Int?,

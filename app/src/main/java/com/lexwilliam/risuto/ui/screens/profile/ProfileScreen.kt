@@ -20,6 +20,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.lexwilliam.risuto.model.UserAnimeListPresentation
 import com.lexwilliam.risuto.model.WatchStatusPresentation
+import com.lexwilliam.risuto.ui.component.LoadingScreen
 import com.lexwilliam.risuto.ui.component.NetworkImage
 import com.lexwilliam.risuto.util.bottomNavGap
 import com.lexwilliam.risuto.util.intToCurrency
@@ -32,15 +33,16 @@ fun ProfileScreen(
     onEventSent: (ProfileContract.Event) -> Unit,
     navToDetail: (Int) -> Unit,
 ) {
-    if(state.isLoading && state.accessToken != "") {
-        onEventSent(ProfileContract.Event.GetUserInfo(state.accessToken))
-        onEventSent(ProfileContract.Event.GetUserAnimeList(state.accessToken))
+    if(state.isLoading) {
+        LoadingScreen()
+    } else {
+        ProfileContent(
+            myAnimeList = state.animes,
+            username = state.username,
+            navToDetail = { navToDetail(it) }
+        )
     }
-    ProfileContent(
-        myAnimeList = state.animes,
-        username = state.username,
-        navToDetail = { navToDetail(it) }
-    )
+
 }
 
 @ExperimentalFoundationApi

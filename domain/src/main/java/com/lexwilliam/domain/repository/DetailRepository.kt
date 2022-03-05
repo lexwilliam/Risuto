@@ -5,6 +5,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface DetailRepository {
 
-    suspend fun getAnimeDetails(accessToken: String, id: Int): Flow<AnimeDetail>
+    suspend fun getAnimeDetails(id: Int): Flow<AnimeDetail>
 
 }

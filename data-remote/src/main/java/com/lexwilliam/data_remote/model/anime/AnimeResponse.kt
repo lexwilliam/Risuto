@@ -1,5 +1,10 @@
 package com.lexwilliam.data_remote.model.anime
 
+import androidx.annotation.Keep
+import com.squareup.moshi.JsonClass
+
+@Keep
+@JsonClass(generateAdapter = true)
 data class AnimeResponse(
     val `data`: List<Data>,
     val pagination: Pagination

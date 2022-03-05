@@ -35,12 +35,9 @@ fun AnimeScreen(
     navToSearchWithGenre: (Int) -> Unit
 ) {
     var isDone by remember { mutableStateOf(false) }
-    if(state.isLoading && state.accessToken != "" && !isDone) {
-        onEventSent(AnimeContract.Event.GetAnimeDetails(state.accessToken, state.malId))
-        isDone = true
-    }
-    if(state.animeDetail.id != -1) {
+    if(state.isLoading && !isDone) {
         onEventSent(AnimeContract.Event.InsertAnimeHistory(state.animeDetail))
+        isDone = true
     }
     val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(
         bottomSheetState = BottomSheetState(BottomSheetValue.Collapsed)

@@ -1,4 +1,4 @@
-package com.lexwilliam.data_remote.model
+package com.lexwilliam.data_remote.model.constants
 
 object ApiConstants {
     const val BEARER_SEPARATOR = "Bearer "

@@ -1,8 +1,8 @@
 package com.lexwilliam.data_remote
 
 import com.lexwilliam.data.model.remote.user.UserInfoRepo
-import com.lexwilliam.data_remote.model.ApiConstants
-import com.lexwilliam.data_remote.model.UserAnimeSortType
+import com.lexwilliam.data_remote.model.constants.ApiConstants
+import com.lexwilliam.data_remote.model.constants.UserAnimeSortType
 import com.lexwilliam.data_remote.model.anime.AnimeDetailResponse
 import com.lexwilliam.data_remote.model.auth.AccessTokenResponse
 import com.lexwilliam.data_remote.model.auth.OAuthGrantType
@@ -47,12 +47,12 @@ interface MyAnimeListService {
     suspend fun getAnimeDetails(
         @Header("Authorization") authHeader: String,
         @Path("anime_id") malId: Int,
-        @Query("fields") fields: String? = "id,title,main_picture,alternative_titles,start_date,end_date,synopsis,mean,rank,popularity,num_list_users,num_scoring_users,nsfw,created_at,updated_at,media_type,status,genres,my_list_status,num_episodes,start_season,broadcast,source,average_episode_duration,rating,pictures,background,related_anime,related_manga,recommendations,studios,statistics"
+        @Query("fields") fields: String? = ApiConstants.ANIME_ALL_FIELDS
     ): Response<AnimeDetailResponse>
 
     @PATCH("anime/{id}/my_list_status")
     @FormUrlEncoded
-    fun updateAnimeStatus(
+    fun updateUserAnimeStatus(
         @Header("Authorization") authHeader: String,
         @Path("id") animeId: Int,
         @Field("status") animeStatus: String? = null,
@@ -67,7 +67,7 @@ interface MyAnimeListService {
     ): Response<UserAnimeUpdateResponse>
 
     @GET("users/{username}/animelist")
-    suspend fun getAnimeListOfUser(
+    suspend fun getUserAnimeList(
         @Header("Authorization") authHeader: String,
         @Path("username") username: String = ApiConstants.ME_IDENTIFIER,
         @Query("status") status: String? = null,

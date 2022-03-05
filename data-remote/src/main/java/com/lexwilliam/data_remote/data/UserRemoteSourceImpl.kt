@@ -2,6 +2,7 @@ package com.lexwilliam.data_remote.data
 
 import com.lexwilliam.data.UserRemoteSource
 import com.lexwilliam.data.model.remote.user.UserAnimeListRepo
+import com.lexwilliam.data.model.remote.user.UserAnimeUpdateRepo
 import com.lexwilliam.data_remote.MyAnimeListService
 import com.lexwilliam.data_remote.mapper.AnimeMapper
 import kotlinx.coroutines.flow.Flow
@@ -17,8 +18,14 @@ class UserRemoteSourceImpl @Inject constructor(
         malService.getUserInfo(authHeader).body()?.name
 
     override suspend fun getUserAnimeList(authHeader: String): Flow<UserAnimeListRepo> = flow {
-        val response = malService.getAnimeListOfUser(authHeader).body()
+        val response = malService.getUserAnimeList(authHeader).body()
         emit(animeMapper.toRepo(response!!))
     }
+
+//    override suspend fun updateUserAnimeStatus(authHeader: String, id: Int): Flow<UserAnimeUpdateRepo> = flow {
+//        val response = malService.updateUserAnimeStatus(authHeader = authHeader, animeId = id)
+//        emit()
+//    }
+
 
 }

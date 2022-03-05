@@ -6,13 +6,13 @@ import com.lexwilliam.domain.repository.UserRepository
 import javax.inject.Inject
 
 interface GetUserInfo {
-    suspend fun execute(accessToken: String): String?
+    suspend fun execute(): String?
 }
 
 class GetUserInfoImpl @Inject constructor(
     private val userRepository: UserRepository
 ): GetUserInfo {
-    override suspend fun execute(accessToken: String): String? {
-        return userRepository.getUserInfo(accessToken)
+    override suspend fun execute(): String? {
+        return userRepository.getUserInfo()
     }
 }

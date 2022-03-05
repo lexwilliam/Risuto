@@ -8,13 +8,13 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 interface GetAnimeDetails {
-    suspend fun execute(accessToken: String, id: Int): Flow<AnimeDetail>
+    suspend fun execute(id: Int): Flow<AnimeDetail>
 }
 
 class GetAnimeDetailsImpl @Inject constructor(
     private val detailRepository: DetailRepository
 ): GetAnimeDetails {
-    override suspend fun execute(accessToken: String, id: Int): Flow<AnimeDetail> {
-        return detailRepository.getAnimeDetails(accessToken, id)
+    override suspend fun execute(id: Int): Flow<AnimeDetail> {
+        return detailRepository.getAnimeDetails(id)
     }
 }

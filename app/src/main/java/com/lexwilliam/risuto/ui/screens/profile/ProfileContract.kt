@@ -8,13 +8,10 @@ import com.lexwilliam.risuto.model.UserAnimeListPresentation
 
 class ProfileContract {
     sealed class Event : ViewEvent {
-        data class GetUserInfo(val accessToken: String): Event()
-        data class GetUserAnimeList(val accessToken: String): Event()
     }
 
     data class State(
         val animes: List<UserAnimeListPresentation.Data>,
-        val accessToken: String,
         val username: String,
         val isLoading: Boolean = false,
         val isError: Boolean = false

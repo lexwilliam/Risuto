@@ -1,7 +1,6 @@
 package com.lexwilliam.risuto.ui.screens.profile
 
 import androidx.lifecycle.viewModelScope
-import com.lexwilliam.domain.usecase.GetAccessTokenFromCache
 import com.lexwilliam.domain.usecase.GetUserAnimeList
 import com.lexwilliam.domain.usecase.GetUserInfo
 import com.lexwilliam.risuto.base.BaseViewModel
@@ -16,7 +15,6 @@ import javax.inject.Inject
 @HiltViewModel
 class ProfileViewModel
 @Inject constructor(
-    private val getAccessTokenFromCache: GetAccessTokenFromCache,
     private val getUserInfo: GetUserInfo,
     private val getUserAnimeList: GetUserAnimeList,
     private val animeMapper: AnimeMapper
@@ -35,7 +33,6 @@ class ProfileViewModel
     override fun setInitialState(): ProfileContract.State {
         return ProfileContract.State(
             animes = emptyList(),
-            accessToken = "",
             username = "",
             isLoading = true,
             isError = false
@@ -43,37 +40,16 @@ class ProfileViewModel
     }
 
     override fun handleEvents(event: ProfileContract.Event) {
-        when(event) {
-            is ProfileContract.Event.GetUserInfo -> {
-                getUserInfo(event.accessToken)
-            }
-            is ProfileContract.Event.GetUserAnimeList -> {
-                getUserAnimeList(event.accessToken)
-                setState { copy(isLoading = false) }
-            }
-        }
     }
 
     init {
-        getAccessTokenFromCache()
+        getUserInfo()
+        getUserAnimeList()
     }
 
-    private fun getAccessTokenFromCache() {
+    private fun getUserInfo() {
         viewModelScope.launch(errorHandler) {
-            getAccessTokenFromCache.execute().collect {
-                if(it != null) {
-                    setState { copy(accessToken = it) }
-                } else {
-                    Timber.d("Access Token Not Found")
-                }
-            }
-        }
-    }
-
-    private fun getUserInfo(accessToken: String) {
-        viewModelScope.launch(errorHandler) {
-            Timber.d("access : $accessToken")
-            val name = getUserInfo.execute(accessToken)
+            val name = getUserInfo.execute()
             if(name == null) {
                 setState { copy(username = "") }
             } else {
@@ -82,10 +58,15 @@ class ProfileViewModel
         }
     }
 
-    private fun getUserAnimeList(accessToken: String) {
+    private fun getUserAnimeList() {
         viewModelScope.launch(errorHandler) {
-            getUserAnimeList.execute(accessToken).collect { animes ->
-                setState { copy(animes = animes.data.map { animeMapper.toPresentation(it) }) }
+            getUserAnimeList.execute().collect { animes ->
+                setState {
+                    copy(
+                        animes = animes.data.map { animeMapper.toPresentation(it) },
+                        isLoading = false
+                    )
+                }
             }
         }
     }

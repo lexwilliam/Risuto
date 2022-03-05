@@ -1,4 +1,4 @@
-package com.lexwilliam.data_remote.model
+package com.lexwilliam.data_remote.model.constants
 
 enum class UserAnimeSortType {
     list_score, // Descending

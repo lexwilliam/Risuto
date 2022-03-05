@@ -16,7 +16,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AnimeViewModel @Inject constructor(
-    private val getAccessTokenFromCache: GetAccessTokenFromCache,
     private val getAnimeDetails: GetAnimeDetails,
     private val insertAnimeHistory: InsertAnimeHistory,
     private val historyMapper: HistoryMapper,
@@ -39,7 +38,6 @@ class AnimeViewModel @Inject constructor(
     override fun setInitialState(): AnimeContract.State {
         return AnimeContract.State(
             malId = -1,
-            accessToken = "",
             animeDetail = getInitialAnimeDetails(),
             isLoading = true,
             isError = false
@@ -49,27 +47,22 @@ class AnimeViewModel @Inject constructor(
     override fun handleEvents(event: AnimeContract.Event) {
         when(event) {
             is AnimeContract.Event.InsertAnimeHistory -> insertAnimeHistory(event.anime)
-            is AnimeContract.Event.GetAnimeDetails -> getAnimeDetails(event.accessToken, event.id)
         }
     }
 
     init {
-        getAccessTokenFromCache()
         viewModelScope.launch(errorHandler) {
             malIdFromArgs?.let { id ->
-                setState {
-                    copy(
-                        malId = id
-                    )
-                }
+                setState { copy(malId = id) }
+                getAnimeDetails(id)
             }
         }
     }
 
-    private fun getAnimeDetails(accessToken: String, id: Int) {
+    private fun getAnimeDetails(id: Int) {
         viewModelScope.launch(errorHandler) {
             try {
-                getAnimeDetails.execute(accessToken, id)
+                getAnimeDetails.execute(id)
                     .catch { throwable ->
                         handleExceptions(throwable)
                     }
@@ -93,18 +86,6 @@ class AnimeViewModel @Inject constructor(
     private fun insertAnimeHistory(anime: AnimeDetailPresentation) {
         viewModelScope.launch(errorHandler) {
             insertAnimeHistory.execute(historyMapper.toDomain(anime))
-        }
-    }
-
-    private fun getAccessTokenFromCache() {
-        viewModelScope.launch(errorHandler) {
-            getAccessTokenFromCache.execute().collect {
-                if(it != null) {
-                    setState { copy(accessToken = it) }
-                } else {
-                    Timber.d("Access Token Not Found")
-                }
-            }
         }
     }
 

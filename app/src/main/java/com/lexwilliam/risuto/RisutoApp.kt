@@ -96,14 +96,15 @@ fun RisutoAppContent(
                     bottomNavIcons.forEach { screen ->
                         BottomNavigationItem(
                             icon = { Icon(screen.icon, contentDescription = null) },
+                            label = { Text(text = screen.description) },
                             selected = currentRoute?.hierarchy?.any { it.route == screen.route } == true,
                             onClick = {
                                 navController.navigate(screen.route) {
-                                    popUpTo(navController.graph.findStartDestination().id)
+                                    popUpTo(navController.graph.findStartDestination().id) { saveState = true }
                                     launchSingleTop = true
+                                    restoreState = true
                                 }
-                            },
-                            label = { Text(text = screen.description) }
+                            }
                         )
                     }
                 }

@@ -6,13 +6,13 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 interface GetUserAnimeList {
-    suspend fun execute(accessToken: String): Flow<UserAnimeList>
+    suspend fun execute(): Flow<UserAnimeList>
 }
 
 class GetUserAnimeListImpl @Inject constructor(
     private val userRepository: UserRepository
 ): GetUserAnimeList {
-    override suspend fun execute(accessToken: String): Flow<UserAnimeList> {
-        return userRepository.getUserAnimeList(accessToken)
+    override suspend fun execute(): Flow<UserAnimeList> {
+        return userRepository.getUserAnimeList()
     }
 }
