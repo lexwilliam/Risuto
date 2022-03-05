@@ -2,7 +2,7 @@ package com.lexwilliam.data_remote.paging
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.lexwilliam.data_remote.JikanV4Service
+import com.lexwilliam.data_remote.JikanService
 import com.lexwilliam.data_remote.data.AnimeRemoteSourceImpl
 import com.lexwilliam.data_remote.model.anime.AnimeResponse
 import retrofit2.HttpException
@@ -10,7 +10,7 @@ import java.io.IOException
 import javax.inject.Inject
 
 class SearchPagingSource @Inject constructor(
-    private val jikanService: JikanV4Service,
+    private val jikanService: JikanService,
     private val q: String?,
     private val type: String?,
     private val score: Double?,

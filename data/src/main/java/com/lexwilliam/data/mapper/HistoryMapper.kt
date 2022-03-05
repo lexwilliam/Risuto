@@ -15,13 +15,13 @@ interface HistoryMapper {
 
 class HistoryMapperImpl @Inject constructor(): HistoryMapper {
     override fun toRepo(anime: AnimeHistory): AnimeHistoryRepo =
-        AnimeHistoryRepo(anime.mal_id, anime.image_url, anime.title, anime.synopsis, anime.type, anime.episodes, anime.score, anime.members, anime.timeAdded)
+        AnimeHistoryRepo(anime.mal_id, anime.image_url, anime.title, anime.timeAdded)
 
     override fun toRepo(search: SearchHistory): SearchHistoryRepo =
         SearchHistoryRepo(search.id, search.query)
 
     override fun toDomain(anime: AnimeHistoryRepo): AnimeHistory =
-        AnimeHistory(anime.mal_id, anime.image_url, anime.title, anime.synopsis, anime.type, anime.episodes, anime.score, anime.members, anime.timeAdded)
+        AnimeHistory(anime.mal_id, anime.image_url, anime.title, anime.timeAdded)
 
     override fun toDomain(search: SearchHistoryRepo): SearchHistory =
         SearchHistory(search.id, search.query)

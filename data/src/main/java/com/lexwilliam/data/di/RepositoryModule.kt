@@ -60,13 +60,9 @@ object RepositoryModule {
 
     @Singleton
     @Provides
-    fun provideCommonMapper(): CommonMapper = CommonMapperImpl()
-
-    @Singleton
-    @Provides
     fun provideAnimeMapper(): AnimeMapper = AnimeMapperImpl()
 
     @Singleton
     @Provides
-    fun provideDetailMapper(commonMapper: CommonMapper): DetailMapper = DetailMapperImpl(commonMapper)
+    fun provideDetailMapper(): DetailMapper = DetailMapperImpl()
 }

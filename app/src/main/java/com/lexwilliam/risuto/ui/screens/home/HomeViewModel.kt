@@ -41,7 +41,6 @@ class HomeViewModel
             accessToken = "",
             currentSeason = "",
             currentYear = -1,
-            airingTodayAnime = emptyList(),
             seasonAnime = emptyList(),
             topAnime = emptyList(),
             schedules = emptyList(),

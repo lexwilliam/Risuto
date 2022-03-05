@@ -2,28 +2,23 @@ package com.lexwilliam.risuto.mapper
 
 import com.lexwilliam.domain.model.remote.anime.Anime
 import com.lexwilliam.domain.model.remote.user.UserAnimeList
-import com.lexwilliam.risuto.model.AnimeListPresentation
-import com.lexwilliam.risuto.model.local.WatchStatusPresentation
-import com.lexwilliam.risuto.model.remote.AnimePresentation
+import com.lexwilliam.risuto.model.WatchStatusPresentation
+import com.lexwilliam.risuto.model.AnimePresentation
+import com.lexwilliam.risuto.model.UserAnimeListPresentation
 import javax.inject.Inject
 
 interface AnimeMapper {
     fun toPresentation(anime: Anime): AnimePresentation
     fun toPresentation(data: Anime.Data): AnimePresentation.Data
-    fun toPresentation(userAnime: UserAnimeList.Data): AnimeListPresentation
+    fun toPresentation(userAnime: UserAnimeList.Data): UserAnimeListPresentation.Data
 }
 
-class AnimeMapperImpl @Inject constructor(
-    private val commonMapper: CommonMapper
-): AnimeMapper {
+class AnimeMapperImpl @Inject constructor(): AnimeMapper {
 
     override fun toPresentation(anime: Anime): AnimePresentation =
         AnimePresentation(anime.data.map { toPresentation(it) },
             toPresentation(anime.pagination)
         )
-
-    private fun toPresentation(pagination: Anime.Pagination): AnimePresentation.Pagination =
-        AnimePresentation.Pagination(pagination.has_next_page, pagination.last_visible_page)
 
     override fun toPresentation(data: Anime.Data): AnimePresentation.Data =
         AnimePresentation.Data(
@@ -31,6 +26,15 @@ class AnimeMapperImpl @Inject constructor(
             toPresentation(data.broadcast), data.demographics.map { toPresentation(it) }, data.duration, data.episodes, data.explicit_genres.map { toPresentation(it) }, data.favorites, data.genres.map { toPresentation(it) },
             toPresentation(data.images), data.licensors.map { toPresentation(it) }, data.mal_id, data.members, data.popularity, data.producers.map { toPresentation(it) }, data.rank, data.rating, data.score, data.scored_by, data.season, data.source, data.status, data.studios.map { toPresentation(it) }, data.synopsis, data.themes.map { toPresentation(it) }, data.title, data.title_english, data.title_japanese, data.title_synonyms,
             toPresentation(data.trailer), data.type, data.url, data.year)
+
+    override fun toPresentation(userAnime: UserAnimeList.Data): UserAnimeListPresentation.Data =
+        UserAnimeListPresentation.Data(
+            toPresentation(userAnime.listStatus),
+            toPresentation(userAnime.node)
+        )
+
+    private fun toPresentation(pagination: Anime.Pagination): AnimePresentation.Pagination =
+        AnimePresentation.Pagination(pagination.has_next_page, pagination.last_visible_page)
 
     private fun toPresentation(aired: Anime.Data.Aired): AnimePresentation.Data.Aired =
         AnimePresentation.Data.Aired(aired.from, toPresentation(aired.prop), aired.to)
@@ -86,15 +90,15 @@ class AnimeMapperImpl @Inject constructor(
     private fun toPresentation(trailer: Anime.Data.Trailer): AnimePresentation.Data.Trailer =
         AnimePresentation.Data.Trailer(trailer.embed_url, trailer.url, trailer.youtube_id)
 
+    private fun toPresentation(listStatus: UserAnimeList.Data.ListStatus): UserAnimeListPresentation.Data.ListStatus =
+        UserAnimeListPresentation.Data.ListStatus(listStatus.isReWatching, listStatus.numWatchedEpisodes, listStatus.score, toPresentation(listStatus.status), listStatus.updatedAt)
 
-    override fun toPresentation(userAnime: UserAnimeList.Data): AnimeListPresentation =
-        AnimeListPresentation(
-            mal_id = userAnime.node.id,
-            title = userAnime.node.title,
-            image_url = userAnime.node.mainPicture?.medium,
-            watch_status = toPresentation(userAnime.listStatus.status?:""),
-            my_score = userAnime.listStatus.score
-        )
+    private fun toPresentation(node: UserAnimeList.Data.Node): UserAnimeListPresentation.Data.Node =
+        UserAnimeListPresentation.Data.Node(node.id, node.numTotalEpisodes,
+            toPresentation(node.mainPicture), node.title)
+
+    private fun toPresentation(mainPicture: UserAnimeList.Data.Node.MainPicture): UserAnimeListPresentation.Data.Node.MainPicture =
+        UserAnimeListPresentation.Data.Node.MainPicture(mainPicture.large, mainPicture.medium)
 
     private fun toPresentation(status: String): WatchStatusPresentation {
         return when(status) {

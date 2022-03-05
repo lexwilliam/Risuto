@@ -3,15 +3,8 @@ package com.lexwilliam.data_remote.di
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
-import com.lexwilliam.data.AnimeRemoteSource
-import com.lexwilliam.data.DetailRemoteSource
 import com.lexwilliam.data_remote.JikanService
-import com.lexwilliam.data_remote.JikanV4Service
 import com.lexwilliam.data_remote.MyAnimeListService
-import com.lexwilliam.data_remote.data.AnimeRemoteSourceImpl
-import com.lexwilliam.data_remote.data.DetailRemoteSourceImpl
-import com.lexwilliam.data_remote.mapper.AnimeMapper
-import com.lexwilliam.data_remote.mapper.DetailMapper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -53,23 +46,12 @@ object NetworkModule {
     @Provides
     fun provideJikanService(moshi: Moshi, okHttpClient: OkHttpClient): JikanService =
         Retrofit.Builder()
-            .baseUrl("https://api.jikan.moe/v3/")
-            .client(okHttpClient)
-            .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .addCallAdapterFactory(CoroutineCallAdapterFactory())
-            .build()
-            .create(JikanService::class.java)
-
-    @Singleton
-    @Provides
-    fun provideJikanV4Service(moshi: Moshi, okHttpClient: OkHttpClient): JikanV4Service =
-        Retrofit.Builder()
             .baseUrl("https://api.jikan.moe/v4/")
             .client(okHttpClient)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .addCallAdapterFactory(CoroutineCallAdapterFactory())
             .build()
-            .create(JikanV4Service::class.java)
+            .create(JikanService::class.java)
 
     @Singleton
     @Provides

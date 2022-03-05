@@ -5,6 +5,8 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -31,12 +33,13 @@ import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
-import com.lexwilliam.risuto.model.AnimeListPresentation
-import com.lexwilliam.risuto.model.local.SearchHistoryPresentation
-import com.lexwilliam.risuto.model.remote.AnimePresentation
+import com.lexwilliam.risuto.model.SearchHistoryPresentation
+import com.lexwilliam.risuto.model.AnimePresentation
+import com.lexwilliam.risuto.model.ShortAnimePresentation
 import com.lexwilliam.risuto.ui.component.HorizontalGridList
 import com.lexwilliam.risuto.ui.component.LoadingScreen
 import com.lexwilliam.risuto.ui.component.RowItem
+import com.lexwilliam.risuto.ui.component.SmallGrid
 import com.lexwilliam.risuto.util.bottomNavGap
 import kotlinx.coroutines.flow.Flow
 import timber.log.Timber
@@ -110,7 +113,7 @@ fun SearchContent(
     searchSuggestions: List<AnimePresentation.Data>,
     animes: Flow<PagingData<AnimePresentation.Data>>?,
     searchHistory: List<SearchHistoryPresentation>,
-    animeHistory: List<AnimeListPresentation>,
+    animeHistory: List<ShortAnimePresentation>,
     onEventSent: (SearchContract.Event) -> Unit,
 
     keyboardController: SoftwareKeyboardController?,
@@ -170,7 +173,7 @@ fun SearchView(
     searchSuggestions: List<AnimePresentation.Data>,
     animes: Flow<PagingData<AnimePresentation.Data>>?,
     searchHistory: List<SearchHistoryPresentation>,
-    animeHistory: List<AnimeListPresentation>,
+    animeHistory: List<ShortAnimePresentation>,
     onEventSent: (SearchContract.Event) -> Unit,
 
     keyboardController: SoftwareKeyboardController?,
@@ -279,7 +282,7 @@ fun ResultView(
 
 @Composable
 fun HistoryView(
-    animeHistory: List<AnimeListPresentation>,
+    animeHistory: List<ShortAnimePresentation>,
     searchHistory: List<SearchHistoryPresentation>,
     onEventSent: (SearchContract.Event) -> Unit,
     navToDetail: (Int) -> Unit,
@@ -312,7 +315,7 @@ fun HistoryView(
                     style = MaterialTheme.typography.subtitle2
                 )
             }
-            HorizontalGridList(items = animeHistory, navToDetail = { navToDetail(it) })
+            HistoryHorizontalGridList(animeHistory = animeHistory, navToDetail = { navToDetail(it) })
         }
         if(searchHistory.isNotEmpty()) {
             Row(modifier = Modifier.fillMaxWidth()) {
@@ -495,8 +498,7 @@ fun QueryListWithDelete(
     onSelectItem: (SearchHistoryPresentation) -> Unit,
     onDeleteItem: (String) -> Unit
 ) {
-    Column(
-    ) {
+    Column {
         items.forEach { item ->
             Row(
                 modifier = Modifier
@@ -524,6 +526,31 @@ fun QueryListWithDelete(
                     )
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun HistoryHorizontalGridList(
+    animeHistory: List<ShortAnimePresentation>,
+    navToDetail: (Int) -> Unit
+) {
+    LazyRow(
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp)
+    ){
+        items(items = animeHistory){ item ->
+            SmallGrid(
+                id = item.mal_id,
+                imageUrl = item.image_url,
+                title = item.title,
+                navToDetail = { navToDetail(it) }
+            )
+        }
+        item {
+            Spacer(modifier = Modifier.padding(0.dp))
         }
     }
 }

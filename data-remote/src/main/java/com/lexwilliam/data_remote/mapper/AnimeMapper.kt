@@ -78,11 +78,11 @@ class AnimeMapperImpl @Inject constructor(): AnimeMapper {
         UserAnimeListRepo.Data(toRepo(data.listStatus), toRepo(data.node))
 
     private fun toRepo(listStatus: UserAnimeListResponse.Data.ListStatus): UserAnimeListRepo.Data.ListStatus =
-        UserAnimeListRepo.Data.ListStatus(listStatus.isReWatching, listStatus.numWatchedEpisodes, listStatus.score, listStatus.status, listStatus.updatedAt)
+        UserAnimeListRepo.Data.ListStatus(listStatus.isReWatching, listStatus.numWatchedEpisodes, listStatus.score, listStatus.status?:"", listStatus.updatedAt)
 
     private fun toRepo(node: UserAnimeListResponse.Data.Node): UserAnimeListRepo.Data.Node =
         UserAnimeListRepo.Data.Node(node.id, node.numTotalEpisodes, toRepo(node.mainPicture?: UserAnimeListResponse.Data.Node.MainPicture("", "")), node.title)
 
     private fun toRepo(mainPicture: UserAnimeListResponse.Data.Node.MainPicture): UserAnimeListRepo.Data.Node.MainPicture =
-        UserAnimeListRepo.Data.Node.MainPicture(mainPicture.large, mainPicture.medium)
+        UserAnimeListRepo.Data.Node.MainPicture(mainPicture.large?:"", mainPicture.medium)
 }

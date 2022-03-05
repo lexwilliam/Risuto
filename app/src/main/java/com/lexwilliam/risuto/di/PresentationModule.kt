@@ -13,18 +13,14 @@ object PresentationModule {
 
     @Singleton
     @Provides
+    fun provideDetailMapper(): DetailMapper = DetailMapperImpl()
+
+    @Singleton
+    @Provides
     fun provideHistoryMapper(): HistoryMapper = HistoryMapperImpl()
 
     @Singleton
     @Provides
-    fun provideCommonMapper(): CommonMapper = CommonMapperImpl()
-
-    @Singleton
-    @Provides
-    fun provideAnimeMapper(commonMapper: CommonMapper): AnimeMapper = AnimeMapperImpl(commonMapper)
-
-    @Singleton
-    @Provides
-    fun provideDetailMapper(commonMapper: CommonMapper): DetailMapper = DetailMapperImpl(commonMapper)
+    fun provideAnimeMapper(): AnimeMapper = AnimeMapperImpl()
 
 }

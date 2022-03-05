@@ -84,7 +84,7 @@ class AnimeMapperImpl @Inject constructor(): AnimeMapper {
 
     private fun toDomain(node: UserAnimeListRepo.Data.Node): UserAnimeList.Data.Node =
         UserAnimeList.Data.Node(node.id, node.numTotalEpisodes,
-            this.toDomain(node.mainPicture?: UserAnimeListRepo.Data.Node.MainPicture("", "")), node.title)
+            this.toDomain(node.mainPicture), node.title)
 
     private fun toDomain(mainPicture: UserAnimeListRepo.Data.Node.MainPicture): UserAnimeList.Data.Node.MainPicture =
         UserAnimeList.Data.Node.MainPicture(mainPicture.large, mainPicture.medium)

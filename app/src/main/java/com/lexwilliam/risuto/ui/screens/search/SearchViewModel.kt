@@ -10,8 +10,8 @@ import com.lexwilliam.domain.usecase.*
 import com.lexwilliam.risuto.base.BaseViewModel
 import com.lexwilliam.risuto.mapper.AnimeMapper
 import com.lexwilliam.risuto.mapper.HistoryMapper
-import com.lexwilliam.risuto.model.local.SearchHistoryPresentation
-import com.lexwilliam.risuto.model.remote.AnimePresentation
+import com.lexwilliam.risuto.model.SearchHistoryPresentation
+import com.lexwilliam.risuto.model.AnimePresentation
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.Flow

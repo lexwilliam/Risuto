@@ -1,12 +1,11 @@
 package com.lexwilliam.data_remote
 
+import com.lexwilliam.data.model.remote.user.UserInfoRepo
 import com.lexwilliam.data_remote.model.ApiConstants
 import com.lexwilliam.data_remote.model.UserAnimeSortType
+import com.lexwilliam.data_remote.model.anime.AnimeDetailResponse
 import com.lexwilliam.data_remote.model.auth.AccessTokenResponse
 import com.lexwilliam.data_remote.model.auth.OAuthGrantType
-import com.lexwilliam.data_remote.model.detail.MyAnimeStatusResponse
-import com.lexwilliam.data.model.remote.user.UserAnimeListRepo
-import com.lexwilliam.data.model.remote.user.UserInfoRepo
 import com.lexwilliam.data_remote.model.user.UserAnimeListResponse
 import com.lexwilliam.data_remote.model.user.UserAnimeUpdateResponse
 import retrofit2.Response
@@ -44,12 +43,12 @@ interface MyAnimeListService {
         @Field("redirect_uri") redirectUri: String = "risuto://auth"
     ): Response<AccessTokenResponse>
 
-    @GET("anime/{mal_id}")
-    suspend fun getMyAnimeStatus(
+    @GET("anime/{anime_id}")
+    suspend fun getAnimeDetails(
         @Header("Authorization") authHeader: String,
-        @Path("mal_id") malId: Int,
-        @Query("fields") fields: String = "my_list_status"
-    ): Response<MyAnimeStatusResponse>
+        @Path("anime_id") malId: Int,
+        @Query("fields") fields: String? = "id,title,main_picture,alternative_titles,start_date,end_date,synopsis,mean,rank,popularity,num_list_users,num_scoring_users,nsfw,created_at,updated_at,media_type,status,genres,my_list_status,num_episodes,start_season,broadcast,source,average_episode_duration,rating,pictures,background,related_anime,related_manga,recommendations,studios,statistics"
+    ): Response<AnimeDetailResponse>
 
     @PATCH("anime/{id}/my_list_status")
     @FormUrlEncoded

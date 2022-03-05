@@ -1,6 +1,6 @@
-package com.lexwilliam.domain.model.remote.user
+package com.lexwilliam.risuto.model
 
-data class UserAnimeList(
+data class UserAnimeListPresentation(
     val `data`: List<Data>
 ) {
     data class Data(
@@ -11,7 +11,7 @@ data class UserAnimeList(
             val isReWatching: Boolean,
             val numWatchedEpisodes: Int,
             val score: Int,
-            val status: String,
+            val status: WatchStatusPresentation,
             val updatedAt: String
         )
         data class Node(

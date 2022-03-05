@@ -7,37 +7,13 @@ import androidx.compose.material.Divider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.lexwilliam.risuto.model.AnimeListPresentation
-import com.lexwilliam.risuto.model.remote.AnimePresentation
+import com.lexwilliam.risuto.model.AnimePresentation
+import com.lexwilliam.risuto.model.ShortAnimePresentation
 
 @ExperimentalFoundationApi
 @Composable
 fun GridList(
     modifier: Modifier = Modifier,
-    items: List<AnimeListPresentation>,
-    navToDetail: (Int) -> Unit
-) {
-    if(items.isEmpty()) {
-        LoadingScreen()
-    } else {
-        LazyVerticalGrid(
-            modifier = modifier
-                .fillMaxSize()
-                .padding(start = 16.dp),
-            cells = GridCells.Adaptive(minSize = 136.dp),
-        ) {
-            items(items = items) { item ->
-                MediumGrid(item = item, modifier = Modifier.padding(top = 16.dp, end = 16.dp), navToDetail = { navToDetail(it) })
-            }
-        }
-    }
-}
-
-@ExperimentalFoundationApi
-@Composable
-fun GridList(
-    modifier: Modifier = Modifier,
-    isLoading: Boolean,
     items: List<AnimePresentation.Data>,
     navToDetail: (Int) -> Unit
 ) {
@@ -66,47 +42,7 @@ fun GridList(
 }
 
 @Composable
-fun ColumnList(
-    modifier: Modifier = Modifier,
-    items: List<AnimeListPresentation>,
-    navToDetail: (Int) -> Unit
-) {
-    LazyColumn(
-        modifier = modifier.padding(top = 8.dp)
-    ) {
-        items(items = items){ item ->
-            RowItem(modifier = Modifier.padding(vertical = 8.dp), item = item, navToDetail = { navToDetail(it) })
-            Divider()
-        }
-    }
-}
-
-
-@Composable
 fun HorizontalGridList(
-    items: List<AnimeListPresentation>,
-    navToDetail: (Int) -> Unit
-) {
-    LazyRow(
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp)
-    ){
-        items(items = items){ item ->
-            SmallGrid(
-                item = item,
-                navToDetail = { navToDetail(it) }
-            )
-        }
-        item {
-            Spacer(modifier = Modifier.padding(0.dp))
-        }
-    }
-}
-
-@Composable
-fun HorizontalGridListV4(
     items: List<AnimePresentation.Data>,
     navToDetail: (Int) -> Unit
 ) {
@@ -117,8 +53,10 @@ fun HorizontalGridListV4(
             .padding(vertical = 4.dp)
     ){
         items(items = items){ item ->
-            SmallGridV4(
-                item = item,
+            SmallGrid(
+                id = item.mal_id,
+                imageUrl = item.images.jpg.image_url,
+                title = item.title,
                 navToDetail = { navToDetail(it) }
             )
         }
@@ -146,7 +84,3 @@ fun HorizontalGridListV4(
 //fun HorizontalGridListPreview() {
 //    HorizontalGridList(items = generateFakeItemList(), navToDetail = {})
 //}
-
-enum class ListType {
-    ColumnList, GridList
-}

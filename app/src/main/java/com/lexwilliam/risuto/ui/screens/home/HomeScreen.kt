@@ -12,9 +12,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.lexwilliam.risuto.model.remote.AnimePresentation
+import com.lexwilliam.risuto.model.AnimePresentation
 import com.lexwilliam.risuto.ui.component.Header
-import com.lexwilliam.risuto.ui.component.HorizontalGridListV4
+import com.lexwilliam.risuto.ui.component.HorizontalGridList
 import java.util.*
 
 @Composable
@@ -99,7 +99,7 @@ fun PosterGridList(
                 style = MaterialTheme.typography.h5,
                 fontWeight = FontWeight.Bold
             )
-            HorizontalGridListV4(
+            HorizontalGridList(
                 items = items,
                 navToDetail = { navToDetail(it) }
             )

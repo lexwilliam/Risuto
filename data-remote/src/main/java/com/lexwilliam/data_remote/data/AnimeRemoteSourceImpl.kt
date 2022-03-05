@@ -6,7 +6,7 @@ import androidx.paging.PagingData
 import androidx.paging.map
 import com.lexwilliam.data.AnimeRemoteSource
 import com.lexwilliam.data.model.remote.anime.AnimeRepo
-import com.lexwilliam.data_remote.JikanV4Service
+import com.lexwilliam.data_remote.JikanService
 import com.lexwilliam.data_remote.mapper.AnimeMapper
 import com.lexwilliam.data_remote.paging.SearchPagingSource
 import kotlinx.coroutines.flow.Flow
@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class AnimeRemoteSourceImpl @Inject constructor(
-    private val jikanV4Service: JikanV4Service,
+    private val jikanService: JikanService,
     private val animeMapper: AnimeMapper
 ): AnimeRemoteSource {
 
@@ -25,22 +25,22 @@ class AnimeRemoteSourceImpl @Inject constructor(
     }
 
     override suspend fun getTopAnime(): Flow<AnimeRepo> = flow {
-        val response = jikanV4Service.getTopAnime()
+        val response = jikanService.getTopAnime()
         emit(animeMapper.toRepo(response))
     }
 
     override suspend fun getSeasonNow(): Flow<AnimeRepo> = flow {
-        val response = jikanV4Service.getSeasonNow()
+        val response = jikanService.getSeasonNow()
         emit(animeMapper.toRepo(response))
     }
 
     override suspend fun getSeason(year: Int, season: String): Flow<AnimeRepo> = flow {
-        val response = jikanV4Service.getSeason(year, season)
+        val response = jikanService.getSeason(year, season)
         emit(animeMapper.toRepo(response))
     }
 
     override suspend fun getSchedules(dayOfWeek: String): Flow<AnimeRepo> = flow {
-        val response = jikanV4Service.getSchedules(dayOfWeek)
+        val response = jikanService.getSchedules(dayOfWeek)
         emit(animeMapper.toRepo(response))
     }
 
@@ -62,7 +62,7 @@ class AnimeRemoteSourceImpl @Inject constructor(
         letter: String?,
         producer: String?
     ): Flow<AnimeRepo> = flow {
-        val response = jikanV4Service.getSearchAnime(page, limit, q, type, score, minScore, maxScore, status, rating, sfw, genres, genresExclude, orderBy, sort, letter, producer)
+        val response = jikanService.getSearchAnime(page, limit, q, type, score, minScore, maxScore, status, rating, sfw, genres, genresExclude, orderBy, sort, letter, producer)
         emit(animeMapper.toRepo(response))
     }
 
@@ -84,12 +84,12 @@ class AnimeRemoteSourceImpl @Inject constructor(
     ): Flow<PagingData<AnimeRepo.Data>> {
         return Pager(
             config = getDefaultPageConfig(),
-            pagingSourceFactory = { SearchPagingSource(jikanV4Service, q, type, score, minScore, maxScore, status, rating, sfw, genres, genresExclude, orderBy, sort, letter, producer) }
+            pagingSourceFactory = { SearchPagingSource(jikanService, q, type, score, minScore, maxScore, status, rating, sfw, genres, genresExclude, orderBy, sort, letter, producer) }
         ).flow.map { it.map { animeMapper.toRepo(it) } }
     }
 
     override suspend fun getAnimeById(id: Int): Flow<AnimeRepo.Data> = flow {
-        val response = jikanV4Service.getAnimeById(id)
+        val response = jikanService.getAnimeById(id)
         emit(animeMapper.toRepo(response))
     }
 

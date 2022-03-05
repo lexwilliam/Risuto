@@ -11,17 +11,17 @@ data class UserAnimeListRepo(
             val isReWatching: Boolean,
             val numWatchedEpisodes: Int,
             val score: Int,
-            val status: String?,
+            val status: String,
             val updatedAt: String
         )
         data class Node(
             val id: Int,
             val numTotalEpisodes: Int,
-            val mainPicture: MainPicture?,
+            val mainPicture: MainPicture,
             val title: String
         ) {
             data class MainPicture(
-                val large: String?,
+                val large: String,
                 val medium: String
             )
         }

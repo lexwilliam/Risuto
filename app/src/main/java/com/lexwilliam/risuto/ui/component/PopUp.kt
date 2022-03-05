@@ -9,7 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
-import com.lexwilliam.risuto.model.local.WatchStatusPresentation
+import com.lexwilliam.risuto.model.WatchStatusPresentation
 
 @Composable
 fun MyAnimePopUp(

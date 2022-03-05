@@ -10,9 +10,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.unit.dp
-import com.lexwilliam.risuto.model.remote.AnimePresentation
+import com.lexwilliam.risuto.model.AnimePresentation
 import com.lexwilliam.risuto.ui.component.GridList
 import com.lexwilliam.risuto.ui.component.Header
 import com.lexwilliam.risuto.util.*
@@ -58,7 +57,7 @@ fun SeasonContent(
                 onEventSent = { onEventSent(it) }
             )
         }
-        GridList(isLoading = false, items = animes, navToDetail = { navToDetail(it)} )
+        GridList(items = animes, navToDetail = { navToDetail(it)} )
     }
 }
 

@@ -18,8 +18,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.lexwilliam.risuto.model.AnimeListPresentation
-import com.lexwilliam.risuto.model.local.WatchStatusPresentation
+import com.lexwilliam.risuto.model.UserAnimeListPresentation
+import com.lexwilliam.risuto.model.WatchStatusPresentation
 import com.lexwilliam.risuto.ui.component.NetworkImage
 import com.lexwilliam.risuto.util.bottomNavGap
 import com.lexwilliam.risuto.util.intToCurrency
@@ -46,7 +46,7 @@ fun ProfileScreen(
 @ExperimentalFoundationApi
 @Composable
 fun ProfileContent(
-    myAnimeList: List<AnimeListPresentation>,
+    myAnimeList: List<UserAnimeListPresentation.Data>,
     username: String,
     navToDetail: (Int) -> Unit
 ) {
@@ -62,14 +62,14 @@ fun ProfileContent(
             status = currentStatus,
             setGroupBy = { currentStatus = it }
         )
-        var filteredList: List<AnimeListPresentation> = emptyList()
+        var filteredList: List<UserAnimeListPresentation.Data> = emptyList()
         when(currentStatus) {
             "All" -> filteredList = myAnimeList
-            "Watching" -> filteredList = myAnimeList.filter { it.watch_status == WatchStatusPresentation.Watching }
-            "Completed" -> filteredList = myAnimeList.filter { it.watch_status == WatchStatusPresentation.Completed }
-            "Plan To Watch" -> filteredList = myAnimeList.filter { it.watch_status == WatchStatusPresentation.PlanToWatch }
-            "On Hold" -> filteredList = myAnimeList.filter { it.watch_status == WatchStatusPresentation.OnHold }
-            "Dropped" -> filteredList = myAnimeList.filter { it.watch_status == WatchStatusPresentation.Dropped }
+            "Watching" -> filteredList = myAnimeList.filter { it.listStatus.status == WatchStatusPresentation.Watching }
+            "Completed" -> filteredList = myAnimeList.filter { it.listStatus.status == WatchStatusPresentation.Completed }
+            "Plan To Watch" -> filteredList = myAnimeList.filter { it.listStatus.status == WatchStatusPresentation.PlanToWatch }
+            "On Hold" -> filteredList = myAnimeList.filter { it.listStatus.status == WatchStatusPresentation.OnHold }
+            "Dropped" -> filteredList = myAnimeList.filter { it.listStatus.status == WatchStatusPresentation.Dropped }
         }
         MyAnimeGridList(items = filteredList, navToDetail = { navToDetail(it) })
     }
@@ -108,22 +108,22 @@ fun ProfileTabRow(
 @Composable
 fun MyAnimeGrid(
     modifier: Modifier = Modifier,
-    item: AnimeListPresentation,
+    item: UserAnimeListPresentation.Data,
     navToDetail: (Int) -> Unit
 ) {
     Column(
         modifier = modifier
             .clickable {
-                navToDetail(item.mal_id!!)
+                navToDetail(item.node.id)
             }
     ) {
         NetworkImage(
-            imageUrl = item.image_url!!,
+            imageUrl = item.node.mainPicture.medium,
             modifier = Modifier
                 .size(width = 180.dp, height = 240.dp)
                 .shadow(elevation = 4.dp, shape = MaterialTheme.shapes.medium, clip = true)
         )
-        Text(text = item.title!!,
+        Text(text = item.node.title,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier.padding(top = 4.dp),
@@ -134,8 +134,8 @@ fun MyAnimeGrid(
             modifier = Modifier.requiredHeight(IntrinsicSize.Min),
             horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            Text(text = watchStatusToString(item.watch_status!!), style = MaterialTheme.typography.caption)
-            Text(text = intToCurrency(item.my_score!!), style = MaterialTheme.typography.caption)
+            Text(text = watchStatusToString(item.listStatus.status), style = MaterialTheme.typography.caption)
+            Text(text = intToCurrency(item.listStatus.score), style = MaterialTheme.typography.caption)
         }
     }
 }
@@ -145,7 +145,7 @@ fun MyAnimeGrid(
 @Composable
 fun MyAnimeGridList(
     modifier: Modifier = Modifier,
-    items: List<AnimeListPresentation>,
+    items: List<UserAnimeListPresentation.Data>,
     navToDetail: (Int) -> Unit
 ) {
     if(items.isEmpty()) {

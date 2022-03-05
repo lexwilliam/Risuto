@@ -17,9 +17,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.lexwilliam.risuto.model.detail.AnimeDetailPresentation
-import com.lexwilliam.risuto.model.detail.CharacterStaffPresentation
-import com.lexwilliam.risuto.model.local.WatchStatusPresentation
+import com.lexwilliam.risuto.model.AnimeDetailPresentation
+import com.lexwilliam.risuto.model.WatchStatusPresentation
 import com.lexwilliam.risuto.ui.component.Chip
 import com.lexwilliam.risuto.ui.component.LoadingScreen
 import com.lexwilliam.risuto.ui.component.NetworkImage
@@ -35,6 +34,14 @@ fun AnimeScreen(
     onBackPressed: () -> Unit,
     navToSearchWithGenre: (Int) -> Unit
 ) {
+    var isDone by remember { mutableStateOf(false) }
+    if(state.isLoading && state.accessToken != "" && !isDone) {
+        onEventSent(AnimeContract.Event.GetAnimeDetails(state.accessToken, state.malId))
+        isDone = true
+    }
+    if(state.animeDetail.id != -1) {
+        onEventSent(AnimeContract.Event.InsertAnimeHistory(state.animeDetail))
+    }
     val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(
         bottomSheetState = BottomSheetState(BottomSheetValue.Collapsed)
     )
@@ -95,7 +102,7 @@ fun AnimeContent(
             AnimeDetail(animeDetail = state.animeDetail)
             AnimeGenre(animeDetail = state.animeDetail, navToSearchWithGenre = { navToSearchWithGenre(it) })
             AnimeRating(animeDetail = state.animeDetail)
-            CharVoiceActorList(animeStaff = state.characterStaff)
+//            CharVoiceActorList(animeStaff = state.characterStaff)
         }
     }
 }
@@ -237,7 +244,7 @@ fun AnimeDetail(
             modifier = Modifier
                 .size(width = 120.dp, height = 180.dp)
                 .shadow(elevation = 4.dp, shape = MaterialTheme.shapes.medium, true),
-            imageUrl = animeDetail.image_url
+            imageUrl = animeDetail.main_picture.medium
         )
         Column(
             modifier = Modifier.fillMaxWidth(),
@@ -245,11 +252,11 @@ fun AnimeDetail(
 
         ) {
             Text(text = animeDetail.title, style = MaterialTheme.typography.h6)
-            Text(text = animeDetail.premiered+" | "+animeDetail.type+"("+animeDetail.episodes+")", style = MaterialTheme.typography.caption)
+//            Text(text = animeDetail.premiered+" | "+animeDetail.type+"("+animeDetail.episodes+")", style = MaterialTheme.typography.caption)
             Row {
                 Text(text = "Studio: ", style = MaterialTheme.typography.button)
                 animeDetail.studios.forEach {
-                    it.name?.let { it1 -> Text(text = "$it1 ", style = MaterialTheme.typography.button) }
+                    Text(text = "${it.name} ", style = MaterialTheme.typography.button)
                 }
             }
 //            Text(text = genresToString(animeDetail.genres), style = MaterialTheme.typography.button)
@@ -292,11 +299,10 @@ fun AnimeRating(
     ){
         data class Rating(val string: String, val int: String)
         val ratings = listOf(
-            Rating("Score", animeDetail.score.toString()),
-            Rating("Members", intToCurrency(animeDetail.members)),
+            Rating("Score", animeDetail.mean.toString()),
+            Rating("Members", intToCurrency(animeDetail.num_list_users)),
             Rating("Rank", "#"+ intToCurrency(animeDetail.rank)),
             Rating("Popularity", "#"+ intToCurrency(animeDetail.popularity)),
-            Rating("Favorite", intToCurrency(animeDetail.favorites)),
             Rating("Rated", animeDetail.rating)
         )
         ratings.forEach { rating ->
@@ -318,59 +324,59 @@ fun AnimeRating(
     }
 }
 
-@Composable
-fun CharVoiceActorList(
-    animeStaff: CharacterStaffPresentation
-) {
-    Column {
-        Text(modifier = Modifier.padding(start = 16.dp), text = "Voice Actor", style = MaterialTheme.typography.h6, fontWeight = FontWeight.Bold)
-        LazyRow(
-            horizontalArrangement = Arrangement.spacedBy(2.dp),
-            contentPadding = PaddingValues(start = 16.dp)
-        ) {
-            items(items = animeStaff.characters!!) { item ->
-                Column {
-                    NetworkImage(
-                        imageUrl = item.image_url,
-                        modifier = Modifier
-                            .size(width = 80.dp, height = 100.dp)
-                    )
-                    Surface(
-                        modifier = Modifier.width(80.dp),
-                        color = Color.Transparent
-                    ) {
-                        Text(
-                            text = item.name + "\n",
-                            maxLines = 2, overflow = TextOverflow.Ellipsis,
-                            style = MaterialTheme.typography.caption
-                        )
-                    }
-                    Spacer(modifier = Modifier.padding(2.dp))
-                    NetworkImage(
-                        imageUrl = getJpnVoiceActor(
-                            item.voice_actors
-                        ).image_url,
-                        modifier = Modifier
-                            .size(width = 80.dp, height = 100.dp)
-                    )
-                    Surface(
-                        modifier = Modifier.width(80.dp),
-                        color = Color.Transparent
-                    ) {
-                        Text(
-                            text = getJpnVoiceActor(
-                                item.voice_actors
-                            ).name + "\n",
-                            maxLines = 2, overflow = TextOverflow.Ellipsis,
-                            style = MaterialTheme.typography.caption
-                        )
-                    }
-
-                }
-            }
-        }
-    }
-}
+//@Composable
+//fun CharVoiceActorList(
+//    animeStaff: CharacterStaffPresentation
+//) {
+//    Column {
+//        Text(modifier = Modifier.padding(start = 16.dp), text = "Voice Actor", style = MaterialTheme.typography.h6, fontWeight = FontWeight.Bold)
+//        LazyRow(
+//            horizontalArrangement = Arrangement.spacedBy(2.dp),
+//            contentPadding = PaddingValues(start = 16.dp)
+//        ) {
+//            items(items = animeStaff.characters!!) { item ->
+//                Column {
+//                    NetworkImage(
+//                        imageUrl = item.image_url,
+//                        modifier = Modifier
+//                            .size(width = 80.dp, height = 100.dp)
+//                    )
+//                    Surface(
+//                        modifier = Modifier.width(80.dp),
+//                        color = Color.Transparent
+//                    ) {
+//                        Text(
+//                            text = item.name + "\n",
+//                            maxLines = 2, overflow = TextOverflow.Ellipsis,
+//                            style = MaterialTheme.typography.caption
+//                        )
+//                    }
+//                    Spacer(modifier = Modifier.padding(2.dp))
+//                    NetworkImage(
+//                        imageUrl = getJpnVoiceActor(
+//                            item.voice_actors
+//                        ).image_url,
+//                        modifier = Modifier
+//                            .size(width = 80.dp, height = 100.dp)
+//                    )
+//                    Surface(
+//                        modifier = Modifier.width(80.dp),
+//                        color = Color.Transparent
+//                    ) {
+//                        Text(
+//                            text = getJpnVoiceActor(
+//                                item.voice_actors
+//                            ).name + "\n",
+//                            maxLines = 2, overflow = TextOverflow.Ellipsis,
+//                            style = MaterialTheme.typography.caption
+//                        )
+//                    }
+//
+//                }
+//            }
+//        }
+//    }
+//}
 
 //@Preview
 //@Composable

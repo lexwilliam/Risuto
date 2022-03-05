@@ -4,9 +4,9 @@ import androidx.paging.PagingData
 import com.lexwilliam.risuto.base.ViewEvent
 import com.lexwilliam.risuto.base.ViewSideEffect
 import com.lexwilliam.risuto.base.ViewState
-import com.lexwilliam.risuto.model.AnimeListPresentation
-import com.lexwilliam.risuto.model.local.SearchHistoryPresentation
-import com.lexwilliam.risuto.model.remote.AnimePresentation
+import com.lexwilliam.risuto.model.SearchHistoryPresentation
+import com.lexwilliam.risuto.model.AnimePresentation
+import com.lexwilliam.risuto.model.ShortAnimePresentation
 import kotlinx.coroutines.flow.Flow
 
 class SearchContract {
@@ -54,7 +54,7 @@ class SearchContract {
     data class State(
         val searchAnimes: List<AnimePresentation.Data>,
         val searchAnimesPaging: Flow<PagingData<AnimePresentation.Data>>?,
-        val animeHistory: List<AnimeListPresentation>,
+        val animeHistory: List<ShortAnimePresentation>,
         val searchHistory: List<SearchHistoryPresentation>,
         val genreFromArgs: String,
         val isLoading: Boolean = false,

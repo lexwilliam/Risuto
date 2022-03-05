@@ -61,61 +61,6 @@ object DomainModule {
 
     @Singleton
     @Provides
-    fun provideGetAnimeDetail(detailRepository: DetailRepository): GetAnimeDetail =
-        GetAnimeDetailImpl(detailRepository)
-
-    @Singleton
-    @Provides
-    fun provideGetCharacterStaff(detailRepository: DetailRepository): GetCharacterStaff =
-        GetCharacterStaffImpl(detailRepository)
-
-    @Singleton
-    @Provides
-    fun provideGetEpisodes(detailRepository: DetailRepository): GetEpisodes =
-        GetEpisodesImpl(detailRepository)
-
-    @Singleton
-    @Provides
-    fun provideGetForum(detailRepository: DetailRepository): GetForum =
-        GetForumImpl(detailRepository)
-
-    @Singleton
-    @Provides
-    fun provideGetMoreInfo(detailRepository: DetailRepository): GetMoreInfo =
-        GetMoreInfoImpl(detailRepository)
-
-    @Singleton
-    @Provides
-    fun provideGetNews(detailRepository: DetailRepository): GetNews =
-        GetNewsImpl(detailRepository)
-
-    @Singleton
-    @Provides
-    fun provideGetPictures(detailRepository: DetailRepository): GetPictures =
-        GetPicturesImpl(detailRepository)
-
-    @Singleton
-    @Provides
-    fun provideGetRecommendations(detailRepository: DetailRepository): GetRecommendations =
-        GetRecommendationsImpl(detailRepository)
-
-    @Singleton
-    @Provides
-    fun provideGetReviews(detailRepository: DetailRepository): GetReviews =
-        GetReviewsImpl(detailRepository)
-
-    @Singleton
-    @Provides
-    fun provideGetStats(detailRepository: DetailRepository): GetStats =
-        GetStatsImpl(detailRepository)
-
-    @Singleton
-    @Provides
-    fun provideGetVideos(detailRepository: DetailRepository): GetVideos =
-        GetVideosImpl(detailRepository)
-
-    @Singleton
-    @Provides
     fun provideGetAccessToken(oAuthRepository: OAuthRepository): SetAccessToken =
         GetAccessTokenImpl(oAuthRepository)
 
@@ -169,10 +114,6 @@ object DomainModule {
     fun provideGetUserAnimeList(userRepository: UserRepository): GetUserAnimeList =
         GetUserAnimeListImpl(userRepository)
 
-    @Singleton
-    @Provides
-    fun provideGetMyAnimeStatus(detailRepository: DetailRepository): GetMyAnimeStatus =
-        GetMyAnimeStatusImpl(detailRepository)
 
     @Singleton
     @Provides
@@ -203,4 +144,9 @@ object DomainModule {
     @Provides
     fun provideGetSearchAnimePaging(animeRepository: AnimeRepository): GetSearchAnimePaging =
         GetSearchAnimePagingImpl(animeRepository)
+
+    @Singleton
+    @Provides
+    fun provideGetAnimeDetails(detailRepository: DetailRepository): GetAnimeDetails =
+        GetAnimeDetailsImpl(detailRepository)
 }
