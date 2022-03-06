@@ -50,7 +50,7 @@ fun AnimeScreen(
         sheetContent = {
             MyAnimeMenu(
                 onEventSent = { onEventSent(it) },
-                state = state,
+                id = state.malId,
                 onDoneClicked = {
                     coroutineScope.launch {
                         bottomSheetScaffoldState.bottomSheetState.collapse()
@@ -107,7 +107,7 @@ fun AnimeContent(
 @Composable
 fun MyAnimeMenu(
     onDoneClicked: () -> Unit,
-    state: AnimeContract.State,
+    id: Int,
     onEventSent: (AnimeContract.Event) -> Unit
 ) {
     var score by remember { mutableStateOf(-1) }
@@ -196,8 +196,10 @@ fun MyAnimeMenu(
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
             onClick = {
+                onEventSent(AnimeContract.Event.UpdateUserAnimeStatus(id, watchStatusToString(watchState), score))
                 onDoneClicked()
-            }) {
+            }
+        ) {
             Text("Done")
         }
     }

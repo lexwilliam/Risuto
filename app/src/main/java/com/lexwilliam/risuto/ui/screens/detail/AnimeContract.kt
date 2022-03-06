@@ -8,6 +8,7 @@ import com.lexwilliam.risuto.model.AnimeDetailPresentation
 class AnimeContract {
     sealed class Event : ViewEvent {
         data class InsertAnimeHistory(val anime: AnimeDetailPresentation): Event()
+        data class UpdateUserAnimeStatus(val id: Int, val status: String, val score: Int): Event()
     }
 
     data class State(

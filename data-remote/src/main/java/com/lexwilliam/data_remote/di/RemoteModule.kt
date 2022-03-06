@@ -49,9 +49,10 @@ object RemoteModule {
     @Provides
     fun provideUserRemoteSource(
         malService: MyAnimeListService,
-        animeMapper: AnimeMapper
+        animeMapper: AnimeMapper,
+        userMapper: UserMapper
     ): UserRemoteSource =
-        UserRemoteSourceImpl(malService, animeMapper)
+        UserRemoteSourceImpl(malService, animeMapper, userMapper)
 
     @Singleton
     @Provides
@@ -64,4 +65,8 @@ object RemoteModule {
     @Singleton
     @Provides
     fun provideOAuthMapper(): OAuthMapper = OAuthMapperImpl()
+
+    @Singleton
+    @Provides
+    fun provideUserMapper(): UserMapper = UserMapperImpl()
 }

@@ -18,6 +18,7 @@ import javax.inject.Inject
 class AnimeViewModel @Inject constructor(
     private val getAnimeDetails: GetAnimeDetails,
     private val insertAnimeHistory: InsertAnimeHistory,
+    private val updateUserAnimeStatus: UpdateUserAnimeStatus,
     private val historyMapper: HistoryMapper,
     private val detailMapper: DetailMapper,
     savedState: SavedStateHandle
@@ -47,6 +48,7 @@ class AnimeViewModel @Inject constructor(
     override fun handleEvents(event: AnimeContract.Event) {
         when(event) {
             is AnimeContract.Event.InsertAnimeHistory -> insertAnimeHistory(event.anime)
+            is AnimeContract.Event.UpdateUserAnimeStatus -> updateUserAnimeStatus(event.id, event.status, event.score)
         }
     }
 
@@ -86,6 +88,17 @@ class AnimeViewModel @Inject constructor(
     private fun insertAnimeHistory(anime: AnimeDetailPresentation) {
         viewModelScope.launch(errorHandler) {
             insertAnimeHistory.execute(historyMapper.toDomain(anime))
+        }
+    }
+
+    private fun updateUserAnimeStatus(id: Int, status: String, score: Int) {
+        viewModelScope.launch(errorHandler) {
+            updateUserAnimeStatus.execute(id, status, score).collect {
+                Timber.d("changes: $status -> ${it.status} and $score -> ${it.score}")
+                if(status == it.status && score == it.score) {
+                    Timber.d("FAILS")
+                }
+            }
         }
     }
 

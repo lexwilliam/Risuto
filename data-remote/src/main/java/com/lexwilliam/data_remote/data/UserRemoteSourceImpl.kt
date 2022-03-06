@@ -5,13 +5,15 @@ import com.lexwilliam.data.model.remote.user.UserAnimeListRepo
 import com.lexwilliam.data.model.remote.user.UserAnimeUpdateRepo
 import com.lexwilliam.data_remote.MyAnimeListService
 import com.lexwilliam.data_remote.mapper.AnimeMapper
+import com.lexwilliam.data_remote.mapper.UserMapper
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class UserRemoteSourceImpl @Inject constructor(
     private val malService: MyAnimeListService,
-    private val animeMapper: AnimeMapper
+    private val animeMapper: AnimeMapper,
+    private val userMapper: UserMapper
 ): UserRemoteSource {
 
     override suspend fun getUserInfo(authHeader: String): String? =
@@ -22,10 +24,10 @@ class UserRemoteSourceImpl @Inject constructor(
         emit(animeMapper.toRepo(response!!))
     }
 
-//    override suspend fun updateUserAnimeStatus(authHeader: String, id: Int): Flow<UserAnimeUpdateRepo> = flow {
-//        val response = malService.updateUserAnimeStatus(authHeader = authHeader, animeId = id)
-//        emit()
-//    }
+    override suspend fun updateUserAnimeStatus(authHeader: String, id: Int, status: String, score: Int): Flow<UserAnimeUpdateRepo> = flow {
+        val response = malService.updateUserAnimeStatus(authHeader = authHeader, animeId = id, animeStatus = status, score = score).body()
+        emit(userMapper.toRepo(response!!))
+    }
 
 
 }

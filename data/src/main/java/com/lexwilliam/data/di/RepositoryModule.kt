@@ -52,9 +52,10 @@ object RepositoryModule {
     fun provideUserRepository(
         userRemoteSource: UserRemoteSource,
         oAuthLocalSource: OAuthLocalSource,
-        animeMapper: AnimeMapper
+        animeMapper: AnimeMapper,
+        userMapper: UserMapper
     ): UserRepository =
-        UserRepositoryImpl(userRemoteSource, oAuthLocalSource, animeMapper)
+        UserRepositoryImpl(userRemoteSource, oAuthLocalSource, animeMapper, userMapper)
 
     @Singleton
     @Provides
@@ -67,4 +68,8 @@ object RepositoryModule {
     @Singleton
     @Provides
     fun provideDetailMapper(): DetailMapper = DetailMapperImpl()
+
+    @Singleton
+    @Provides
+    fun provideUserMapper(): UserMapper = UserMapperImpl()
 }

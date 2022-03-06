@@ -52,7 +52,7 @@ interface MyAnimeListService {
 
     @PATCH("anime/{id}/my_list_status")
     @FormUrlEncoded
-    fun updateUserAnimeStatus(
+    suspend fun updateUserAnimeStatus(
         @Header("Authorization") authHeader: String,
         @Path("id") animeId: Int,
         @Field("status") animeStatus: String? = null,
