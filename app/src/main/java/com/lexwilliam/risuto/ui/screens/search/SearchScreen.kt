@@ -28,6 +28,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.PagingData
@@ -36,12 +37,14 @@ import androidx.paging.compose.items
 import com.lexwilliam.risuto.model.SearchHistoryPresentation
 import com.lexwilliam.risuto.model.AnimePresentation
 import com.lexwilliam.risuto.model.ShortAnimePresentation
-import com.lexwilliam.risuto.ui.component.HorizontalGridList
 import com.lexwilliam.risuto.ui.component.LoadingScreen
 import com.lexwilliam.risuto.ui.component.RowItem
 import com.lexwilliam.risuto.ui.component.SmallGrid
+import com.lexwilliam.risuto.ui.theme.RisutoTheme
+import com.lexwilliam.risuto.util.FakeItems
 import com.lexwilliam.risuto.util.bottomNavGap
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import timber.log.Timber
 
 @ExperimentalFoundationApi
@@ -194,7 +197,7 @@ fun SearchView(
             ResultView(animes = animes, navToDetail = { navToDetail(it) })
         }
         ResultType.Result -> {
-            QueryList(
+            QueryView(
                 items = searchSuggestions.map { SearchHistoryPresentation(query = it.title) },
                 onSelectItem = {
                     onQueryChanged(it.query)
@@ -401,24 +404,6 @@ fun SearchBar(
                 onValueChange = {
                     onQueryChanged(it)
                     onResultChange(ResultType.Result)
-                    onEventSent(
-                        SearchContract.Event.SearchAnime(
-                            q = it,
-                            type = null,
-                            score = null,
-                            minScore = null,
-                            maxScore = null,
-                            status = null,
-                            rating = null,
-                            sfw = null,
-                            genres = null,
-                            genresExclude = null,
-                            orderBy = null,
-                            sort = null,
-                            letter = null,
-                            producer = null
-                        )
-                    )
                 },
                 interactionSource = interactionSource,
                 textStyle = MaterialTheme.typography.subtitle1,
@@ -470,7 +455,7 @@ fun SearchBar(
 }
 
 @Composable
-fun QueryList(
+fun QueryView(
     items: List<SearchHistoryPresentation>,
     onSelectItem: (SearchHistoryPresentation) -> Unit
 ) {
@@ -551,6 +536,54 @@ fun HistoryHorizontalGridList(
         }
         item {
             Spacer(modifier = Modifier.padding(0.dp))
+        }
+    }
+}
+
+@Preview
+@Composable
+fun ResultPreview() {
+    RisutoTheme {
+        Box(
+            Modifier.background(MaterialTheme.colors.background)
+        ) {
+            ResultView(
+                animes = flowOf(PagingData.from(listOf(FakeItems.animeData, FakeItems.animeData, FakeItems.animeData, FakeItems.animeData))),
+                navToDetail = {}
+            )
+        }
+        }
+    }
+
+
+@Preview
+@Composable
+fun QueryPreview() {
+    RisutoTheme {
+        Box(
+            Modifier.background(MaterialTheme.colors.background)
+        ) {
+            QueryView(items = listOf(SearchHistoryPresentation(query = "test123"), SearchHistoryPresentation(query = "test123"), SearchHistoryPresentation(query = "test123")), onSelectItem = {})
+        }
+    }
+}
+
+@Preview
+@Composable
+fun HistoryPreview() {
+    RisutoTheme {
+        Box(
+            Modifier.background(MaterialTheme.colors.background)
+        ) {
+            HistoryView(
+                animeHistory = listOf(FakeItems.shortAnime, FakeItems.shortAnime, FakeItems.shortAnime, FakeItems.shortAnime, FakeItems.shortAnime),
+                searchHistory = listOf(SearchHistoryPresentation(query = "test123")),
+                onEventSent = {},
+                navToDetail = {},
+                onResultChange = {},
+                onQueryChanged = {},
+                onCursorChanged = {}
+            )
         }
     }
 }

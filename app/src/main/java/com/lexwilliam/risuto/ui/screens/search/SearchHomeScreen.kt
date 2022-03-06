@@ -1,7 +1,9 @@
 package com.lexwilliam.risuto.ui.screens.search
 
-import androidx.compose.foundation.*
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -13,8 +15,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.flowlayout.FlowMainAxisAlignment
+import com.google.accompanist.flowlayout.FlowRow
+import com.google.accompanist.flowlayout.SizeMode
 import com.lexwilliam.risuto.ui.component.Header
+import com.lexwilliam.risuto.ui.theme.RisutoTheme
 import com.lexwilliam.risuto.util.genreList
 import com.lexwilliam.risuto.util.getGenre
 
@@ -34,18 +41,24 @@ fun SearchHomeContent(
     navToSearch: () -> Unit,
     navToSearchWithGenre: (Int) -> Unit
 ) {
-    Column(
+    LazyColumn(
         modifier = Modifier
-            .verticalScroll(rememberScrollState())
+            .fillMaxWidth()
             .padding(start = 16.dp, end = 16.dp, bottom = 64.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Header(title = "Search", modifier = Modifier.padding(top = 24.dp))
-        SearchHomeBar(navToSearch = { navToSearch() })
-        Text(text = "Genre", style = MaterialTheme.typography.h6)
-        GenreGridList(navToSearchWithGenre = {
-            navToSearchWithGenre(it)
-        })
+        item {
+            Header(title = "Search", modifier = Modifier.padding(top = 24.dp))
+            SearchHomeBar(navToSearch = { navToSearch() })
+            Text(text = "Genre", style = MaterialTheme.typography.h6)
+        }
+        item {
+            FlowRow(mainAxisSize = SizeMode.Expand, mainAxisAlignment = FlowMainAxisAlignment.SpaceBetween) {
+                genreList.forEach { genre ->
+                    GenreGrid(modifier = Modifier.padding(bottom = 16.dp), genre = genre, navToSearchWithGenre = { navToSearchWithGenre(it) })
+                }
+            }
+        }
     }
 }
 
@@ -75,46 +88,6 @@ fun SearchHomeBar(
     }
 }
 
-
-@Composable
-fun GenreGridList(
-    navToSearchWithGenre: (Int) -> Unit
-) {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        var count = 0
-        val size = genreList.size - genreList.size%2
-        while(count < size) {
-            Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                for (i in 0..1) {
-                    GenreGrid(
-                        genre = genreList[count],
-                        navToSearchWithGenre = {
-                            navToSearchWithGenre(it)
-                        }
-                    )
-                    count++
-                }
-            }
-        }
-        if (genreList.size - count != 0) {
-            Row {
-                while (genreList.size - count != 0) {
-                    GenreGrid(
-                        genre = genreList[count],
-                        navToSearchWithGenre = {
-                            navToSearchWithGenre(it)
-                        }
-                    )
-                    count++
-                }
-            }
-        }
-    }
-}
-
 @Composable
 fun GenreGrid(
     modifier: Modifier = Modifier,
@@ -133,4 +106,20 @@ fun GenreGrid(
     ) {
         Text(text = genre, style = MaterialTheme.typography.subtitle2, color = Color.White)
     }
+}
+
+@Preview
+@Composable
+fun SearchHomePreview() {
+    RisutoTheme {
+        Box(
+            Modifier.background(MaterialTheme.colors.background)
+        ) {
+            SearchHomeContent(
+                navToSearch = {},
+                navToSearchWithGenre = {}
+            )
+        }
+    }
+
 }

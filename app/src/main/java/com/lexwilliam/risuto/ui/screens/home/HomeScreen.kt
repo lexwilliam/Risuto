@@ -11,10 +11,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.lexwilliam.risuto.model.AnimePresentation
 import com.lexwilliam.risuto.ui.component.Header
 import com.lexwilliam.risuto.ui.component.HorizontalGridList
+import com.lexwilliam.risuto.ui.theme.RisutoTheme
+import com.lexwilliam.risuto.util.FakeItems
 import java.util.*
 
 @Composable
@@ -97,7 +100,7 @@ fun PosterGridList(
             Text(
                 text = title,
                 style = MaterialTheme.typography.h5,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.SemiBold
             )
             HorizontalGridList(
                 items = items,
@@ -107,16 +110,23 @@ fun PosterGridList(
     }
 }
 
-//@Preview
-//@Composable
-//fun HomeContentPreview() {
-//    HomeContent(
-//        currentSeasonAnime = generateFakeItemList(),
-//        topAiringAnime = generateFakeItemList(),
-//        topAnime = generateFakeItemList(),
-//        topUpcomingAnime = generateFakeItemList(),
-//        navToDetail = {}
-//    )
-//}
+@Preview
+@Composable
+fun HomeContentPreview() {
+    RisutoTheme {
+        Box(
+            Modifier.background(MaterialTheme.colors.background)
+        ) {
+            HomeContent(
+                currentSeason = "Winter",
+                currentYear = 2022,
+                schedules = listOf(FakeItems.animeData, FakeItems.animeData, FakeItems.animeData, FakeItems.animeData),
+                seasonAnime = listOf(FakeItems.animeData, FakeItems.animeData, FakeItems.animeData, FakeItems.animeData),
+                topAnime = listOf(FakeItems.animeData, FakeItems.animeData, FakeItems.animeData, FakeItems.animeData),
+                navToDetail = {}
+            )
+        }
+    }
+}
 
 

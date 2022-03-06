@@ -99,7 +99,7 @@ object Dependencies {
         const val compose = "androidx.paging:paging-compose:1.0.0-alpha14"
     }
 
-    const val apacheLang3 = "org.apache.commons:commons-lang3:${Versions.apacheCommons}"
+    const val flowLayout = "com.google.accompanist:accompanist-flowlayout:${Versions.flowLayout}"
 
     const val lottie = "com.airbnb.android:lottie:${Versions.lottie}"
     const val lottieCompose = "com.airbnb.android:lottie-compose:${Versions.lottieCompose}"

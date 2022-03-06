@@ -44,4 +44,5 @@ object Versions {
     const val browser = "1.0.0"
     const val kotlinxCoroutines = "1.5.2"
     const val retrofitCoroutineAdapter = "0.9.2"
+    const val flowLayout = "0.20.0"
 }

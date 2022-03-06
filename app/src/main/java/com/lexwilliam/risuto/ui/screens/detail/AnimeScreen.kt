@@ -16,12 +16,15 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.lexwilliam.risuto.model.AnimeDetailPresentation
 import com.lexwilliam.risuto.model.WatchStatusPresentation
 import com.lexwilliam.risuto.ui.component.Chip
 import com.lexwilliam.risuto.ui.component.LoadingScreen
 import com.lexwilliam.risuto.ui.component.NetworkImage
+import com.lexwilliam.risuto.ui.screens.home.HomeContent
+import com.lexwilliam.risuto.ui.theme.RisutoTheme
 import com.lexwilliam.risuto.util.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -44,6 +47,7 @@ fun AnimeScreen(
     )
     val coroutineScope = rememberCoroutineScope()
 
+
     BottomSheetScaffold(
         modifier = Modifier.background(MaterialTheme.colors.background),
         scaffoldState = bottomSheetScaffoldState,
@@ -59,48 +63,48 @@ fun AnimeScreen(
             )
         }
     ) {
-        AnimeContent(
-            state = state,
-            onBackPressed = { onBackPressed() },
-            navToSearchWithGenre = navToSearchWithGenre,
-            bottomSheetState = bottomSheetScaffoldState,
-            coroutineScope = coroutineScope
-        )
+        if(state.isLoading) {
+            LoadingScreen()
+        } else {
+            AnimeContent(
+                animeDetail = state.animeDetail,
+                onBackPressed = { onBackPressed() },
+                navToSearchWithGenre = navToSearchWithGenre,
+                bottomSheetState = bottomSheetScaffoldState,
+                coroutineScope = coroutineScope
+            )
+        }
     }
 }
 
 @ExperimentalMaterialApi
 @Composable
 fun AnimeContent(
-    state: AnimeContract.State,
+    animeDetail: AnimeDetailPresentation,
     onBackPressed: () -> Unit,
     navToSearchWithGenre: (Int) -> Unit,
     bottomSheetState: BottomSheetScaffoldState,
     coroutineScope: CoroutineScope
 ) {
-    if(state.isLoading) {
-        LoadingScreen()
-    } else {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(bottom = 64.dp)
-                .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            AnimeToolBar(
-                onAddPressed = {
-                    coroutineScope.launch {
-                        bottomSheetState.bottomSheetState.expand()
-                    }
-                },
-                onBackPressed = { onBackPressed() }
-            )
-            AnimeDetail(animeDetail = state.animeDetail)
-            AnimeGenre(animeDetail = state.animeDetail, navToSearchWithGenre = { navToSearchWithGenre(it) })
-            AnimeRating(animeDetail = state.animeDetail)
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(bottom = 64.dp)
+            .verticalScroll(rememberScrollState()),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        AnimeToolBar(
+            onAddPressed = {
+                coroutineScope.launch {
+                    bottomSheetState.bottomSheetState.expand()
+                }
+            },
+            onBackPressed = { onBackPressed() }
+        )
+        AnimeDetail(animeDetail = animeDetail)
+        AnimeGenre(animeDetail = animeDetail, navToSearchWithGenre = { navToSearchWithGenre(it) })
+        AnimeRating(animeDetail = animeDetail)
 //            CharVoiceActorList(animeStaff = state.characterStaff)
-        }
     }
 }
 
@@ -377,14 +381,14 @@ fun AnimeRating(
 //    }
 //}
 
-//@Preview
-//@Composable
-//fun AnimeScreenPreview() {
-//    AnimeContent(
-//        animeDetail = generateFakeAnimeDetail(),
-//        animeStaff = CharacterStaffPresentation(),
-//        onLoading = false,
-//        onBackPressed = {},
-//        navToGenre = {}
-//    )
-//}
+@Preview
+@Composable
+fun AnimeScreenPreview() {
+    RisutoTheme {
+        Box(
+            Modifier.background(MaterialTheme.colors.background)
+        ) {
+            AnimeDetail(animeDetail = FakeItems.animeDetail)
+        }
+    }
+}

@@ -80,6 +80,7 @@ dependencies {
     implementation(Dependencies.Hilt.hiltCompiler)
     implementation(Dependencies.Hilt.hiltNavigationCompose)
 
+    implementation(Dependencies.flowLayout)
     implementation(Dependencies.coilCompose)
     implementation(Dependencies.lottie)
     implementation(Dependencies.lottieCompose)

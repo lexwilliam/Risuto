@@ -10,10 +10,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.lexwilliam.risuto.model.AnimePresentation
 import com.lexwilliam.risuto.ui.component.GridList
 import com.lexwilliam.risuto.ui.component.Header
+import com.lexwilliam.risuto.ui.theme.RisutoTheme
 import com.lexwilliam.risuto.util.*
 import timber.log.Timber
 import java.util.*
@@ -71,7 +73,8 @@ fun SeasonToolBar(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 24.dp, start = 16.dp, end = 16.dp)
+            .padding(top = 24.dp, start = 16.dp, end = 16.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Header(
             modifier = Modifier
@@ -150,5 +153,24 @@ private fun onNextSeason(
     } else {
         nextSeason = allSeason.first()
         SeasonAndYear(nextSeason, year + 1)
+    }
+}
+
+@OptIn(ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class,
+    ExperimentalFoundationApi::class
+)
+@Preview
+@Composable
+fun SeasonPreview() {
+    RisutoTheme {
+        Box(modifier = Modifier.background(MaterialTheme.colors.background)) {
+            SeasonContent(
+                year = 2022,
+                season = "Winter",
+                animes = listOf(FakeItems.animeData, FakeItems.animeData, FakeItems.animeData, FakeItems.animeData, FakeItems.animeData, FakeItems.animeData),
+                onEventSent = {},
+                navToDetail = {}
+            )
+        }
     }
 }

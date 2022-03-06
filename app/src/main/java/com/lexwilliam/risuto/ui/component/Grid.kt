@@ -35,14 +35,13 @@ fun SmallGrid(
             imageUrl = imageUrl,
             modifier = Modifier
                 .size(width = 120.dp, height = 160.dp)
-                .shadow(elevation = 4.dp, shape = MaterialTheme.shapes.medium, true)
+                .shadow(elevation = 4.dp, shape = MaterialTheme.shapes.small, true)
         )
         Text(text = title + "\n",
             maxLines = 2,
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier.padding(top = 4.dp),
-            style = MaterialTheme.typography.body2,
-            fontWeight = FontWeight.Bold
+            style = MaterialTheme.typography.subtitle2
         )
     }
 }
@@ -73,8 +72,7 @@ fun MediumGrid(
             maxLines = 2,
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier.padding(top = 4.dp),
-            style = MaterialTheme.typography.subtitle1,
-            fontWeight = FontWeight.Bold
+            style = MaterialTheme.typography.subtitle1
         )
         Row(
             modifier = Modifier.requiredHeight(IntrinsicSize.Min),
