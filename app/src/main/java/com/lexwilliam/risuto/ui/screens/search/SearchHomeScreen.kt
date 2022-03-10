@@ -47,11 +47,9 @@ fun SearchHomeContent(
             .padding(start = 16.dp, end = 16.dp, bottom = 64.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        item {
-            Header(title = "Search", modifier = Modifier.padding(top = 24.dp))
-            SearchHomeBar(navToSearch = { navToSearch() })
-            Text(text = "Genre", style = MaterialTheme.typography.h6)
-        }
+        item { Header(title = "Search", modifier = Modifier.padding(top = 24.dp)) }
+        item { SearchHomeBar(navToSearch = { navToSearch() }) }
+        item { Text(text = "Genre", style = MaterialTheme.typography.h6) }
         item {
             FlowRow(mainAxisSize = SizeMode.Expand, mainAxisAlignment = FlowMainAxisAlignment.SpaceBetween) {
                 genreList.forEach { genre ->

@@ -2,8 +2,6 @@ package com.lexwilliam.risuto.ui.screens.detail
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -12,18 +10,25 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.coil.rememberCoilPainter
+import com.google.accompanist.flowlayout.FlowRow
 import com.lexwilliam.risuto.model.AnimeDetailPresentation
 import com.lexwilliam.risuto.model.WatchStatusPresentation
 import com.lexwilliam.risuto.ui.component.Chip
 import com.lexwilliam.risuto.ui.component.LoadingScreen
 import com.lexwilliam.risuto.ui.component.NetworkImage
-import com.lexwilliam.risuto.ui.screens.home.HomeContent
 import com.lexwilliam.risuto.ui.theme.RisutoTheme
 import com.lexwilliam.risuto.util.*
 import kotlinx.coroutines.CoroutineScope
@@ -42,38 +47,14 @@ fun AnimeScreen(
         onEventSent(AnimeContract.Event.InsertAnimeHistory(state.animeDetail))
         isDone = true
     }
-    val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(
-        bottomSheetState = BottomSheetState(BottomSheetValue.Collapsed)
-    )
-    val coroutineScope = rememberCoroutineScope()
-
-
-    BottomSheetScaffold(
-        modifier = Modifier.background(MaterialTheme.colors.background),
-        scaffoldState = bottomSheetScaffoldState,
-        sheetContent = {
-            MyAnimeMenu(
-                onEventSent = { onEventSent(it) },
-                id = state.malId,
-                onDoneClicked = {
-                    coroutineScope.launch {
-                        bottomSheetScaffoldState.bottomSheetState.collapse()
-                    }
-                }
-            )
-        }
-    ) {
-        if(state.isLoading) {
-            LoadingScreen()
-        } else {
-            AnimeContent(
-                animeDetail = state.animeDetail,
-                onBackPressed = { onBackPressed() },
-                navToSearchWithGenre = navToSearchWithGenre,
-                bottomSheetState = bottomSheetScaffoldState,
-                coroutineScope = coroutineScope
-            )
-        }
+    if(state.isLoading) {
+        LoadingScreen()
+    } else {
+        AnimeContent(
+            animeDetail = state.animeDetail,
+            onBackPressed = { onBackPressed() },
+            navToSearchWithGenre = navToSearchWithGenre
+        )
     }
 }
 
@@ -83,8 +64,6 @@ fun AnimeContent(
     animeDetail: AnimeDetailPresentation,
     onBackPressed: () -> Unit,
     navToSearchWithGenre: (Int) -> Unit,
-    bottomSheetState: BottomSheetScaffoldState,
-    coroutineScope: CoroutineScope
 ) {
     Column(
         modifier = Modifier
@@ -95,9 +74,7 @@ fun AnimeContent(
     ) {
         AnimeToolBar(
             onAddPressed = {
-                coroutineScope.launch {
-                    bottomSheetState.bottomSheetState.expand()
-                }
+
             },
             onBackPressed = { onBackPressed() }
         )
@@ -105,107 +82,6 @@ fun AnimeContent(
         AnimeGenre(animeDetail = animeDetail, navToSearchWithGenre = { navToSearchWithGenre(it) })
         AnimeRating(animeDetail = animeDetail)
 //            CharVoiceActorList(animeStaff = state.characterStaff)
-    }
-}
-
-@Composable
-fun MyAnimeMenu(
-    onDoneClicked: () -> Unit,
-    id: Int,
-    onEventSent: (AnimeContract.Event) -> Unit
-) {
-    var score by remember { mutableStateOf(-1) }
-    var watchStateText by remember { mutableStateOf("Plan To Watch")}
-    var watchState by remember { mutableStateOf(WatchStatusPresentation.PlanToWatch) }
-    var expandedWatchStatus by remember { mutableStateOf(false) }
-    var expandedScore by remember { mutableStateOf(false) }
-    Column(
-        modifier = Modifier
-            .padding(bottom = 64.dp, top = 24.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        Row(modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-            horizontalArrangement = Arrangement.spacedBy(4.dp)
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-                    .height(40.dp)
-                    .background(Color.LightGray)
-                    .clip(MaterialTheme.shapes.medium)
-                    .clickable { expandedScore = true },
-                contentAlignment = Alignment.Center
-            ) {
-                if(score != -1) {
-                    Text(
-                        text = "$score/10",
-                        style = MaterialTheme.typography.subtitle1
-                    )
-                } else {
-                    Text(
-                        text = "Score",
-                        style = MaterialTheme.typography.subtitle1
-                    )
-                }
-                DropdownMenu(expanded = expandedScore, onDismissRequest = { expandedScore = false }) {
-                    for(i in 10 downTo 1) {
-                        DropdownMenuItem(onClick = {
-                            score = i
-                            expandedScore = false
-                        }) {
-                            Text(i.toString())
-                        }
-                    }
-                }
-            }
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-                    .height(40.dp)
-                    .background(Color.LightGray)
-                    .clip(MaterialTheme.shapes.medium)
-                    .clickable { expandedWatchStatus = true },
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = watchStateText,
-                    style = MaterialTheme.typography.subtitle1
-                )
-                DropdownMenu(expanded = expandedWatchStatus, onDismissRequest = { expandedWatchStatus = false }) {
-                    watchStatusList.forEach {
-                        DropdownMenuItem(onClick = {
-                            watchState = it
-                            watchStateText =
-                                watchStatusToString(
-                                    it
-                                )
-                            expandedWatchStatus = false
-                        }) {
-                            Text(
-                                watchStatusToString(
-                                    it
-                                )
-                            )
-                        }
-                    }
-                }
-            }
-        }
-        Button(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-            onClick = {
-                onEventSent(AnimeContract.Event.UpdateUserAnimeStatus(id, watchStatusToString(watchState), score))
-                onDoneClicked()
-            }
-        ) {
-            Text("Done")
-        }
     }
 }
 
@@ -237,36 +113,62 @@ fun AnimeToolBar(
 fun AnimeDetail(
     animeDetail: AnimeDetailPresentation
 ) {
-    Row(
+    Box(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp),
-        horizontalArrangement = Arrangement.spacedBy(16.dp)
+            .fillMaxWidth(),
+        contentAlignment = Alignment.BottomCenter
     ) {
-        NetworkImage(
+        Box(
             modifier = Modifier
-                .size(width = 120.dp, height = 180.dp)
-                .shadow(elevation = 4.dp, shape = MaterialTheme.shapes.medium, true),
-            imageUrl = animeDetail.main_picture.medium
-        )
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(4.dp)
-
+                .fillMaxWidth()
+                .height(500.dp)
         ) {
-            Text(text = animeDetail.title, style = MaterialTheme.typography.h6)
-//            Text(text = animeDetail.premiered+" | "+animeDetail.type+"("+animeDetail.episodes+")", style = MaterialTheme.typography.caption)
-            Row {
-                Text(text = "Studio: ", style = MaterialTheme.typography.button)
-                animeDetail.studios.forEach {
-                    Text(text = "${it.name} ", style = MaterialTheme.typography.button)
-                }
+            NetworkImage(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                imageUrl = animeDetail.pictures.first().large
+            )
+            Spacer(
+                Modifier
+                    .fillMaxWidth()
+                    .height(32.dp)
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(
+                                Color.Transparent,
+                                MaterialTheme.colors.background
+                            )
+                        )
+                    )
+                    .align(Alignment.BottomCenter)
+            )
+        }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            NetworkImage(
+                modifier = Modifier
+                    .size(width = 120.dp, height = 200.dp)
+                    .shadow(elevation = 4.dp, shape = MaterialTheme.shapes.small, true),
+                imageUrl = animeDetail.main_picture.medium
+            )
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                Spacer(Modifier.padding(8.dp))
+                Text(text = animeDetail.title, style = MaterialTheme.typography.h5, fontWeight = FontWeight.Bold)
+                Text(text = animeDetail.studios.first().name, style = MaterialTheme.typography.caption)
+                Text(text = "${animeDetail.num_episodes} episodes ")
+                Text(text = animeDetail.num_list_users.toString())
+                Text(text = animeDetail.popularity.toString())
             }
-//            Text(text = genresToString(animeDetail.genres), style = MaterialTheme.typography.button)
-            Divider()
-            Text(text = animeDetail.synopsis, style = MaterialTheme.typography.body2, maxLines = 5, overflow = TextOverflow.Ellipsis)
         }
     }
+
 }
 
 @Composable
@@ -386,7 +288,9 @@ fun AnimeRating(
 fun AnimeScreenPreview() {
     RisutoTheme {
         Box(
-            Modifier.background(MaterialTheme.colors.background)
+            Modifier
+                .background(MaterialTheme.colors.background)
+                .fillMaxSize()
         ) {
             AnimeDetail(animeDetail = FakeItems.animeDetail)
         }

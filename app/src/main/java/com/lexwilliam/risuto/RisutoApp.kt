@@ -78,8 +78,10 @@ fun RisutoAppContent(
     )
 
     val bottomNavException = listOf(
-        RisutoSplashScreen.route,
-        RisutoLoginScreen.route
+        RisutoHomeScreen.route,
+        RisutoSeasonScreen.route,
+        RisutoSearchHomeScreen.route,
+        RisutoProfileScreen.route
     )
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -87,7 +89,7 @@ fun RisutoAppContent(
 
     Scaffold(
         bottomBar = {
-            if(!bottomNavException.contains(currentRoute?.route)) {
+            if(bottomNavException.contains(currentRoute?.route)) {
                 BottomNavigation(
                     backgroundColor = MaterialTheme.colors.background,
                     contentColor = MaterialTheme.colors.secondary,
