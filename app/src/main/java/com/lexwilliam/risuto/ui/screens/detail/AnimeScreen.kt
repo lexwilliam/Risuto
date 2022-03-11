@@ -3,21 +3,25 @@ package com.lexwilliam.risuto.ui.screens.detail
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -26,8 +30,10 @@ import androidx.compose.ui.unit.dp
 import com.google.accompanist.flowlayout.FlowRow
 import com.lexwilliam.risuto.model.AnimeCharactersPresentation
 import com.lexwilliam.risuto.model.AnimeDetailPresentation
+import com.lexwilliam.risuto.ui.component.HorizontalGridList
 import com.lexwilliam.risuto.ui.component.LoadingScreen
 import com.lexwilliam.risuto.ui.component.NetworkImage
+import com.lexwilliam.risuto.ui.component.SmallGrid
 import com.lexwilliam.risuto.ui.theme.RisutoTheme
 import com.lexwilliam.risuto.util.FakeItems
 import com.lexwilliam.risuto.util.getInitialAnimeDetails
@@ -35,13 +41,13 @@ import com.lexwilliam.risuto.util.getJpnVoiceActor
 import com.lexwilliam.risuto.util.intToCurrency
 import java.util.*
 
-@ExperimentalMaterialApi
 @Composable
 fun AnimeScreen(
     state: AnimeContract.State,
     onEventSent: (AnimeContract.Event) -> Unit,
     onBackPressed: () -> Unit,
-    navToSearchWithGenre: (Int) -> Unit
+    navToSearchWithGenre: (Int) -> Unit,
+    navToDetail: (Int) -> Unit
 ) {
     var isDone by remember { mutableStateOf(false) }
     if(!state.isLoading && !isDone) {
@@ -55,18 +61,19 @@ fun AnimeScreen(
             animeDetail = state.animeDetail,
             characters = state.characters,
             onBackPressed = { onBackPressed() },
-            navToSearchWithGenre = navToSearchWithGenre
+            navToSearchWithGenre = navToSearchWithGenre,
+            navToDetail = navToDetail
         )
     }
 }
 
-@ExperimentalMaterialApi
 @Composable
 fun AnimeContent(
     animeDetail: AnimeDetailPresentation,
     characters: List<AnimeCharactersPresentation.Data>,
     onBackPressed: () -> Unit,
     navToSearchWithGenre: (Int) -> Unit,
+    navToDetail: (Int) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -74,15 +81,13 @@ fun AnimeContent(
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-//        AnimeToolBar(
-//            onAddPressed = {
-//
-//            },
-//            onBackPressed = { onBackPressed() }
-//        )
         AnimeDetail(animeDetail = animeDetail, navToSearchWithGenre = { navToSearchWithGenre(it) })
         AnimeSynopsis(synopsis = animeDetail.synopsis)
-        CharVoiceActorList(characters = characters )
+        CharVoiceActorList(characters = characters)
+        AnimeInfo(animeDetail = animeDetail)
+        DetailPictureList(pictures = animeDetail.pictures)
+        RelatedAnimeList(relatedAnime = animeDetail.related_anime, navToDetail = navToDetail)
+        RecommendationAnimeList(recommendations = animeDetail.recommendations, navToDetail = navToDetail)
         Spacer(modifier = Modifier.padding(4.dp))
     }
 }
@@ -218,21 +223,18 @@ fun AnimeSynopsis(
         }
     }
 
-    Column(
-        modifier = Modifier
-            .padding(start = 40.dp, end = 16.dp)
-    ) {
-        Text(
-            modifier = Modifier
-                .padding(bottom = 8.dp),
-            text = "Synopsis",
-            style = MaterialTheme.typography.h5,
-            fontWeight = FontWeight.SemiBold
-        )
-
+    Column {
+        DetailSubtitle(title = "Synopsis")
         Column(
             modifier = Modifier
-                .clickable(enabled = isClickable) { isExpanded = !isExpanded }
+                .padding(start = 40.dp, end = 16.dp)
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    enabled = isClickable,
+                    indication = null
+                ) {
+                    isExpanded = !isExpanded
+                }
         ) {
             Text(
                 text = synopsis,
@@ -263,13 +265,7 @@ fun CharVoiceActorList(
     characters: List<AnimeCharactersPresentation.Data>
 ) {
     Column {
-        Text(
-            modifier = Modifier
-                .padding(start = 40.dp, bottom = 8.dp),
-            text = "Voice Actor",
-            style = MaterialTheme.typography.h5,
-            fontWeight = FontWeight.SemiBold
-        )
+        DetailSubtitle(title = "Voice Actors")
         LazyRow(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             contentPadding = PaddingValues(start = 40.dp)
@@ -328,7 +324,189 @@ fun CharVoiceActorList(
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun AnimeInfo(
+    animeDetail: AnimeDetailPresentation
+) {
+    val infoList = listOf(
+        Pair("Alternative titles", "${animeDetail.alternative_titles.en}\n${animeDetail.alternative_titles.ja}${titleSynonymsToString(animeDetail.alternative_titles.synonyms)}"),
+        Pair("Season", "${animeDetail.start_season.season.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }} ${animeDetail.start_season.year}"),
+        Pair("Duration", animeDetail.average_episode_duration.toString()),
+        Pair("Broadcast", "${animeDetail.broadcast.day_of_the_week.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }} ${animeDetail.broadcast.start_time}"),
+        Pair("Start Date", animeDetail.start_date),
+        Pair("End Date", animeDetail.end_date),
+        Pair("Source",  animeDetail.source.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }),
+        Pair("Rating", animeDetail.rating.uppercase())
+    )
+    Column {
+        DetailSubtitle(title = "More Info")
+        Column(
+            modifier = Modifier
+                .padding(start = 40.dp, end = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    modifier = Modifier
+                        .weight(2f),
+                    text = "Studios",
+                    style = MaterialTheme.typography.subtitle1,
+                    fontWeight = FontWeight.SemiBold
+                )
+                Column(
+                    modifier = Modifier
+                        .weight(3f),
+                ) {
+                    animeDetail.studios.forEach { studio ->
+                        Text(
+                            text = studio.name,
+                            style = MaterialTheme.typography.subtitle1
+                        )
+                    }
+                }
+            }
+            infoList.forEach {
+                Row(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        modifier = Modifier
+                            .weight(2f),
+                        text = it.first,
+                        style = MaterialTheme.typography.subtitle1,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    Text(
+                        modifier = Modifier
+                            .weight(3f),
+                        text = it.second,
+                        style = MaterialTheme.typography.subtitle1
+                    )
+                }
+            }
+        }
+    }
+}
+
+fun titleSynonymsToString(
+    synonyms: List<String>
+): String {
+    var result = ""
+    synonyms.forEach {
+        result += "\n${it}"
+    }
+    return result
+}
+
+@Composable
+fun DetailPictureList(
+    pictures: List<AnimeDetailPresentation.Picture>
+) {
+    Column {
+        DetailSubtitle(title = "Pictures")
+        LazyRow(
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            modifier = Modifier
+                .fillMaxWidth(),
+            contentPadding = PaddingValues(start = 40.dp)
+        ){
+            items(items = pictures){ item ->
+                NetworkImage(
+                    modifier = Modifier
+                        .height(180.dp)
+                        .shadow(4.dp, MaterialTheme.shapes.medium, true),
+                    imageUrl = item.medium
+                )
+            }
+            item {
+                Spacer(modifier = Modifier.padding(0.dp))
+            }
+        }
+    }
+}
+
+@Composable
+fun RelatedAnimeList(
+    relatedAnime: List<AnimeDetailPresentation.RelatedAnime>,
+    navToDetail: (Int) -> Unit
+) {
+    Column {
+        DetailSubtitle(title = "Related Anime")
+        LazyRow(
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            modifier = Modifier
+                .fillMaxWidth(),
+            contentPadding = PaddingValues(start = 40.dp)
+        ){
+            items(items = relatedAnime){ item ->
+                SmallGrid(
+                    id = item.node.id,
+                    imageUrl = item.node.main_picture.medium,
+                    title = item.node.title,
+                    navToDetail = { navToDetail(it) }
+                )
+            }
+            item {
+                Spacer(modifier = Modifier.padding(0.dp))
+            }
+        }
+    }
+}
+
+@Composable
+fun RecommendationAnimeList(
+    recommendations: List<AnimeDetailPresentation.Recommendation>,
+    navToDetail: (Int) -> Unit
+) {
+    Column {
+        DetailSubtitle(title = "Recommendations")
+        LazyRow(
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            modifier = Modifier
+                .fillMaxWidth(),
+            contentPadding = PaddingValues(start = 40.dp)
+        ){
+            items(items = recommendations){ item ->
+                SmallGrid(
+                    id = item.node.id,
+                    imageUrl = item.node.main_picture.medium,
+                    title = item.node.title,
+                    navToDetail = { navToDetail(it) }
+                )
+            }
+            item {
+                Spacer(modifier = Modifier.padding(0.dp))
+            }
+        }
+    }
+}
+
+@Composable
+fun DetailSubtitle(
+    title: String
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(
+            modifier = Modifier
+                .size(40.dp)
+                .padding(start = 16.dp, end = 16.dp, bottom = 8.dp)
+                .clip(CircleShape)
+                .background(color = MaterialTheme.colors.primary)
+        )
+        Text(
+            modifier = Modifier
+                .padding(bottom = 8.dp),
+            text = title,
+            style = MaterialTheme.typography.h5,
+            fontWeight = FontWeight.SemiBold
+        )
+    }
+}
+
 @Preview
 @Composable
 fun AnimeScreenPreview() {
@@ -343,8 +521,51 @@ fun AnimeScreenPreview() {
                 animeDetail = FakeItems.animeDetail,
                 characters = listOf(FakeItems.character, FakeItems.character, FakeItems.character, FakeItems.character, FakeItems.character, FakeItems.character),
                 onBackPressed = {},
-                navToSearchWithGenre = {}
+                navToSearchWithGenre = {},
+                navToDetail = {}
             )
+        }
+    }
+}
+
+@Preview
+@Composable
+fun AnimeInfoPreview() {
+    RisutoTheme {
+        Column(
+            Modifier
+                .background(MaterialTheme.colors.background)
+                .fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(24.dp)
+        ) {
+            CharVoiceActorList(
+                characters = listOf(
+                    FakeItems.character,
+                    FakeItems.character,
+                    FakeItems.character,
+                    FakeItems.character,
+                    FakeItems.character,
+                    FakeItems.character
+                )
+            )
+            AnimeInfo(animeDetail = FakeItems.animeDetail)
+        }
+    }
+}
+
+@Preview
+@Composable
+fun AnimeSuggestionPreview() {
+    RisutoTheme {
+        Column(
+            Modifier
+                .background(MaterialTheme.colors.background)
+                .fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(24.dp)
+        ) {
+            DetailPictureList(pictures = FakeItems.animeDetail.pictures)
+            RelatedAnimeList(relatedAnime = FakeItems.animeDetail.related_anime, navToDetail = {})
+            RecommendationAnimeList(recommendations = FakeItems.animeDetail.recommendations, navToDetail = {})
         }
     }
 }

@@ -224,6 +224,11 @@ fun RisutoAppContent(
                         navController.navigate(
                             RisutoSearchScreen.route.plus("/?genre=$genre")
                         )
+                    },
+                    navToDetail = { id ->
+                        navController.navigate(
+                            RisutoAnimeScreen.route.plus("/?mal_id=$id")
+                        )
                     }
                 )
             }

@@ -62,7 +62,6 @@ class AnimeViewModel @Inject constructor(
                 getAnimeDetails(id)
                 getAnimeCharacters(id)
             }
-            setState { copy(isLoading = false) }
         }
     }
 
