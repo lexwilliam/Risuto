@@ -88,11 +88,6 @@ class AnimeRemoteSourceImpl @Inject constructor(
         ).flow.map { it.map { animeMapper.toRepo(it) } }
     }
 
-    override suspend fun getAnimeById(id: Int): Flow<AnimeRepo.Data> = flow {
-        val response = jikanService.getAnimeById(id)
-        emit(animeMapper.toRepo(response))
-    }
-
     private fun getDefaultPageConfig(): PagingConfig {
         return PagingConfig(pageSize = DEFAULT_PAGE_SIZE, enablePlaceholders = true)
     }

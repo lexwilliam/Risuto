@@ -4,6 +4,7 @@ import com.lexwilliam.data.DetailRemoteSource
 import com.lexwilliam.data.OAuthLocalSource
 import com.lexwilliam.data.constant.ApiConstant
 import com.lexwilliam.data.mapper.DetailMapper
+import com.lexwilliam.domain.model.remote.anime.AnimeCharacters
 import com.lexwilliam.domain.model.remote.anime.AnimeDetail
 import com.lexwilliam.domain.repository.DetailRepository
 import kotlinx.coroutines.flow.Flow
@@ -19,6 +20,10 @@ class DetailRepositoryImpl @Inject constructor(
     override suspend fun getAnimeDetails(id: Int): Flow<AnimeDetail> {
         val accessToken = oAuthLocalSource.accessTokenFlow.firstOrNull()
         return detailRemoteSource.getAnimeDetails(ApiConstant.BEARER_SEPARATOR + accessToken, id).map { detailMapper.toDomain(it) }
+    }
+
+    override suspend fun getAnimeCharacters(id: Int): Flow<AnimeCharacters> {
+        return detailRemoteSource.getAnimeCharacters(id).map { detailMapper.toDomain(it) }
     }
 
 }

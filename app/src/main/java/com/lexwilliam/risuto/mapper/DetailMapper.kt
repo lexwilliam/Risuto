@@ -1,17 +1,24 @@
 package com.lexwilliam.risuto.mapper
 
+import com.lexwilliam.data.model.remote.anime.AnimeCharactersRepo
 import com.lexwilliam.data.model.remote.anime.AnimeDetailRepo
+import com.lexwilliam.domain.model.remote.anime.AnimeCharacters
 import com.lexwilliam.domain.model.remote.anime.AnimeDetail
+import com.lexwilliam.risuto.model.AnimeCharactersPresentation
 import com.lexwilliam.risuto.model.AnimeDetailPresentation
 import javax.inject.Inject
 
 interface DetailMapper {
     fun toPresentation(detail: AnimeDetail): AnimeDetailPresentation
+    fun toPresentation(characters: AnimeCharacters): AnimeCharactersPresentation
 }
 
 class DetailMapperImpl @Inject constructor(): DetailMapper {
     override fun toPresentation(detail: AnimeDetail): AnimeDetailPresentation =
         AnimeDetailPresentation(toPresentation(detail.alternative_titles), detail.average_episode_duration, detail.background, toPresentation(detail.broadcast), detail.created_at, detail.end_date, detail.genres.map { toPresentation(it) }, detail.id, toPresentation(detail.main_picture), detail.mean, detail.media_type, toPresentation(detail.my_list_status), detail.nsfw, detail.num_episodes, detail.num_list_users, detail.num_scoring_users, detail.pictures.map { toPresentation(it) }, detail.popularity, detail.rank, detail.rating, detail.recommendations.map { toPresentation(it) }, detail.related_anime.map { toPresentation(it) }, detail.related_manga, detail.source, detail.start_date, toPresentation(detail.start_season), toPresentation(detail.statistics), detail.status, detail.studios.map { toPresentation(it) }, detail.synopsis, detail.title, detail.updated_at)
+
+    override fun toPresentation(characters: AnimeCharacters): AnimeCharactersPresentation =
+        AnimeCharactersPresentation(characters.data.map { toPresentation(it) })
 
     private fun toPresentation(alter: AnimeDetail.AlternativeTitles): AnimeDetailPresentation.AlternativeTitles =
         AnimeDetailPresentation.AlternativeTitles(alter.en, alter.ja, alter.synonyms)
@@ -51,4 +58,31 @@ class DetailMapperImpl @Inject constructor(): DetailMapper {
 
     private fun toPresentation(studio: AnimeDetail.Studio): AnimeDetailPresentation.Studio =
         AnimeDetailPresentation.Studio(studio.id, studio.name)
+
+    private fun toPresentation(data: AnimeCharacters.Data): AnimeCharactersPresentation.Data =
+        AnimeCharactersPresentation.Data(toPresentation(data.character), data.role, data.voice_actors.map { toPresentation(it) })
+
+    private fun toPresentation(character: AnimeCharacters.Data.Character): AnimeCharactersPresentation.Data.Character =
+        AnimeCharactersPresentation.Data.Character(toPresentation(character.images), character.mal_id, character.name, character.url)
+
+    private fun toPresentation(images: AnimeCharacters.Data.Character.Images): AnimeCharactersPresentation.Data.Character.Images =
+        AnimeCharactersPresentation.Data.Character.Images(toPresentation(images.jpg), toPresentation(images.webp))
+
+    private fun toPresentation(jpg: AnimeCharacters.Data.Character.Images.Jpg): AnimeCharactersPresentation.Data.Character.Images.Jpg =
+        AnimeCharactersPresentation.Data.Character.Images.Jpg(jpg.image_url, jpg.small_image_url)
+
+    private fun toPresentation(webp: AnimeCharacters.Data.Character.Images.Webp): AnimeCharactersPresentation.Data.Character.Images.Webp =
+        AnimeCharactersPresentation.Data.Character.Images.Webp(webp.image_url, webp.small_image_url)
+
+    private fun toPresentation(va: AnimeCharacters.Data.VoiceActor): AnimeCharactersPresentation.Data.VoiceActor =
+        AnimeCharactersPresentation.Data.VoiceActor(va.language, toPresentation(va.person))
+
+    private fun toPresentation(person: AnimeCharacters.Data.VoiceActor.Person): AnimeCharactersPresentation.Data.VoiceActor.Person =
+        AnimeCharactersPresentation.Data.VoiceActor.Person(toPresentation(person.images), person.mal_id, person.name, person.url)
+
+    private fun toPresentation(images: AnimeCharacters.Data.VoiceActor.Person.Images): AnimeCharactersPresentation.Data.VoiceActor.Person.Images =
+        AnimeCharactersPresentation.Data.VoiceActor.Person.Images(toPresentation(images.jpg))
+
+    private fun toPresentation(jpg: AnimeCharacters.Data.VoiceActor.Person.Images.Jpg): AnimeCharactersPresentation.Data.VoiceActor.Person.Images.Jpg =
+        AnimeCharactersPresentation.Data.VoiceActor.Person.Images.Jpg(jpg.image_url)
 }

@@ -6,8 +6,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface AnimeRepository {
 
-    suspend fun getAnimeById(id: Int): Flow<Anime.Data>
-
     suspend fun getTopAnime(): Flow<Anime>
 
     suspend fun getSeasonNow(): Flow<Anime>

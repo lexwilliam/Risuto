@@ -72,9 +72,5 @@ class AnimeRepositoryImpl @Inject constructor(
         return animeRemoteSource.getSearchAnimePaging(q, type, score, minScore, maxScore, status, rating, sfw, genres, genresExclude, orderBy, sort, letter, producer).map { it.map { animeMapper.toDomain(it) } }
     }
 
-    override suspend fun getAnimeById(id: Int): Flow<Anime.Data> {
-        return animeRemoteSource.getAnimeById(id).map { animeMapper.toDomain(it) }
-    }
-
 
 }

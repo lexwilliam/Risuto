@@ -122,11 +122,6 @@ object DomainModule {
 
     @Singleton
     @Provides
-    fun provideGetAnimeById(animeRepository: AnimeRepository): GetAnimeById =
-        GetAnimeByIdImpl(animeRepository)
-
-    @Singleton
-    @Provides
     fun provideGetRecentAnimeRecommendation(animeRepository: AnimeRepository): GetSchedules =
         GetSchedulesImpl(animeRepository)
 
@@ -154,4 +149,9 @@ object DomainModule {
     @Provides
     fun provideUpdateUserAnimeStatus(userRepository: UserRepository): UpdateUserAnimeStatus =
         UpdateUserAnimeStatusImpl(userRepository)
+
+    @Singleton
+    @Provides
+    fun provideGetAnimeCharacters(detailRepository: DetailRepository): GetAnimeCharacters =
+        GetAnimeCharactersImpl(detailRepository)
 }

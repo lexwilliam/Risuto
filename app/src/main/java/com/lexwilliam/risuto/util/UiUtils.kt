@@ -3,6 +3,8 @@ package com.lexwilliam.risuto.util
 import android.annotation.SuppressLint
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.lexwilliam.risuto.model.AnimeCharactersPresentation
+import com.lexwilliam.risuto.model.AnimeDetailPresentation
 import com.lexwilliam.risuto.model.WatchStatusPresentation
 import org.joda.time.LocalDate
 import java.text.NumberFormat
@@ -88,3 +90,22 @@ fun getCurrentYear(): Int {
     val currentYear = sdf.format(Date())
     return currentYear.toInt()
 }
+
+fun getJpnVoiceActor(voiceActors: List<AnimeCharactersPresentation.Data.VoiceActor>): AnimeCharactersPresentation.Data.VoiceActor {
+    voiceActors.forEach { voiceActor ->
+        if(voiceActor.language == "Japanese"){
+            return voiceActor
+        }
+    }
+    return AnimeCharactersPresentation.Data.VoiceActor("", AnimeCharactersPresentation.Data.VoiceActor.Person(
+        AnimeCharactersPresentation.Data.VoiceActor.Person.Images(AnimeCharactersPresentation.Data.VoiceActor.Person.Images.Jpg("")), -1, "Not Found", ""))
+}
+
+fun getInitialAnimeDetails() =
+    AnimeDetailPresentation(
+        AnimeDetailPresentation.AlternativeTitles("", "", emptyList()), -1,
+        "", AnimeDetailPresentation.Broadcast("", ""), "", "", emptyList(),
+        -1, AnimeDetailPresentation.MainPicture("", ""), -1.0, "", AnimeDetailPresentation.MyListStatus(false, -1, -1, "", ""),
+        "", -1, -1, -1, emptyList(), -1, -1, "", emptyList(),
+        emptyList(), emptyList(), "", "", AnimeDetailPresentation.StartSeason("", -1), AnimeDetailPresentation.Statistics(-1, AnimeDetailPresentation.Status("", "", "", "", "")),
+        "", emptyList(), "", "", "")

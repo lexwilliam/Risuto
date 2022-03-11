@@ -7,6 +7,7 @@ import com.lexwilliam.risuto.base.BaseViewModel
 import com.lexwilliam.risuto.mapper.DetailMapper
 import com.lexwilliam.risuto.mapper.HistoryMapper
 import com.lexwilliam.risuto.model.AnimeDetailPresentation
+import com.lexwilliam.risuto.util.getInitialAnimeDetails
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.*
@@ -17,6 +18,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AnimeViewModel @Inject constructor(
     private val getAnimeDetails: GetAnimeDetails,
+    private val getAnimeCharacters: GetAnimeCharacters,
     private val insertAnimeHistory: InsertAnimeHistory,
     private val updateUserAnimeStatus: UpdateUserAnimeStatus,
     private val historyMapper: HistoryMapper,
@@ -40,6 +42,7 @@ class AnimeViewModel @Inject constructor(
         return AnimeContract.State(
             malId = -1,
             animeDetail = getInitialAnimeDetails(),
+            characters = emptyList(),
             isLoading = true,
             isError = false
         )
@@ -57,7 +60,9 @@ class AnimeViewModel @Inject constructor(
             malIdFromArgs?.let { id ->
                 setState { copy(malId = id) }
                 getAnimeDetails(id)
+                getAnimeCharacters(id)
             }
+            setState { copy(isLoading = false) }
         }
     }
 
@@ -75,6 +80,29 @@ class AnimeViewModel @Inject constructor(
                                     copy(
                                         animeDetail = anime,
                                         isLoading = false
+                                    )
+                                }
+                            }
+                    }
+            } catch (throwable: Throwable) {
+                handleExceptions(throwable)
+            }
+        }
+    }
+
+    private fun getAnimeCharacters(id: Int) {
+        viewModelScope.launch(errorHandler) {
+            try {
+                getAnimeCharacters.execute(id)
+                    .catch { throwable ->
+                        handleExceptions(throwable)
+                    }
+                    .collect {
+                        detailMapper.toPresentation(it)
+                            .let { characters ->
+                                setState {
+                                    copy(
+                                        characters = characters.data
                                     )
                                 }
                             }
@@ -111,12 +139,4 @@ class AnimeViewModel @Inject constructor(
             )
         }
     }
-
-    private fun getInitialAnimeDetails() =
-        AnimeDetailPresentation(AnimeDetailPresentation.AlternativeTitles("", "", emptyList()), -1,
-        "", AnimeDetailPresentation.Broadcast("", ""), "", "", emptyList(),
-        -1, AnimeDetailPresentation.MainPicture("", ""), -1.0, "", AnimeDetailPresentation.MyListStatus(false, -1, -1, "", ""),
-        "", -1, -1, -1, emptyList(), -1, -1, "", emptyList(),
-        emptyList(), emptyList(), "", "", AnimeDetailPresentation.StartSeason("", -1), AnimeDetailPresentation.Statistics(-1, AnimeDetailPresentation.Status("", "", "", "", "")),
-        "", emptyList(), "", "", "")
 }

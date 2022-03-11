@@ -33,9 +33,10 @@ object RemoteModule {
     @Provides
     fun provideDetailRemoteSource(
         malService: MyAnimeListService,
+        jikanService: JikanService,
         detailMapper: DetailMapper
     ): DetailRemoteSource =
-        DetailRemoteSourceImpl(malService, detailMapper)
+        DetailRemoteSourceImpl(malService, jikanService, detailMapper)
 
     @Singleton
     @Provides

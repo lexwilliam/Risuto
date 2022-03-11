@@ -1,5 +1,6 @@
 package com.lexwilliam.risuto.util
 
+import com.lexwilliam.risuto.model.AnimeCharactersPresentation
 import com.lexwilliam.risuto.model.AnimeDetailPresentation
 import com.lexwilliam.risuto.model.AnimePresentation
 import com.lexwilliam.risuto.model.ShortAnimePresentation
@@ -155,6 +156,18 @@ object FakeItems {
             AnimeDetailPresentation.Genre(
                 id = 1,
                 name = "Action"
+            ),
+            AnimeDetailPresentation.Genre(
+                id = 2,
+                name = "Adventure"
+            ),
+            AnimeDetailPresentation.Genre(
+                id = 4,
+                name = "Comedy"
+            ),
+            AnimeDetailPresentation.Genre(
+                id = 6,
+                name = "Demons"
             )
         ),
         num_episodes = 11,
@@ -233,6 +246,40 @@ object FakeItems {
         mal_id = 0,
         image_url = "",
         title = "Wonder Egg Priority"
+    )
+
+    val character = AnimeCharactersPresentation.Data(
+        character = AnimeCharactersPresentation.Data.Character(
+            images = AnimeCharactersPresentation.Data.Character.Images(
+                jpg = AnimeCharactersPresentation.Data.Character.Images.Jpg(
+                    image_url = "",
+                    small_image_url = ""
+                ),
+                webp = AnimeCharactersPresentation.Data.Character.Images.Webp(
+                    image_url = "",
+                    small_image_url = ""
+                )
+            ),
+            mal_id = -1,
+            name = "Takanashi Rie",
+            url = ""
+        ),
+        role = "Main Character",
+        voice_actors = listOf(
+            AnimeCharactersPresentation.Data.VoiceActor(
+                language = "Japanese",
+                person = AnimeCharactersPresentation.Data.VoiceActor.Person(
+                    images = AnimeCharactersPresentation.Data.VoiceActor.Person.Images(
+                        jpg = AnimeCharactersPresentation.Data.VoiceActor.Person.Images.Jpg(
+                            image_url = ""
+                        )
+                    ),
+                    mal_id = -1,
+                    name = "Megumin",
+                    url = ""
+                )
+            )
+        )
     )
 }
 

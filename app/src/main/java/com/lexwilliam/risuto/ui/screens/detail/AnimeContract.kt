@@ -3,6 +3,7 @@ package com.lexwilliam.risuto.ui.screens.detail
 import com.lexwilliam.risuto.base.ViewEvent
 import com.lexwilliam.risuto.base.ViewSideEffect
 import com.lexwilliam.risuto.base.ViewState
+import com.lexwilliam.risuto.model.AnimeCharactersPresentation
 import com.lexwilliam.risuto.model.AnimeDetailPresentation
 
 class AnimeContract {
@@ -14,6 +15,7 @@ class AnimeContract {
     data class State(
         val malId: Int,
         val animeDetail: AnimeDetailPresentation,
+        val characters: List<AnimeCharactersPresentation.Data>,
         val isLoading: Boolean = false,
         val isError: Boolean = false
     ) : ViewState
