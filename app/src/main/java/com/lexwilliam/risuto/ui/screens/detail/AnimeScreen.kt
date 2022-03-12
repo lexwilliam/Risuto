@@ -50,46 +50,149 @@ fun AnimeScreen(
         onEventSent(AnimeContract.Event.InsertAnimeHistory(state.animeDetail))
         isDone = true
     }
-    if(state.animeDetail == getInitialAnimeDetails() && state.characters == emptyList<AnimeCharactersPresentation.Data>()) {
-        LoadingScreen()
-    } else {
-        AnimeContent(
-            animeDetail = state.animeDetail,
-            characters = state.characters,
-            navToSearchWithGenre = navToSearchWithGenre,
-            navToDetail = navToDetail
-        )
-        Box {
-            AnimeToolbar(
-                status = state.animeDetail.my_list_status,
-                onAddPressed = { },
-                onBackPressed = { onBackPressed() }
+    val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(
+        bottomSheetState = BottomSheetState(BottomSheetValue.Collapsed)
+    )
+    val coroutineScope = rememberCoroutineScope()
+
+    BottomSheetScaffold(
+        modifier = Modifier.background(MaterialTheme.colors.background),
+        scaffoldState = bottomSheetScaffoldState,
+        sheetPeekHeight = 0.dp,
+        sheetContent = {
+            MyAnimeMenu(
+                onEventSent = { onEventSent(it) },
+                id = state.malId,
+                onDoneClicked = {
+                    coroutineScope.launch {
+                        bottomSheetScaffoldState.bottomSheetState.collapse()
+                    }
+                }
             )
+        }
+    ) {
+        if(state.isLoading) {
+            LoadingScreen()
+        } else {
+            Box {
+                AnimeContent(
+                    animeDetail = state.animeDetail,
+                    characters = state.characters,
+                    navToSearchWithGenre = navToSearchWithGenre,
+                    navToDetail = navToDetail
+                )
+                AnimeToolbar(
+                    status = state.animeDetail.my_list_status,
+                    onAddPressed = {
+                        coroutineScope.launch {
+                            bottomSheetScaffoldState.bottomSheetState.expand()
+                        }
+                    },
+                    onBackPressed = { onBackPressed() }
+                )
+            }
         }
     }
 }
 
 @Composable
-fun AnimeContent(
-    animeDetail: AnimeDetailPresentation,
-    characters: List<AnimeCharactersPresentation.Data>,
-    navToSearchWithGenre: (Int) -> Unit,
-    navToDetail: (Int) -> Unit
+fun MyAnimeMenu(
+    onDoneClicked: () -> Unit,
+    id: Int,
+    onEventSent: (AnimeContract.Event) -> Unit
 ) {
+    var score by remember { mutableStateOf(-1) }
+    var watchStateText by remember { mutableStateOf("Plan To Watch")}
+    var watchState by remember { mutableStateOf(WatchStatusPresentation.PlanToWatch) }
+    var expandedWatchStatus by remember { mutableStateOf(false) }
+    var expandedScore by remember { mutableStateOf(false) }
     Column(
         modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+            .padding(top = 24.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        AnimeDetail(animeDetail = animeDetail, navToSearchWithGenre = { navToSearchWithGenre(it) })
-        AnimeSynopsis(synopsis = animeDetail.synopsis)
-        CharVoiceActorList(characters = characters)
-        AnimeInfo(animeDetail = animeDetail)
-        DetailPictureList(pictures = animeDetail.pictures)
-        RelatedAnimeList(relatedAnime = animeDetail.related_anime, navToDetail = navToDetail)
-        RecommendationAnimeList(recommendations = animeDetail.recommendations, navToDetail = navToDetail)
-        Spacer(modifier = Modifier.padding(4.dp))
+        Row(modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .height(40.dp)
+                    .background(Color.LightGray)
+                    .clip(MaterialTheme.shapes.medium)
+                    .clickable { expandedScore = true },
+                contentAlignment = Alignment.Center
+            ) {
+                if(score != -1) {
+                    Text(
+                        text = "$score/10",
+                        style = MaterialTheme.typography.subtitle1
+                    )
+                } else {
+                    Text(
+                        text = "Score",
+                        style = MaterialTheme.typography.subtitle1
+                    )
+                }
+                DropdownMenu(expanded = expandedScore, onDismissRequest = { expandedScore = false }) {
+                    for(i in 10 downTo 1) {
+                        DropdownMenuItem(onClick = {
+                            score = i
+                            expandedScore = false
+                        }) {
+                            Text(i.toString())
+                        }
+                    }
+                }
+            }
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .height(40.dp)
+                    .background(Color.LightGray)
+                    .clip(MaterialTheme.shapes.medium)
+                    .clickable { expandedWatchStatus = true },
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = watchStateText,
+                    style = MaterialTheme.typography.subtitle1
+                )
+                DropdownMenu(expanded = expandedWatchStatus, onDismissRequest = { expandedWatchStatus = false }) {
+                    watchStatusList.forEach {
+                        DropdownMenuItem(onClick = {
+                            watchState = it
+                            watchStateText =
+                                watchStatusToString(
+                                    it
+                                )
+                            expandedWatchStatus = false
+                        }) {
+                            Text(
+                                watchStatusToString(
+                                    it
+                                )
+                            )
+                        }
+                    }
+                }
+            }
+        }
+        Button(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            onClick = {
+                onEventSent(AnimeContract.Event.UpdateUserAnimeStatus(id, 0, watchStatusToString(watchState), score))
+                onDoneClicked()
+            }
+        ) {
+            Text("Done")
+        }
     }
 }
 
@@ -159,6 +262,30 @@ fun AnimeToolbar(
             }
         }
     )
+}
+
+@Composable
+fun AnimeContent(
+    animeDetail: AnimeDetailPresentation,
+    characters: List<AnimeCharactersPresentation.Data>,
+    navToSearchWithGenre: (Int) -> Unit,
+    navToDetail: (Int) -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState()),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        AnimeDetail(animeDetail = animeDetail, navToSearchWithGenre = { navToSearchWithGenre(it) })
+        AnimeSynopsis(synopsis = animeDetail.synopsis)
+        CharVoiceActorList(characters = characters)
+        AnimeInfo(animeDetail = animeDetail)
+        DetailPictureList(pictures = animeDetail.pictures)
+        RelatedAnimeList(relatedAnime = animeDetail.related_anime, navToDetail = navToDetail)
+        RecommendationAnimeList(recommendations = animeDetail.recommendations, navToDetail = navToDetail)
+        Spacer(modifier = Modifier.padding(4.dp))
+    }
 }
 
 @Composable

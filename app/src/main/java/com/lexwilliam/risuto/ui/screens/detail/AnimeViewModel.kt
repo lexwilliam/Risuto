@@ -51,7 +51,7 @@ class AnimeViewModel @Inject constructor(
     override fun handleEvents(event: AnimeContract.Event) {
         when(event) {
             is AnimeContract.Event.InsertAnimeHistory -> insertAnimeHistory(event.anime)
-            is AnimeContract.Event.UpdateUserAnimeStatus -> updateUserAnimeStatus(event.id, event.status, event.score)
+            is AnimeContract.Event.UpdateUserAnimeStatus -> updateUserAnimeStatus(event.id, event.numEpisodesWatched, event.status, event.score)
         }
     }
 
@@ -118,9 +118,9 @@ class AnimeViewModel @Inject constructor(
         }
     }
 
-    private fun updateUserAnimeStatus(id: Int, status: String, score: Int) {
+    private fun updateUserAnimeStatus(id: Int, numEpisodesWatched: Int, status: String, score: Int) {
         viewModelScope.launch(errorHandler) {
-            updateUserAnimeStatus.execute(id, status, score).collect {
+            updateUserAnimeStatus.execute(id, numEpisodesWatched, status, score).collect {
                 Timber.d("changes: $status -> ${it.status} and $score -> ${it.score}")
                 if(status == it.status && score == it.score) {
                     Timber.d("FAILS")
