@@ -1,0 +1,21 @@
+package com.lexwilliam.risuto.ui.screens.detail.add
+
+import com.lexwilliam.risuto.base.ViewEvent
+import com.lexwilliam.risuto.base.ViewSideEffect
+import com.lexwilliam.risuto.base.ViewState
+import com.lexwilliam.risuto.model.AnimeCharactersPresentation
+import com.lexwilliam.risuto.model.AnimeDetailPresentation
+
+class AddAnimeStatusContract {
+    sealed class Event : ViewEvent {
+        data class UpdateUserAnimeStatus(val id: Int, val numEpisodesWatched: Int, val status: String, val score: Int): Event()
+    }
+
+    data class State(
+        val status: AnimeDetailPresentation.MyListStatus,
+        val isLoading: Boolean = false,
+        val isError: Boolean = false
+    ) : ViewState
+
+    sealed class Effect : ViewSideEffect {}
+}

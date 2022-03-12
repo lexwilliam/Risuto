@@ -49,8 +49,8 @@ fun HorizontalGridList(
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp)
+            .fillMaxWidth(),
+        contentPadding = PaddingValues(start = 16.dp)
     ){
         items(items = items){ item ->
             SmallGrid(

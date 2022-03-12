@@ -47,22 +47,14 @@ fun HomeContent(
 ) {
     Column(
         modifier = Modifier
-            .verticalScroll(rememberScrollState())
-            .padding(start = 16.dp, bottom = 64.dp),
+            .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Row(
+        Header(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 24.dp, end = 16.dp)
-        ) {
-            Header(
-                modifier = Modifier
-                    .weight(2f)
-                    .wrapContentWidth(Alignment.Start),
-                title = "Home"
-            )
-        }
+                .padding(top = 16.dp, start = 16.dp),
+            title = "Home"
+        )
         PosterGridList(
             title = "Airing Today",
             items = schedules,
@@ -78,6 +70,7 @@ fun HomeContent(
             items = topAnime,
             navToDetail = { navToDetail(it) }
         )
+        Spacer(Modifier.padding(48.dp))
     }
 }
 
@@ -98,6 +91,7 @@ fun PosterGridList(
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             Text(
+                modifier = Modifier.padding(start = 16.dp),
                 text = title,
                 style = MaterialTheme.typography.h5,
                 fontWeight = FontWeight.SemiBold

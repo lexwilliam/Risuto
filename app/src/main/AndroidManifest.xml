@@ -12,11 +12,13 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Risuto">
+        android:theme="@style/Theme.Risuto"
+        android:screenOrientation="sensorPortrait">
         <activity
             android:name="com.lexwilliam.risuto.MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.Risuto.NoActionBar">
+            android:theme="@style/Theme.Risuto.NoActionBar"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

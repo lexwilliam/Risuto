@@ -24,8 +24,8 @@ class UserRemoteSourceImpl @Inject constructor(
         emit(animeMapper.toRepo(response!!))
     }
 
-    override suspend fun updateUserAnimeStatus(authHeader: String, id: Int, status: String, score: Int): Flow<UserAnimeUpdateRepo> = flow {
-        val response = malService.updateUserAnimeStatus(authHeader = authHeader, animeId = id, animeStatus = status, score = score).body()
+    override suspend fun updateUserAnimeStatus(authHeader: String, id: Int, numEpisodesWatched: Int, status: String, score: Int): Flow<UserAnimeUpdateRepo> = flow {
+        val response = malService.updateUserAnimeStatus(authHeader = authHeader, animeId = id, numWatchedEps = numEpisodesWatched, animeStatus = status, score = score).body()
         emit(userMapper.toRepo(response!!))
     }
 

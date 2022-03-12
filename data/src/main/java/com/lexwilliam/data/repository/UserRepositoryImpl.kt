@@ -31,9 +31,9 @@ class UserRepositoryImpl @Inject constructor(
         return userRemoteSource.getUserAnimeList(ApiConstant.BEARER_SEPARATOR + accessToken).map { animeMapper.toDomain(it) }
     }
 
-    override suspend fun updateUserAnimeStatus(id: Int, status: String, score: Int): Flow<UserAnimeUpdate> {
+    override suspend fun updateUserAnimeStatus(id: Int, numEpisodesWatched: Int, status: String, score: Int): Flow<UserAnimeUpdate> {
         val accessToken = oAuthLocalSource.accessTokenFlow.firstOrNull()
-        return userRemoteSource.updateUserAnimeStatus(ApiConstant.BEARER_SEPARATOR + accessToken, id, status, score).map { userMapper.toDomain(it) }
+        return userRemoteSource.updateUserAnimeStatus(ApiConstant.BEARER_SEPARATOR + accessToken, id, numEpisodesWatched, status, score).map { userMapper.toDomain(it) }
     }
 
 

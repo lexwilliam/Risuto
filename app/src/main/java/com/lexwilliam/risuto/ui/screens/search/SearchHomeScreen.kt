@@ -44,7 +44,7 @@ fun SearchHomeContent(
     LazyColumn(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 16.dp, end = 16.dp, bottom = 64.dp),
+            .padding(start = 16.dp, end = 16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         item { Header(title = "Search", modifier = Modifier.padding(top = 24.dp)) }
@@ -57,6 +57,7 @@ fun SearchHomeContent(
                 }
             }
         }
+        item { Spacer(Modifier.padding(48.dp)) }
     }
 }
 

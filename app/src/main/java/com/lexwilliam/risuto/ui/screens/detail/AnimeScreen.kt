@@ -1,16 +1,13 @@
 package com.lexwilliam.risuto.ui.screens.detail
 
 import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -22,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -30,17 +28,15 @@ import androidx.compose.ui.unit.dp
 import com.google.accompanist.flowlayout.FlowRow
 import com.lexwilliam.risuto.model.AnimeCharactersPresentation
 import com.lexwilliam.risuto.model.AnimeDetailPresentation
-import com.lexwilliam.risuto.ui.component.HorizontalGridList
-import com.lexwilliam.risuto.ui.component.LoadingScreen
-import com.lexwilliam.risuto.ui.component.NetworkImage
-import com.lexwilliam.risuto.ui.component.SmallGrid
+import com.lexwilliam.risuto.model.WatchStatusPresentation
+import com.lexwilliam.risuto.ui.component.*
 import com.lexwilliam.risuto.ui.theme.RisutoTheme
-import com.lexwilliam.risuto.util.FakeItems
-import com.lexwilliam.risuto.util.getInitialAnimeDetails
-import com.lexwilliam.risuto.util.getJpnVoiceActor
+import com.lexwilliam.risuto.util.*
 import com.lexwilliam.risuto.util.intToCurrency
+import kotlinx.coroutines.launch
 import java.util.*
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun AnimeScreen(
     state: AnimeContract.State,
@@ -60,10 +56,16 @@ fun AnimeScreen(
         AnimeContent(
             animeDetail = state.animeDetail,
             characters = state.characters,
-            onBackPressed = { onBackPressed() },
             navToSearchWithGenre = navToSearchWithGenre,
             navToDetail = navToDetail
         )
+        Box {
+            AnimeToolbar(
+                status = state.animeDetail.my_list_status,
+                onAddPressed = { },
+                onBackPressed = { onBackPressed() }
+            )
+        }
     }
 }
 
@@ -71,7 +73,6 @@ fun AnimeScreen(
 fun AnimeContent(
     animeDetail: AnimeDetailPresentation,
     characters: List<AnimeCharactersPresentation.Data>,
-    onBackPressed: () -> Unit,
     navToSearchWithGenre: (Int) -> Unit,
     navToDetail: (Int) -> Unit
 ) {
@@ -93,26 +94,70 @@ fun AnimeContent(
 }
 
 @Composable
-fun AnimeToolBar(
+fun AnimeToolbar(
+    status: AnimeDetailPresentation.MyListStatus,
     onAddPressed: () -> Unit,
     onBackPressed: () -> Unit
 ) {
     TopAppBar(
+        backgroundColor = Color.Transparent,
+        elevation = 0.dp,
         title = { Text("") },
         navigationIcon = {
-            IconButton(onClick = { onBackPressed() }) {
-                Icon(Icons.Default.ArrowBack, contentDescription = null, tint = MaterialTheme.colors.secondary)
+            Box(
+                modifier = Modifier
+                    .padding(start = 16.dp)
+                    .size(40.dp)
+                    .clip(CircleShape)
+                    .background(color = MaterialTheme.colors.background)
+                    .clickable { onBackPressed() },
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(Icons.Default.ArrowBack, contentDescription = null, tint = MaterialTheme.colors.onBackground)
             }
         },
         actions = {
-            Row {
-                IconButton(onClick = { onAddPressed() }) {
-                    Icon(Icons.Default.Add, contentDescription = null, tint = MaterialTheme.colors.secondary)
+            val watchStatusString = when(status.status) {
+                "plan_to_watch" -> "Plan To Watch"
+                "dropped" -> "Dropped"
+                "on_hold" -> "On Hold"
+                "watching" -> "Watching"
+                "completed" -> "Completed"
+                else -> ""
+            }
+            Box(
+                modifier = Modifier
+                    .wrapContentWidth()
+                    .padding(end = 4.dp)
+                    .height(40.dp)
+                    .clip(CircleShape)
+                    .background(color = MaterialTheme.colors.background)
+                    .clickable { onAddPressed() },
+                contentAlignment = Alignment.Center
+            ) {
+                Row(
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    if(status.status == "") {
+                        Text(text = "Add ", style = MaterialTheme.typography.button, fontWeight = FontWeight.Bold, color = MaterialTheme.colors.onBackground)
+                        Icon(Icons.Default.Add, contentDescription = null, tint = MaterialTheme.colors.onBackground)
+                    } else {
+                        Text(text = "$watchStatusString ", style = MaterialTheme.typography.button, fontWeight = FontWeight.Bold, color = MaterialTheme.colors.onBackground)
+                        Box(
+                            modifier = Modifier
+                                .height(IntrinsicSize.Min)
+                                .width(24.dp)
+                                .clip(CircleShape)
+                                .background(MaterialTheme.colors.onBackground),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(text = status.score.toString(), style = MaterialTheme.typography.caption, fontWeight = FontWeight.Bold, color = MaterialTheme.colors.background)
+                        }
+                    }
                 }
             }
-        },
-        backgroundColor = MaterialTheme.colors.background,
-        elevation = 0.dp
+        }
     )
 }
 
@@ -132,7 +177,7 @@ fun AnimeDetail(
             NetworkImage(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(450.dp)
+                    .height(500.dp)
                     .clip(RoundedCornerShape(bottomStart = 32.dp)),
                 imageUrl = animeDetail.main_picture.large
             )
@@ -195,65 +240,67 @@ fun AnimeDetail(
 fun AnimeSynopsis(
     synopsis: String
 ) {
-    var isExpanded by remember { mutableStateOf(false) }
-    val textLayoutResultState = remember { mutableStateOf<TextLayoutResult?>(null) }
-    var isClickable by remember { mutableStateOf(false) }
-    var finalText by remember { mutableStateOf(synopsis) }
+    if(synopsis == "") {
+        var isExpanded by remember { mutableStateOf(false) }
+        val textLayoutResultState = remember { mutableStateOf<TextLayoutResult?>(null) }
+        var isClickable by remember { mutableStateOf(false) }
+        var finalText by remember { mutableStateOf(synopsis) }
 
-    val textLayoutResult = textLayoutResultState.value
-    LaunchedEffect(textLayoutResult) {
-        if (textLayoutResult == null) return@LaunchedEffect
+        val textLayoutResult = textLayoutResultState.value
+        LaunchedEffect(textLayoutResult) {
+            if (textLayoutResult == null) return@LaunchedEffect
 
-        when {
-            isExpanded -> {
-                finalText = "$synopsis Show Less"
-            }
-            !isExpanded && textLayoutResult.hasVisualOverflow -> {
-                val lastCharIndex = textLayoutResult.getLineEnd(5 - 1)
-                val showMoreString = "... Show More"
-                val adjustedText = synopsis
-                    .substring(startIndex = 0, endIndex = lastCharIndex)
-                    .dropLast(showMoreString.length)
-                    .dropLastWhile { it == ' ' || it == '.' }
+            when {
+                isExpanded -> {
+                    finalText = "$synopsis Show Less"
+                }
+                !isExpanded && textLayoutResult.hasVisualOverflow -> {
+                    val lastCharIndex = textLayoutResult.getLineEnd(5 - 1)
+                    val showMoreString = "... Show More"
+                    val adjustedText = synopsis
+                        .substring(startIndex = 0, endIndex = lastCharIndex)
+                        .dropLast(showMoreString.length)
+                        .dropLastWhile { it == ' ' || it == '.' }
 
-                finalText = "$adjustedText$showMoreString"
+                    finalText = "$adjustedText$showMoreString"
 
-                isClickable = true
+                    isClickable = true
+                }
             }
         }
-    }
 
-    Column {
-        DetailSubtitle(title = "Synopsis")
-        Column(
-            modifier = Modifier
-                .padding(start = 40.dp, end = 16.dp)
-                .clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    enabled = isClickable,
-                    indication = null
-                ) {
-                    isExpanded = !isExpanded
-                }
-        ) {
-            Text(
-                text = synopsis,
-                style = MaterialTheme.typography.body1,
-                maxLines = if (isExpanded) Int.MAX_VALUE else 5,
-                onTextLayout = { textLayoutResultState.value = it },
+        Column {
+            DetailSubtitle(title = "Synopsis")
+            Column(
                 modifier = Modifier
-                    .animateContentSize(),
-            )
-
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                contentAlignment = Alignment.Center
+                    .padding(start = 40.dp, end = 16.dp)
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        enabled = isClickable,
+                        indication = null
+                    ) {
+                        isExpanded = !isExpanded
+                    }
             ) {
-                if(isExpanded) {
-                    Icon(modifier = Modifier.size(32.dp), imageVector = Icons.Default.KeyboardArrowUp, contentDescription = null)
-                } else {
-                    Icon(modifier = Modifier.size(32.dp), imageVector = Icons.Default.KeyboardArrowDown, contentDescription = null)
+                Text(
+                    text = synopsis,
+                    style = MaterialTheme.typography.body1,
+                    maxLines = if (isExpanded) Int.MAX_VALUE else 5,
+                    onTextLayout = { textLayoutResultState.value = it },
+                    modifier = Modifier
+                        .animateContentSize(),
+                )
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    if(isExpanded) {
+                        Icon(modifier = Modifier.size(32.dp), imageVector = Icons.Default.KeyboardArrowUp, contentDescription = null)
+                    } else {
+                        Icon(modifier = Modifier.size(32.dp), imageVector = Icons.Default.KeyboardArrowDown, contentDescription = null)
+                    }
                 }
             }
         }
@@ -264,61 +311,63 @@ fun AnimeSynopsis(
 fun CharVoiceActorList(
     characters: List<AnimeCharactersPresentation.Data>
 ) {
-    Column {
-        DetailSubtitle(title = "Voice Actors")
-        LazyRow(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            contentPadding = PaddingValues(start = 40.dp)
-        ) {
-            items(items = characters) { item ->
-                Column(
-                    modifier = Modifier
-                        .width(80.dp)
-                        .wrapContentHeight()
-                ) {
+    if(characters != emptyList<AnimeCharactersPresentation.Data>()) {
+        Column {
+            DetailSubtitle(title = "Voice Actors")
+            LazyRow(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                contentPadding = PaddingValues(start = 40.dp)
+            ) {
+                items(items = characters) { item ->
                     Column(
                         modifier = Modifier
-                            .shadow(4.dp, MaterialTheme.shapes.small, clip = true)
-                            .background(color = MaterialTheme.colors.background)
+                            .width(80.dp)
+                            .wrapContentHeight()
                     ) {
-                        NetworkImage(
-                            imageUrl = item.character.images.jpg.image_url,
+                        Column(
                             modifier = Modifier
-                                .clip(MaterialTheme.shapes.small)
-                                .size(width = 80.dp, height = 100.dp)
-                        )
-                        Text(
-                            modifier = Modifier.padding(2.dp),
-                            text = item.character.name + '\n',
-                            maxLines = 2, overflow = TextOverflow.Ellipsis,
-                            style = MaterialTheme.typography.caption,
-                            fontWeight = FontWeight.SemiBold
-                        )
-                    }
-                    Spacer(modifier = Modifier.padding(8.dp))
-                    Column(
-                        modifier = Modifier
-                            .shadow(4.dp, MaterialTheme.shapes.small, clip = true)
-                            .background(color = MaterialTheme.colors.background)
-                    ) {
-                        NetworkImage(
-                            imageUrl = getJpnVoiceActor(item.voice_actors).person.images.jpg.image_url,
+                                .shadow(4.dp, MaterialTheme.shapes.small, clip = true)
+                                .background(color = MaterialTheme.colors.background)
+                        ) {
+                            NetworkImage(
+                                imageUrl = item.character.images.jpg.image_url,
+                                modifier = Modifier
+                                    .clip(MaterialTheme.shapes.small)
+                                    .size(width = 80.dp, height = 100.dp)
+                            )
+                            Text(
+                                modifier = Modifier.padding(2.dp),
+                                text = item.character.name + '\n',
+                                maxLines = 2, overflow = TextOverflow.Ellipsis,
+                                style = MaterialTheme.typography.caption,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                        }
+                        Spacer(modifier = Modifier.padding(8.dp))
+                        Column(
                             modifier = Modifier
-                                .clip(MaterialTheme.shapes.small)
-                                .size(width = 80.dp, height = 100.dp)
-                        )
-                        Text(
-                            modifier = Modifier.padding(2.dp),
-                            text = getJpnVoiceActor(item.voice_actors).person.name + '\n',
-                            maxLines = 2, overflow = TextOverflow.Ellipsis,
-                            style = MaterialTheme.typography.caption,
-                            fontWeight = FontWeight.SemiBold
-                        )
+                                .shadow(4.dp, MaterialTheme.shapes.small, clip = true)
+                                .background(color = MaterialTheme.colors.background)
+                        ) {
+                            NetworkImage(
+                                imageUrl = getJpnVoiceActor(item.voice_actors).person.images.jpg.image_url,
+                                modifier = Modifier
+                                    .clip(MaterialTheme.shapes.small)
+                                    .size(width = 80.dp, height = 100.dp)
+                            )
+                            Text(
+                                modifier = Modifier.padding(2.dp),
+                                text = getJpnVoiceActor(item.voice_actors).person.name + '\n',
+                                maxLines = 2, overflow = TextOverflow.Ellipsis,
+                                style = MaterialTheme.typography.caption,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                        }
                     }
                 }
-            }
-            item {
-                Spacer(modifier = Modifier.padding(0.dp))
+                item {
+                    Spacer(modifier = Modifier.padding(0.dp))
+                }
             }
         }
     }
@@ -331,7 +380,7 @@ fun AnimeInfo(
     val infoList = listOf(
         Pair("Alternative titles", "${animeDetail.alternative_titles.en}\n${animeDetail.alternative_titles.ja}${titleSynonymsToString(animeDetail.alternative_titles.synonyms)}"),
         Pair("Season", "${animeDetail.start_season.season.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }} ${animeDetail.start_season.year}"),
-        Pair("Duration", animeDetail.average_episode_duration.toString()),
+        Pair("Duration", "${animeDetail.num_episodes} ep, ${animeDetail.average_episode_duration / 60} min"),
         Pair("Broadcast", "${animeDetail.broadcast.day_of_the_week.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }} ${animeDetail.broadcast.start_time}"),
         Pair("Start Date", animeDetail.start_date),
         Pair("End Date", animeDetail.end_date),
@@ -404,24 +453,26 @@ fun titleSynonymsToString(
 fun DetailPictureList(
     pictures: List<AnimeDetailPresentation.Picture>
 ) {
-    Column {
-        DetailSubtitle(title = "Pictures")
-        LazyRow(
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            modifier = Modifier
-                .fillMaxWidth(),
-            contentPadding = PaddingValues(start = 40.dp)
-        ){
-            items(items = pictures){ item ->
-                NetworkImage(
-                    modifier = Modifier
-                        .height(180.dp)
-                        .shadow(4.dp, MaterialTheme.shapes.medium, true),
-                    imageUrl = item.medium
-                )
-            }
-            item {
-                Spacer(modifier = Modifier.padding(0.dp))
+    if(pictures != emptyList<AnimeDetailPresentation.Picture>()) {
+        Column {
+            DetailSubtitle(title = "Pictures")
+            LazyRow(
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier
+                    .fillMaxWidth(),
+                contentPadding = PaddingValues(start = 40.dp)
+            ){
+                items(items = pictures){ item ->
+                    NetworkImage(
+                        modifier = Modifier
+                            .height(180.dp)
+                            .shadow(4.dp, MaterialTheme.shapes.medium, true),
+                        imageUrl = item.medium
+                    )
+                }
+                item {
+                    Spacer(modifier = Modifier.padding(0.dp))
+                }
             }
         }
     }
@@ -432,24 +483,26 @@ fun RelatedAnimeList(
     relatedAnime: List<AnimeDetailPresentation.RelatedAnime>,
     navToDetail: (Int) -> Unit
 ) {
-    Column {
-        DetailSubtitle(title = "Related Anime")
-        LazyRow(
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            modifier = Modifier
-                .fillMaxWidth(),
-            contentPadding = PaddingValues(start = 40.dp)
-        ){
-            items(items = relatedAnime){ item ->
-                SmallGrid(
-                    id = item.node.id,
-                    imageUrl = item.node.main_picture.medium,
-                    title = item.node.title,
-                    navToDetail = { navToDetail(it) }
-                )
-            }
-            item {
-                Spacer(modifier = Modifier.padding(0.dp))
+    if(relatedAnime != emptyList<AnimeDetailPresentation.RelatedAnime>()) {
+        Column {
+            DetailSubtitle(title = "Related Anime")
+            LazyRow(
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier
+                    .fillMaxWidth(),
+                contentPadding = PaddingValues(start = 40.dp)
+            ){
+                items(items = relatedAnime){ item ->
+                    SmallGrid(
+                        id = item.node.id,
+                        imageUrl = item.node.main_picture.medium,
+                        title = item.node.title,
+                        navToDetail = { navToDetail(it) }
+                    )
+                }
+                item {
+                    Spacer(modifier = Modifier.padding(0.dp))
+                }
             }
         }
     }
@@ -460,24 +513,26 @@ fun RecommendationAnimeList(
     recommendations: List<AnimeDetailPresentation.Recommendation>,
     navToDetail: (Int) -> Unit
 ) {
-    Column {
-        DetailSubtitle(title = "Recommendations")
-        LazyRow(
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            modifier = Modifier
-                .fillMaxWidth(),
-            contentPadding = PaddingValues(start = 40.dp)
-        ){
-            items(items = recommendations){ item ->
-                SmallGrid(
-                    id = item.node.id,
-                    imageUrl = item.node.main_picture.medium,
-                    title = item.node.title,
-                    navToDetail = { navToDetail(it) }
-                )
-            }
-            item {
-                Spacer(modifier = Modifier.padding(0.dp))
+    if(recommendations != emptyList<AnimeDetailPresentation.Recommendation>()) {
+        Column {
+            DetailSubtitle(title = "Recommendations")
+            LazyRow(
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier
+                    .fillMaxWidth(),
+                contentPadding = PaddingValues(start = 40.dp)
+            ){
+                items(items = recommendations){ item ->
+                    SmallGrid(
+                        id = item.node.id,
+                        imageUrl = item.node.main_picture.medium,
+                        title = item.node.title,
+                        navToDetail = { navToDetail(it) }
+                    )
+                }
+                item {
+                    Spacer(modifier = Modifier.padding(0.dp))
+                }
             }
         }
     }
@@ -507,26 +562,26 @@ fun DetailSubtitle(
     }
 }
 
-@Preview
-@Composable
-fun AnimeScreenPreview() {
-    RisutoTheme {
-        Column(
-            Modifier
-                .background(MaterialTheme.colors.background)
-                .fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(24.dp)
-        ) {
-            AnimeContent(
-                animeDetail = FakeItems.animeDetail,
-                characters = listOf(FakeItems.character, FakeItems.character, FakeItems.character, FakeItems.character, FakeItems.character, FakeItems.character),
-                onBackPressed = {},
-                navToSearchWithGenre = {},
-                navToDetail = {}
-            )
-        }
-    }
-}
+//@Preview
+//@Composable
+//fun AnimeScreenPreview() {
+//    RisutoTheme {
+//        Column(
+//            Modifier
+//                .background(MaterialTheme.colors.background)
+//                .fillMaxSize(),
+//            verticalArrangement = Arrangement.spacedBy(24.dp)
+//        ) {
+//            AnimeContent(
+//                animeDetail = FakeItems.animeDetail,
+//                characters = listOf(FakeItems.character, FakeItems.character, FakeItems.character, FakeItems.character, FakeItems.character, FakeItems.character),
+//                onBackPressed = {},
+//                navToSearchWithGenre = {},
+//                navToDetail = {}
+//            )
+//        }
+//    }
+//}
 
 @Preview
 @Composable
@@ -569,3 +624,11 @@ fun AnimeSuggestionPreview() {
         }
     }
 }
+
+//@Preview
+//@Composable
+//fun AnimeToolbarPreview() {
+//    RisutoTheme {
+//        AnimeToolbar(onAddPressed = {}, onBackPressed = {})
+//    }
+//}

@@ -10,6 +10,6 @@ interface UserRepository {
 
     suspend fun getUserAnimeList(): Flow<UserAnimeList>
 
-    suspend fun updateUserAnimeStatus(id: Int, status: String, score: Int): Flow<UserAnimeUpdate>
+    suspend fun updateUserAnimeStatus(id: Int, numEpisodesWatched: Int, status: String, score: Int): Flow<UserAnimeUpdate>
 
 }

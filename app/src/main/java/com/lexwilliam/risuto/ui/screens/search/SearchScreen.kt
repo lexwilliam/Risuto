@@ -295,7 +295,7 @@ fun HistoryView(
 ) {
     Column(
         modifier = Modifier
-            .padding(top = 16.dp, start = 16.dp, end = 16.dp, bottom = bottomNavGap),
+            .padding(top = 16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         if(animeHistory.isNotEmpty()) {
@@ -303,6 +303,7 @@ fun HistoryView(
                 Text(
                     modifier = Modifier
                         .weight(1f)
+                        .padding(start = 16.dp)
                         .wrapContentWidth(Alignment.Start),
                     text = "History",
                     style = MaterialTheme.typography.subtitle2
@@ -313,6 +314,7 @@ fun HistoryView(
                             onEventSent(SearchContract.Event.DeleteAllAnimeHistory)
                         }
                         .weight(1f)
+                        .padding(end = 16.dp)
                         .wrapContentWidth(Alignment.End),
                     text = "Delete All", color = Color.Red,
                     style = MaterialTheme.typography.subtitle2
@@ -325,6 +327,7 @@ fun HistoryView(
                 Text(
                     modifier = Modifier
                         .weight(1f)
+                        .padding(start = 16.dp)
                         .wrapContentWidth(Alignment.Start),
                     text = "Recent Search",
                     style = MaterialTheme.typography.subtitle2
@@ -335,6 +338,7 @@ fun HistoryView(
                             onEventSent(SearchContract.Event.DeleteAllSearchHistory)
                         }
                         .weight(1f)
+                        .padding(end = 16.dp)
                         .wrapContentWidth(Alignment.End),
                     text = "Delete All", color = Color.Red,
                     style = MaterialTheme.typography.subtitle2
@@ -488,7 +492,7 @@ fun QueryListWithDelete(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 4.dp, horizontal = 8.dp)
+                    .padding(vertical = 4.dp, horizontal = 16.dp)
                     .height(40.dp)
                     .clickable { onSelectItem(item) },
                 verticalAlignment = Alignment.CenterVertically
@@ -523,8 +527,8 @@ fun HistoryHorizontalGridList(
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp)
+            .fillMaxWidth(),
+        contentPadding = PaddingValues(start = 16.dp)
     ){
         items(items = animeHistory){ item ->
             SmallGrid(
