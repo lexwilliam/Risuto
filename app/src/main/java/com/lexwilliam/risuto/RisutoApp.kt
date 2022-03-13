@@ -3,6 +3,9 @@ package com.lexwilliam.risuto
 import android.content.Context
 import android.net.ConnectivityManager
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
@@ -11,6 +14,7 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -18,8 +22,15 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavType
-import androidx.navigation.compose.*
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.google.accompanist.insets.LocalWindowInsets
+import com.google.accompanist.insets.navigationBarsHeight
+import com.google.accompanist.insets.rememberInsetsPaddingValues
+import com.google.accompanist.insets.ui.BottomNavigation
 import com.lexwilliam.risuto.Screens.*
 import com.lexwilliam.risuto.ui.screens.detail.AnimeScreen
 import com.lexwilliam.risuto.ui.screens.detail.AnimeViewModel
@@ -91,6 +102,9 @@ fun RisutoAppContent(
         bottomBar = {
             if(bottomNavException.contains(currentRoute?.route)) {
                 BottomNavigation(
+                    contentPadding = rememberInsetsPaddingValues(
+                        insets = LocalWindowInsets.current.navigationBars,
+                    ),
                     backgroundColor = MaterialTheme.colors.background,
                     contentColor = MaterialTheme.colors.secondary,
                     elevation = 16.dp
@@ -110,6 +124,7 @@ fun RisutoAppContent(
                         )
                     }
                 }
+                Spacer(Modifier.navigationBarsHeight().fillMaxWidth())
             }
         }
     ) {

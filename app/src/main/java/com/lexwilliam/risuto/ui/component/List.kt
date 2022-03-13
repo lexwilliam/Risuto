@@ -28,7 +28,7 @@ fun GridList(
         ) {
             items(items = items) { item ->
                 MediumGrid(
-                    modifier = Modifier.padding(top = 16.dp, end = 16.dp),
+                    modifier = Modifier.padding(bottom = 16.dp, end = 16.dp),
                     id = item.mal_id,
                     imageUrl = item.images.jpg.image_url,
                     title = item.title,

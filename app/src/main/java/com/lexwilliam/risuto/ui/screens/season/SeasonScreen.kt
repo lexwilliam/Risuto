@@ -12,9 +12,12 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.insets.navigationBarsWithImePadding
 import com.lexwilliam.risuto.model.AnimePresentation
 import com.lexwilliam.risuto.ui.component.GridList
 import com.lexwilliam.risuto.ui.component.Header
+import com.lexwilliam.risuto.ui.component.ImeAvoidingBox
+import com.lexwilliam.risuto.ui.component.StatusBarSpacer
 import com.lexwilliam.risuto.ui.theme.RisutoTheme
 import com.lexwilliam.risuto.util.*
 import timber.log.Timber
@@ -51,7 +54,8 @@ fun SeasonContent(
 ) {
     Timber.d("year : $year")
     Timber.d("season: $season")
-    Column(modifier = Modifier.padding(bottom = bottomNavGap)) {
+    Column(modifier = Modifier.navigationBarsWithImePadding().padding(bottom = 56.dp)) {
+        StatusBarSpacer()
         if(year != -1 && season != "") {
             SeasonToolBar(
                 year = year,
@@ -73,7 +77,7 @@ fun SeasonToolBar(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 24.dp, start = 16.dp, end = 16.dp),
+            .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Header(

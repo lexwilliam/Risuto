@@ -15,6 +15,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import com.google.accompanist.insets.navigationBarsWithImePadding
+import com.lexwilliam.risuto.ui.component.ImeAvoidingBox
+import com.lexwilliam.risuto.ui.component.StatusBarSpacer
 import timber.log.Timber
 
 @Composable
@@ -67,10 +70,12 @@ fun LoginContent(
 
     Column(
         modifier = Modifier
+            .navigationBarsWithImePadding()
             .fillMaxSize()
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
+        StatusBarSpacer()
         Spacer(modifier = Modifier.padding(40.dp))
         Text(text = "Risuto", style = MaterialTheme.typography.h3)
         Box(

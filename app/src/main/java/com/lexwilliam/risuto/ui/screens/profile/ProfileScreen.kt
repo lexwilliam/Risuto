@@ -19,8 +19,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.insets.LocalWindowInsets
+import com.google.accompanist.insets.navigationBarsWithImePadding
+import com.google.accompanist.insets.rememberInsetsPaddingValues
+import com.google.accompanist.insets.ui.TopAppBar
 import com.lexwilliam.risuto.model.UserAnimeListPresentation
 import com.lexwilliam.risuto.model.WatchStatusPresentation
+import com.lexwilliam.risuto.ui.component.ImeAvoidingBox
 import com.lexwilliam.risuto.ui.component.LoadingScreen
 import com.lexwilliam.risuto.ui.component.NetworkImage
 import com.lexwilliam.risuto.util.bottomNavGap
@@ -53,8 +58,12 @@ fun ProfileContent(
     username: String,
     navToDetail: (Int) -> Unit
 ) {
-    Column(modifier = Modifier.padding(bottom = bottomNavGap)) {
+    Column(modifier = Modifier.navigationBarsWithImePadding().padding(bottom = 56.dp)) {
         TopAppBar(
+            contentPadding = rememberInsetsPaddingValues(
+                insets = LocalWindowInsets.current.systemBars,
+                applyBottom = false,
+            ),
             backgroundColor = MaterialTheme.colors.background,
             contentColor = MaterialTheme.colors.secondary,
             title = { Text("$username Anime List")},
@@ -75,6 +84,8 @@ fun ProfileContent(
             "Dropped" -> filteredList = myAnimeList.filter { it.listStatus.status == WatchStatusPresentation.Dropped }
         }
         MyAnimeGridList(items = filteredList, navToDetail = { navToDetail(it) })
+        Box(modifier = Modifier.padding(40.dp))
+        ImeAvoidingBox()
     }
 }
 
@@ -128,10 +139,8 @@ fun MyAnimeGrid(
         )
         Text(text = item.node.title,
             maxLines = 2,
-            overflow = TextOverflow.Ellipsis,
             modifier = Modifier.padding(top = 4.dp),
-            style = MaterialTheme.typography.subtitle1,
-            fontWeight = FontWeight.Bold
+            style = MaterialTheme.typography.subtitle1
         )
         Row(
             modifier = Modifier.requiredHeight(IntrinsicSize.Min),

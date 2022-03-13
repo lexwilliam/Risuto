@@ -13,9 +13,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.insets.navigationBarsWithImePadding
 import com.lexwilliam.risuto.model.AnimePresentation
 import com.lexwilliam.risuto.ui.component.Header
 import com.lexwilliam.risuto.ui.component.HorizontalGridList
+import com.lexwilliam.risuto.ui.component.ImeAvoidingBox
+import com.lexwilliam.risuto.ui.component.StatusBarSpacer
 import com.lexwilliam.risuto.ui.theme.RisutoTheme
 import com.lexwilliam.risuto.util.FakeItems
 import java.util.*
@@ -47,14 +50,19 @@ fun HomeContent(
 ) {
     Column(
         modifier = Modifier
+            .navigationBarsWithImePadding()
+            .padding(bottom = 56.dp)
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Header(
-            modifier = Modifier
-                .padding(top = 16.dp, start = 16.dp),
-            title = "Home"
-        )
+        Column {
+            StatusBarSpacer()
+            Header(
+                modifier = Modifier
+                    .padding(top = 16.dp, start = 16.dp),
+                title = "Home"
+            )
+        }
         PosterGridList(
             title = "Airing Today",
             items = schedules,
@@ -70,7 +78,6 @@ fun HomeContent(
             items = topAnime,
             navToDetail = { navToDetail(it) }
         )
-        Spacer(Modifier.padding(48.dp))
     }
 }
 

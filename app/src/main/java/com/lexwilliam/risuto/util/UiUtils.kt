@@ -58,12 +58,12 @@ val watchStatusList = listOf(
 
 fun watchStatusToString(watchStatus: WatchStatusPresentation): String {
     return when(watchStatus) {
-        WatchStatusPresentation.PlanToWatch -> "plan_to_watch"
-        WatchStatusPresentation.OnHold -> "on_hold"
-        WatchStatusPresentation.Completed -> "completed"
-        WatchStatusPresentation.Watching -> "watching"
-        WatchStatusPresentation.Dropped -> "dropped"
-        else -> "Default"
+        WatchStatusPresentation.PlanToWatch -> "Plan To Watch"
+        WatchStatusPresentation.OnHold -> "On Hold"
+        WatchStatusPresentation.Completed -> "Completed"
+        WatchStatusPresentation.Watching -> "Watching"
+        WatchStatusPresentation.Dropped -> "Dropped"
+        else -> "Error"
     }
 }
 

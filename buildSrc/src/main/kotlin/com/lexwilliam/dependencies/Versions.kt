@@ -7,7 +7,7 @@ object Versions {
     const val material = "1.4.0"
     const val navigation = "2.3.2"
     const val compose = "1.1.0-beta03"
-    const val composeSystemUi = "0.21.3-beta"
+    const val composeSystemUi = "0.24.3-alpha"
     const val composeViewModel = "2.4.0"
     const val composeNavigation = "2.4.0-beta01"
     const val constraintLayout = "2.0.4"

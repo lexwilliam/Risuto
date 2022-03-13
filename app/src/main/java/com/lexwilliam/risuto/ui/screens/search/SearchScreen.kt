@@ -34,9 +34,14 @@ import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
+import com.google.accompanist.insets.LocalWindowInsets
+import com.google.accompanist.insets.navigationBarsWithImePadding
+import com.google.accompanist.insets.rememberInsetsPaddingValues
+import com.google.accompanist.insets.ui.TopAppBar
 import com.lexwilliam.risuto.model.SearchHistoryPresentation
 import com.lexwilliam.risuto.model.AnimePresentation
 import com.lexwilliam.risuto.model.ShortAnimePresentation
+import com.lexwilliam.risuto.ui.component.ImeAvoidingBox
 import com.lexwilliam.risuto.ui.component.LoadingScreen
 import com.lexwilliam.risuto.ui.component.RowItem
 import com.lexwilliam.risuto.ui.component.SmallGrid
@@ -135,7 +140,7 @@ fun SearchContent(
 ) {
     Column(
         modifier = Modifier
-            .padding(bottom = 64.dp)
+            .navigationBarsWithImePadding()
     ) {
         SearchBar(
             query = query,
@@ -166,6 +171,7 @@ fun SearchContent(
             onGenreChanged = { onGenreChanged(it) },
             navToDetail = { navToDetail(it) }
         )
+        ImeAvoidingBox()
     }
 }
 
@@ -398,6 +404,10 @@ fun SearchBar(
         onCursorChanged(Color.Black)
     }
     TopAppBar(
+        contentPadding = rememberInsetsPaddingValues(
+            insets = LocalWindowInsets.current.systemBars,
+            applyBottom = false,
+        ),
         title = {
             BasicTextField(
                 modifier = Modifier

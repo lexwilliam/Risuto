@@ -78,9 +78,9 @@ fun MediumGrid(
             modifier = Modifier.requiredHeight(IntrinsicSize.Min),
             horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            Icon(Icons.Default.Star, contentDescription = null)
+            Icon(modifier = Modifier.size(14.dp), imageVector = Icons.Default.Star, contentDescription = null)
             Text(text = score.toString(), style = MaterialTheme.typography.caption)
-            Icon(Icons.Default.Person, contentDescription = null)
+            Icon(modifier = Modifier.size(14.dp), imageVector = Icons.Default.Person, contentDescription = null)
             Text(text = intToCurrency(members), style = MaterialTheme.typography.caption)
         }
     }

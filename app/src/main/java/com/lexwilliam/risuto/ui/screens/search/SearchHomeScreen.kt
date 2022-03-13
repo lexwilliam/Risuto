@@ -20,7 +20,10 @@ import androidx.compose.ui.unit.dp
 import com.google.accompanist.flowlayout.FlowMainAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
 import com.google.accompanist.flowlayout.SizeMode
+import com.google.accompanist.insets.navigationBarsWithImePadding
 import com.lexwilliam.risuto.ui.component.Header
+import com.lexwilliam.risuto.ui.component.ImeAvoidingBox
+import com.lexwilliam.risuto.ui.component.StatusBarSpacer
 import com.lexwilliam.risuto.ui.theme.RisutoTheme
 import com.lexwilliam.risuto.util.genreList
 import com.lexwilliam.risuto.util.getGenre
@@ -43,11 +46,21 @@ fun SearchHomeContent(
 ) {
     LazyColumn(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 16.dp, end = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+            .navigationBarsWithImePadding()
+            .padding(start = 16.dp, end = 16.dp, bottom = 56.dp)
+            .fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        item { Header(title = "Search", modifier = Modifier.padding(top = 24.dp)) }
+        item {
+            Column {
+                StatusBarSpacer()
+                Header(
+                    modifier = Modifier
+                        .padding(top = 16.dp),
+                    title = "Search"
+                )
+            }
+        }
         item { SearchHomeBar(navToSearch = { navToSearch() }) }
         item { Text(text = "Genre", style = MaterialTheme.typography.h6) }
         item {
@@ -57,7 +70,6 @@ fun SearchHomeContent(
                 }
             }
         }
-        item { Spacer(Modifier.padding(48.dp)) }
     }
 }
 

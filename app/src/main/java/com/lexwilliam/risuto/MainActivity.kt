@@ -1,12 +1,17 @@
 package com.lexwilliam.risuto
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.MaterialTheme
+import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.graphics.Color
+import androidx.core.view.WindowCompat
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.google.accompanist.insets.ProvideWindowInsets
 import com.lexwilliam.risuto.ui.theme.RisutoTheme
 import com.lexwilliam.risuto.util.Constants
 import dagger.hilt.android.AndroidEntryPoint
@@ -15,18 +20,26 @@ import timber.log.Timber
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    var authCode: String? = null
+    private var authCode: String? = null
 
     @ExperimentalMaterialApi
     @ExperimentalComposeUiApi
     @ExperimentalFoundationApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
+            val systemUiController = rememberSystemUiController()
+            val useDarkIcons = MaterialTheme.colors.isLight
+            SideEffect {
+                systemUiController.setSystemBarsColor(Color.Transparent, darkIcons = useDarkIcons)
+            }
             RisutoTheme {
-                RisutoApp(
-                    authCode = authCode
-                )
+                ProvideWindowInsets(windowInsetsAnimationsEnabled = true) {
+                    RisutoApp(
+                        authCode = authCode
+                    )
+                }
             }
         }
     }

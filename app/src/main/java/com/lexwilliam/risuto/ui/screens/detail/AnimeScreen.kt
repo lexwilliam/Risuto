@@ -22,7 +22,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.insets.ui.TopAppBar
 import com.google.accompanist.flowlayout.FlowRow
+import com.google.accompanist.insets.LocalWindowInsets
+import com.google.accompanist.insets.navigationBarsWithImePadding
+import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.lexwilliam.risuto.model.AnimeCharactersPresentation
 import com.lexwilliam.risuto.model.AnimeDetailPresentation
 import com.lexwilliam.risuto.ui.component.*
@@ -107,6 +111,7 @@ fun MyAnimeMenu(
     var numEpisodesWatched by remember { mutableStateOf(if(status.num_episodes_watched == -1) status.num_episodes_watched.toFloat() + 1 else status.num_episodes_watched.toFloat()) }
     Column(
         modifier = Modifier
+            .navigationBarsWithImePadding()
             .padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
@@ -131,14 +136,15 @@ fun MyAnimeMenu(
                 contentAlignment = Alignment.TopEnd
             ) {
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
                         text = "Delete",
                         style = MaterialTheme.typography.subtitle1,
                         color = MaterialTheme.colors.error
                     )
-                    Icon(modifier = Modifier.height(16.dp), imageVector = Icons.Default.Delete, tint = MaterialTheme.colors.error, contentDescription = null)
+                    Icon(modifier = Modifier.requiredHeight(IntrinsicSize.Max), imageVector = Icons.Default.Delete, tint = MaterialTheme.colors.error, contentDescription = null)
                 }
             }
         }
@@ -186,7 +192,6 @@ fun MyAnimeMenu(
         ) {
             Text(text = "Done", style = MaterialTheme.typography.button)
         }
-        Spacer(Modifier.padding(0.dp))
     }
 }
 
@@ -197,6 +202,10 @@ fun AnimeToolbar(
     onBackPressed: () -> Unit
 ) {
     TopAppBar(
+        contentPadding = rememberInsetsPaddingValues(
+            insets = LocalWindowInsets.current.systemBars,
+            applyBottom = false,
+        ),
         backgroundColor = Color.Transparent,
         elevation = 0.dp,
         title = { Text("") },
@@ -266,6 +275,7 @@ fun AnimeContent(
 ) {
     Column(
         modifier = Modifier
+            .navigationBarsWithImePadding()
             .fillMaxSize()
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -565,7 +575,8 @@ fun titleSynonymsToString(
     synonyms: List<String>
 ): String {
     var result = en
-    if(jp != "") result += "\n${jp}"
+    if(en != "") result += "\n"
+    result += jp
     synonyms.forEach {
         result += "\n${it}"
     }
