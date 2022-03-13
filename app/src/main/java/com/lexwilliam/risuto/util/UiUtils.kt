@@ -26,6 +26,28 @@ data class WatchStatusUi(val watchStatus: WatchStatusPresentation, val text: Str
 
 val bottomNavGap = 56.dp
 
+val watchStatusStrList = listOf("Plan To Watch", "Completed", "Watching", "Dropped", "On Hold")
+
+fun toMalFormat(text: String): String =
+    when(text) {
+        "Plan To Watch" -> "plan_to_watch"
+        "On Hold" -> "on_hold"
+        "Completed" -> "completed"
+        "Watching" -> "watching"
+        "Dropped" -> "dropped"
+        else -> ""
+    }
+
+fun toTextFormat(text: String): String =
+    when(text) {
+        "plan_to_watch" -> "Plan To Watch"
+        "dropped" -> "Dropped"
+        "on_hold" -> "On Hold"
+        "watching" -> "Watching"
+        "completed" -> "Completed"
+        else -> ""
+    }
+
 val watchStatusList = listOf(
     WatchStatusPresentation.PlanToWatch,
     WatchStatusPresentation.Completed,

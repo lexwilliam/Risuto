@@ -2,63 +2,103 @@ package com.lexwilliam.risuto.ui.component
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.flowlayout.FlowRow
+import com.lexwilliam.risuto.ui.theme.RisutoTheme
+import timber.log.Timber
 
 @Composable
 fun Chip(
-    modifier: Modifier = Modifier,
+    selected: Boolean,
     text: String,
-    size: Dp = 16.dp,
-    onClick: (String) -> Unit
+    modifier: Modifier = Modifier
 ) {
-    Box(
+    // define properties to the chip
+    // such as color, shape, width
+    Surface(
+        color = when {
+            selected -> MaterialTheme.colors.primary
+            else -> Color.Transparent
+        },
+        contentColor = when {
+            selected -> MaterialTheme.colors.onPrimary
+            else -> MaterialTheme.colors.primary
+        },
+        shape = CircleShape,
+        border = BorderStroke(
+            width = when {
+                selected -> 0.dp
+                else -> 1.dp
+            },
+            color = when {
+                selected -> Color.Transparent
+                else -> MaterialTheme.colors.primary
+            }
+        ),
         modifier = modifier
-            .clickable { onClick(text) }
-            .background(color = MaterialTheme.colors.primary, shape = RoundedCornerShape(size))
-            .clip(RoundedCornerShape(size))
     ) {
         Text(
-            modifier = Modifier.padding(8.dp),
             text = text,
-            maxLines = 1,
-            style = MaterialTheme.typography.button,
-            color = Color.White
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.caption,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(8.dp)
         )
+
     }
 }
 
 @Composable
 fun ChipGroup(
-    texts: ArrayList<String>,
-    onClick: (String) -> Unit
+    texts: List<String>,
+    selectedText: String,
+    onSelectedTextChanged: (Int) -> Unit
 ) {
-    Column(
-        modifier = Modifier.padding(vertical = 8.dp)
+    Timber.d(selectedText)
+    var selectedIndex by remember { mutableStateOf(texts.indexOf(selectedText)) }
+    FlowRow(
+        mainAxisSpacing = 16.dp,
+        crossAxisSpacing = 8.dp
     ) {
-        val remain = texts.size % 4
-        val temp = texts.size - remain
-        var count = 0
-        while(count < temp) {
-            Row {
-                for(i in 0..3) {
-                    Chip(modifier = Modifier.padding(end = 8.dp, bottom = 8.dp), text = texts[count + i], onClick = { onClick(it) })
-                }
-            }
-            count+=4
+        texts.forEachIndexed { index, text ->
+            Chip(
+                modifier = Modifier
+                    .clickable {
+                        selectedIndex = index
+                        onSelectedTextChanged(selectedIndex)
+                    },
+                selected = selectedIndex == index,
+                text = text
+            )
         }
-        Row {
-            while (count < texts.size){
-                Chip(modifier = Modifier.padding(end = 8.dp, bottom = 8.dp), text = texts[count], onClick = { onClick(it) })
-                count++
-            }
-        }
+    }
+}
+
+@Preview
+@Composable
+fun SelectedChipPreview() {
+    RisutoTheme {
+        Chip(text = "Plan To Watch", selected = true)
+    }
+}
+
+@Preview
+@Composable
+fun UnSelectedChipPreview() {
+    RisutoTheme {
+        Chip(text = "Watching", selected = false)
     }
 }

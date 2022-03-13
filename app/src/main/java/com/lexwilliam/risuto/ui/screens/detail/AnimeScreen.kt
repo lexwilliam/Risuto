@@ -10,10 +10,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,12 +25,12 @@ import androidx.compose.ui.unit.dp
 import com.google.accompanist.flowlayout.FlowRow
 import com.lexwilliam.risuto.model.AnimeCharactersPresentation
 import com.lexwilliam.risuto.model.AnimeDetailPresentation
-import com.lexwilliam.risuto.model.WatchStatusPresentation
 import com.lexwilliam.risuto.ui.component.*
 import com.lexwilliam.risuto.ui.theme.RisutoTheme
 import com.lexwilliam.risuto.util.*
 import com.lexwilliam.risuto.util.intToCurrency
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.util.*
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -55,25 +52,27 @@ fun AnimeScreen(
     )
     val coroutineScope = rememberCoroutineScope()
 
-    BottomSheetScaffold(
-        modifier = Modifier.background(MaterialTheme.colors.background),
-        scaffoldState = bottomSheetScaffoldState,
-        sheetPeekHeight = 0.dp,
-        sheetContent = {
-            MyAnimeMenu(
-                onEventSent = { onEventSent(it) },
-                id = state.malId,
-                onDoneClicked = {
-                    coroutineScope.launch {
-                        bottomSheetScaffoldState.bottomSheetState.collapse()
+    if(state.isLoading) {
+        LoadingScreen()
+    } else {
+        BottomSheetScaffold(
+            scaffoldState = bottomSheetScaffoldState,
+            sheetPeekHeight = 0.dp,
+            sheetBackgroundColor = MaterialTheme.colors.background,
+            sheetContent = {
+                MyAnimeMenu(
+                    onEventSent = { onEventSent(it) },
+                    id = state.malId,
+                    status = state.animeDetail.my_list_status,
+                    numEpisodes = state.animeDetail.num_episodes,
+                    onDoneClicked = {
+                        coroutineScope.launch {
+                            bottomSheetScaffoldState.bottomSheetState.collapse()
+                        }
                     }
-                }
-            )
-        }
-    ) {
-        if(state.isLoading) {
-            LoadingScreen()
-        } else {
+                )
+            }
+        ) {
             Box {
                 AnimeContent(
                     animeDetail = state.animeDetail,
@@ -97,102 +96,95 @@ fun AnimeScreen(
 
 @Composable
 fun MyAnimeMenu(
-    onDoneClicked: () -> Unit,
     id: Int,
+    status: AnimeDetailPresentation.MyListStatus,
+    numEpisodes: Int,
+    onDoneClicked: () -> Unit,
     onEventSent: (AnimeContract.Event) -> Unit
 ) {
-    var score by remember { mutableStateOf(-1) }
-    var watchStateText by remember { mutableStateOf("Plan To Watch")}
-    var watchState by remember { mutableStateOf(WatchStatusPresentation.PlanToWatch) }
-    var expandedWatchStatus by remember { mutableStateOf(false) }
-    var expandedScore by remember { mutableStateOf(false) }
+    var watchStatus by remember { mutableStateOf(status.status) }
+    var score by remember { mutableStateOf(if(status.score == -1) status.score.toFloat() + 1 else status.score.toFloat()) }
+    var numEpisodesWatched by remember { mutableStateOf(if(status.num_episodes_watched == -1) status.num_episodes_watched.toFloat() + 1 else status.num_episodes_watched.toFloat()) }
     Column(
         modifier = Modifier
-            .padding(top = 24.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+            .padding(horizontal = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Row(modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-            horizontalArrangement = Arrangement.spacedBy(4.dp)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-                    .height(40.dp)
-                    .background(Color.LightGray)
-                    .clip(MaterialTheme.shapes.medium)
-                    .clickable { expandedScore = true },
-                contentAlignment = Alignment.Center
-            ) {
-                if(score != -1) {
-                    Text(
-                        text = "$score/10",
-                        style = MaterialTheme.typography.subtitle1
-                    )
-                } else {
-                    Text(
-                        text = "Score",
-                        style = MaterialTheme.typography.subtitle1
-                    )
-                }
-                DropdownMenu(expanded = expandedScore, onDismissRequest = { expandedScore = false }) {
-                    for(i in 10 downTo 1) {
-                        DropdownMenuItem(onClick = {
-                            score = i
-                            expandedScore = false
-                        }) {
-                            Text(i.toString())
-                        }
-                    }
-                }
-            }
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-                    .height(40.dp)
-                    .background(Color.LightGray)
-                    .clip(MaterialTheme.shapes.medium)
-                    .clickable { expandedWatchStatus = true },
-                contentAlignment = Alignment.Center
+                modifier = Modifier.weight(1f),
+                contentAlignment = Alignment.TopStart
             ) {
                 Text(
-                    text = watchStateText,
-                    style = MaterialTheme.typography.subtitle1
+                    text = "Add Anime",
+                    style = MaterialTheme.typography.h5,
+                    fontWeight = FontWeight.Bold
                 )
-                DropdownMenu(expanded = expandedWatchStatus, onDismissRequest = { expandedWatchStatus = false }) {
-                    watchStatusList.forEach {
-                        DropdownMenuItem(onClick = {
-                            watchState = it
-                            watchStateText =
-                                watchStatusToString(
-                                    it
-                                )
-                            expandedWatchStatus = false
-                        }) {
-                            Text(
-                                watchStatusToString(
-                                    it
-                                )
-                            )
-                        }
-                    }
+            }
+            Box(
+                modifier = Modifier.weight(1f),
+                contentAlignment = Alignment.TopEnd
+            ) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Text(
+                        text = "Delete",
+                        style = MaterialTheme.typography.subtitle1,
+                        color = MaterialTheme.colors.error
+                    )
+                    Icon(modifier = Modifier.height(16.dp), imageVector = Icons.Default.Delete, tint = MaterialTheme.colors.error, contentDescription = null)
                 }
             }
+        }
+        Text(text = "Watch Status", style = MaterialTheme.typography.subtitle1, fontWeight = FontWeight.Bold)
+        ChipGroup(texts = watchStatusStrList, selectedText = toTextFormat(watchStatus), onSelectedTextChanged = { watchStatus = toMalFormat(watchStatusStrList[it]) })
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(Modifier.weight(1f), contentAlignment = Alignment.CenterStart) {
+                Text(text = "Score", style = MaterialTheme.typography.subtitle1, fontWeight = FontWeight.Bold)
+            }
+            Box(Modifier.weight(1f), contentAlignment = Alignment.CenterEnd) {
+                Text(text = "${score.toInt()}")
+            }
+        }
+        Slider(value = score, onValueChange = { score = it }, steps = 10, valueRange = 0f..10f)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(Modifier.weight(1f), contentAlignment = Alignment.CenterStart) {
+                Text(text = "Total Episodes Watched", style = MaterialTheme.typography.subtitle1, fontWeight = FontWeight.Bold)
+            }
+            Box(Modifier.weight(1f), contentAlignment = Alignment.CenterEnd) {
+                Text(text = "${numEpisodesWatched.toInt()}")
+            }
+        }
+        if(numEpisodes != -1) {
+            Slider(value = numEpisodesWatched, onValueChange = { numEpisodesWatched = it }, steps = numEpisodes, valueRange = 0f..numEpisodes.toFloat())
         }
         Button(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
+                .fillMaxWidth(),
             onClick = {
-                onEventSent(AnimeContract.Event.UpdateUserAnimeStatus(id, 0, watchStatusToString(watchState), score))
+                onEventSent(AnimeContract.Event.UpdateUserAnimeStatus(id, numEpisodesWatched.toInt(), watchStatus, score.toInt()))
                 onDoneClicked()
             }
         ) {
-            Text("Done")
+            Text(text = "Done", style = MaterialTheme.typography.button)
         }
+        Spacer(Modifier.padding(0.dp))
     }
 }
 
@@ -239,7 +231,7 @@ fun AnimeToolbar(
                 contentAlignment = Alignment.Center
             ) {
                 Row(
-                    modifier = Modifier.padding(horizontal = 16.dp),
+                    modifier = Modifier.padding(start = 16.dp, end = 8.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     if(status.status == "") {
@@ -249,8 +241,7 @@ fun AnimeToolbar(
                         Text(text = "$watchStatusString ", style = MaterialTheme.typography.button, fontWeight = FontWeight.Bold, color = MaterialTheme.colors.onBackground)
                         Box(
                             modifier = Modifier
-                                .height(IntrinsicSize.Min)
-                                .width(24.dp)
+                                .size(30.dp)
                                 .clip(CircleShape)
                                 .background(MaterialTheme.colors.onBackground),
                             contentAlignment = Alignment.Center
@@ -689,27 +680,6 @@ fun DetailSubtitle(
     }
 }
 
-//@Preview
-//@Composable
-//fun AnimeScreenPreview() {
-//    RisutoTheme {
-//        Column(
-//            Modifier
-//                .background(MaterialTheme.colors.background)
-//                .fillMaxSize(),
-//            verticalArrangement = Arrangement.spacedBy(24.dp)
-//        ) {
-//            AnimeContent(
-//                animeDetail = FakeItems.animeDetail,
-//                characters = listOf(FakeItems.character, FakeItems.character, FakeItems.character, FakeItems.character, FakeItems.character, FakeItems.character),
-//                onBackPressed = {},
-//                navToSearchWithGenre = {},
-//                navToDetail = {}
-//            )
-//        }
-//    }
-//}
-
 @Preview
 @Composable
 fun AnimeInfoPreview() {
@@ -752,10 +722,18 @@ fun AnimeSuggestionPreview() {
     }
 }
 
-//@Preview
-//@Composable
-//fun AnimeToolbarPreview() {
-//    RisutoTheme {
-//        AnimeToolbar(onAddPressed = {}, onBackPressed = {})
-//    }
-//}
+@Preview
+@Composable
+fun AnimeToolbarPreview() {
+    RisutoTheme {
+        AnimeToolbar(status = AnimeDetailPresentation.MyListStatus(false, -1, 10, "plan_to_watch", ""), onAddPressed = {}, onBackPressed = {})
+    }
+}
+
+@Preview
+@Composable
+fun MyAnimeMenuPreview() {
+    RisutoTheme {
+        MyAnimeMenu(id = -1, AnimeDetailPresentation.MyListStatus(false, -1, -1, "", ""), numEpisodes = 10, onDoneClicked = {}, onEventSent = {})
+    }
+}

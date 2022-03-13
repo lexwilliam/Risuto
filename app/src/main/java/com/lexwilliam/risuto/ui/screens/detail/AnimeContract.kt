@@ -15,6 +15,7 @@ class AnimeContract {
     data class State(
         val malId: Int,
         val animeDetail: AnimeDetailPresentation,
+        val myListStatus: AnimeDetailPresentation.MyListStatus,
         val characters: List<AnimeCharactersPresentation.Data>,
         val isLoading: Boolean = false,
         val isError: Boolean = false

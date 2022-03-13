@@ -42,6 +42,7 @@ class AnimeViewModel @Inject constructor(
         return AnimeContract.State(
             malId = -1,
             animeDetail = getInitialAnimeDetails(),
+            myListStatus = AnimeDetailPresentation.MyListStatus(false, -1, -1, "", ""),
             characters = emptyList(),
             isLoading = true,
             isError = false
@@ -51,7 +52,14 @@ class AnimeViewModel @Inject constructor(
     override fun handleEvents(event: AnimeContract.Event) {
         when(event) {
             is AnimeContract.Event.InsertAnimeHistory -> insertAnimeHistory(event.anime)
-            is AnimeContract.Event.UpdateUserAnimeStatus -> updateUserAnimeStatus(event.id, event.numEpisodesWatched, event.status, event.score)
+            is AnimeContract.Event.UpdateUserAnimeStatus -> {
+                updateUserAnimeStatus(event.id, event.numEpisodesWatched, event.status, event.score)
+                setState {
+                    copy(
+                        myListStatus = AnimeDetailPresentation.MyListStatus(false, event.numEpisodesWatched, event.score, event.status, "")
+                    )
+                }
+            }
         }
     }
 
@@ -78,6 +86,7 @@ class AnimeViewModel @Inject constructor(
                                 setState {
                                     copy(
                                         animeDetail = anime,
+                                        myListStatus = anime.my_list_status,
                                         isLoading = false
                                     )
                                 }
