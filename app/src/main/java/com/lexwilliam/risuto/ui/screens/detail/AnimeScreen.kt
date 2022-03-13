@@ -81,7 +81,7 @@ fun AnimeScreen(
                     navToDetail = navToDetail
                 )
                 AnimeToolbar(
-                    status = state.animeDetail.my_list_status,
+                    status = state.myListStatus,
                     onAddPressed = {
                         coroutineScope.launch {
                             bottomSheetScaffoldState.bottomSheetState.expand()
@@ -157,6 +157,7 @@ fun MyAnimeMenu(
                 Text(text = "${score.toInt()}")
             }
         }
+        Timber.d(score.toString())
         Slider(value = score, onValueChange = { score = it }, steps = 10, valueRange = 0f..10f)
         Row(
             modifier = Modifier
@@ -177,6 +178,7 @@ fun MyAnimeMenu(
         Button(
             modifier = Modifier
                 .fillMaxWidth(),
+            enabled = watchStatus != "",
             onClick = {
                 onEventSent(AnimeContract.Event.UpdateUserAnimeStatus(id, numEpisodesWatched.toInt(), watchStatus, score.toInt()))
                 onDoneClicked()
@@ -241,7 +243,7 @@ fun AnimeToolbar(
                         Text(text = "$watchStatusString ", style = MaterialTheme.typography.button, fontWeight = FontWeight.Bold, color = MaterialTheme.colors.onBackground)
                         Box(
                             modifier = Modifier
-                                .size(30.dp)
+                                .size(24.dp)
                                 .clip(CircleShape)
                                 .background(MaterialTheme.colors.onBackground),
                             contentAlignment = Alignment.Center
@@ -496,7 +498,7 @@ fun AnimeInfo(
     animeDetail: AnimeDetailPresentation
 ) {
     val infoList = listOf(
-        Pair("Alternative titles", "${animeDetail.alternative_titles.en}\n${animeDetail.alternative_titles.ja}${titleSynonymsToString(animeDetail.alternative_titles.synonyms)}"),
+        Pair("Alternative titles", titleSynonymsToString(animeDetail.alternative_titles.ja, animeDetail.alternative_titles.en, animeDetail.alternative_titles.synonyms)),
         Pair("Season", "${animeDetail.start_season.season.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }} ${animeDetail.start_season.year}"),
         Pair("Duration", "${animeDetail.num_episodes} ep, ${animeDetail.average_episode_duration / 60} min"),
         Pair("Broadcast", "${animeDetail.broadcast.day_of_the_week.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }} ${animeDetail.broadcast.start_time}"),
@@ -558,9 +560,12 @@ fun AnimeInfo(
 }
 
 fun titleSynonymsToString(
+    jp: String,
+    en: String,
     synonyms: List<String>
 ): String {
-    var result = ""
+    var result = en
+    if(jp != "") result += "\n${jp}"
     synonyms.forEach {
         result += "\n${it}"
     }
