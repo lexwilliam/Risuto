@@ -21,6 +21,7 @@ import com.lexwilliam.risuto.ui.component.ImeAvoidingBox
 import com.lexwilliam.risuto.ui.component.StatusBarSpacer
 import com.lexwilliam.risuto.ui.theme.RisutoTheme
 import com.lexwilliam.risuto.util.FakeItems
+import timber.log.Timber
 import java.util.*
 
 @Composable

@@ -281,8 +281,8 @@ fun AnimeContent(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         AnimeDetail(animeDetail = animeDetail, navToSearchWithGenre = { navToSearchWithGenre(it) })
-        AnimeSynopsis(synopsis = animeDetail.synopsis)
         CharVoiceActorList(characters = characters)
+        AnimeSynopsis(synopsis = animeDetail.synopsis)
         AnimeInfo(animeDetail = animeDetail)
         DetailPictureList(pictures = animeDetail.pictures)
         RelatedAnimeList(relatedAnime = animeDetail.related_anime, navToDetail = navToDetail)
@@ -370,67 +370,65 @@ fun AnimeDetail(
 fun AnimeSynopsis(
     synopsis: String
 ) {
-    if(synopsis == "") {
-        var isExpanded by remember { mutableStateOf(false) }
-        val textLayoutResultState = remember { mutableStateOf<TextLayoutResult?>(null) }
-        var isClickable by remember { mutableStateOf(false) }
-        var finalText by remember { mutableStateOf(synopsis) }
+    var isExpanded by remember { mutableStateOf(false) }
+    val textLayoutResultState = remember { mutableStateOf<TextLayoutResult?>(null) }
+    var isClickable by remember { mutableStateOf(false) }
+    var finalText by remember { mutableStateOf(synopsis) }
 
-        val textLayoutResult = textLayoutResultState.value
-        LaunchedEffect(textLayoutResult) {
-            if (textLayoutResult == null) return@LaunchedEffect
+    val textLayoutResult = textLayoutResultState.value
+    LaunchedEffect(textLayoutResult) {
+        if (textLayoutResult == null) return@LaunchedEffect
 
-            when {
-                isExpanded -> {
-                    finalText = "$synopsis Show Less"
-                }
-                !isExpanded && textLayoutResult.hasVisualOverflow -> {
-                    val lastCharIndex = textLayoutResult.getLineEnd(5 - 1)
-                    val showMoreString = "... Show More"
-                    val adjustedText = synopsis
-                        .substring(startIndex = 0, endIndex = lastCharIndex)
-                        .dropLast(showMoreString.length)
-                        .dropLastWhile { it == ' ' || it == '.' }
+        when {
+            isExpanded -> {
+                finalText = "$synopsis Show Less"
+            }
+            !isExpanded && textLayoutResult.hasVisualOverflow -> {
+                val lastCharIndex = textLayoutResult.getLineEnd(5 - 1)
+                val showMoreString = "... Show More"
+                val adjustedText = synopsis
+                    .substring(startIndex = 0, endIndex = lastCharIndex)
+                    .dropLast(showMoreString.length)
+                    .dropLastWhile { it == ' ' || it == '.' }
 
-                    finalText = "$adjustedText$showMoreString"
+                finalText = "$adjustedText$showMoreString"
 
-                    isClickable = true
-                }
+                isClickable = true
             }
         }
+    }
 
-        Column {
-            DetailSubtitle(title = "Synopsis")
-            Column(
-                modifier = Modifier
-                    .padding(start = 40.dp, end = 16.dp)
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        enabled = isClickable,
-                        indication = null
-                    ) {
-                        isExpanded = !isExpanded
-                    }
-            ) {
-                Text(
-                    text = synopsis,
-                    style = MaterialTheme.typography.body1,
-                    maxLines = if (isExpanded) Int.MAX_VALUE else 5,
-                    onTextLayout = { textLayoutResultState.value = it },
-                    modifier = Modifier
-                        .animateContentSize(),
-                )
-
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    contentAlignment = Alignment.Center
+    Column {
+        DetailSubtitle(title = "Synopsis")
+        Column(
+            modifier = Modifier
+                .padding(start = 40.dp, end = 16.dp)
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    enabled = isClickable,
+                    indication = null
                 ) {
-                    if(isExpanded) {
-                        Icon(modifier = Modifier.size(32.dp), imageVector = Icons.Default.KeyboardArrowUp, contentDescription = null)
-                    } else {
-                        Icon(modifier = Modifier.size(32.dp), imageVector = Icons.Default.KeyboardArrowDown, contentDescription = null)
-                    }
+                    isExpanded = !isExpanded
+                }
+        ) {
+            Text(
+                text = synopsis,
+                style = MaterialTheme.typography.body1,
+                maxLines = if (isExpanded) Int.MAX_VALUE else 5,
+                onTextLayout = { textLayoutResultState.value = it },
+                modifier = Modifier
+                    .animateContentSize(),
+            )
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                if(isExpanded) {
+                    Icon(modifier = Modifier.size(32.dp), imageVector = Icons.Default.KeyboardArrowUp, contentDescription = null)
+                } else {
+                    Icon(modifier = Modifier.size(32.dp), imageVector = Icons.Default.KeyboardArrowDown, contentDescription = null)
                 }
             }
         }

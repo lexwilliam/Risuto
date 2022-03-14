@@ -15,6 +15,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -31,6 +32,7 @@ import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.navigationBarsHeight
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.google.accompanist.insets.ui.BottomNavigation
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.lexwilliam.risuto.Screens.*
 import com.lexwilliam.risuto.ui.screens.detail.AnimeScreen
 import com.lexwilliam.risuto.ui.screens.detail.AnimeViewModel
@@ -47,6 +49,7 @@ import com.lexwilliam.risuto.ui.screens.season.SeasonScreen
 import com.lexwilliam.risuto.ui.screens.season.SeasonViewModel
 import com.lexwilliam.risuto.ui.screens.splash.SplashScreen
 import com.lexwilliam.risuto.ui.screens.splash.SplashViewModel
+import timber.log.Timber
 
 @ExperimentalMaterialApi
 @ExperimentalComposeUiApi
@@ -55,6 +58,12 @@ import com.lexwilliam.risuto.ui.screens.splash.SplashViewModel
 fun RisutoApp(
     authCode: String?
 ) {
+    val systemUiController = rememberSystemUiController()
+    val useDarkIcons = MaterialTheme.colors.isLight
+    Timber.d("darkIcons = $useDarkIcons")
+    SideEffect {
+        systemUiController.setSystemBarsColor(Color.Transparent, darkIcons = useDarkIcons)
+    }
     val context = LocalContext.current
     var isOnline by remember { mutableStateOf(checkIfOnline(context)) }
     if (isOnline) {

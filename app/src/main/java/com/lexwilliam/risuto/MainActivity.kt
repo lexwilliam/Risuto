@@ -29,11 +29,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
-            val systemUiController = rememberSystemUiController()
-            val useDarkIcons = MaterialTheme.colors.isLight
-            SideEffect {
-                systemUiController.setSystemBarsColor(Color.Transparent, darkIcons = useDarkIcons)
-            }
             RisutoTheme {
                 ProvideWindowInsets(windowInsetsAnimationsEnabled = true) {
                     RisutoApp(
