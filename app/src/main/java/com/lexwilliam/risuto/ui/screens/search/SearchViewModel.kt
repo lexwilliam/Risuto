@@ -14,6 +14,7 @@ import com.lexwilliam.risuto.model.SearchHistoryPresentation
 import com.lexwilliam.risuto.model.AnimePresentation
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
@@ -98,6 +99,19 @@ class  SearchViewModel @Inject constructor(
 
             is SearchContract.Event.DeleteSearchHistory ->
                 deleteSearchHistory(event.query)
+
+            is SearchContract.Event.RefreshPaging -> {
+                viewModelScope.launch(errorHandler) {
+                    setState {
+                        copy(
+                            isRefreshing = true,
+                            searchAnimesPaging = getSearchAnimePaging(event.q, event.type, event.score, event.minScore, event.maxScore, event.status, event.rating, event.sfw, event.genres, event.genresExclude, event.orderBy, event.sort, event.letter, event.producer)
+                        )
+                    }
+                    delay(1000)
+                    setState { copy(isRefreshing = false) }
+                }
+            }
         }
     }
 

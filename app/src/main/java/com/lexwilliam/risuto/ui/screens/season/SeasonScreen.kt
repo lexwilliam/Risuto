@@ -36,6 +36,7 @@ fun SeasonScreen(
         year = state.year,
         season = state.season,
         animes = state.seasonAnime,
+        isRefreshing = state.isRefreshing,
         onEventSent = { onEventSent(it) },
         navToDetail = { navToDetail(it) }
     )
@@ -49,6 +50,7 @@ fun SeasonContent(
     year: Int,
     season: String,
     animes: List<AnimePresentation.Data>,
+    isRefreshing: Boolean,
     onEventSent: (SeasonContract.Event) -> Unit,
     navToDetail: (Int) -> Unit
 ) {
@@ -63,7 +65,12 @@ fun SeasonContent(
                 onEventSent = { onEventSent(it) }
             )
         }
-        GridList(items = animes, navToDetail = { navToDetail(it)} )
+        GridList(
+            items = animes,
+            isRefreshing = isRefreshing,
+            onRefresh = { onEventSent(SeasonContract.Event.RefreshList(season, year))},
+            navToDetail = { navToDetail(it)}
+        )
     }
 }
 
@@ -172,6 +179,7 @@ fun SeasonPreview() {
                 year = 2022,
                 season = "Winter",
                 animes = listOf(FakeItems.animeData, FakeItems.animeData, FakeItems.animeData, FakeItems.animeData, FakeItems.animeData, FakeItems.animeData),
+                isRefreshing = false,
                 onEventSent = {},
                 navToDetail = {}
             )

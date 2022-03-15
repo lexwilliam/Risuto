@@ -7,35 +7,45 @@ import androidx.compose.material.Divider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.lexwilliam.risuto.model.AnimePresentation
 import com.lexwilliam.risuto.model.ShortAnimePresentation
+import com.lexwilliam.risuto.ui.screens.profile.MyAnimeContract
 
 @ExperimentalFoundationApi
 @Composable
 fun GridList(
     modifier: Modifier = Modifier,
     items: List<AnimePresentation.Data>,
+    isRefreshing: Boolean,
+    onRefresh: () -> Unit,
     navToDetail: (Int) -> Unit
 ) {
     if(items.isEmpty()) {
         LoadingScreen()
     } else {
-        LazyVerticalGrid(
-            modifier = modifier
-                .fillMaxSize()
-                .padding(start = 16.dp),
-            cells = GridCells.Adaptive(minSize = 136.dp),
+        SwipeRefresh(
+            state = rememberSwipeRefreshState(isRefreshing),
+            onRefresh = { onRefresh() },
         ) {
-            items(items = items) { item ->
-                MediumGrid(
-                    modifier = Modifier.padding(bottom = 16.dp, end = 16.dp),
-                    id = item.mal_id,
-                    imageUrl = item.images.jpg.image_url,
-                    title = item.title,
-                    score = item.score,
-                    members = item.members,
-                    navToDetail = { navToDetail(it) }
-                )
+            LazyVerticalGrid(
+                modifier = modifier
+                    .fillMaxSize()
+                    .padding(start = 16.dp),
+                cells = GridCells.Adaptive(minSize = 136.dp),
+            ) {
+                items(items = items) { item ->
+                    MediumGrid(
+                        modifier = Modifier.padding(bottom = 16.dp, end = 16.dp),
+                        id = item.mal_id,
+                        imageUrl = item.images.jpg.image_url,
+                        title = item.title,
+                        score = item.score,
+                        members = item.members,
+                        navToDetail = { navToDetail(it) }
+                    )
+                }
             }
         }
     }

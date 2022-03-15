@@ -5,7 +5,6 @@ import android.net.ConnectivityManager
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
@@ -40,8 +39,8 @@ import com.lexwilliam.risuto.ui.screens.home.HomeScreen
 import com.lexwilliam.risuto.ui.screens.home.HomeViewModel
 import com.lexwilliam.risuto.ui.screens.login.LoginScreen
 import com.lexwilliam.risuto.ui.screens.login.LoginViewModel
-import com.lexwilliam.risuto.ui.screens.profile.ProfileScreen
-import com.lexwilliam.risuto.ui.screens.profile.ProfileViewModel
+import com.lexwilliam.risuto.ui.screens.profile.MyAnimeScreen
+import com.lexwilliam.risuto.ui.screens.profile.MyAnimeViewModel
 import com.lexwilliam.risuto.ui.screens.search.SearchHomeScreen
 import com.lexwilliam.risuto.ui.screens.search.SearchScreen
 import com.lexwilliam.risuto.ui.screens.search.SearchViewModel
@@ -49,7 +48,6 @@ import com.lexwilliam.risuto.ui.screens.season.SeasonScreen
 import com.lexwilliam.risuto.ui.screens.season.SeasonViewModel
 import com.lexwilliam.risuto.ui.screens.splash.SplashScreen
 import com.lexwilliam.risuto.ui.screens.splash.SplashViewModel
-import timber.log.Timber
 
 @ExperimentalMaterialApi
 @ExperimentalComposeUiApi
@@ -60,7 +58,6 @@ fun RisutoApp(
 ) {
     val systemUiController = rememberSystemUiController()
     val useDarkIcons = MaterialTheme.colors.isLight
-    Timber.d("darkIcons = $useDarkIcons")
     SideEffect {
         systemUiController.setSystemBarsColor(Color.Transparent, darkIcons = useDarkIcons)
     }
@@ -94,14 +91,14 @@ fun RisutoAppContent(
         BottomNavItem(Icons.Filled.Home, RisutoHomeScreen.route, "Home"),
         BottomNavItem(Icons.Filled.Search, RisutoSearchHomeScreen.route, "Search"),
         BottomNavItem(Icons.Default.DateRange, RisutoSeasonScreen.route, "Season"),
-        BottomNavItem(Icons.Filled.Person, RisutoProfileScreen.route, "Profile")
+        BottomNavItem(Icons.Filled.Person, RisutoMyAnimeScreen.route, "Profile")
     )
 
     val bottomNavException = listOf(
         RisutoHomeScreen.route,
         RisutoSeasonScreen.route,
         RisutoSearchHomeScreen.route,
-        RisutoProfileScreen.route
+        RisutoMyAnimeScreen.route
     )
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -257,8 +254,11 @@ fun RisutoAppContent(
                 )
             }
             composable(RisutoProfileScreen.route) {
-                val profileViewModel = hiltViewModel<ProfileViewModel>()
-                ProfileScreen(
+
+            }
+            composable(RisutoMyAnimeScreen.route) {
+                val profileViewModel = hiltViewModel<MyAnimeViewModel>()
+                MyAnimeScreen(
                     state = profileViewModel.viewState.value,
                     onEventSent = { event -> profileViewModel.setEvent(event)},
                     navToDetail = { mal_id ->
@@ -280,6 +280,7 @@ sealed class Screens(val route: String) {
     object RisutoSearchScreen: Screens("search")
     object RisutoSeasonScreen: Screens("season")
     object RisutoAnimeScreen: Screens("anime")
+    object RisutoMyAnimeScreen: Screens("myAnime")
     object RisutoProfileScreen: Screens("profile")
 }
 

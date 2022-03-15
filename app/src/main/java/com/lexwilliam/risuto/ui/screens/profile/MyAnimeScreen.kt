@@ -8,43 +8,57 @@ import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.navigationBarsWithImePadding
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.google.accompanist.insets.ui.TopAppBar
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import com.lexwilliam.risuto.R
 import com.lexwilliam.risuto.model.UserAnimeListPresentation
 import com.lexwilliam.risuto.model.WatchStatusPresentation
-import com.lexwilliam.risuto.ui.component.ImeAvoidingBox
 import com.lexwilliam.risuto.ui.component.LoadingScreen
 import com.lexwilliam.risuto.ui.component.NetworkImage
-import com.lexwilliam.risuto.util.bottomNavGap
 import com.lexwilliam.risuto.util.intToCurrency
+import com.lexwilliam.risuto.util.watchStatusList
 import com.lexwilliam.risuto.util.watchStatusToString
 
 @ExperimentalFoundationApi
 @Composable
-fun ProfileScreen(
-    state: (ProfileContract.State),
-    onEventSent: (ProfileContract.Event) -> Unit,
+fun MyAnimeScreen(
+    state: (MyAnimeContract.State),
+    onEventSent: (MyAnimeContract.Event) -> Unit,
     navToDetail: (Int) -> Unit,
 ) {
+    var expanded by remember { mutableStateOf(false) }
+    var currentStatus by remember { mutableStateOf("All")}
+    var currentSortType by remember { mutableStateOf("By Last Updated") }
+    var currentOrderType by remember { mutableStateOf("Descending") }
     if(state.isLoading) {
         LoadingScreen()
     } else {
-        ProfileContent(
-            myAnimeList = state.animes,
+        MyAnimeContent(
+            myAnimeList = sortAnime(state.animes, currentSortType, currentOrderType),
             username = state.username,
+            expanded = expanded,
+            isExpanded = { expanded = it } ,
+            currentStatus = currentStatus,
+            onStatusChanged = { currentStatus = it },
+            currentSortType = currentSortType,
+            onSortTypeChanged = { currentSortType = it },
+            currentOrderType = currentOrderType,
+            onOrderTypeChanged = { currentOrderType = it },
+            isRefreshing = state.isRefreshing,
+            onEventSent = { onEventSent(it) },
             navToDetail = { navToDetail(it) }
         )
     }
@@ -53,26 +67,35 @@ fun ProfileScreen(
 
 @ExperimentalFoundationApi
 @Composable
-fun ProfileContent(
+fun MyAnimeContent(
     myAnimeList: List<UserAnimeListPresentation.Data>,
     username: String,
+    expanded: Boolean,
+    isExpanded: (Boolean) -> Unit,
+    currentStatus: String,
+    onStatusChanged: (String) -> Unit,
+    currentSortType: String,
+    onSortTypeChanged: (String) -> Unit,
+    currentOrderType: String,
+    onOrderTypeChanged: (String) -> Unit,
+    isRefreshing: Boolean,
+    onEventSent: (MyAnimeContract.Event) -> Unit,
     navToDetail: (Int) -> Unit
 ) {
-    Column(modifier = Modifier.navigationBarsWithImePadding().padding(bottom = 56.dp)) {
-        TopAppBar(
-            contentPadding = rememberInsetsPaddingValues(
-                insets = LocalWindowInsets.current.systemBars,
-                applyBottom = false,
-            ),
-            backgroundColor = MaterialTheme.colors.background,
-            contentColor = MaterialTheme.colors.secondary,
-            title = { Text("$username Anime List")},
-            actions = { Icon(imageVector = Icons.Default.Notifications, contentDescription = null)}
+    Column(modifier = Modifier
+        .navigationBarsWithImePadding()
+        .padding(bottom = 56.dp)) {
+        MyAnimeToolbar(
+            username = username,
+            onSortTypeChanged = { onSortTypeChanged(it) },
+            currentOrderType = currentOrderType,
+            onOrderTypeChanged = { onOrderTypeChanged(it) },
+            expanded = expanded,
+            isExpanded = { isExpanded(it) }
         )
-        var currentStatus by remember { mutableStateOf("All")}
-        ProfileTabRow(
+        MyAnimeTabRow(
             status = currentStatus,
-            setGroupBy = { currentStatus = it }
+            setGroupBy = { onStatusChanged(it) }
         )
         var filteredList: List<UserAnimeListPresentation.Data> = emptyList()
         when(currentStatus) {
@@ -83,14 +106,50 @@ fun ProfileContent(
             "On Hold" -> filteredList = myAnimeList.filter { it.listStatus.status == WatchStatusPresentation.OnHold }
             "Dropped" -> filteredList = myAnimeList.filter { it.listStatus.status == WatchStatusPresentation.Dropped }
         }
-        MyAnimeGridList(items = filteredList, navToDetail = { navToDetail(it) })
-        Box(modifier = Modifier.padding(40.dp))
-        ImeAvoidingBox()
+        MyAnimeGridList(items = filteredList, isRefreshing = isRefreshing, onEventSent = { onEventSent(it) }, navToDetail = { navToDetail(it) })
     }
 }
 
 @Composable
-fun ProfileTabRow(
+fun MyAnimeToolbar(
+    username: String,
+    expanded: Boolean,
+    isExpanded: (Boolean) -> Unit,
+    onSortTypeChanged: (String) -> Unit,
+    currentOrderType: String,
+    onOrderTypeChanged: (String) -> Unit
+) {
+    TopAppBar(
+        contentPadding = rememberInsetsPaddingValues(
+            insets = LocalWindowInsets.current.systemBars,
+            applyBottom = false,
+        ),
+        backgroundColor = MaterialTheme.colors.background,
+        contentColor = MaterialTheme.colors.secondary,
+        title = { Text("$username Anime List", style = MaterialTheme.typography.h6, fontWeight = FontWeight.Bold)},
+        actions = {
+            IconButton(onClick = { isExpanded(true) }) {
+                Icon(painter = painterResource(id = R.drawable.ic_baseline_filter_list_24), contentDescription = null, tint = MaterialTheme.colors.onBackground)
+            }
+            val sortTypes = listOf("By Status", "By Alphabetical", "By Score", "By Last Updated")
+            DropdownMenu(expanded = expanded, onDismissRequest = { isExpanded(false) }) {
+                sortTypes.forEach { type ->
+                    DropdownMenuItem(
+                        onClick = {
+                            onSortTypeChanged(type)
+                            isExpanded(false)
+                        }
+                    ) {
+                        Text(text = type)
+                    }
+                }
+            }
+        }
+    )
+}
+
+@Composable
+fun MyAnimeTabRow(
     status: String,
     setGroupBy: (String) -> Unit
 ) {
@@ -158,17 +217,26 @@ fun MyAnimeGrid(
 fun MyAnimeGridList(
     modifier: Modifier = Modifier,
     items: List<UserAnimeListPresentation.Data>,
+    isRefreshing: Boolean,
+    onEventSent: (MyAnimeContract.Event) -> Unit,
     navToDetail: (Int) -> Unit
 ) {
     if(items.isEmpty()) {
         NoAnimeScreen()
     } else {
-        LazyVerticalGrid(
-            modifier = modifier.padding(start = 16.dp),
-            cells = GridCells.Adaptive(minSize = 136.dp),
+        SwipeRefresh(
+            state = rememberSwipeRefreshState(isRefreshing),
+            onRefresh = {
+                onEventSent(MyAnimeContract.Event.RefreshList)
+            },
         ) {
-            items(items = items) { item ->
-                MyAnimeGrid(item = item, modifier = Modifier.padding(top = 16.dp, end = 16.dp), navToDetail = { navToDetail(it) })
+            LazyVerticalGrid(
+                modifier = modifier.padding(start = 16.dp),
+                cells = GridCells.Adaptive(minSize = 136.dp),
+            ) {
+                items(items = items) { item ->
+                    MyAnimeGrid(item = item, modifier = Modifier.padding(top = 16.dp, end = 16.dp), navToDetail = { navToDetail(it) })
+                }
             }
         }
     }
@@ -185,6 +253,30 @@ fun NoAnimeScreen() {
         ) {
             Icon(modifier = Modifier.size(80.dp), imageVector = Icons.Default.Warning, contentDescription = null, tint = Color.LightGray)
             Text(text = "No Anime Found", style = MaterialTheme.typography.h6, color = Color.LightGray)
+        }
+    }
+}
+
+fun sortAnime(
+    animes: List<UserAnimeListPresentation.Data>,
+    sortType: String,
+    orderType: String
+): List<UserAnimeListPresentation.Data> {
+    if (orderType == "Descending") {
+        return when (sortType) {
+            "By Status" -> animes.sortedBy { watchStatusList.indexOf(it.listStatus.status) }
+            "By Alphabetical" -> animes.sortedBy { it.node.title }
+            "By Score" -> animes.sortedByDescending { it.listStatus.score }
+            "By Last Update" -> animes.sortedByDescending { it.listStatus.updatedAt }
+            else -> animes
+        }
+    } else {
+        return when (sortType) {
+            "By Status" -> animes.sortedBy { watchStatusList.indexOf(it.listStatus.status) }
+            "By Alphabetical" -> animes.sortedBy { it.node.title }
+            "By Score" -> animes.sortedBy { it.listStatus.score }
+            "By Last Update" -> animes.sortedBy { it.listStatus.updatedAt }
+            else -> animes
         }
     }
 }

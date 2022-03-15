@@ -7,6 +7,7 @@ import com.lexwilliam.risuto.base.BaseViewModel
 import com.lexwilliam.risuto.mapper.AnimeMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -54,7 +55,14 @@ class SeasonViewModel @Inject constructor(
                 }
                 getSeason(event.year, event.season)
             }
-
+            is SeasonContract.Event.RefreshList -> {
+                viewModelScope.launch(errorHandler) {
+                    setState { copy(isRefreshing = true) }
+                    getSeason(event.year, event.season)
+                    delay(1000)
+                    setState { copy(isRefreshing = false) }
+                }
+            }
         }
     }
 

@@ -89,6 +89,7 @@ dependencies {
     implementation("com.google.accompanist:accompanist-coil:0.12.0")
     implementation("com.google.accompanist:accompanist-insets:0.24.3-alpha")
     implementation("com.google.accompanist:accompanist-insets-ui:0.24.3-alpha")
+    implementation("com.google.accompanist:accompanist-swiperefresh:0.24.3-alpha")
 
     implementation(Dependencies.AndroidX.legacySupport)
     implementation(Dependencies.jodaTime)

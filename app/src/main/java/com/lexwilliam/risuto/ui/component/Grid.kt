@@ -79,7 +79,7 @@ fun MediumGrid(
             horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             Icon(modifier = Modifier.size(14.dp), imageVector = Icons.Default.Star, contentDescription = null)
-            Text(text = score.toString(), style = MaterialTheme.typography.caption)
+            Text(text = if(score != -1.0) score.toString() else "N/A", style = MaterialTheme.typography.caption)
             Icon(modifier = Modifier.size(14.dp), imageVector = Icons.Default.Person, contentDescription = null)
             Text(text = intToCurrency(members), style = MaterialTheme.typography.caption)
         }

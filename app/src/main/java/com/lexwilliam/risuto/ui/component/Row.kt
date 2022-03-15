@@ -45,6 +45,14 @@ fun RowItem(
                 style = MaterialTheme.typography.subtitle1,
                 fontWeight = FontWeight.Bold
             )
+            var genresStr = ""
+            item.genres.forEach { genresStr += "${it.name} " }
+            Text(
+                text = genresStr,
+                style = MaterialTheme.typography.caption,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colors.surface
+            )
             Text(
                 text = item.type + " (" + item.episodes + ")",
                 style = MaterialTheme.typography.caption
@@ -53,20 +61,16 @@ fun RowItem(
                 modifier = Modifier.requiredHeight(IntrinsicSize.Min),
                 horizontalArrangement = Arrangement.spacedBy(4.dp)
             ) {
-                Icon(Icons.Default.Star, contentDescription = null)
+                Icon(modifier = Modifier.size(14.dp), imageVector = Icons.Default.Star, contentDescription = null)
                 Text(text = item.score.toString(), style = MaterialTheme.typography.caption)
-                Icon(Icons.Default.Person, contentDescription = null)
+                Icon(modifier = Modifier.size(14.dp), imageVector = Icons.Default.Person, contentDescription = null)
                 Text(text = intToCurrency(item.members), style = MaterialTheme.typography.caption)
             }
-            Text(
-                text = item.synopsis,
-                maxLines = 5,
-                overflow = TextOverflow.Ellipsis,
-                style = MaterialTheme.typography.overline
-            )
         }
     }
 }
+
+
 
 //@Preview
 //@Composable

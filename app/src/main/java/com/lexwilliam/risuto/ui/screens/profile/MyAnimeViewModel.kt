@@ -7,18 +7,19 @@ import com.lexwilliam.risuto.base.BaseViewModel
 import com.lexwilliam.risuto.mapper.AnimeMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class ProfileViewModel
+class MyAnimeViewModel
 @Inject constructor(
     private val getUserInfo: GetUserInfo,
     private val getUserAnimeList: GetUserAnimeList,
     private val animeMapper: AnimeMapper
-) : BaseViewModel<ProfileContract.Event, ProfileContract.State, ProfileContract.Effect>() {
+) : BaseViewModel<MyAnimeContract.Event, MyAnimeContract.State, MyAnimeContract.Effect>() {
 
     private val errorHandler = CoroutineExceptionHandler { _, exception ->
         Timber.e(exception)
@@ -30,8 +31,8 @@ class ProfileViewModel
         }
     }
 
-    override fun setInitialState(): ProfileContract.State {
-        return ProfileContract.State(
+    override fun setInitialState(): MyAnimeContract.State {
+        return MyAnimeContract.State(
             animes = emptyList(),
             username = "",
             isLoading = true,
@@ -39,7 +40,18 @@ class ProfileViewModel
         )
     }
 
-    override fun handleEvents(event: ProfileContract.Event) {
+    override fun handleEvents(event: MyAnimeContract.Event) {
+        when(event) {
+            is MyAnimeContract.Event.RefreshList -> {
+                viewModelScope.launch(errorHandler) {
+                    setState { copy(isRefreshing = true) }
+                    getUserInfo()
+                    getUserAnimeList()
+                    delay(2000)
+                    setState { copy(isRefreshing = false) }
+                }
+            }
+        }
     }
 
     init {

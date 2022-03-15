@@ -38,6 +38,8 @@ import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.navigationBarsWithImePadding
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.google.accompanist.insets.ui.TopAppBar
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.lexwilliam.risuto.model.SearchHistoryPresentation
 import com.lexwilliam.risuto.model.AnimePresentation
 import com.lexwilliam.risuto.model.ShortAnimePresentation
@@ -47,9 +49,7 @@ import com.lexwilliam.risuto.ui.component.RowItem
 import com.lexwilliam.risuto.ui.component.SmallGrid
 import com.lexwilliam.risuto.ui.theme.RisutoTheme
 import com.lexwilliam.risuto.util.FakeItems
-import com.lexwilliam.risuto.util.bottomNavGap
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
 import timber.log.Timber
 
 @ExperimentalFoundationApi
@@ -99,6 +99,8 @@ fun SearchScreen(
         animes = state.searchAnimesPaging,
         searchHistory = state.searchHistory,
         animeHistory = state.animeHistory,
+        isLoading = state.isLoading,
+        isRefreshing = state.isRefreshing,
         onEventSent = { onEventSent(it) },
         keyboardController = keyboardController,
         cursorColor = cursorColor,
@@ -122,6 +124,8 @@ fun SearchContent(
     animes: Flow<PagingData<AnimePresentation.Data>>?,
     searchHistory: List<SearchHistoryPresentation>,
     animeHistory: List<ShortAnimePresentation>,
+    isLoading: Boolean,
+    isRefreshing: Boolean,
     onEventSent: (SearchContract.Event) -> Unit,
 
     keyboardController: SoftwareKeyboardController?,
@@ -160,6 +164,8 @@ fun SearchContent(
             animes = animes,
             searchHistory = searchHistory,
             animeHistory = animeHistory,
+            isLoading = isLoading,
+            isRefreshing = isRefreshing,
             onEventSent = { onEventSent(it) },
             keyboardController = keyboardController,
             onCursorChanged = { onCursorChanged(it) },
@@ -183,6 +189,8 @@ fun SearchView(
     animes: Flow<PagingData<AnimePresentation.Data>>?,
     searchHistory: List<SearchHistoryPresentation>,
     animeHistory: List<ShortAnimePresentation>,
+    isLoading: Boolean,
+    isRefreshing: Boolean,
     onEventSent: (SearchContract.Event) -> Unit,
 
     keyboardController: SoftwareKeyboardController?,
@@ -200,7 +208,7 @@ fun SearchView(
     when(resultState){
         ResultType.FullResult -> {
             keyboardController?.hide()
-            ResultView(animes = animes, navToDetail = { navToDetail(it) })
+            ResultView(animes = animes, query = query, genres = genres, isRefreshing = isRefreshing, onEventSent = { onEventSent(it) }, navToDetail = { navToDetail(it) })
         }
         ResultType.Result -> {
             QueryView(
@@ -252,40 +260,73 @@ enum class ResultType{
 @Composable
 fun ResultView(
     animes: Flow<PagingData<AnimePresentation.Data>>?,
+    query: String,
+    genres: String,
+    isRefreshing: Boolean,
+    onEventSent: (SearchContract.Event) -> Unit,
     navToDetail: (Int) -> Unit
 ) {
     if(animes != null) {
         val lazyAnimeList = animes.collectAsLazyPagingItems()
-        LazyColumn {
-            items(lazyAnimeList) { anime ->
-                RowItem(modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp), item = anime!!, navToDetail = { navToDetail(anime.mal_id) })
+        SwipeRefresh(
+            state = rememberSwipeRefreshState(isRefreshing),
+            onRefresh = {
+                onEventSent(
+                    SearchContract.Event.RefreshPaging(
+                        q = query,
+                        type = null,
+                        score = null,
+                        minScore = null,
+                        maxScore = null,
+                        status = null,
+                        rating = null,
+                        sfw = null,
+                        genres = if(genres != "-1") genres else null,
+                        genresExclude = null,
+                        orderBy = null,
+                        sort = null,
+                        letter = null,
+                        producer = null
+                    )
+                )
             }
-            lazyAnimeList.apply {
-                when {
-                    loadState.refresh is LoadState.Loading -> { }
-                    loadState.append is LoadState.Loading -> { }
-                    loadState.refresh is LoadState.Error -> {
-                        val e = lazyAnimeList.loadState.refresh as LoadState.Error
-                        item {
-                            Text(
-                                text = e.error.localizedMessage!!,
-                                modifier = Modifier.fillParentMaxSize()
-                            )
+        ) {
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                contentPadding = PaddingValues(vertical = 16.dp)
+            ) {
+                items(lazyAnimeList) { anime ->
+                    RowItem(modifier = Modifier.padding(start = 16.dp, end = 16.dp), item = anime!!, navToDetail = { navToDetail(anime.mal_id) })
+                }
+                lazyAnimeList.apply {
+                    when {
+                        loadState.refresh is LoadState.Loading -> {
+                            item { LoadingScreen() }
                         }
-                    }
-                    loadState.append is LoadState.Error -> {
-                        val e = lazyAnimeList.loadState.append as LoadState.Error
-                        item {
-                            Text(
-                                text = e.error.localizedMessage!!
-                            )
+                        loadState.append is LoadState.Loading -> {
+                            item { LoadingScreen() }
+                        }
+                        loadState.refresh is LoadState.Error -> {
+                            val e = lazyAnimeList.loadState.refresh as LoadState.Error
+                            item {
+                                Text(
+                                    text = e.error.localizedMessage!!,
+                                    modifier = Modifier.fillParentMaxSize()
+                                )
+                            }
+                        }
+                        loadState.append is LoadState.Error -> {
+                            val e = lazyAnimeList.loadState.append as LoadState.Error
+                            item {
+                                Text(
+                                    text = e.error.localizedMessage!!
+                                )
+                            }
                         }
                     }
                 }
             }
         }
-    } else {
-        LoadingScreen()
     }
 }
 
@@ -302,7 +343,7 @@ fun HistoryView(
     Column(
         modifier = Modifier
             .padding(top = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         if(animeHistory.isNotEmpty()) {
             Row(modifier = Modifier.fillMaxWidth()) {
@@ -497,12 +538,14 @@ fun QueryListWithDelete(
     onSelectItem: (SearchHistoryPresentation) -> Unit,
     onDeleteItem: (String) -> Unit
 ) {
-    Column {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
         items.forEach { item ->
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 4.dp, horizontal = 16.dp)
+                    .padding(horizontal = 16.dp)
                     .height(40.dp)
                     .clickable { onSelectItem(item) },
                 verticalAlignment = Alignment.CenterVertically
@@ -554,20 +597,20 @@ fun HistoryHorizontalGridList(
     }
 }
 
-@Preview
-@Composable
-fun ResultPreview() {
-    RisutoTheme {
-        Box(
-            Modifier.background(MaterialTheme.colors.background)
-        ) {
-            ResultView(
-                animes = flowOf(PagingData.from(listOf(FakeItems.animeData, FakeItems.animeData, FakeItems.animeData, FakeItems.animeData))),
-                navToDetail = {}
-            )
-        }
-        }
-    }
+//@Preview
+//@Composable
+//fun ResultPreview() {
+//    RisutoTheme {
+//        Box(
+//            Modifier.background(MaterialTheme.colors.background)
+//        ) {
+//            ResultView(
+//                animes = flowOf(PagingData.from(listOf(FakeItems.animeData, FakeItems.animeData, FakeItems.animeData, FakeItems.animeData))),
+//                navToDetail = {}
+//            )
+//        }
+//        }
+//    }
 
 
 @Preview

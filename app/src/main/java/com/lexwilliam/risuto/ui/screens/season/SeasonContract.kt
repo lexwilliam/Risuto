@@ -8,12 +8,14 @@ import com.lexwilliam.risuto.model.AnimePresentation
 class SeasonContract {
     sealed class Event : ViewEvent {
         data class SetSeason(val season: String, val year: Int): Event()
+        data class RefreshList(val season: String, val year: Int): Event()
     }
 
     data class State(
         val season: String,
         val year: Int,
         val seasonAnime: List<AnimePresentation.Data>,
+        val isRefreshing: Boolean = false,
         val isLoading: Boolean = false,
         val isError: Boolean = false
     ) : ViewState

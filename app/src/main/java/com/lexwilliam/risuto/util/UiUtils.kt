@@ -26,7 +26,7 @@ data class WatchStatusUi(val watchStatus: WatchStatusPresentation, val text: Str
 
 val bottomNavGap = 56.dp
 
-val watchStatusStrList = listOf("Plan To Watch", "Completed", "Watching", "Dropped", "On Hold")
+val watchStatusStrList = listOf("Watching", "On Hold", "Plan To Watch", "Completed", "Dropped")
 
 fun toMalFormat(text: String): String =
     when(text) {
@@ -49,11 +49,11 @@ fun toTextFormat(text: String): String =
     }
 
 val watchStatusList = listOf(
+    WatchStatusPresentation.Watching,
+    WatchStatusPresentation.OnHold,
     WatchStatusPresentation.PlanToWatch,
     WatchStatusPresentation.Completed,
-    WatchStatusPresentation.Watching,
-    WatchStatusPresentation.Dropped,
-    WatchStatusPresentation.OnHold
+    WatchStatusPresentation.Dropped
 )
 
 fun watchStatusToString(watchStatus: WatchStatusPresentation): String {
