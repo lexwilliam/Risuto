@@ -349,13 +349,13 @@ fun AnimeDetail(
             .fillMaxWidth()) {
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(text = "RANK", style = MaterialTheme.typography.overline, fontWeight = FontWeight.Bold)
-                Text(text = "#${animeDetail.rank}", style = MaterialTheme.typography.h5, fontWeight = FontWeight.SemiBold)
+                Text(text = if(animeDetail.rank != -1) "#${animeDetail.rank}" else "N/A", style = MaterialTheme.typography.h5, fontWeight = FontWeight.SemiBold)
             }
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(text = "RATING", style = MaterialTheme.typography.overline, fontWeight = FontWeight.Bold)
                 Row {
-                    Text(text = animeDetail.mean.toString(), style = MaterialTheme.typography.h5, fontWeight = FontWeight.SemiBold)
-                    Text(modifier = Modifier.align(Alignment.Bottom), text = "/10", style = MaterialTheme.typography.subtitle1, fontWeight = FontWeight.SemiBold)
+                    Text(text = if(animeDetail.mean != -1.0) "#${animeDetail.mean}" else "N/A", style = MaterialTheme.typography.h5, fontWeight = FontWeight.SemiBold)
+                    Text(modifier = Modifier.align(Alignment.Bottom), text = if(animeDetail.mean != -1.0) "/10" else "", style = MaterialTheme.typography.subtitle1, fontWeight = FontWeight.SemiBold)
                 }
             }
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(8.dp)) {
