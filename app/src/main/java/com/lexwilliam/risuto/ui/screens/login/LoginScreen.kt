@@ -2,22 +2,26 @@ package com.lexwilliam.risuto.ui.screens.login
 
 import android.content.Intent
 import android.net.Uri
-import android.webkit.WebView
-import android.webkit.WebViewClient
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
 import com.google.accompanist.insets.navigationBarsWithImePadding
-import com.lexwilliam.risuto.ui.component.ImeAvoidingBox
+import com.lexwilliam.risuto.R
 import com.lexwilliam.risuto.ui.component.StatusBarSpacer
+import com.lexwilliam.risuto.ui.theme.RisutoTheme
 import timber.log.Timber
 
 @Composable
@@ -71,22 +75,27 @@ fun LoginContent(
     Column(
         modifier = Modifier
             .navigationBarsWithImePadding()
-            .fillMaxSize()
-            .padding(16.dp),
+            .fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        StatusBarSpacer()
-        Spacer(modifier = Modifier.padding(40.dp))
-        Text(text = "Risuto", style = MaterialTheme.typography.h3)
-        Box(
-            modifier = Modifier.fillMaxHeight(),
-            contentAlignment = Alignment.BottomCenter
+        Image(
+            modifier = Modifier
+                .fillMaxWidth(),
+            contentScale = ContentScale.FillWidth,
+            painter = painterResource(id = R.drawable.anime),
+            contentDescription = null
+        )
+        Column(
+            modifier = Modifier.padding(horizontal = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+            Text(text = "Let's Get Started", style = MaterialTheme.typography.h2, fontWeight = FontWeight.Black)
+            Text(text = "Start exploring animes from MyAnimeList database", style = MaterialTheme.typography.body1, color = Color.Gray, fontWeight = FontWeight.SemiBold)
             Button(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = { onEventSent(LoginContract.Event.RedirectToAuth) }
             ) {
-                Text(text = "Sign in with MyAnimeList")
+                Text(text = "Sign in with MyAnimeList", style = MaterialTheme.typography.button, fontWeight = FontWeight.SemiBold)
             }
         }
     }
@@ -97,11 +106,13 @@ fun LoginContent(
 @Preview
 @Composable
 fun LoginScreenPreview() {
-    LoginContent(
-        authCode = "",
-        authTokenLink = "",
-        oAuthState = OAuthState.Idle,
-        onEventSent = {},
-        navToHome = {}
-    )
+    RisutoTheme {
+        LoginContent(
+            authCode = "",
+            authTokenLink = "",
+            oAuthState = OAuthState.Idle,
+            onEventSent = {},
+            navToHome = {}
+        )
+    }
 }
