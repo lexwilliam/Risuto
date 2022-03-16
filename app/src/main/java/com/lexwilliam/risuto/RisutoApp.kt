@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -91,7 +92,7 @@ fun RisutoAppContent(
         BottomNavItem(Icons.Filled.Home, RisutoHomeScreen.route, "Home"),
         BottomNavItem(Icons.Filled.Search, RisutoSearchHomeScreen.route, "Search"),
         BottomNavItem(Icons.Default.DateRange, RisutoSeasonScreen.route, "Season"),
-        BottomNavItem(Icons.Filled.Person, RisutoMyAnimeScreen.route, "Profile")
+        BottomNavItem(Icons.Filled.Person, RisutoMyAnimeScreen.route, "My List")
     )
 
     val bottomNavException = listOf(
@@ -117,8 +118,8 @@ fun RisutoAppContent(
                 ) {
                     bottomNavIcons.forEach { screen ->
                         BottomNavigationItem(
-                            icon = { Icon(screen.icon, contentDescription = null) },
-                            label = { Text(text = screen.description) },
+                            icon = { Icon(imageVector = screen.icon, contentDescription = null) },
+                            label = { Text(text = screen.description, fontWeight = FontWeight.SemiBold) },
                             selected = currentRoute?.hierarchy?.any { it.route == screen.route } == true,
                             onClick = {
                                 navController.navigate(screen.route) {
@@ -126,7 +127,8 @@ fun RisutoAppContent(
                                     launchSingleTop = true
                                     restoreState = true
                                 }
-                            }
+                            },
+                            selectedContentColor = MaterialTheme.colors.onBackground
                         )
                     }
                 }

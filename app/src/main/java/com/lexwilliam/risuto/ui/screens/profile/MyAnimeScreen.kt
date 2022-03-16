@@ -1,6 +1,7 @@
 package com.lexwilliam.risuto.ui.screens.profile
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
@@ -125,14 +126,19 @@ fun MyAnimeToolbar(
             applyBottom = false,
         ),
         backgroundColor = MaterialTheme.colors.background,
-        contentColor = MaterialTheme.colors.secondary,
+        contentColor = MaterialTheme.colors.onBackground,
         title = { Text("$username Anime List", style = MaterialTheme.typography.h6, fontWeight = FontWeight.Bold)},
         actions = {
             IconButton(onClick = { isExpanded(true) }) {
-                Icon(painter = painterResource(id = R.drawable.ic_baseline_filter_list_24), contentDescription = null, tint = MaterialTheme.colors.onBackground)
+                Icon(painter = painterResource(id = R.drawable.ic_baseline_filter_list_24), contentDescription = null)
             }
             val sortTypes = listOf("By Status", "By Alphabetical", "By Score", "By Last Updated")
-            DropdownMenu(expanded = expanded, onDismissRequest = { isExpanded(false) }) {
+            DropdownMenu(
+                modifier = Modifier
+                    .background(MaterialTheme.colors.background),
+                expanded = expanded,
+                onDismissRequest = { isExpanded(false) }
+            ) {
                 sortTypes.forEach { type ->
                     DropdownMenuItem(
                         onClick = {

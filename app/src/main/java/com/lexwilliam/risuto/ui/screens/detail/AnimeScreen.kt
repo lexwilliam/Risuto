@@ -354,7 +354,7 @@ fun AnimeDetail(
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(text = "RATING", style = MaterialTheme.typography.overline, fontWeight = FontWeight.Bold)
                 Row {
-                    Text(text = if(animeDetail.mean != -1.0) "#${animeDetail.mean}" else "N/A", style = MaterialTheme.typography.h5, fontWeight = FontWeight.SemiBold)
+                    Text(text = if(animeDetail.mean != -1.0) "${animeDetail.mean}" else "N/A", style = MaterialTheme.typography.h5, fontWeight = FontWeight.SemiBold)
                     Text(modifier = Modifier.align(Alignment.Bottom), text = if(animeDetail.mean != -1.0) "/10" else "", style = MaterialTheme.typography.subtitle1, fontWeight = FontWeight.SemiBold)
                 }
             }

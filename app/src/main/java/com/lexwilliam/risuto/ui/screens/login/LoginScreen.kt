@@ -90,7 +90,7 @@ fun LoginContent(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Text(text = "Let's Get Started", style = MaterialTheme.typography.h2, fontWeight = FontWeight.Black)
-            Text(text = "Start exploring animes from MyAnimeList database", style = MaterialTheme.typography.body1, color = Color.Gray, fontWeight = FontWeight.SemiBold)
+            Text(text = "Start exploring and tracking animes from MyAnimeList Database", style = MaterialTheme.typography.body1, color = Color.Gray, fontWeight = FontWeight.SemiBold)
             Button(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = { onEventSent(LoginContract.Event.RedirectToAuth) }

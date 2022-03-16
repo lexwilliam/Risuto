@@ -12,10 +12,10 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import timber.log.Timber
 
 private val DarkColorPalette = darkColors(
-    primary = bluePrimary,
-    primaryVariant = blueLight,
-    secondary = Color.White,
-    secondaryVariant = Color.White,
+    primary = primary,
+    primaryVariant = primaryVariant,
+    secondary = secondary,
+    secondaryVariant = secondaryVariant,
     background = Color.Black,
     surface = Gray600,
     error = redLight,
@@ -23,13 +23,13 @@ private val DarkColorPalette = darkColors(
 )
 
 private val LightColorPalette = lightColors(
-    primary = bluePrimary,
-    primaryVariant = blueLight,
-    secondary = Color.Black,
-    secondaryVariant = Color.White,
+    primary = primary,
+    primaryVariant = primaryVariant,
+    secondary = secondary,
+    secondaryVariant = secondaryVariant,
     background = Color.White,
     surface = Gray300,
-    error = redDark
+    error = redDark,
 )
 
 @Composable

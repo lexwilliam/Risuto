@@ -90,6 +90,7 @@ dependencies {
     implementation("com.google.accompanist:accompanist-insets:0.24.3-alpha")
     implementation("com.google.accompanist:accompanist-insets-ui:0.24.3-alpha")
     implementation("com.google.accompanist:accompanist-swiperefresh:0.24.3-alpha")
+    implementation("androidx.core:core-splashscreen:1.0.0-beta01")
 
     implementation(Dependencies.AndroidX.legacySupport)
     implementation(Dependencies.jodaTime)

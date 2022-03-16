@@ -9,6 +9,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.graphics.Color
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.google.accompanist.insets.ProvideWindowInsets
@@ -27,6 +28,7 @@ class MainActivity : AppCompatActivity() {
     @ExperimentalFoundationApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        installSplashScreen()
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
             RisutoTheme {
