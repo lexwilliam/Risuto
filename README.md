@@ -1,8 +1,8 @@
 # Risuto
 
-Risuto is my first android application that i build using Jetpack Compose which is easy to use and makes everything faster to develop.
-The reason i build this app is to learn from the basics (ex: caching and rest api) to advanced things like dependency injection, multi-module structure, etc.
-And also because althrogh i really like the website design, i didn't really like the official mal app ui design. So i want to make this app as beautiful as possible
+Risuto is my first android application that i build using Jetpack Compose which is easy to use and makes everything faster to develop.\n
+The reason i build this app is to learn from the basics (ex: caching and rest api) to advanced things like dependency injection, multi-module structure, etc.\n
+And also because althrogh i really like the website design, i didn't really like the official mal app ui design. So i want to make this app as beautiful as possible. \n
 All of the anime data comes from [MyAnimeList](https://myanimelist.net/) for anime detail and authentication with MAL account and using [JikanAPI](https://jikan.moe/) to call more data from MyAnimeList Website
 
 # Preview
