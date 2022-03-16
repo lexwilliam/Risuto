@@ -8,6 +8,7 @@ All of the anime data comes from [MyAnimeList](https://myanimelist.net/) for ani
 # Preview
 <br><img src= "readme/home.png" width="240"></img> <img src= "readme/seachhome.png" width="240"></img> <img src= "readme/login.png" width="240"></img> <br>
 <br><img src= "readme/season.png" width="240"></img> <img src= "readme/myanime.png" width="240"></img> <img src= "readme/detail.png" width="240"></img> <br>
+Also available in Light Mode
 
 # Project Structure
 
