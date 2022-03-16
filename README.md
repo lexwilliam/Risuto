@@ -22,5 +22,10 @@ The libraries i use are:
 - [Room](https://developer.android.com/jetpack/androidx/releases/room?hl=id)
 - [Retrofit](https://square.github.io/retrofit/)
 - [Moshi](https://github.com/square/moshi)
+- [Paging3](https://developer.android.com/jetpack/androidx/releases/paging)
 - [Coil](https://coil-kt.github.io/coil/getting_started/)
-- [Accompanist-Coil](https://google.github.io/accompanist/coil/) For coil image loading integration for jetpack compose
+- [Accompanist-Coil](https://google.github.io/accompanist/coil/)
+- [Accompanist-Insets](https://google.github.io/accompanist/insets/)
+- [Accompanist-FlowLayout](https://google.github.io/accompanist/flowlayout/)
+- [Accompanist-SwipeRefresh](https://google.github.io/accompanist/swiperefresh/)
+- [Splash-Screen](https://developer.android.com/guide/topics/ui/splash-screen)
