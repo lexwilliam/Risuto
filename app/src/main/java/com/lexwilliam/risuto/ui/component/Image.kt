@@ -1,14 +1,14 @@
 package com.lexwilliam.risuto.ui.component
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import com.google.accompanist.coil.rememberCoilPainter
+import androidx.compose.ui.platform.LocalContext
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 
 @Composable
 fun NetworkImage(
@@ -16,15 +16,15 @@ fun NetworkImage(
     imageUrl: String
 ) {
     if (imageUrl.isNotEmpty()) {
-        Image(
-            modifier = modifier
-                .background(MaterialTheme.colors.surface),
-            contentScale = ContentScale.Crop,
-            painter = rememberCoilPainter(
-                request = imageUrl.replace("\\\\", "/"),
-                fadeIn = true
-            ),
-            contentDescription = "Anime Picture"
+
+        AsyncImage(
+            modifier = modifier,
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(imageUrl.replace("\\\\", "/"))
+                .crossfade(true)
+                .build(),
+            contentDescription = null,
+            contentScale = ContentScale.Crop
         )
     } else {
         Box(

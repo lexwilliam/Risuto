@@ -4,28 +4,14 @@ object Dependencies {
     object AndroidX {
         const val fragmentKtx =
             "androidx.fragment:fragment-ktx:${Versions.fragment}"
-        const val coreKtx =
-            "androidx.core:core-ktx:${Versions.core}"
-        const val constraintlayout =
-            "androidx.constraintlayout:constraintlayout:${Versions.constraintLayout}"
         const val legacySupport =
             "androidx.legacy:legacy-support-v4:${Versions.legacySupportV4}"
-        const val lifecycleLivedataKtx =
-            "androidx.lifecycle:lifecycle-livedata-ktx:${Versions.lifecycleLivedataKtx}"
-        const val lifecycleCompiler =
-            "androidx.lifecycle:lifecycle-compiler:${Versions.lifecycleLivedataKtx}"
-        const val archViewModel =
-            "androidx.lifecycle:lifecycle-viewmodel:${Versions.lifecycleLivedataKtx}"
+        const val coreKtx =
+            "androidx.core:core-ktx:${Versions.core}"
         const val archComponents =
             "androidx.lifecycle:lifecycle-extensions:${Versions.lifecycleLivedataKtx}"
         const val browser = "androidx.browser:browser:${Versions.browser}"
-
-        object Navigation {
-            const val fragmentKtx =
-                "androidx.navigation:navigation-fragment-ktx:${Versions.navigation}"
-            const val uiKtx =
-                "androidx.navigation:navigation-ui-ktx:${Versions.navigation}"
-        }
+        const val splashScreen = "androidx.core:core-splashscreen:${Versions.swipeRefresh}"
 
         object Compose {
             const val ui = "androidx.compose.ui:ui:${Versions.compose}"
@@ -40,6 +26,7 @@ object Dependencies {
                 "androidx.navigation:navigation-compose:${Versions.composeNavigation}"
             const val viewModel =
                 "androidx.lifecycle:lifecycle-viewmodel-compose:${Versions.composeViewModel}"
+            const val coil = "io.coil-kt:coil-compose:${Versions.coil}"
         }
     }
 
@@ -48,19 +35,6 @@ object Dependencies {
 
     const val kotlinReflect =
         "org.jetbrains.kotlin:kotlin-reflect:1.5.31"
-
-    object Dagger {
-        const val dagger =
-            "com.google.dagger:dagger:${Versions.dagger}"
-        const val daggerAndroid =
-            "com.google.dagger:dagger-android:${Versions.dagger}"
-        const val daggerAndroidSupport =
-            "com.google.dagger:dagger-android-support:${Versions.dagger}"
-        const val daggerCompiler =
-            "com.google.dagger:dagger-compiler:${Versions.dagger}"
-        const val daggerAndroidProcessor =
-            "com.google.dagger:dagger-android-processor:${Versions.dagger}"
-    }
 
     object Hilt {
         const val hiltAndroid =
@@ -99,7 +73,16 @@ object Dependencies {
         const val compose = "androidx.paging:paging-compose:1.0.0-alpha14"
     }
 
-    const val flowLayout = "com.google.accompanist:accompanist-flowlayout:${Versions.flowLayout}"
+    object Accompanist {
+        const val flowLayout = "com.google.accompanist:accompanist-flowlayout:${Versions.accompanist}"
+        const val insets = "com.google.accompanist:accompanist-insets:${Versions.accompanist}"
+        const val insetsUi = "com.google.accompanist:accompanist-insets-ui:${Versions.accompanist}"
+        const val swipeRefresh = "com.google.accompanist:accompanist-swiperefresh:${Versions.accompanist}"
+        const val pager = "com.google.accompanist:accompanist-pager:${Versions.accompanist}"
+        const val pagerIndicator = "com.google.accompanist:accompanist-pager-indicators:${Versions.accompanist}"
+    }
+
+    const val coil = "io.coil-kt:coil:${Versions.coil}"
 
     const val lottie = "com.airbnb.android:lottie:${Versions.lottie}"
     const val lottieCompose = "com.airbnb.android:lottie-compose:${Versions.lottieCompose}"
@@ -108,8 +91,6 @@ object Dependencies {
 
     const val okHttpLoggingInterceptor =
         "com.squareup.okhttp3:logging-interceptor:${Versions.okhttpLoggingInterceptor}"
-
-    const val coilCompose = "io.coil-kt:coil-compose:${Versions.coil}"
 
     const val jodaTime = "joda-time:joda-time:${Versions.jodaTime}"
 
