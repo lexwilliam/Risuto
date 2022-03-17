@@ -2,8 +2,6 @@ package com.lexwilliam.risuto.ui.screens.season
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.BasicText
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
@@ -13,22 +11,29 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.capitalize
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.lerp
 import com.google.accompanist.insets.navigationBarsWithImePadding
-import com.lexwilliam.risuto.R
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.calculateCurrentOffsetForPage
+import com.google.accompanist.pager.rememberPagerState
 import com.lexwilliam.risuto.model.AnimePresentation
 import com.lexwilliam.risuto.model.SeasonListPresentation
 import com.lexwilliam.risuto.ui.component.*
-import com.lexwilliam.risuto.ui.screens.detail.AnimeContract
 import com.lexwilliam.risuto.ui.theme.RisutoTheme
 import com.lexwilliam.risuto.util.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.*
+import kotlin.math.absoluteValue
 
 @ExperimentalMaterialApi
 @ExperimentalComposeUiApi
@@ -82,6 +87,7 @@ fun SeasonScreen(
     }
 }
 
+@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun SeasonMenu(
     season: String,
@@ -90,8 +96,8 @@ fun SeasonMenu(
     onEventSent: (SeasonContract.Event) -> Unit,
     onDoneClicked: () -> Unit
 ) {
-    var season by remember { mutableStateOf(season) }
-    var year by remember { mutableStateOf(year) }
+    var _season by remember { mutableStateOf(season) }
+    var _year by remember { mutableStateOf(year) }
 
     Column(
         modifier = Modifier
@@ -106,14 +112,36 @@ fun SeasonMenu(
             fontWeight = FontWeight.Bold
         )
         Text(text = "Season", style = MaterialTheme.typography.subtitle1, fontWeight = FontWeight.Bold)
-        ChipGroup(texts = allSeason, selectedText = season.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }, onSelectedTextChanged = { season = allSeason[it] })
+        ChipGroup(texts = allSeason, selectedText = _season.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }, onSelectedTextChanged = { _season = allSeason[it] })
         Text(text = "Year", style = MaterialTheme.typography.subtitle1, fontWeight = FontWeight.Bold)
+        Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+            Box(
+                modifier = Modifier
+                    .size(width = 56.dp, height = 28.dp)
+                    .clip(MaterialTheme.shapes.small)
+                    .background(MaterialTheme.colors.surface)
+            )
+            val pagerState = rememberPagerState()
+            HorizontalPager(
+                modifier = Modifier.fillMaxWidth(),
+                state = pagerState,
+                contentPadding = PaddingValues(horizontal = 140.dp),
+                count = seasonList.data.size
+            ) { page ->
+                Text(text = seasonList.data[page].year.toString())
+            }
+            LaunchedEffect(pagerState) {
+                pagerState.scrollToPage(seasonList.data.map { it.year }.indexOf(_year))
+            }
+            _year = seasonList.data[pagerState.currentPage].year
+
+        }
         Button(
             modifier = Modifier
                 .fillMaxWidth(),
-            enabled = (season != "" && year != -1),
+            enabled = (_season != "" && _year != -1),
             onClick = {
-                onEventSent(SeasonContract.Event.SetSeason(season, year))
+                onEventSent(SeasonContract.Event.SetSeason(_season, _year))
                 onDoneClicked()
             }
         ) {

@@ -22,6 +22,7 @@ object Dependencies {
                 "androidx.compose.runtime:runtime-livedata:${Versions.compose}"
             const val material = "androidx.compose.material:material:${Versions.compose}"
             const val uiTooling = "androidx.compose.ui:ui-tooling:${Versions.compose}"
+            const val uiUtil = "androidx.compose.ui:ui-util:${Versions.compose}"
             const val navigation =
                 "androidx.navigation:navigation-compose:${Versions.composeNavigation}"
             const val viewModel =

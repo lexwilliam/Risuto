@@ -4,7 +4,7 @@ import com.lexwilliam.risuto.base.ViewEvent
 import com.lexwilliam.risuto.base.ViewSideEffect
 import com.lexwilliam.risuto.base.ViewState
 
-class RisutoContract {
+class MainContract {
     sealed class Event : ViewEvent {
         data class SetupOAuth(val refreshToken: String?, val expiresIn: Long): Event()
     }

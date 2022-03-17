@@ -6,26 +6,20 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.MaterialTheme
-import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.ExperimentalComposeUiApi
-import androidx.compose.ui.graphics.Color
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.google.accompanist.insets.ProvideWindowInsets
+import com.lexwilliam.risuto.ui.RisutoApp
 import com.lexwilliam.risuto.ui.theme.RisutoTheme
 import com.lexwilliam.risuto.util.Constants
 import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.android.lifecycle.HiltViewModel
-import timber.log.Timber
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private var authCode: String? = null
-    private val viewModel: RisutoAppViewModel by viewModels()
+    private val viewModel: MainViewModel by viewModels()
 
     @ExperimentalMaterialApi
     @ExperimentalComposeUiApi

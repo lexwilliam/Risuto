@@ -13,11 +13,11 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class RisutoAppViewModel @Inject constructor(
+class MainViewModel @Inject constructor(
     private val getRefreshTokenFromCache: GetRefreshTokenFromCache,
     private val getExpiresInFromCache: GetExpiresInFromCache,
     private val setRefreshAccessToken: SetRefreshToken
-): BaseViewModel<RisutoContract.Event, RisutoContract.State, RisutoContract.Effect>() {
+): BaseViewModel<MainContract.Event, MainContract.State, MainContract.Effect>() {
 
     private val errorHandler = CoroutineExceptionHandler { _, exception ->
         Timber.e(exception)
@@ -29,14 +29,14 @@ class RisutoAppViewModel @Inject constructor(
         }
     }
 
-    override fun setInitialState(): RisutoContract.State {
-        return RisutoContract.State(
+    override fun setInitialState(): MainContract.State {
+        return MainContract.State(
             isLoading = true,
             isError = false
         )
     }
 
-    override fun handleEvents(event: RisutoContract.Event) {}
+    override fun handleEvents(event: MainContract.Event) {}
 
     init {
         viewModelScope.launch(errorHandler) {

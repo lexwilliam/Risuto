@@ -1,7 +1,6 @@
-import com.lexwilliam.dependencies.ProjectModules
 import com.lexwilliam.dependencies.Dependencies
+import com.lexwilliam.dependencies.ProjectModules
 import com.lexwilliam.dependencies.TestDependencies
-import com.lexwilliam.dependencies.Versions.coil
 
 plugins {
     id("com.android.application")
@@ -67,6 +66,7 @@ dependencies {
     implementation(Dependencies.AndroidX.Compose.systemUiController)
     implementation(Dependencies.AndroidX.Compose.material)
     implementation(Dependencies.AndroidX.Compose.uiTooling)
+    implementation(Dependencies.AndroidX.Compose.uiUtil)
     implementation(Dependencies.AndroidX.Compose.runtime)
     implementation(Dependencies.AndroidX.Compose.runtimeLiveData)
     implementation(Dependencies.AndroidX.Compose.navigation)

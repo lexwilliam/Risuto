@@ -1,4 +1,4 @@
-package com.lexwilliam.risuto
+package com.lexwilliam.risuto.ui
 
 import android.content.Context
 import android.net.ConnectivityManager
@@ -33,7 +33,8 @@ import com.google.accompanist.insets.navigationBarsHeight
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.google.accompanist.insets.ui.BottomNavigation
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.lexwilliam.risuto.Screens.*
+import com.lexwilliam.risuto.MainViewModel
+import com.lexwilliam.risuto.ui.Screens.*
 import com.lexwilliam.risuto.ui.screens.detail.AnimeScreen
 import com.lexwilliam.risuto.ui.screens.detail.AnimeViewModel
 import com.lexwilliam.risuto.ui.screens.home.HomeScreen
@@ -56,7 +57,7 @@ fun RisutoApp(
     authCode: String?,
     isUserLoggedIn: Boolean?
 ) {
-    val viewModel = hiltViewModel<RisutoAppViewModel>()
+    val viewModel = hiltViewModel<MainViewModel>()
     val state = viewModel.viewState.value
     val systemUiController = rememberSystemUiController()
     val useDarkIcons = MaterialTheme.colors.isLight
