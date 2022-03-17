@@ -139,11 +139,7 @@ class AnimeViewModel @Inject constructor(
 
     private fun updateUserAnimeStatus(id: Int, numEpisodesWatched: Int, status: String, score: Int) {
         viewModelScope.launch(errorHandler) {
-            updateUserAnimeStatus.execute(id, numEpisodesWatched, status, score).collect {
-                if(status == it.status && score == it.score) {
-                    Timber.d("FAILS")
-                }
-            }
+            updateUserAnimeStatus.execute(id, numEpisodesWatched, status, score)
         }
     }
 
