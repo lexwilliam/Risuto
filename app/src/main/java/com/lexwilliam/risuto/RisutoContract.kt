@@ -10,9 +10,7 @@ class RisutoContract {
     }
 
     data class State(
-        val isUserLoggedIn: Boolean?,
-        val refreshToken: String?,
-        val expiresIn: Long,
+        val isUserLoggedIn: Boolean? = null,
         val isLoading: Boolean = false,
         val isError: Boolean = false
     ) : ViewState

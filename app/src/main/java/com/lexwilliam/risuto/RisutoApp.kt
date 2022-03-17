@@ -53,7 +53,8 @@ import com.lexwilliam.risuto.ui.screens.season.SeasonViewModel
 @ExperimentalFoundationApi
 @Composable
 fun RisutoApp(
-    authCode: String?
+    authCode: String?,
+    isUserLoggedIn: Boolean?
 ) {
     val viewModel = hiltViewModel<RisutoAppViewModel>()
     val state = viewModel.viewState.value
@@ -64,23 +65,13 @@ fun RisutoApp(
     }
     val context = LocalContext.current
     var isOnline by remember { mutableStateOf(checkIfOnline(context)) }
-    var startDestination = "login"
-    if(!state.isLoading) {
-        if(state.isUserLoggedIn != null) {
-            if(state.isUserLoggedIn) {
-                startDestination = RisutoHomeScreen.route
-            } else {
-                startDestination = RisutoLoginScreen.route
-            }
-        } else {
-            viewModel.setEvent(RisutoContract.Event.SetupOAuth(state.refreshToken, state.expiresIn))
-        }
-    }
     if (isOnline) {
-        RisutoAppContent(
-            authCode = authCode,
-            startDestination = startDestination
-        )
+        if(isUserLoggedIn != null) {
+            RisutoAppContent(
+                authCode = authCode,
+                startDestination = if(isUserLoggedIn) RisutoHomeScreen.route else RisutoLoginScreen.route
+            )
+        }
     } else {
         OfflineDialog { isOnline = checkIfOnline(context) }
     }
