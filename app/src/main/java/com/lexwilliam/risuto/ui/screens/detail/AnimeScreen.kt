@@ -63,6 +63,7 @@ fun AnimeScreen(
             scaffoldState = bottomSheetScaffoldState,
             sheetPeekHeight = 0.dp,
             sheetBackgroundColor = MaterialTheme.colors.background,
+            sheetElevation = 16.dp,
             sheetContent = {
                 MyAnimeMenu(
                     onEventSent = { onEventSent(it) },
@@ -137,7 +138,8 @@ fun MyAnimeMenu(
             ) {
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(4.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.clickable { onEventSent(AnimeContract.Event.DeleteUserAnimeStatus(id)) }
                 ) {
                     Text(
                         text = "Delete",
@@ -163,7 +165,6 @@ fun MyAnimeMenu(
                 Text(text = "${score.toInt()}")
             }
         }
-        Timber.d(score.toString())
         Slider(value = score, onValueChange = { score = it }, steps = 10, valueRange = 0f..10f)
         Row(
             modifier = Modifier

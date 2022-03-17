@@ -154,4 +154,14 @@ object DomainModule {
     @Provides
     fun provideGetAnimeCharacters(detailRepository: DetailRepository): GetAnimeCharacters =
         GetAnimeCharactersImpl(detailRepository)
+
+    @Singleton
+    @Provides
+    fun provideDeleteAnimeStatus(userRepository: UserRepository): DeleteUserAnimeStatus =
+        DeleteUserAnimeStatusImpl(userRepository)
+
+    @Singleton
+    @Provides
+    fun provideGetSeasonList(animeRepository: AnimeRepository): GetSeasonList =
+        GetSeasonListImpl(animeRepository)
 }

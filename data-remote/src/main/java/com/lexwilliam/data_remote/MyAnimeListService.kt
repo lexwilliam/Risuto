@@ -43,13 +43,6 @@ interface MyAnimeListService {
         @Field("redirect_uri") redirectUri: String = "risuto://auth"
     ): Response<AccessTokenResponse>
 
-    @GET("anime/{anime_id}")
-    suspend fun getAnimeDetails(
-        @Header("Authorization") authHeader: String,
-        @Path("anime_id") malId: Int,
-        @Query("fields") fields: String? = ApiConstants.ANIME_ALL_FIELDS
-    ): Response<AnimeDetailResponse>
-
     @PATCH("anime/{id}/my_list_status")
     @FormUrlEncoded
     suspend fun updateUserAnimeStatus(
@@ -65,6 +58,19 @@ interface MyAnimeListService {
         @Field("tags") tags: String? = null,
         @Field("comments") comments: String? = null
     ): Response<UserAnimeUpdateResponse>
+
+    @DELETE("anime/{anime_id}/my_list_status")
+    suspend fun deleteUserAnimeStatus(
+        @Header("Authorization") authHeader: String,
+        @Path("anime_id") animeId: Int
+    )
+
+    @GET("anime/{anime_id}")
+    suspend fun getAnimeDetails(
+        @Header("Authorization") authHeader: String,
+        @Path("anime_id") malId: Int,
+        @Query("fields") fields: String? = ApiConstants.ANIME_ALL_FIELDS
+    ): Response<AnimeDetailResponse>
 
     @GET("users/{username}/animelist")
     suspend fun getUserAnimeList(

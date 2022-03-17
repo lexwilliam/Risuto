@@ -12,4 +12,5 @@ interface UserRemoteSource {
 
     suspend fun updateUserAnimeStatus(authHeader: String, id: Int, numEpisodesWatched: Int, status: String, score: Int): Flow<UserAnimeUpdateRepo>
 
+    suspend fun deleteUserAnimeStatus(authHeader: String, id: Int)
 }

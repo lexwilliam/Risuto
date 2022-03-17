@@ -2,6 +2,7 @@ package com.lexwilliam.domain.repository
 
 import androidx.paging.PagingData
 import com.lexwilliam.domain.model.remote.anime.Anime
+import com.lexwilliam.domain.model.remote.anime.SeasonList
 import kotlinx.coroutines.flow.Flow
 
 interface AnimeRepository {
@@ -11,6 +12,8 @@ interface AnimeRepository {
     suspend fun getSeasonNow(): Flow<Anime>
 
     suspend fun getSeason(year: Int, season: String): Flow<Anime>
+
+    suspend fun getSeasonList(): Flow<SeasonList>
 
     suspend fun getSchedules(dayOfWeek: String): Flow<Anime>
 

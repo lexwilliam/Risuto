@@ -36,5 +36,11 @@ class UserRepositoryImpl @Inject constructor(
         return userRemoteSource.updateUserAnimeStatus(ApiConstant.BEARER_SEPARATOR + accessToken, id, numEpisodesWatched, status, score).map { userMapper.toDomain(it) }
     }
 
+    override suspend fun deleteUserAnimeStatus(id: Int) {
+        Timber.d("test")
+        val accessToken = oAuthLocalSource.accessTokenFlow.firstOrNull()
+        return userRemoteSource.deleteUserAnimeStatus(authHeader = ApiConstant.BEARER_SEPARATOR + accessToken, id)
+    }
+
 
 }

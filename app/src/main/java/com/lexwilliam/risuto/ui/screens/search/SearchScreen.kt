@@ -498,7 +498,7 @@ fun SearchBar(
                 Icon(Icons.Default.ArrowBack, contentDescription = null, tint = MaterialTheme.colors.secondary)
             }
         },
-        backgroundColor = MaterialTheme.colors.surface,
+        backgroundColor = MaterialTheme.colors.primary,
         contentColor = MaterialTheme.colors.secondary
     )
     if(resultState == ResultType.History) {

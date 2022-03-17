@@ -1,5 +1,6 @@
 package com.lexwilliam.data_remote
 
+import com.lexwilliam.data_remote.model.anime.SeasonListResponse
 import com.lexwilliam.data_remote.model.anime.AnimeCharactersResponse
 import com.lexwilliam.data_remote.model.anime.AnimeResponse
 import retrofit2.http.GET
@@ -45,6 +46,8 @@ interface JikanService {
     @GET("seasons/now")
     suspend fun getSeasonNow(): AnimeResponse
 
+    @GET("seasons")
+    suspend fun getSeasonList(): SeasonListResponse
 
     @GET("anime/{id}/characters")
     suspend fun getAnimeCharacters(

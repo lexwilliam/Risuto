@@ -6,6 +6,7 @@ import androidx.paging.PagingData
 import androidx.paging.map
 import com.lexwilliam.data.AnimeRemoteSource
 import com.lexwilliam.data.model.remote.anime.AnimeRepo
+import com.lexwilliam.data.model.remote.anime.SeasonListRepo
 import com.lexwilliam.data_remote.JikanService
 import com.lexwilliam.data_remote.mapper.AnimeMapper
 import com.lexwilliam.data_remote.paging.SearchPagingSource
@@ -36,6 +37,11 @@ class AnimeRemoteSourceImpl @Inject constructor(
 
     override suspend fun getSeason(year: Int, season: String): Flow<AnimeRepo> = flow {
         val response = jikanService.getSeason(year, season)
+        emit(animeMapper.toRepo(response))
+    }
+
+    override suspend fun getSeasonList(): Flow<SeasonListRepo> = flow {
+        val response = jikanService.getSeasonList()
         emit(animeMapper.toRepo(response))
     }
 

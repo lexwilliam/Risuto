@@ -2,24 +2,31 @@ package com.lexwilliam.risuto.ui.screens.season
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.BasicText
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.capitalize
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.insets.navigationBarsWithImePadding
+import com.lexwilliam.risuto.R
 import com.lexwilliam.risuto.model.AnimePresentation
-import com.lexwilliam.risuto.ui.component.GridList
-import com.lexwilliam.risuto.ui.component.Header
-import com.lexwilliam.risuto.ui.component.ImeAvoidingBox
-import com.lexwilliam.risuto.ui.component.StatusBarSpacer
+import com.lexwilliam.risuto.model.SeasonListPresentation
+import com.lexwilliam.risuto.ui.component.*
+import com.lexwilliam.risuto.ui.screens.detail.AnimeContract
 import com.lexwilliam.risuto.ui.theme.RisutoTheme
 import com.lexwilliam.risuto.util.*
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.*
 
@@ -32,14 +39,87 @@ fun SeasonScreen(
     onEventSent: (SeasonContract.Event) -> Unit,
     navToDetail: (Int) -> Unit
 ) {
-    SeasonContent(
-        year = state.year,
-        season = state.season,
-        animes = state.seasonAnime,
-        isRefreshing = state.isRefreshing,
-        onEventSent = { onEventSent(it) },
-        navToDetail = { navToDetail(it) }
+    val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(
+        bottomSheetState = BottomSheetState(BottomSheetValue.Collapsed)
     )
+    val coroutineScope = rememberCoroutineScope()
+    if(state.isLoading) {
+        LoadingScreen()
+    } else {
+        BottomSheetScaffold(
+            scaffoldState = bottomSheetScaffoldState,
+            sheetPeekHeight = 0.dp,
+            sheetBackgroundColor = MaterialTheme.colors.background,
+            sheetElevation = 16.dp,
+            sheetContent = {
+                SeasonMenu(
+                    season = state.season,
+                    year = state.year,
+                    seasonList = state.seasonList,
+                    onEventSent = { onEventSent(it) },
+                    onDoneClicked = {
+                        coroutineScope.launch {
+                            bottomSheetScaffoldState.bottomSheetState.collapse()
+                        }
+                    }
+                )
+            }
+        ) {
+            SeasonContent(
+                year = state.year,
+                season = state.season,
+                animes = state.seasonAnime,
+                isRefreshing = state.isRefreshing,
+                onEventSent = { onEventSent(it) },
+                navToDetail = { navToDetail(it) },
+                onFilterClicked = {
+                    coroutineScope.launch {
+                        bottomSheetScaffoldState.bottomSheetState.expand()
+                    }
+                }
+            )
+        }
+    }
+}
+
+@Composable
+fun SeasonMenu(
+    season: String,
+    year: Int,
+    seasonList: SeasonListPresentation,
+    onEventSent: (SeasonContract.Event) -> Unit,
+    onDoneClicked: () -> Unit
+) {
+    var season by remember { mutableStateOf(season) }
+    var year by remember { mutableStateOf(year) }
+
+    Column(
+        modifier = Modifier
+            .navigationBarsWithImePadding()
+            .padding(start = 16.dp, end = 16.dp, bottom = 56.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        Text(
+            modifier = Modifier.padding(top = 16.dp),
+            text = "Season Filter",
+            style = MaterialTheme.typography.h5,
+            fontWeight = FontWeight.Bold
+        )
+        Text(text = "Season", style = MaterialTheme.typography.subtitle1, fontWeight = FontWeight.Bold)
+        ChipGroup(texts = allSeason, selectedText = season.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }, onSelectedTextChanged = { season = allSeason[it] })
+        Text(text = "Year", style = MaterialTheme.typography.subtitle1, fontWeight = FontWeight.Bold)
+        Button(
+            modifier = Modifier
+                .fillMaxWidth(),
+            enabled = (season != "" && year != -1),
+            onClick = {
+                onEventSent(SeasonContract.Event.SetSeason(season, year))
+                onDoneClicked()
+            }
+        ) {
+            Text(text = "Done", style = MaterialTheme.typography.button)
+        }
+    }
 }
 
 @ExperimentalMaterialApi
@@ -52,24 +132,26 @@ fun SeasonContent(
     animes: List<AnimePresentation.Data>,
     isRefreshing: Boolean,
     onEventSent: (SeasonContract.Event) -> Unit,
-    navToDetail: (Int) -> Unit
+    navToDetail: (Int) -> Unit,
+    onFilterClicked: () -> Unit
 ) {
-    Timber.d("year : $year")
-    Timber.d("season: $season")
-    Column(modifier = Modifier.navigationBarsWithImePadding().padding(bottom = 56.dp)) {
+    Column(modifier = Modifier
+        .navigationBarsWithImePadding()
+        .padding(bottom = 56.dp)) {
         StatusBarSpacer()
         if(year != -1 && season != "") {
             SeasonToolBar(
                 year = year,
                 season = season,
-                onEventSent = { onEventSent(it) }
+                onEventSent = { onEventSent(it) },
+                onFilterClicked = { onFilterClicked() }
             )
         }
         GridList(
             items = animes,
             isRefreshing = isRefreshing,
             onRefresh = { onEventSent(SeasonContract.Event.RefreshList(season, year))},
-            navToDetail = { navToDetail(it)}
+            navToDetail = { navToDetail(it) }
         )
     }
 }
@@ -80,6 +162,7 @@ fun SeasonToolBar(
     year: Int,
     season: String,
     onEventSent: (SeasonContract.Event) -> Unit,
+    onFilterClicked: () -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -122,6 +205,16 @@ fun SeasonToolBar(
             ) {
                 Icon(
                     imageVector = Icons.Default.KeyboardArrowRight,
+                    contentDescription = null
+                )
+            }
+            IconButton(
+                modifier = Modifier
+                    .size(32.dp),
+                onClick = { onFilterClicked() }
+            ) {
+                Icon(
+                    imageVector = Icons.Default.DateRange,
                     contentDescription = null
                 )
             }
@@ -181,7 +274,8 @@ fun SeasonPreview() {
                 animes = listOf(FakeItems.animeData, FakeItems.animeData, FakeItems.animeData, FakeItems.animeData, FakeItems.animeData, FakeItems.animeData),
                 isRefreshing = false,
                 onEventSent = {},
-                navToDetail = {}
+                navToDetail = {},
+                onFilterClicked = {}
             )
         }
     }

@@ -67,7 +67,6 @@ fun ChipGroup(
     selectedText: String,
     onSelectedTextChanged: (Int) -> Unit
 ) {
-    Timber.d(selectedText)
     var selectedIndex by remember { mutableStateOf(texts.indexOf(selectedText)) }
     FlowRow(
         mainAxisSpacing = 16.dp,

@@ -1,8 +1,10 @@
 package com.lexwilliam.data_remote.mapper
 
 import com.lexwilliam.data.model.remote.anime.AnimeRepo
+import com.lexwilliam.data.model.remote.anime.SeasonListRepo
 import com.lexwilliam.data_remote.model.anime.AnimeResponse
 import com.lexwilliam.data.model.remote.user.UserAnimeListRepo
+import com.lexwilliam.data_remote.model.anime.SeasonListResponse
 import com.lexwilliam.data_remote.model.user.UserAnimeListResponse
 import javax.inject.Inject
 
@@ -10,6 +12,7 @@ interface AnimeMapper {
     fun toRepo(anime: AnimeResponse): AnimeRepo
     fun toRepo(data: AnimeResponse.Data): AnimeRepo.Data
     fun toRepo(userAnime: UserAnimeListResponse): UserAnimeListRepo
+    fun toRepo(seasonList: SeasonListResponse): SeasonListRepo
 }
 
 class AnimeMapperImpl @Inject constructor(): AnimeMapper {
@@ -85,4 +88,10 @@ class AnimeMapperImpl @Inject constructor(): AnimeMapper {
 
     private fun toRepo(mainPicture: UserAnimeListResponse.Data.Node.MainPicture): UserAnimeListRepo.Data.Node.MainPicture =
         UserAnimeListRepo.Data.Node.MainPicture(mainPicture.large?:"", mainPicture.medium)
+
+    override fun toRepo(seasonList: SeasonListResponse): SeasonListRepo =
+        SeasonListRepo(seasonList.data.map { toRepo(it) })
+
+    private fun toRepo(data: SeasonListResponse.Data): SeasonListRepo.Data =
+        SeasonListRepo.Data(data.year, data.seasons)
 }

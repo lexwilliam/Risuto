@@ -6,6 +6,7 @@ import com.lexwilliam.data.AnimeRemoteSource
 import com.lexwilliam.data.OAuthLocalSource
 import com.lexwilliam.data.mapper.AnimeMapper
 import com.lexwilliam.domain.model.remote.anime.Anime
+import com.lexwilliam.domain.model.remote.anime.SeasonList
 import com.lexwilliam.domain.repository.AnimeRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -26,6 +27,10 @@ class AnimeRepositoryImpl @Inject constructor(
 
     override suspend fun getSeason(year: Int, season: String): Flow<Anime> {
         return animeRemoteSource.getSeason(year, season).map { animeMapper.toDomain(it) }
+    }
+
+    override suspend fun getSeasonList(): Flow<SeasonList> {
+        return animeRemoteSource.getSeasonList().map { animeMapper.toDomain(it) }
     }
 
     override suspend fun getSchedules(dayOfWeek: String): Flow<Anime> {

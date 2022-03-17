@@ -10,6 +10,7 @@ import com.lexwilliam.risuto.model.AnimeDetailPresentation
 import com.lexwilliam.risuto.util.getInitialAnimeDetails
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -21,6 +22,7 @@ class AnimeViewModel @Inject constructor(
     private val getAnimeCharacters: GetAnimeCharacters,
     private val insertAnimeHistory: InsertAnimeHistory,
     private val updateUserAnimeStatus: UpdateUserAnimeStatus,
+    private val deleteUserAnimeStatus: DeleteUserAnimeStatus,
     private val historyMapper: HistoryMapper,
     private val detailMapper: DetailMapper,
     savedState: SavedStateHandle
@@ -57,6 +59,14 @@ class AnimeViewModel @Inject constructor(
                 setState {
                     copy(
                         myListStatus = AnimeDetailPresentation.MyListStatus(false, event.numEpisodesWatched, event.score, event.status, "")
+                    )
+                }
+            }
+            is AnimeContract.Event.DeleteUserAnimeStatus -> {
+                deleteUserAnimeStatus(event.id)
+                setState {
+                    copy(
+                        myListStatus = AnimeDetailPresentation.MyListStatus(false, -1, -1, "", "")
                     )
                 }
             }
@@ -130,11 +140,16 @@ class AnimeViewModel @Inject constructor(
     private fun updateUserAnimeStatus(id: Int, numEpisodesWatched: Int, status: String, score: Int) {
         viewModelScope.launch(errorHandler) {
             updateUserAnimeStatus.execute(id, numEpisodesWatched, status, score).collect {
-                Timber.d("changes: $status -> ${it.status} and $score -> ${it.score}")
                 if(status == it.status && score == it.score) {
                     Timber.d("FAILS")
                 }
             }
+        }
+    }
+
+    private fun deleteUserAnimeStatus(id: Int) {
+        viewModelScope.launch(errorHandler) {
+            deleteUserAnimeStatus.execute(id)
         }
     }
 

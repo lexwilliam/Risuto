@@ -1,8 +1,10 @@
 package com.lexwilliam.data.mapper
 
 import com.lexwilliam.data.model.remote.anime.AnimeRepo
+import com.lexwilliam.data.model.remote.anime.SeasonListRepo
 import com.lexwilliam.data.model.remote.user.UserAnimeListRepo
 import com.lexwilliam.domain.model.remote.anime.Anime
+import com.lexwilliam.domain.model.remote.anime.SeasonList
 import com.lexwilliam.domain.model.remote.user.UserAnimeList
 import javax.inject.Inject
 
@@ -10,6 +12,7 @@ interface AnimeMapper {
     fun toDomain(anime: AnimeRepo): Anime
     fun toDomain(data: AnimeRepo.Data): Anime.Data
     fun toDomain(userAnime: UserAnimeListRepo): UserAnimeList
+    fun toDomain(seasonList: SeasonListRepo): SeasonList
 }
 
 class AnimeMapperImpl @Inject constructor(): AnimeMapper {
@@ -88,4 +91,11 @@ class AnimeMapperImpl @Inject constructor(): AnimeMapper {
 
     private fun toDomain(mainPicture: UserAnimeListRepo.Data.Node.MainPicture): UserAnimeList.Data.Node.MainPicture =
         UserAnimeList.Data.Node.MainPicture(mainPicture.large, mainPicture.medium)
+
+    override fun toDomain(seasonList: SeasonListRepo): SeasonList =
+        SeasonList(seasonList.data.map { toDomain(it) })
+
+    private fun toDomain(data: SeasonListRepo.Data): SeasonList.Data =
+        SeasonList.Data(data.year, data.seasons)
+
 }

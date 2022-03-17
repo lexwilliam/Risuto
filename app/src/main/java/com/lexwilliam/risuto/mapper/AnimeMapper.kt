@@ -1,9 +1,12 @@
 package com.lexwilliam.risuto.mapper
 
+import com.lexwilliam.data.model.remote.anime.SeasonListRepo
 import com.lexwilliam.domain.model.remote.anime.Anime
+import com.lexwilliam.domain.model.remote.anime.SeasonList
 import com.lexwilliam.domain.model.remote.user.UserAnimeList
 import com.lexwilliam.risuto.model.WatchStatusPresentation
 import com.lexwilliam.risuto.model.AnimePresentation
+import com.lexwilliam.risuto.model.SeasonListPresentation
 import com.lexwilliam.risuto.model.UserAnimeListPresentation
 import javax.inject.Inject
 
@@ -11,6 +14,7 @@ interface AnimeMapper {
     fun toPresentation(anime: Anime): AnimePresentation
     fun toPresentation(data: Anime.Data): AnimePresentation.Data
     fun toPresentation(userAnime: UserAnimeList.Data): UserAnimeListPresentation.Data
+    fun toPresentation(seasonList: SeasonList): SeasonListPresentation
 }
 
 class AnimeMapperImpl @Inject constructor(): AnimeMapper {
@@ -110,4 +114,11 @@ class AnimeMapperImpl @Inject constructor(): AnimeMapper {
             else -> WatchStatusPresentation.Default
         }
     }
+
+    override fun toPresentation(seasonList: SeasonList): SeasonListPresentation =
+        SeasonListPresentation(seasonList.data.map { toPresentation(it) })
+
+    private fun toPresentation(data: SeasonList.Data): SeasonListPresentation.Data =
+        SeasonListPresentation.Data(data.year, data.seasons)
+
 }

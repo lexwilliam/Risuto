@@ -4,6 +4,7 @@ import com.lexwilliam.risuto.base.ViewEvent
 import com.lexwilliam.risuto.base.ViewSideEffect
 import com.lexwilliam.risuto.base.ViewState
 import com.lexwilliam.risuto.model.AnimePresentation
+import com.lexwilliam.risuto.model.SeasonListPresentation
 
 class SeasonContract {
     sealed class Event : ViewEvent {
@@ -14,6 +15,7 @@ class SeasonContract {
     data class State(
         val season: String,
         val year: Int,
+        val seasonList: SeasonListPresentation,
         val seasonAnime: List<AnimePresentation.Data>,
         val isRefreshing: Boolean = false,
         val isLoading: Boolean = false,

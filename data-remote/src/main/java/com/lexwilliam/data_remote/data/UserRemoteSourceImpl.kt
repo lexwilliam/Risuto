@@ -29,5 +29,9 @@ class UserRemoteSourceImpl @Inject constructor(
         emit(userMapper.toRepo(response!!))
     }
 
+    override suspend fun deleteUserAnimeStatus(authHeader: String, id: Int) {
+        malService.deleteUserAnimeStatus(authHeader, id)
+    }
+
 
 }

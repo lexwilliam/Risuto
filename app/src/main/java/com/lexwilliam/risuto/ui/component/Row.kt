@@ -51,7 +51,7 @@ fun RowItem(
                 text = genresStr,
                 style = MaterialTheme.typography.caption,
                 fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colors.surface
+                color = MaterialTheme.colors.primary
             )
             Text(
                 text = item.type + " (" + item.episodes + ")",

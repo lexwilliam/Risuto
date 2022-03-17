@@ -58,7 +58,7 @@ dependencies {
 
     implementation(Dependencies.AndroidX.Compose.viewModel)
     implementation(Dependencies.material)
-    kapt(Dependencies.AndroidX.lifecycleCompiler)
+    implementation(Dependencies.AndroidX.splashScreen)
     implementation(Dependencies.AndroidX.archComponents)
     implementation(Dependencies.AndroidX.browser)
     implementation(Dependencies.kotlinReflect)
@@ -70,6 +70,7 @@ dependencies {
     implementation(Dependencies.AndroidX.Compose.runtime)
     implementation(Dependencies.AndroidX.Compose.runtimeLiveData)
     implementation(Dependencies.AndroidX.Compose.navigation)
+    implementation(Dependencies.AndroidX.Compose.coil)
 
     implementation(Dependencies.Paging.runtime)
     implementation(Dependencies.Paging.compose)
@@ -80,17 +81,16 @@ dependencies {
     implementation(Dependencies.Hilt.hiltCompiler)
     implementation(Dependencies.Hilt.hiltNavigationCompose)
 
-    implementation(Dependencies.flowLayout)
-    implementation(Dependencies.coilCompose)
+    implementation(Dependencies.coil)
     implementation(Dependencies.lottie)
     implementation(Dependencies.lottieCompose)
 
-    implementation("io.coil-kt:coil:$coil")
-    implementation("com.google.accompanist:accompanist-coil:0.12.0")
-    implementation("com.google.accompanist:accompanist-insets:0.24.3-alpha")
-    implementation("com.google.accompanist:accompanist-insets-ui:0.24.3-alpha")
-    implementation("com.google.accompanist:accompanist-swiperefresh:0.24.3-alpha")
-    implementation("androidx.core:core-splashscreen:1.0.0-beta01")
+    implementation(Dependencies.Accompanist.flowLayout)
+    implementation(Dependencies.Accompanist.insets)
+    implementation(Dependencies.Accompanist.insetsUi)
+    implementation(Dependencies.Accompanist.swipeRefresh)
+    implementation(Dependencies.Accompanist.pager)
+    implementation(Dependencies.Accompanist.pagerIndicator)
 
     implementation(Dependencies.AndroidX.legacySupport)
     implementation(Dependencies.jodaTime)
