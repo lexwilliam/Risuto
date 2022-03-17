@@ -47,8 +47,6 @@ import com.lexwilliam.risuto.ui.screens.search.SearchScreen
 import com.lexwilliam.risuto.ui.screens.search.SearchViewModel
 import com.lexwilliam.risuto.ui.screens.season.SeasonScreen
 import com.lexwilliam.risuto.ui.screens.season.SeasonViewModel
-import com.lexwilliam.risuto.ui.screens.splash.SplashScreen
-import com.lexwilliam.risuto.ui.screens.splash.SplashViewModel
 
 @ExperimentalMaterialApi
 @ExperimentalComposeUiApi
@@ -57,6 +55,8 @@ import com.lexwilliam.risuto.ui.screens.splash.SplashViewModel
 fun RisutoApp(
     authCode: String?
 ) {
+    val viewModel = hiltViewModel<RisutoAppViewModel>()
+    val state = viewModel.viewState.value
     val systemUiController = rememberSystemUiController()
     val useDarkIcons = MaterialTheme.colors.isLight
     SideEffect {
@@ -64,9 +64,22 @@ fun RisutoApp(
     }
     val context = LocalContext.current
     var isOnline by remember { mutableStateOf(checkIfOnline(context)) }
+    var startDestination = "login"
+    if(!state.isLoading) {
+        if(state.isUserLoggedIn != null) {
+            if(state.isUserLoggedIn) {
+                startDestination = RisutoHomeScreen.route
+            } else {
+                startDestination = RisutoLoginScreen.route
+            }
+        } else {
+            viewModel.setEvent(RisutoContract.Event.SetupOAuth(state.refreshToken, state.expiresIn))
+        }
+    }
     if (isOnline) {
         RisutoAppContent(
-            authCode = authCode
+            authCode = authCode,
+            startDestination = startDestination
         )
     } else {
         OfflineDialog { isOnline = checkIfOnline(context) }
@@ -78,7 +91,8 @@ fun RisutoApp(
 @ExperimentalFoundationApi
 @Composable
 fun RisutoAppContent(
-    authCode: String?
+    authCode: String?,
+    startDestination: String
 ) {
     val navController = rememberNavController()
 
@@ -132,25 +146,14 @@ fun RisutoAppContent(
                         )
                     }
                 }
-                Spacer(Modifier.navigationBarsHeight().fillMaxWidth())
+                Spacer(
+                    Modifier
+                        .navigationBarsHeight()
+                        .fillMaxWidth())
             }
         }
     ) {
-        NavHost(navController = navController, startDestination = "splash") {
-
-            composable(RisutoSplashScreen.route) {
-                val splashViewModel = hiltViewModel<SplashViewModel>()
-                SplashScreen(
-                    state = splashViewModel.viewState.value,
-                    onEventSent = { event -> splashViewModel.setEvent(event) },
-                    navToLogin = {
-                        navController.navigate(RisutoLoginScreen.route)
-                    },
-                    navToHome = {
-                        navController.navigate(RisutoHomeScreen.route)
-                    }
-                )
-            }
+        NavHost(navController = navController, startDestination = startDestination) {
 
             composable(RisutoHomeScreen.route) {
                 val homeViewModel = hiltViewModel<HomeViewModel>()

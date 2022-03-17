@@ -1,24 +1,22 @@
-package com.lexwilliam.risuto.ui.screens.splash
+package com.lexwilliam.risuto
 
 import androidx.lifecycle.viewModelScope
 import com.lexwilliam.domain.usecase.GetExpiresInFromCache
 import com.lexwilliam.domain.usecase.GetRefreshTokenFromCache
 import com.lexwilliam.domain.usecase.SetRefreshToken
-import com.lexwilliam.risuto.BuildConfig
 import com.lexwilliam.risuto.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class SplashViewModel @Inject constructor(
+class RisutoAppViewModel @Inject constructor(
     private val getRefreshTokenFromCache: GetRefreshTokenFromCache,
     private val getExpiresInFromCache: GetExpiresInFromCache,
     private val setRefreshAccessToken: SetRefreshToken
-): BaseViewModel<SplashContract.Event, SplashContract.State, SplashContract.Effect>() {
+): BaseViewModel<RisutoContract.Event, RisutoContract.State, RisutoContract.Effect>() {
 
     private val errorHandler = CoroutineExceptionHandler { _, exception ->
         Timber.e(exception)
@@ -30,8 +28,8 @@ class SplashViewModel @Inject constructor(
         }
     }
 
-    override fun setInitialState(): SplashContract.State {
-        return SplashContract.State(
+    override fun setInitialState(): RisutoContract.State {
+        return RisutoContract.State(
             isUserLoggedIn = null,
             refreshToken = "",
             expiresIn = -1L,
@@ -40,10 +38,10 @@ class SplashViewModel @Inject constructor(
         )
     }
 
-    override fun handleEvents(event: SplashContract.Event) {
+    override fun handleEvents(event: RisutoContract.Event) {
         when(event) {
-            is SplashContract.Event.SetupOAuth ->
-               checkUserSignInState( event.refreshToken, event.expiresIn)
+            is RisutoContract.Event.SetupOAuth ->
+                checkUserSignInState( event.refreshToken, event.expiresIn)
         }
     }
 

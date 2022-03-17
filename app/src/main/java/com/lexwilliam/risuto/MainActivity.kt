@@ -44,7 +44,6 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         val uri = intent?.data
-        Timber.d("onResume uri:$uri")
         if (uri != null && uri.toString().startsWith(Constants.redirectUri)) {
             val code = uri.getQueryParameter("code")
             if (code != null) {

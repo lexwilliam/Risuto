@@ -1,10 +1,10 @@
-package com.lexwilliam.risuto.ui.screens.splash
+package com.lexwilliam.risuto
 
 import com.lexwilliam.risuto.base.ViewEvent
 import com.lexwilliam.risuto.base.ViewSideEffect
 import com.lexwilliam.risuto.base.ViewState
 
-class SplashContract {
+class RisutoContract {
     sealed class Event : ViewEvent {
         data class SetupOAuth(val refreshToken: String?, val expiresIn: Long): Event()
     }
