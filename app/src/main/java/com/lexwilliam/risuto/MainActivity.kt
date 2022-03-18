@@ -21,9 +21,9 @@ class MainActivity : AppCompatActivity() {
     private var authCode: String? = null
     private val viewModel: MainViewModel by viewModels()
 
-    @ExperimentalMaterialApi
-    @ExperimentalComposeUiApi
-    @ExperimentalFoundationApi
+    @OptIn(ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class,
+        ExperimentalFoundationApi::class
+    )
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         installSplashScreen().apply {

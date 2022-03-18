@@ -18,10 +18,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.material.TabRowDefaults
+import com.google.accompanist.flowlayout.FlowRow
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.navigationBarsWithImePadding
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.google.accompanist.insets.ui.TopAppBar
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.pagerTabIndicatorOffset
+import com.google.accompanist.pager.rememberPagerState
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.lexwilliam.risuto.R
@@ -32,6 +38,7 @@ import com.lexwilliam.risuto.ui.component.NetworkImage
 import com.lexwilliam.risuto.util.intToCurrency
 import com.lexwilliam.risuto.util.watchStatusList
 import com.lexwilliam.risuto.util.watchStatusToString
+import kotlinx.coroutines.launch
 
 @ExperimentalFoundationApi
 @Composable
@@ -94,20 +101,7 @@ fun MyAnimeContent(
             expanded = expanded,
             isExpanded = { isExpanded(it) }
         )
-        MyAnimeTabRow(
-            status = currentStatus,
-            setGroupBy = { onStatusChanged(it) }
-        )
-        var filteredList: List<UserAnimeListPresentation.Data> = emptyList()
-        when(currentStatus) {
-            "All" -> filteredList = myAnimeList
-            "Watching" -> filteredList = myAnimeList.filter { it.listStatus.status == WatchStatusPresentation.Watching }
-            "Completed" -> filteredList = myAnimeList.filter { it.listStatus.status == WatchStatusPresentation.Completed }
-            "Plan To Watch" -> filteredList = myAnimeList.filter { it.listStatus.status == WatchStatusPresentation.PlanToWatch }
-            "On Hold" -> filteredList = myAnimeList.filter { it.listStatus.status == WatchStatusPresentation.OnHold }
-            "Dropped" -> filteredList = myAnimeList.filter { it.listStatus.status == WatchStatusPresentation.Dropped }
-        }
-        MyAnimeGridList(items = filteredList, isRefreshing = isRefreshing, onEventSent = { onEventSent(it) }, navToDetail = { navToDetail(it) })
+        MyAnimeGridList(items = myAnimeList, isRefreshing = isRefreshing, onEventSent = { onEventSent(it) }, navToDetail = { navToDetail(it) })
     }
 }
 
@@ -155,36 +149,6 @@ fun MyAnimeToolbar(
 }
 
 @Composable
-fun MyAnimeTabRow(
-    status: String,
-    setGroupBy: (String) -> Unit
-) {
-    val watchStatusTabRow = listOf("All", "Watching", "Completed", "Plan To Watch", "On Hold", "Dropped")
-    var currentIndex by remember { mutableStateOf(watchStatusTabRow.indexOf(status)) }
-    ScrollableTabRow(
-        backgroundColor = MaterialTheme.colors.background,
-        selectedTabIndex = currentIndex
-    ) {
-        watchStatusTabRow.forEachIndexed { index, status ->
-            Tab(
-                selected = index == currentIndex,
-                onClick = {
-                    currentIndex = index
-                    setGroupBy(status)
-                }
-            ) {
-                Box(
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(text = status, style = MaterialTheme.typography.subtitle1)
-                }
-            }
-        }
-    }
-}
-
-@Composable
 fun MyAnimeGrid(
     modifier: Modifier = Modifier,
     item: UserAnimeListPresentation.Data,
@@ -218,6 +182,7 @@ fun MyAnimeGrid(
 }
 
 
+@OptIn(ExperimentalPagerApi::class)
 @ExperimentalFoundationApi
 @Composable
 fun MyAnimeGridList(
@@ -227,21 +192,64 @@ fun MyAnimeGridList(
     onEventSent: (MyAnimeContract.Event) -> Unit,
     navToDetail: (Int) -> Unit
 ) {
-    if(items.isEmpty()) {
-        NoAnimeScreen()
-    } else {
-        SwipeRefresh(
-            state = rememberSwipeRefreshState(isRefreshing),
-            onRefresh = {
-                onEventSent(MyAnimeContract.Event.RefreshList)
-            },
-        ) {
-            LazyVerticalGrid(
-                modifier = modifier.padding(start = 16.dp),
-                cells = GridCells.Adaptive(minSize = 136.dp),
+    val watchStatusTabRow = listOf("All", "Watching", "Completed", "Plan To Watch", "On Hold", "Dropped")
+    val coroutineScope = rememberCoroutineScope()
+    val pagerState = rememberPagerState()
+    ScrollableTabRow(
+        backgroundColor = MaterialTheme.colors.background,
+        selectedTabIndex = pagerState.currentPage,
+        indicator = { tabPositions ->
+            TabRowDefaults.Indicator(
+                Modifier.pagerTabIndicatorOffset(pagerState, tabPositions)
+            )
+        }
+    ) {
+        watchStatusTabRow.forEachIndexed { index, status ->
+            Tab(
+                text = { Text(text = status, style = MaterialTheme.typography.subtitle1) },
+                selected = pagerState.currentPage == index,
+                onClick = {
+                    coroutineScope.launch {
+                        pagerState.animateScrollToPage(index)
+                    }
+                }
+            )
+        }
+    }
+    HorizontalPager(
+        modifier = Modifier
+            .fillMaxWidth(),
+        count = watchStatusTabRow.size,
+        state = pagerState
+    ) { page ->
+        if(items.isEmpty()) {
+            NoAnimeScreen()
+        } else {
+            SwipeRefresh(
+                state = rememberSwipeRefreshState(isRefreshing),
+                onRefresh = {
+                    onEventSent(MyAnimeContract.Event.RefreshList)
+                },
             ) {
-                items(items = items) { item ->
-                    MyAnimeGrid(item = item, modifier = Modifier.padding(top = 16.dp, end = 16.dp), navToDetail = { navToDetail(it) })
+                LazyVerticalGrid(
+                    modifier = modifier
+                        .padding(start = 16.dp)
+                        .fillMaxSize(),
+                    cells = GridCells.Adaptive(minSize = 136.dp),
+                ) {
+                    items(
+                        items = when(page) {
+                            0 -> items
+                            1 -> items.filter { it.listStatus.status == WatchStatusPresentation.Watching }
+                            2 -> items.filter { it.listStatus.status == WatchStatusPresentation.Completed }
+                            3 -> items.filter { it.listStatus.status == WatchStatusPresentation.PlanToWatch }
+                            4 -> items.filter { it.listStatus.status == WatchStatusPresentation.OnHold }
+                            5 -> items.filter { it.listStatus.status == WatchStatusPresentation.Dropped }
+                            else -> items
+                        }
+                    ) { item ->
+                        MyAnimeGrid(item = item, modifier = Modifier.padding(top = 16.dp, end = 16.dp), navToDetail = { navToDetail(it) })
+                    }
                 }
             }
         }
@@ -286,78 +294,3 @@ fun sortAnime(
         }
     }
 }
-
-//@Composable
-//fun MyAnimeRow(
-//    modifier: Modifier = Modifier,
-//    item: MyAnimePresentation,
-//    navToDetail: (Int) -> Unit
-//) {
-//    Row(
-//        modifier
-//            .fillMaxWidth()
-//            .clickable {
-//                navToDetail(item.mal_id)
-//            }
-//            .height(180.dp)) {
-//        NetworkImage(
-//            imageUrl = item.image_url,
-//            modifier = Modifier
-//                .size(width = 120.dp, height = 180.dp)
-//                .shadow(elevation = 4.dp, shape = MaterialTheme.shapes.medium, true)
-//        )
-//        Column(modifier = Modifier
-//            .padding(start = 8.dp),
-//            verticalArrangement = Arrangement.spacedBy(4.dp)
-//        ) {
-//            Text(
-//                text = item.title,
-//                style = MaterialTheme.typography.subtitle1,
-//                fontWeight = FontWeight.Bold
-//            )
-//            Text(
-//                text = item.myScore.toString(),
-//                style = MaterialTheme.typography.subtitle1,
-//                fontWeight = FontWeight.Bold
-//            )
-//            Text(
-//                text = watchStatusToString(item.watchStatus),
-//                style = MaterialTheme.typography.subtitle1,
-//                fontWeight = FontWeight.Bold
-//            )
-//        }
-//    }
-//}
-//
-//@ExperimentalFoundationApi
-//@Composable
-//fun MyAnimeColumnList(
-//    modifier: Modifier = Modifier,
-//    items: List<MyAnimePresentation>,
-//    navToDetail: (Int) -> Unit
-//) {
-//    val grouped = items.groupBy { it.watchStatus }
-//    if(items.isEmpty()) {
-//        LoadingScreen()
-//    } else {
-//        LazyColumn(
-//            modifier = modifier
-//        ) {
-//            grouped.forEach { (watchStatus, animes) ->
-//                stickyHeader {
-//                    Text(
-//                        modifier = Modifier
-//                            .fillMaxWidth()
-//                            .background(MaterialTheme.colors.background)
-//                            .padding(start = 16.dp),
-//                        text = watchStatusToString(watchStatus),
-//                        style = MaterialTheme.typography.h5
-//                    )
-//                }
-//                items(items = animes) { item ->
-//                    MyAnimeRow(item = item, modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp), navToDetail = { navToDetail(it) })
-//                }
-//            }
-//        }
-//    }
-//}

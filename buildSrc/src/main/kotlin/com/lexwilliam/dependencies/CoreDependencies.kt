@@ -2,10 +2,6 @@ package com.lexwilliam.dependencies
 
 object Dependencies {
     object AndroidX {
-        const val fragmentKtx =
-            "androidx.fragment:fragment-ktx:${Versions.fragment}"
-        const val legacySupport =
-            "androidx.legacy:legacy-support-v4:${Versions.legacySupportV4}"
         const val coreKtx =
             "androidx.core:core-ktx:${Versions.core}"
         const val archComponents =
@@ -35,7 +31,7 @@ object Dependencies {
         "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.kotlinxCoroutines}"
 
     const val kotlinReflect =
-        "org.jetbrains.kotlin:kotlin-reflect:1.5.31"
+        "org.jetbrains.kotlin:kotlin-reflect:${Versions.kotlin}"
 
     object Hilt {
         const val hiltAndroid =
@@ -43,7 +39,7 @@ object Dependencies {
         const val hiltAndroidCompiler =
             "com.google.dagger:hilt-android-compiler:${Versions.hilt}"
         const val hiltCompiler =
-            "androidx.hilt:hilt-compiler:${Versions.hiltJetpack}"
+            "androidx.hilt:hilt-compiler:${Versions.hilt}"
         const val hiltViewModel =
             "com.google.dagger:hilt-android-compiler:${Versions.hiltVM}"
         const val hiltNavigationCompose =

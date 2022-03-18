@@ -43,10 +43,6 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = com.lexwilliam.dependencies.Versions.compose
     }
-
-    hilt {
-        enableExperimentalClasspathAggregation = true
-    }
 }
 
 dependencies {
@@ -60,7 +56,6 @@ dependencies {
     implementation(Dependencies.AndroidX.splashScreen)
     implementation(Dependencies.AndroidX.archComponents)
     implementation(Dependencies.AndroidX.browser)
-    implementation(Dependencies.kotlinReflect)
 
     implementation(Dependencies.AndroidX.Compose.ui)
     implementation(Dependencies.AndroidX.Compose.systemUiController)
@@ -78,7 +73,6 @@ dependencies {
     implementation(Dependencies.Hilt.hiltAndroid)
     implementation(Dependencies.Hilt.hiltAndroidCompiler)
     implementation(Dependencies.Hilt.hiltViewModel)
-    implementation(Dependencies.Hilt.hiltCompiler)
     implementation(Dependencies.Hilt.hiltNavigationCompose)
 
     implementation(Dependencies.coil)
@@ -92,7 +86,6 @@ dependencies {
     implementation(Dependencies.Accompanist.pager)
     implementation(Dependencies.Accompanist.pagerIndicator)
 
-    implementation(Dependencies.AndroidX.legacySupport)
     implementation(Dependencies.jodaTime)
 
     testImplementation(Dependencies.jodaTime)
@@ -101,7 +94,6 @@ dependencies {
 
 //    androidTestImplementation(project(ProjectModules.coreAndroidTest))
     testImplementation(TestDependencies.AndroidX.googleTruth)
-    androidTestImplementation(TestDependencies.AndroidX.core)
     androidTestImplementation(TestDependencies.AndroidX.coreKtx)
     androidTestImplementation(TestDependencies.AndroidX.runner)
     androidTestImplementation(TestDependencies.AndroidX.rules)

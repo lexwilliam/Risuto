@@ -81,10 +81,6 @@ open class AndroidPlugin : Plugin<Project> {
             unitTests.isReturnDefaultValues = true
             animationsDisabled = true
         }
-
-        lintOptions {
-            isAbortOnError = false
-        }
     }
 
     private fun Project.configureDependencies() = dependencies {
@@ -97,13 +93,11 @@ open class AndroidPlugin : Plugin<Project> {
         testImplementation(kotlin("test"))
 
         implementation(Dependencies.kotlinxCoroutines)
-
+        implementation(Dependencies.kotlinReflect)
         implementation(Dependencies.timber)
-
         kapt(Dependencies.Hilt.hiltAndroid)
         kapt(Dependencies.Hilt.hiltAndroidCompiler)
 
-        androidTestImplementation(TestDependencies.AndroidX.core)
         androidTestImplementation(TestDependencies.AndroidX.coreKtx)
         androidTestImplementation(TestDependencies.AndroidX.runner)
         androidTestImplementation(TestDependencies.AndroidX.rules)

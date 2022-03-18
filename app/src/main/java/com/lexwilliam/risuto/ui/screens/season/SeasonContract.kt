@@ -18,7 +18,8 @@ class SeasonContract {
         val seasonList: SeasonListPresentation,
         val seasonAnime: List<AnimePresentation.Data>,
         val isRefreshing: Boolean = false,
-        val isLoading: Boolean = false,
+        val seasonListIsLoading: Boolean = false,
+        val seasonNowIsLoading: Boolean = false,
         val isError: Boolean = false
     ) : ViewState
 

@@ -2,8 +2,6 @@ package com.lexwilliam.dependencies
 
 object TestDependencies {
     object AndroidX {
-        const val core =
-            "androidx.test:core:${Versions.androidxTest}"
         const val coreKtx =
             "androidx.test:core-ktx:${Versions.androidxTest}"
         const val runner =
@@ -49,9 +47,9 @@ object TestDependencies {
 
     object Hilt{
         const val androidTesting =
-            "com.google.dagger:hilt-android-testing:${Versions.hiltTest}"
+            "com.google.dagger:hilt-android-testing:${Versions.hilt}"
         const val androidCompiler =
-            "com.google.dagger:hilt-android-compiler:${Versions.hiltTest}"
+            "com.google.dagger:hilt-android-compiler:${Versions.hilt}"
     }
 
     const val mockWebServer = "com.squareup.okhttp3:mockwebserver:${Versions.mockWebServer}"

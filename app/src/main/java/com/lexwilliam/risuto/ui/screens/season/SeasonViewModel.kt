@@ -30,7 +30,8 @@ class SeasonViewModel @Inject constructor(
         Timber.e(exception)
         setState {
             copy(
-                isLoading = false,
+                seasonListIsLoading = false,
+                seasonNowIsLoading = false,
                 isError = true
             )
         }
@@ -42,7 +43,8 @@ class SeasonViewModel @Inject constructor(
             year = -1,
             seasonList = SeasonListPresentation(emptyList()),
             seasonAnime = emptyList(),
-            isLoading = true,
+            seasonListIsLoading = true,
+            seasonNowIsLoading = true,
             isError = false
         )
     }
@@ -97,7 +99,7 @@ class SeasonViewModel @Inject constructor(
                                         seasonAnime = anime.data,
                                         season = anime.data.first().season,
                                         year = anime.data.first().year,
-                                        isLoading = false
+                                        seasonNowIsLoading = false,
                                     )
                                 }
                             }
@@ -145,7 +147,9 @@ class SeasonViewModel @Inject constructor(
                             .let { list ->
                                 setState {
                                     copy(
-                                        seasonList = list
+                                        seasonList = list,
+                                        seasonListIsLoading = false,
+
                                     )
                                 }
                             }
@@ -160,7 +164,8 @@ class SeasonViewModel @Inject constructor(
         Timber.e(throwable)
         setState {
             copy(
-                isLoading = false,
+                seasonListIsLoading = false,
+                seasonNowIsLoading = false,
                 isError = true
             )
         }

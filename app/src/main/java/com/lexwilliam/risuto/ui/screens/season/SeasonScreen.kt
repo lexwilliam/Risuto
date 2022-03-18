@@ -48,7 +48,7 @@ fun SeasonScreen(
         bottomSheetState = BottomSheetState(BottomSheetValue.Collapsed)
     )
     val coroutineScope = rememberCoroutineScope()
-    if(state.isLoading) {
+    if(state.seasonNowIsLoading || state.seasonListIsLoading) {
         LoadingScreen()
     } else {
         BottomSheetScaffold(
