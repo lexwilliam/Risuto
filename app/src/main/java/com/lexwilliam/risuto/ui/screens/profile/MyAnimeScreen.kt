@@ -244,9 +244,9 @@ fun MyAnimeGridList(
                         items = when(page) {
                             0 -> items
                             1 -> items.filter { it.listStatus.status == WatchStatusPresentation.Watching }
-                            2 -> items.filter { it.listStatus.status == WatchStatusPresentation.Completed }
+                            2 -> items.filter { it.listStatus.status == WatchStatusPresentation.OnHold }
                             3 -> items.filter { it.listStatus.status == WatchStatusPresentation.PlanToWatch }
-                            4 -> items.filter { it.listStatus.status == WatchStatusPresentation.OnHold }
+                            4 -> items.filter { it.listStatus.status == WatchStatusPresentation.Completed }
                             5 -> items.filter { it.listStatus.status == WatchStatusPresentation.Dropped }
                             else -> items
                         }
