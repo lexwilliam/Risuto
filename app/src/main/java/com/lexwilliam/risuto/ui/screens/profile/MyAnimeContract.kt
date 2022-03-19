@@ -9,6 +9,7 @@ import com.lexwilliam.risuto.model.UserAnimeListPresentation
 class MyAnimeContract {
     sealed class Event : ViewEvent {
         object RefreshList: Event()
+        object RefreshListWithoutView: Event()
     }
 
     data class State(

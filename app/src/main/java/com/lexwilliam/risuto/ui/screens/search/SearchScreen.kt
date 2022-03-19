@@ -49,6 +49,7 @@ import com.lexwilliam.risuto.ui.component.RowItem
 import com.lexwilliam.risuto.ui.component.SmallGrid
 import com.lexwilliam.risuto.ui.theme.RisutoTheme
 import com.lexwilliam.risuto.util.FakeItems
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import timber.log.Timber
 
@@ -67,7 +68,7 @@ fun SearchScreen(
     var cursorColor by remember { mutableStateOf(Color.Black) }
     var resultState by rememberSaveable { mutableStateOf(ResultType.History) }
     var isDone by rememberSaveable { mutableStateOf(false) }
-    Timber.d("genres: ${state.genreFromArgs}")
+    Timber.d(resultState.name)
     if(query.isEmpty() && state.genreFromArgs == "-1") {
         resultState = ResultType.History
     }
@@ -93,6 +94,29 @@ fun SearchScreen(
             )
         )
         isDone = true
+    }
+    if(resultState == ResultType.Suggestion) {
+        LaunchedEffect(query) {
+            delay(2000)
+            onEventSent(
+                SearchContract.Event.SearchAnime(
+                    q = query,
+                    type = null,
+                    score = null,
+                    minScore = null,
+                    maxScore = null,
+                    status = null,
+                    rating = null,
+                    sfw = null,
+                    genres = null,
+                    genresExclude = null,
+                    orderBy = null,
+                    sort = null,
+                    letter = null,
+                    producer = null
+                )
+            )
+        }
     }
     SearchContent(
         searchSuggestions = state.searchAnimes,
@@ -210,8 +234,8 @@ fun SearchView(
             keyboardController?.hide()
             ResultView(animes = animes, query = query, genres = genres, isRefreshing = isRefreshing, onEventSent = { onEventSent(it) }, navToDetail = { navToDetail(it) })
         }
-        ResultType.Result -> {
-            QueryView(
+        ResultType.Suggestion -> {
+            SuggestionView(
                 items = searchSuggestions.map { SearchHistoryPresentation(query = it.title) },
                 onSelectItem = {
                     onQueryChanged(it.query)
@@ -225,7 +249,7 @@ fun SearchView(
                             status = null,
                             rating = null,
                             sfw = null,
-                            genres = genres,
+                            genres = null,
                             genresExclude = null,
                             orderBy = null,
                             sort = null,
@@ -254,7 +278,7 @@ fun SearchView(
 }
 
 enum class ResultType{
-    Result, History, FullResult
+    Suggestion, History, FullResult
 }
 
 @Composable
@@ -458,7 +482,7 @@ fun SearchBar(
                 value = query,
                 onValueChange = {
                     onQueryChanged(it)
-                    onResultChange(ResultType.Result)
+                    onResultChange(ResultType.Suggestion)
                 },
                 interactionSource = interactionSource,
                 textStyle = MaterialTheme.typography.subtitle1,
@@ -510,7 +534,7 @@ fun SearchBar(
 }
 
 @Composable
-fun QueryView(
+fun SuggestionView(
     items: List<SearchHistoryPresentation>,
     onSelectItem: (SearchHistoryPresentation) -> Unit
 ) {
@@ -538,10 +562,10 @@ fun QueryListWithDelete(
     onSelectItem: (SearchHistoryPresentation) -> Unit,
     onDeleteItem: (String) -> Unit
 ) {
-    Column(
+    LazyColumn(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        items.forEach { item ->
+        items(items) { item ->
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -620,7 +644,7 @@ fun QueryPreview() {
         Box(
             Modifier.background(MaterialTheme.colors.background)
         ) {
-            QueryView(items = listOf(SearchHistoryPresentation(query = "test123"), SearchHistoryPresentation(query = "test123"), SearchHistoryPresentation(query = "test123")), onSelectItem = {})
+            SuggestionView(items = listOf(SearchHistoryPresentation(query = "test123"), SearchHistoryPresentation(query = "test123"), SearchHistoryPresentation(query = "test123")), onSelectItem = {})
         }
     }
 }

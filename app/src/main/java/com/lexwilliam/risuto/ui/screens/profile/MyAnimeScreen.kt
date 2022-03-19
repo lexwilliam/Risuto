@@ -51,6 +51,9 @@ fun MyAnimeScreen(
     var currentStatus by remember { mutableStateOf("All")}
     var currentSortType by remember { mutableStateOf("By Last Updated") }
     var currentOrderType by remember { mutableStateOf("Descending") }
+    LaunchedEffect(state.animes) {
+        onEventSent(MyAnimeContract.Event.RefreshListWithoutView)
+    }
     if(state.isLoading) {
         LoadingScreen()
     } else {
@@ -192,7 +195,7 @@ fun MyAnimeGridList(
     onEventSent: (MyAnimeContract.Event) -> Unit,
     navToDetail: (Int) -> Unit
 ) {
-    val watchStatusTabRow = listOf("All", "Watching", "Completed", "Plan To Watch", "On Hold", "Dropped")
+    val watchStatusTabRow = listOf("All", "Watching", "On Hold", "Plan To Watch", "Completed", "Dropped")
     val coroutineScope = rememberCoroutineScope()
     val pagerState = rememberPagerState()
     ScrollableTabRow(
@@ -282,7 +285,7 @@ fun sortAnime(
             "By Alphabetical" -> animes.sortedBy { it.node.title }
             "By Score" -> animes.sortedByDescending { it.listStatus.score }
             "By Last Update" -> animes.sortedByDescending { it.listStatus.updatedAt }
-            else -> animes
+            else -> animes.sortedBy { watchStatusList.indexOf(it.listStatus.status) }
         }
     } else {
         return when (sortType) {

@@ -46,10 +46,14 @@ class MyAnimeViewModel
             is MyAnimeContract.Event.RefreshList -> {
                 viewModelScope.launch(errorHandler) {
                     setState { copy(isRefreshing = true) }
-                    getUserInfo()
                     getUserAnimeList()
-                    delay(2000)
+                    delay(1000)
                     setState { copy(isRefreshing = false) }
+                }
+            }
+            is MyAnimeContract.Event.RefreshListWithoutView -> {
+                viewModelScope.launch(errorHandler) {
+                    getUserAnimeList()
                 }
             }
         }
