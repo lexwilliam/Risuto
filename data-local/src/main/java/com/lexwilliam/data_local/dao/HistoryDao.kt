@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface HistoryDao {
 
-    @Query("SELECT * FROM searchHistory ORDER BY id DESC LIMIT 5")
+    @Query("SELECT * FROM searchHistory LIMIT 5")
     fun getSearchHistory(): Flow<List<SearchHistoryEntity>>
 
     @Query("DELETE FROM searchHistory WHERE `query`=:query")

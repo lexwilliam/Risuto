@@ -42,7 +42,7 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch(errorHandler) {
             val expiresIn = getExpiresInFromCache.execute().firstOrNull()
             val refreshToken = getRefreshTokenFromCache.execute().firstOrNull()
-            if(refreshToken == "" && expiresIn == -1L) {
+            if(refreshToken == "" && expiresIn == null) {
                 setState { copy(isUserLoggedIn = false) }
             } else {
                 if(refreshToken != null && expiresIn != null) {

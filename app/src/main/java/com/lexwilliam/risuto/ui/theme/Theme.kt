@@ -23,10 +23,10 @@ private val DarkColorPalette = darkColors(
 )
 
 private val LightColorPalette = lightColors(
-    primary = primary,
-    primaryVariant = primaryVariant,
-    secondary = secondary,
-    secondaryVariant = secondaryVariant,
+    primary = secondary,
+    primaryVariant = secondaryVariant,
+    secondary = primary,
+    secondaryVariant = primaryVariant,
     background = Color.White,
     surface = Gray300,
     error = redDark,

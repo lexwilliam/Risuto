@@ -105,17 +105,16 @@ fun GenreGrid(
     genre: String,
     navToSearchWithGenre: (Int) -> Unit
 ) {
-    Column(modifier = modifier
+    Box(modifier = modifier
         .size(width = 172.dp, height = 64.dp)
         .shadow(elevation = 4.dp, shape = MaterialTheme.shapes.medium, true)
-        .background(color = MaterialTheme.colors.primaryVariant)
+        .background(color = MaterialTheme.colors.primary)
         .clickable {
             navToSearchWithGenre(getGenre(genre))
         },
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        contentAlignment = Alignment.Center
     ) {
-        Text(text = genre, style = MaterialTheme.typography.subtitle2, color = Color.White)
+        Text(text = genre, style = MaterialTheme.typography.subtitle2, color = MaterialTheme.colors.onPrimary)
     }
 }
 

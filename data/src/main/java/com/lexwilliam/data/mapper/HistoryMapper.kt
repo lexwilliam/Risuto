@@ -18,12 +18,12 @@ class HistoryMapperImpl @Inject constructor(): HistoryMapper {
         AnimeHistoryRepo(anime.mal_id, anime.image_url, anime.title, anime.timeAdded)
 
     override fun toRepo(search: SearchHistory): SearchHistoryRepo =
-        SearchHistoryRepo(search.id, search.query)
+        SearchHistoryRepo(search.query)
 
     override fun toDomain(anime: AnimeHistoryRepo): AnimeHistory =
         AnimeHistory(anime.mal_id, anime.image_url, anime.title, anime.timeAdded)
 
     override fun toDomain(search: SearchHistoryRepo): SearchHistory =
-        SearchHistory(search.id, search.query)
+        SearchHistory(search.query)
 
 }

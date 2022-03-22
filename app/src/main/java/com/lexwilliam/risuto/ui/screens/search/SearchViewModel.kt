@@ -17,7 +17,6 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -49,41 +48,100 @@ class  SearchViewModel @Inject constructor(
         }
     }
 
-    private val genreFromArgs = savedStateHandle.get<Int>("genre")
-
     override fun setInitialState(): SearchContract.State {
         return SearchContract.State(
+            q = null,
+            type = null,
+            score = null,
+            minScore = null,
+            maxScore = null,
+            status = null,
+            rating = null,
+            sfw = null,
+            genres = null,
+            genresExclude = null,
+            orderBy = null,
+            sort = null,
+            letter = null,
+            producer = null,
+            resultType = ResultType.History,
             searchAnimes = emptyList(),
             searchAnimesPaging = null,
             animeHistory = emptyList(),
             searchHistory = emptyList(),
-            genreFromArgs = "",
             isLoading = true,
             isError = false
         )
     }
 
-    init {
-        genreFromArgs.let {
-            if(genreFromArgs != null) {
-                setState {
-                    copy(genreFromArgs = it.toString())
-                }
-            }
-        }
-    }
-
     override fun handleEvents(event: SearchContract.Event) {
         when(event) {
-            is SearchContract.Event.SearchAnimePaging ->
-                setState {
-                    copy(searchAnimesPaging = getSearchAnimePaging(event.q, event.type, event.score, event.minScore, event.maxScore, event.status, event.rating, event.sfw, event.genres, event.genresExclude, event.orderBy, event.sort, event.letter, event.producer))
-                }
+            is SearchContract.Event.OnResultChanged -> {
+                setState { copy(resultType = event.resultType) }
+            }
 
-            is SearchContract.Event.SearchAnime ->
-                if(event.q?.length!! > 3) {
-                    getSearchAnime(event.q, event.type, event.score, event.minScore, event.maxScore, event.status, event.rating, event.sfw, event.genres, event.genresExclude, event.orderBy, event.sort, event.letter, event.producer)
+            is SearchContract.Event.OnQueryChanged -> {
+                setState {
+                    copy(
+                        q = event.q,
+                        type = event.type,
+                        score = event.score,
+                        minScore = event.minScore,
+                        maxScore = event.maxScore,
+                        status = event.status,
+                        rating = event.rating,
+                        sfw = event.sfw,
+                        genres = event.genres,
+                        genresExclude = event.genresExclude,
+                        orderBy = event.orderBy,
+                        sort = event.sort,
+                        letter = event.letter,
+                        producer = event.producer
+                    )
                 }
+            }
+
+            is SearchContract.Event.SearchAnime -> {
+                getSearchAnime(
+                    q = viewState.value.q,
+                    type = viewState.value.type,
+                    score = viewState.value.score,
+                    minScore = viewState.value.minScore,
+                    maxScore = viewState.value.maxScore,
+                    status = viewState.value.status,
+                    rating = viewState.value.rating,
+                    sfw = viewState.value.sfw,
+                    genres = viewState.value.genres,
+                    genresExclude = viewState.value.genresExclude,
+                    orderBy = viewState.value.orderBy,
+                    sort = viewState.value.sort,
+                    letter = viewState.value.letter,
+                    producer = viewState.value.producer
+                )
+            }
+
+            is SearchContract.Event.SearchAnimePaging -> {
+                setState {
+                    copy(
+                        searchAnimesPaging = getSearchAnimePaging(
+                            q = viewState.value.q,
+                            type = viewState.value.type,
+                            score = viewState.value.score,
+                            minScore = viewState.value.minScore,
+                            maxScore = viewState.value.maxScore,
+                            status = viewState.value.status,
+                            rating = viewState.value.rating,
+                            sfw = viewState.value.sfw,
+                            genres = viewState.value.genres,
+                            genresExclude = viewState.value.genresExclude,
+                            orderBy = viewState.value.orderBy,
+                            sort = viewState.value.sort,
+                            letter = viewState.value.letter,
+                            producer = viewState.value.producer
+                        )
+                    )
+                }
+            }
 
             is SearchContract.Event.InsertSearchHistory ->
                 insertSearchHistory(event.query)
@@ -105,7 +163,22 @@ class  SearchViewModel @Inject constructor(
                     setState {
                         copy(
                             isRefreshing = true,
-                            searchAnimesPaging = getSearchAnimePaging(event.q, event.type, event.score, event.minScore, event.maxScore, event.status, event.rating, event.sfw, event.genres, event.genresExclude, event.orderBy, event.sort, event.letter, event.producer)
+                            searchAnimesPaging = getSearchAnimePaging(
+                                q = viewState.value.q,
+                                type = viewState.value.type,
+                                score = viewState.value.score,
+                                minScore = viewState.value.minScore,
+                                maxScore = viewState.value.maxScore,
+                                status = viewState.value.status,
+                                rating = viewState.value.rating,
+                                sfw = viewState.value.sfw,
+                                genres = viewState.value.genres,
+                                genresExclude = viewState.value.genresExclude,
+                                orderBy = viewState.value.orderBy,
+                                sort = viewState.value.sort,
+                                letter = viewState.value.letter,
+                                producer = viewState.value.producer
+                            )
                         )
                     }
                     delay(1000)
@@ -115,7 +188,20 @@ class  SearchViewModel @Inject constructor(
         }
     }
 
+    private val genreFromArgs = savedStateHandle.get<Int>("genre")
+
     init {
+        genreFromArgs.let {
+            if(it != null && it != -1) {
+                setState {
+                    copy(
+                        genres = it.toString(),
+                        isLoading = false,
+                        resultType = ResultType.FullResult
+                    )
+                }
+            }
+        }
         animeHistory()
         searchHistory()
     }
@@ -136,6 +222,7 @@ class  SearchViewModel @Inject constructor(
         letter: String?,
         producer: String?
     ) {
+        Timber.d(genres)
         viewModelScope.launch(errorHandler) {
             try {
                 setState {
@@ -179,10 +266,10 @@ class  SearchViewModel @Inject constructor(
         letter: String?,
         producer: String?
     ): Flow<PagingData<AnimePresentation.Data>> {
+        Timber.d(genres)
         return getSearchAnimePaging.execute(q, type, score, minScore, maxScore, status, rating, sfw, genres, genresExclude, orderBy, sort, letter, producer)
             .map { it.map { animeMapper.toPresentation(it) } }
             .cachedIn(viewModelScope)
-
     }
 
     private fun animeHistory() {
@@ -197,7 +284,8 @@ class  SearchViewModel @Inject constructor(
                             .let { animes ->
                                 setState {
                                     copy(
-                                        animeHistory = animes
+                                        animeHistory = animes,
+                                        isLoading = false
                                     )
                                 }
                             }
@@ -220,7 +308,8 @@ class  SearchViewModel @Inject constructor(
                             .let { searchHistory ->
                                 setState {
                                     copy(
-                                        searchHistory = searchHistory
+                                        searchHistory = searchHistory,
+                                        isLoading = false
                                     )
                                 }
                             }

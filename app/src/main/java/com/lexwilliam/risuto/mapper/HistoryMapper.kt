@@ -18,7 +18,7 @@ interface HistoryMapper {
 class HistoryMapperImpl @Inject constructor(): HistoryMapper {
 
     override fun toDomain(search: SearchHistoryPresentation): SearchHistory =
-        SearchHistory(search.id, search.query)
+        SearchHistory(search.query)
 
     override fun toDomain(anime: AnimeDetailPresentation): AnimeHistory =
         AnimeHistory(
@@ -35,6 +35,6 @@ class HistoryMapperImpl @Inject constructor(): HistoryMapper {
         )
 
     override fun toPresentation(search: SearchHistory): SearchHistoryPresentation =
-        SearchHistoryPresentation(search.id, search.query)
+        SearchHistoryPresentation(search.query)
 
 }

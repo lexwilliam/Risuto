@@ -46,10 +46,8 @@ fun AnimeScreen(
     navToSearchWithGenre: (Int) -> Unit,
     navToDetail: (Int) -> Unit
 ) {
-    var isDone by remember { mutableStateOf(false) }
-    if(!state.isLoading && !isDone) {
+    LaunchedEffect(state.animeDetail) {
         onEventSent(AnimeContract.Event.InsertAnimeHistory(state.animeDetail))
-        isDone = true
     }
     val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(
         bottomSheetState = BottomSheetState(BottomSheetValue.Collapsed)
@@ -243,7 +241,7 @@ fun AnimeToolbar(
                 contentAlignment = Alignment.Center
             ) {
                 Row(
-                    modifier = Modifier.padding(start = 16.dp, end = 8.dp),
+                    modifier = Modifier.padding(start = 12.dp, end = 8.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     if(status.status == "") {

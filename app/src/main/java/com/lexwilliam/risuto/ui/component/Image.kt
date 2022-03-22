@@ -18,13 +18,18 @@ fun NetworkImage(
     if (imageUrl.isNotEmpty()) {
         AsyncImage(
             modifier = modifier
-                .background(color = MaterialTheme.colors.surface),
+                .background(color = MaterialTheme.colors.background),
             model = ImageRequest.Builder(LocalContext.current)
                 .data(imageUrl.replace("\\\\", "/"))
                 .crossfade(true)
                 .build(),
             contentDescription = null,
             contentScale = ContentScale.Crop
+        )
+    } else {
+        Box(
+            modifier = modifier
+                .background(MaterialTheme.colors.surface)
         )
     }
 }

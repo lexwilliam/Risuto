@@ -16,7 +16,6 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -63,81 +62,32 @@ fun SearchScreen(
     onBackPressed: () -> Unit
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
-    var query by rememberSaveable { mutableStateOf("") }
-    var genres by rememberSaveable { mutableStateOf("") }
     var cursorColor by remember { mutableStateOf(Color.Black) }
-    var resultState by rememberSaveable { mutableStateOf(ResultType.History) }
-    var isDone by rememberSaveable { mutableStateOf(false) }
-    Timber.d(resultState.name)
-    if(query.isEmpty() && state.genreFromArgs == "-1") {
-        resultState = ResultType.History
+    Timber.d(state.resultType.name)
+    Timber.d(state.genres.toString())
+    if(state.q == "" && state.genres == "-1") {
+        onEventSent(SearchContract.Event.OnResultChanged(ResultType.History))
     }
-    if(state.genreFromArgs != "" && !isDone) {
-        resultState = ResultType.FullResult
-        genres = state.genreFromArgs
-        onEventSent(
-            SearchContract.Event.SearchAnimePaging(
-                q = query,
-                type = null,
-                score = null,
-                minScore = null,
-                maxScore = null,
-                status = null,
-                rating = null,
-                sfw = null,
-                genres = genres,
-                genresExclude = null,
-                orderBy = null,
-                sort = null,
-                letter = null,
-                producer = null
-            )
+    if(state.isLoading) {
+        LoadingScreen()
+    } else {
+        SearchContent(
+            searchSuggestions = state.searchAnimes,
+            animes = state.searchAnimesPaging,
+            searchHistory = state.searchHistory,
+            animeHistory = state.animeHistory,
+            isRefreshing = state.isRefreshing,
+            onEventSent = { onEventSent(it) },
+            query = state.q,
+            resultType = state.resultType,
+            genres = state.genres,
+            keyboardController = keyboardController,
+            cursorColor = cursorColor,
+            onCursorChanged = { cursorColor = it },
+            navToDetail = { navToDetail(it) },
+            onBackPressed = { onBackPressed() }
         )
-        isDone = true
     }
-    if(resultState == ResultType.Suggestion) {
-        LaunchedEffect(query) {
-            delay(2000)
-            onEventSent(
-                SearchContract.Event.SearchAnime(
-                    q = query,
-                    type = null,
-                    score = null,
-                    minScore = null,
-                    maxScore = null,
-                    status = null,
-                    rating = null,
-                    sfw = null,
-                    genres = null,
-                    genresExclude = null,
-                    orderBy = null,
-                    sort = null,
-                    letter = null,
-                    producer = null
-                )
-            )
-        }
-    }
-    SearchContent(
-        searchSuggestions = state.searchAnimes,
-        animes = state.searchAnimesPaging,
-        searchHistory = state.searchHistory,
-        animeHistory = state.animeHistory,
-        isLoading = state.isLoading,
-        isRefreshing = state.isRefreshing,
-        onEventSent = { onEventSent(it) },
-        keyboardController = keyboardController,
-        cursorColor = cursorColor,
-        onCursorChanged = { cursorColor = it },
-        query = query,
-        onQueryChanged = { query = it },
-        resultState = resultState,
-        onResultChange = { resultState = it },
-        genres = genres,
-        onGenreChanged = { genres = it },
-        navToDetail = { navToDetail(it) },
-        onBackPressed = { onBackPressed() }
-    )
 }
 
 @ExperimentalFoundationApi
@@ -148,7 +98,6 @@ fun SearchContent(
     animes: Flow<PagingData<AnimePresentation.Data>>?,
     searchHistory: List<SearchHistoryPresentation>,
     animeHistory: List<ShortAnimePresentation>,
-    isLoading: Boolean,
     isRefreshing: Boolean,
     onEventSent: (SearchContract.Event) -> Unit,
 
@@ -156,12 +105,9 @@ fun SearchContent(
     cursorColor: Color,
     onCursorChanged: (Color) -> Unit,
 
-    query: String,
-    onQueryChanged: (String) -> Unit,
-    resultState: ResultType,
-    onResultChange: (ResultType) -> Unit,
-    genres: String,
-    onGenreChanged: (String) -> Unit,
+    query: String?,
+    resultType: ResultType,
+    genres: String?,
 
     navToDetail: (Int) -> Unit,
     onBackPressed: () -> Unit
@@ -172,36 +118,94 @@ fun SearchContent(
     ) {
         SearchBar(
             query = query,
-            onQueryChanged = { onQueryChanged(it) },
-            resultState = resultState,
+            genres = genres,
+            resultType = resultType,
             cursorColor = cursorColor,
             onCursorChanged = { onCursorChanged(it) },
             onEventSent = { onEventSent(it) },
-            onResultChange = { onResultChange(it) },
             onBackPressed = { onBackPressed() },
-            onDone = {
-                onResultChange(ResultType.FullResult)
-            }
         )
         SearchView(
             searchSuggestions = searchSuggestions,
             animes = animes,
             searchHistory = searchHistory,
             animeHistory = animeHistory,
-            isLoading = isLoading,
             isRefreshing = isRefreshing,
             onEventSent = { onEventSent(it) },
             keyboardController = keyboardController,
             onCursorChanged = { onCursorChanged(it) },
             query = query,
-            onQueryChanged = { onQueryChanged(it) },
-            resultState = resultState,
-            onResultChange = { onResultChange(it) },
             genres = genres,
-            onGenreChanged = { onGenreChanged(it) },
+            resultType = resultType,
             navToDetail = { navToDetail(it) }
         )
         ImeAvoidingBox()
+    }
+}
+
+@ExperimentalComposeUiApi
+@Composable
+fun SearchBar(
+    query: String?,
+    genres: String?,
+    resultType: ResultType,
+    cursorColor: Color,
+    onCursorChanged: (Color) -> Unit,
+    onEventSent: (SearchContract.Event) -> Unit,
+    onBackPressed: () -> Unit,
+) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val focusRequester = FocusRequester()
+    val isFocused by interactionSource.collectIsPressedAsState()
+
+    if(isFocused) {
+        onCursorChanged(Color.Black)
+    }
+    TopAppBar(
+        contentPadding = rememberInsetsPaddingValues(
+            insets = LocalWindowInsets.current.systemBars,
+            applyBottom = false,
+        ),
+        title = {
+            BasicTextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState())
+                    .focusRequester(focusRequester),
+                value = query?:"",
+                onValueChange = {
+                    onEventSent(SearchContract.Event.OnQueryChanged(q = it, genres = genres))
+                    onEventSent(SearchContract.Event.OnResultChanged(ResultType.Suggestion))
+                },
+                interactionSource = interactionSource,
+                textStyle = MaterialTheme.typography.subtitle1,
+                cursorBrush = SolidColor(cursorColor),
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Done
+                ),
+                keyboardActions = KeyboardActions( onDone = {
+                    onEventSent(SearchContract.Event.OnQueryChanged(q = query, genres = genres))
+                    onEventSent(SearchContract.Event.OnResultChanged(ResultType.FullResult))
+                    onEventSent(SearchContract.Event.InsertSearchHistory(query?:""))
+                    onCursorChanged(Color.Transparent)
+                })
+            )
+        },
+        navigationIcon = {
+            IconButton(onClick = { onBackPressed() }) {
+                Icon(Icons.Default.ArrowBack, contentDescription = null, tint = MaterialTheme.colors.secondary)
+            }
+        },
+        backgroundColor = MaterialTheme.colors.primary,
+        contentColor = MaterialTheme.colors.secondary
+    )
+    if(resultType == ResultType.History) {
+        DisposableEffect(Unit) {
+            focusRequester.requestFocus()
+            onDispose { }
+        }
     }
 }
 
@@ -213,53 +217,38 @@ fun SearchView(
     animes: Flow<PagingData<AnimePresentation.Data>>?,
     searchHistory: List<SearchHistoryPresentation>,
     animeHistory: List<ShortAnimePresentation>,
-    isLoading: Boolean,
     isRefreshing: Boolean,
     onEventSent: (SearchContract.Event) -> Unit,
 
     keyboardController: SoftwareKeyboardController?,
     onCursorChanged: (Color) -> Unit,
 
-    query: String,
-    onQueryChanged: (String) -> Unit,
-    resultState: ResultType,
-    onResultChange: (ResultType) -> Unit,
-    genres: String,
-    onGenreChanged: (String) -> Unit,
+    query: String?,
+    resultType: ResultType,
+    genres: String?,
 
     navToDetail: (Int) -> Unit
 ) {
-    when(resultState){
+    when(resultType){
         ResultType.FullResult -> {
             keyboardController?.hide()
-            ResultView(animes = animes, query = query, genres = genres, isRefreshing = isRefreshing, onEventSent = { onEventSent(it) }, navToDetail = { navToDetail(it) })
+            LaunchedEffect(1) {
+                onEventSent(SearchContract.Event.SearchAnimePaging)
+            }
+            ResultView(animes = animes, isRefreshing = isRefreshing, onEventSent = { onEventSent(it) }, navToDetail = { navToDetail(it) })
         }
         ResultType.Suggestion -> {
+            LaunchedEffect(query) {
+                delay(1000)
+                onEventSent(SearchContract.Event.SearchAnime)
+            }
             SuggestionView(
                 items = searchSuggestions.map { SearchHistoryPresentation(query = it.title) },
                 onSelectItem = {
-                    onQueryChanged(it.query)
-                    onEventSent(
-                        SearchContract.Event.SearchAnimePaging(
-                            q = it.query,
-                            type = null,
-                            score = null,
-                            minScore = null,
-                            maxScore = null,
-                            status = null,
-                            rating = null,
-                            sfw = null,
-                            genres = null,
-                            genresExclude = null,
-                            orderBy = null,
-                            sort = null,
-                            letter = null,
-                            producer = null
-                        )
-                    )
-                    onEventSent(SearchContract.Event.InsertSearchHistory(query))
+                    onEventSent(SearchContract.Event.OnQueryChanged(q = it.query, genres = genres))
+                    onEventSent(SearchContract.Event.InsertSearchHistory(query?:""))
                     onCursorChanged(Color.Transparent)
-                    onResultChange(ResultType.FullResult)
+                    onEventSent(SearchContract.Event.OnResultChanged(ResultType.FullResult))
                 }
             )
         }
@@ -269,8 +258,6 @@ fun SearchView(
                 searchHistory = searchHistory,
                 onEventSent = { onEventSent(it) },
                 navToDetail = { navToDetail(it) },
-                onResultChange = { onResultChange(it) },
-                onQueryChanged = { onQueryChanged(it) },
                 onCursorChanged = { onCursorChanged(it) }
             )
         }
@@ -284,8 +271,6 @@ enum class ResultType{
 @Composable
 fun ResultView(
     animes: Flow<PagingData<AnimePresentation.Data>>?,
-    query: String,
-    genres: String,
     isRefreshing: Boolean,
     onEventSent: (SearchContract.Event) -> Unit,
     navToDetail: (Int) -> Unit
@@ -295,24 +280,7 @@ fun ResultView(
         SwipeRefresh(
             state = rememberSwipeRefreshState(isRefreshing),
             onRefresh = {
-                onEventSent(
-                    SearchContract.Event.RefreshPaging(
-                        q = query,
-                        type = null,
-                        score = null,
-                        minScore = null,
-                        maxScore = null,
-                        status = null,
-                        rating = null,
-                        sfw = null,
-                        genres = if(genres != "-1") genres else null,
-                        genresExclude = null,
-                        orderBy = null,
-                        sort = null,
-                        letter = null,
-                        producer = null
-                    )
-                )
+                onEventSent(SearchContract.Event.RefreshPaging)
             }
         ) {
             LazyColumn(
@@ -360,8 +328,6 @@ fun HistoryView(
     searchHistory: List<SearchHistoryPresentation>,
     onEventSent: (SearchContract.Event) -> Unit,
     navToDetail: (Int) -> Unit,
-    onResultChange: (ResultType) -> Unit,
-    onQueryChanged: (String) -> Unit,
     onCursorChanged: (Color) -> Unit
 ) {
     Column(
@@ -418,117 +384,14 @@ fun HistoryView(
             QueryListWithDelete(
                 items = searchHistory.map { SearchHistoryPresentation(query = it.query) },
                 onSelectItem = {
-                    onQueryChanged(it.query)
-                    onEventSent(
-                        SearchContract.Event.SearchAnimePaging(
-                            q = it.query,
-                            type = null,
-                            score = null,
-                            minScore = null,
-                            maxScore = null,
-                            status = null,
-                            rating = null,
-                            sfw = null,
-                            genres = null,
-                            genresExclude = null,
-                            orderBy = null,
-                            sort = null,
-                            letter = null,
-                            producer = null
-                        )
-                    )
-                    onResultChange(ResultType.FullResult)
+                    onEventSent(SearchContract.Event.OnQueryChanged(q = it.query))
+                    onEventSent(SearchContract.Event.OnResultChanged(ResultType.FullResult))
                     onCursorChanged(Color.Transparent)
                 },
                 onDeleteItem = {
                     onEventSent(SearchContract.Event.DeleteSearchHistory(it))
                 }
             )
-        }
-    }
-}
-
-@ExperimentalComposeUiApi
-@Composable
-fun SearchBar(
-    query: String,
-    onQueryChanged: (String) -> Unit,
-    resultState: ResultType,
-    onResultChange: (ResultType) -> Unit,
-    cursorColor: Color,
-    onCursorChanged: (Color) -> Unit,
-    onEventSent: (SearchContract.Event) -> Unit,
-    onBackPressed: () -> Unit,
-    onDone: () -> Unit,
-) {
-    val interactionSource = remember { MutableInteractionSource() }
-    val focusRequester = FocusRequester()
-    val isFocused by interactionSource.collectIsPressedAsState()
-
-    if(isFocused) {
-        onCursorChanged(Color.Black)
-    }
-    TopAppBar(
-        contentPadding = rememberInsetsPaddingValues(
-            insets = LocalWindowInsets.current.systemBars,
-            applyBottom = false,
-        ),
-        title = {
-            BasicTextField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .horizontalScroll(rememberScrollState())
-                    .focusRequester(focusRequester),
-                value = query,
-                onValueChange = {
-                    onQueryChanged(it)
-                    onResultChange(ResultType.Suggestion)
-                },
-                interactionSource = interactionSource,
-                textStyle = MaterialTheme.typography.subtitle1,
-                cursorBrush = SolidColor(cursorColor),
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Done
-                ),
-                keyboardActions = KeyboardActions( onDone = {
-                    onEventSent(
-                        SearchContract.Event.SearchAnimePaging(
-                            q = query,
-                            type = null,
-                            score = null,
-                            minScore = null,
-                            maxScore = null,
-                            status = null,
-                            rating = null,
-                            sfw = null,
-                            genres = null,
-                            genresExclude = null,
-                            orderBy = null,
-                            sort = null,
-                            letter = null,
-                            producer = null
-                        )
-                    )
-                    onEventSent(SearchContract.Event.InsertSearchHistory(query))
-                    onDone()
-                    onCursorChanged(Color.Transparent)
-                })
-            )
-        },
-        navigationIcon = {
-            IconButton(onClick = { onBackPressed() }) {
-                Icon(Icons.Default.ArrowBack, contentDescription = null, tint = MaterialTheme.colors.secondary)
-            }
-        },
-        backgroundColor = MaterialTheme.colors.primary,
-        contentColor = MaterialTheme.colors.secondary
-    )
-    if(resultState == ResultType.History) {
-        DisposableEffect(Unit) {
-            focusRequester.requestFocus()
-            onDispose { }
         }
     }
 }
@@ -661,8 +524,6 @@ fun HistoryPreview() {
                 searchHistory = listOf(SearchHistoryPresentation(query = "test123")),
                 onEventSent = {},
                 navToDetail = {},
-                onResultChange = {},
-                onQueryChanged = {},
                 onCursorChanged = {}
             )
         }
