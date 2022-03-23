@@ -65,12 +65,12 @@ fun SearchScreen(
     var cursorColor by remember { mutableStateOf(Color.Black) }
     Timber.d(state.resultType.name)
     Timber.d(state.genres.toString())
-    if(state.q == "" && state.genres == "-1") {
-        onEventSent(SearchContract.Event.OnResultChanged(ResultType.History))
-    }
     if(state.isLoading) {
         LoadingScreen()
     } else {
+        if(state.q == "" && state.genres == "-1") {
+            onEventSent(SearchContract.Event.OnResultChanged(ResultType.History))
+        }
         SearchContent(
             searchSuggestions = state.searchAnimes,
             animes = state.searchAnimesPaging,

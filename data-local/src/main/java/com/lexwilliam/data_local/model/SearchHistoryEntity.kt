@@ -8,5 +8,6 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "searchHistory")
 data class SearchHistoryEntity(
     @PrimaryKey
-    val query: String
+    val query: String,
+    val timeAdded: Long = System.currentTimeMillis()
 )

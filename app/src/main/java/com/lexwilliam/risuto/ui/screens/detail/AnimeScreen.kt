@@ -46,9 +46,6 @@ fun AnimeScreen(
     navToSearchWithGenre: (Int) -> Unit,
     navToDetail: (Int) -> Unit
 ) {
-    LaunchedEffect(state.animeDetail) {
-        onEventSent(AnimeContract.Event.InsertAnimeHistory(state.animeDetail))
-    }
     val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(
         bottomSheetState = BottomSheetState(BottomSheetValue.Collapsed)
     )
@@ -57,6 +54,9 @@ fun AnimeScreen(
     if(state.isLoading) {
         LoadingScreen()
     } else {
+        LaunchedEffect(state.animeDetail) {
+            onEventSent(AnimeContract.Event.InsertAnimeHistory(state.animeDetail))
+        }
         BottomSheetScaffold(
             scaffoldState = bottomSheetScaffoldState,
             sheetPeekHeight = 0.dp,
