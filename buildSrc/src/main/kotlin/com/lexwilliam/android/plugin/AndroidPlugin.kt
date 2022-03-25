@@ -39,7 +39,7 @@ open class AndroidPlugin : Plugin<Project> {
 
         defaultConfig {
             versionCode = 1
-            versionName = "1.0"
+            versionName = AndroidSettings.appVersionName
 
             testInstrumentationRunner = AndroidSettings.testInstrumentationRunner
 
