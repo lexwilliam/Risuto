@@ -1,7 +1,7 @@
 package com.lexwilliam.dependencies
 
 object AndroidSettings {
-    const val appVersionName = "0.8.0-alpha"
+    const val appVersionName = "0.8.1-alpha"
     const val compileSdk = 31
     const val buildTools = "30.0.3"
     const val minSdk = 26
