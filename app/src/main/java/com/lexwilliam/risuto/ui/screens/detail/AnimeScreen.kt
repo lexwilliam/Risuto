@@ -4,8 +4,7 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -50,7 +49,8 @@ fun AnimeScreen(
         bottomSheetState = BottomSheetState(BottomSheetValue.Collapsed)
     )
     val coroutineScope = rememberCoroutineScope()
-
+    val scrollState = rememberLazyListState()
+    Timber.d(scrollState.firstVisibleItemIndex.toString())
     if(state.isLoading) {
         LoadingScreen()
     } else {
@@ -80,11 +80,13 @@ fun AnimeScreen(
                 AnimeContent(
                     animeDetail = state.animeDetail,
                     characters = state.characters,
+                    scrollState = scrollState,
                     navToSearchWithGenre = navToSearchWithGenre,
                     navToDetail = navToDetail
                 )
                 AnimeToolbar(
                     status = state.myListStatus,
+                    scrollState = scrollState,
                     onAddPressed = {
                         coroutineScope.launch {
                             bottomSheetScaffoldState.bottomSheetState.expand()
@@ -197,15 +199,21 @@ fun MyAnimeMenu(
 @Composable
 fun AnimeToolbar(
     status: AnimeDetailPresentation.MyListStatus,
+    scrollState: LazyListState,
     onAddPressed: () -> Unit,
     onBackPressed: () -> Unit
 ) {
+    var backgroundColor by remember { mutableStateOf(Color.Transparent) }
+    if(scrollState.firstVisibleItemIndex > 0)
+        backgroundColor = MaterialTheme.colors.background
+    else
+        backgroundColor = Color.Transparent
     TopAppBar(
         contentPadding = rememberInsetsPaddingValues(
             insets = LocalWindowInsets.current.systemBars,
             applyBottom = false,
         ),
-        backgroundColor = Color.Transparent,
+        backgroundColor = backgroundColor,
         elevation = 0.dp,
         title = { Text("") },
         navigationIcon = {
@@ -269,25 +277,40 @@ fun AnimeToolbar(
 fun AnimeContent(
     animeDetail: AnimeDetailPresentation,
     characters: List<AnimeCharactersPresentation.Data>,
+    scrollState: LazyListState,
     navToSearchWithGenre: (Int) -> Unit,
     navToDetail: (Int) -> Unit
 ) {
-    Column(
+    LazyColumn(
         modifier = Modifier
             .navigationBarsWithImePadding()
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState()),
+            .fillMaxSize(),
+        state = scrollState,
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        AnimeDetail(animeDetail = animeDetail, navToSearchWithGenre = { navToSearchWithGenre(it) })
-        CharVoiceActorList(characters = characters)
-        AnimeSynopsis(synopsis = animeDetail.synopsis)
-        AnimeInfo(animeDetail = animeDetail)
-        DetailPictureList(pictures = animeDetail.pictures)
-        RelatedAnimeList(relatedAnime = animeDetail.related_anime, navToDetail = navToDetail)
-        RecommendationAnimeList(recommendations = animeDetail.recommendations, navToDetail = navToDetail)
-        Spacer(modifier = Modifier.padding(4.dp))
+        item { AnimePoster(imageUrl = animeDetail.main_picture.large) }
+        item { AnimeDetail(animeDetail = animeDetail, navToSearchWithGenre = { navToSearchWithGenre(it) }) }
+        item { CharVoiceActorList(characters = characters) }
+        item { AnimeSynopsis(synopsis = animeDetail.synopsis) }
+        item { AnimeInfo(animeDetail = animeDetail) }
+        item { DetailPictureList(pictures = animeDetail.pictures) }
+        item { RelatedAnimeList(relatedAnime = animeDetail.related_anime, navToDetail = navToDetail) }
+        item { RecommendationAnimeList(recommendations = animeDetail.recommendations, navToDetail = navToDetail) }
+        item { Spacer(modifier = Modifier.padding(4.dp)) }
     }
+}
+
+@Composable
+fun AnimePoster(
+    imageUrl: String
+) {
+    NetworkImage(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 40.dp)
+            .clip(RoundedCornerShape(bottomStart = 32.dp)),
+        imageUrl = imageUrl
+    )
 }
 
 @Composable
@@ -299,18 +322,6 @@ fun AnimeDetail(
         modifier = Modifier.padding(start = 40.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-        ) {
-            NetworkImage(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(500.dp)
-                    .clip(RoundedCornerShape(bottomStart = 32.dp)),
-                imageUrl = animeDetail.main_picture.large
-            )
-        }
         Column(
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
@@ -739,7 +750,7 @@ fun AnimeSuggestionPreview() {
 @Composable
 fun AnimeToolbarPreview() {
     RisutoTheme {
-        AnimeToolbar(status = AnimeDetailPresentation.MyListStatus(false, -1, 10, "plan_to_watch", ""), onAddPressed = {}, onBackPressed = {})
+        AnimeToolbar(status = AnimeDetailPresentation.MyListStatus(false, -1, 10, "plan_to_watch", ""), scrollState = LazyListState(), onAddPressed = {}, onBackPressed = {})
     }
 }
 
