@@ -6,6 +6,9 @@ And also because althrogh i really like the website design, i didn't really like
 All of the anime data comes from [MyAnimeList](https://myanimelist.net/) for anime detail and authentication with MAL account and using [JikanAPI](https://jikan.moe/) to call more data from MyAnimeList Website
 
 # Preview
+You can download the preview of the app in the [Release Page](https://github.com/lexwilliam/Risuto/releases). This app is still on alpha so there will be bugs and the 
+look of will not be consistent
+
 <br><img src= "readme/home.png" width="240"></img> <img src= "readme/seachhome.png" width="240"></img> <img src= "readme/login.png" width="240"></img> <br>
 <br><img src= "readme/season.png" width="240"></img> <img src= "readme/myanime.png" width="240"></img> <img src= "readme/detail.png" width="240"></img> <br>
 Also available in Light Mode
