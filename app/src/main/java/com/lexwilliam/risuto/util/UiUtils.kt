@@ -5,6 +5,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.lexwilliam.risuto.model.AnimeCharactersPresentation
 import com.lexwilliam.risuto.model.AnimeDetailPresentation
+import com.lexwilliam.risuto.model.AnimeVideosPresentation
 import com.lexwilliam.risuto.model.WatchStatusPresentation
 import org.joda.time.LocalDate
 import java.text.NumberFormat
@@ -131,3 +132,11 @@ fun getInitialAnimeDetails() =
         "", -1, -1, -1, emptyList(), -1, -1, "", emptyList(),
         emptyList(), emptyList(), "", "", AnimeDetailPresentation.StartSeason("", -1), AnimeDetailPresentation.Statistics(-1, AnimeDetailPresentation.Status("", "", "", "", "")),
         "", emptyList(), "", "", "")
+
+fun getInitialAnimeVideos() =
+    AnimeVideosPresentation(
+        AnimeVideosPresentation.Data(
+            emptyList(),
+            emptyList()
+        )
+    )

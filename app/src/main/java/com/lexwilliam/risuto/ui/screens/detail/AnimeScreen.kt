@@ -28,6 +28,7 @@ import com.google.accompanist.insets.navigationBarsWithImePadding
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.lexwilliam.risuto.model.AnimeCharactersPresentation
 import com.lexwilliam.risuto.model.AnimeDetailPresentation
+import com.lexwilliam.risuto.model.AnimeVideosPresentation
 import com.lexwilliam.risuto.ui.component.*
 import com.lexwilliam.risuto.ui.theme.RisutoTheme
 import com.lexwilliam.risuto.util.*
@@ -80,6 +81,7 @@ fun AnimeScreen(
                 AnimeContent(
                     animeDetail = state.animeDetail,
                     characters = state.characters,
+                    videos = state.videos,
                     scrollState = scrollState,
                     navToSearchWithGenre = navToSearchWithGenre,
                     navToDetail = navToDetail
@@ -214,7 +216,7 @@ fun AnimeToolbar(
             applyBottom = false,
         ),
         backgroundColor = backgroundColor,
-        elevation = 0.dp,
+        elevation = if(backgroundColor == Color.Transparent) 0.dp else 8.dp,
         title = { Text("") },
         navigationIcon = {
             Box(
@@ -277,6 +279,7 @@ fun AnimeToolbar(
 fun AnimeContent(
     animeDetail: AnimeDetailPresentation,
     characters: List<AnimeCharactersPresentation.Data>,
+    videos: AnimeVideosPresentation,
     scrollState: LazyListState,
     navToSearchWithGenre: (Int) -> Unit,
     navToDetail: (Int) -> Unit
@@ -292,6 +295,7 @@ fun AnimeContent(
         item { AnimeDetail(animeDetail = animeDetail, navToSearchWithGenre = { navToSearchWithGenre(it) }) }
         item { CharVoiceActorList(characters = characters) }
         item { AnimeSynopsis(synopsis = animeDetail.synopsis) }
+        item { AnimeTrailer(videos = videos) }
         item { AnimeInfo(animeDetail = animeDetail) }
         item { DetailPictureList(pictures = animeDetail.pictures) }
         item { RelatedAnimeList(relatedAnime = animeDetail.related_anime, navToDetail = navToDetail) }
@@ -509,6 +513,13 @@ fun CharVoiceActorList(
             }
         }
     }
+}
+
+@Composable
+fun AnimeTrailer(
+    videos: AnimeVideosPresentation
+) {
+
 }
 
 @Composable

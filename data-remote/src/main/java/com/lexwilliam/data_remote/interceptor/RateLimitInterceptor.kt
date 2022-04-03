@@ -11,10 +11,10 @@ class RateLimitInterceptor : Interceptor {
 
         if (!response.isSuccessful && response.code == 429) {
             try {
-                Timber.e("You are being rate limited or Jikan is being rate limited by MyAnimeList, retrying in 4 seconds...")
-                Thread.sleep(1000L)
+                Timber.e("You are being rate limited or Jikan is being rate limited by MyAnimeList, retrying in 2 seconds...")
+                Thread.sleep(2000L)
             } catch (e: InterruptedException) {
-
+                Timber.e("Rate Limiting Error")
             }
 
             response = chain.proceed(chain.request())

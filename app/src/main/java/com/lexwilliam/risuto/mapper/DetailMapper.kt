@@ -2,15 +2,19 @@ package com.lexwilliam.risuto.mapper
 
 import com.lexwilliam.data.model.remote.anime.AnimeCharactersRepo
 import com.lexwilliam.data.model.remote.anime.AnimeDetailRepo
+import com.lexwilliam.data.model.remote.anime.AnimeVideosRepo
 import com.lexwilliam.domain.model.remote.anime.AnimeCharacters
 import com.lexwilliam.domain.model.remote.anime.AnimeDetail
+import com.lexwilliam.domain.model.remote.anime.AnimeVideos
 import com.lexwilliam.risuto.model.AnimeCharactersPresentation
 import com.lexwilliam.risuto.model.AnimeDetailPresentation
+import com.lexwilliam.risuto.model.AnimeVideosPresentation
 import javax.inject.Inject
 
 interface DetailMapper {
     fun toPresentation(detail: AnimeDetail): AnimeDetailPresentation
     fun toPresentation(characters: AnimeCharacters): AnimeCharactersPresentation
+    fun toPresentation(videos: AnimeVideos): AnimeVideosPresentation
 }
 
 class DetailMapperImpl @Inject constructor(): DetailMapper {
@@ -19,6 +23,9 @@ class DetailMapperImpl @Inject constructor(): DetailMapper {
 
     override fun toPresentation(characters: AnimeCharacters): AnimeCharactersPresentation =
         AnimeCharactersPresentation(characters.data.map { toPresentation(it) })
+
+    override fun toPresentation(videos: AnimeVideos): AnimeVideosPresentation =
+        AnimeVideosPresentation(toPresentation(videos.data))
 
     private fun toPresentation(alter: AnimeDetail.AlternativeTitles): AnimeDetailPresentation.AlternativeTitles =
         AnimeDetailPresentation.AlternativeTitles(alter.en, alter.ja, alter.synonyms)
@@ -85,4 +92,27 @@ class DetailMapperImpl @Inject constructor(): DetailMapper {
 
     private fun toPresentation(jpg: AnimeCharacters.Data.VoiceActor.Person.Images.Jpg): AnimeCharactersPresentation.Data.VoiceActor.Person.Images.Jpg =
         AnimeCharactersPresentation.Data.VoiceActor.Person.Images.Jpg(jpg.image_url)
+
+    // AnimeVideos
+
+    private fun toPresentation(data: AnimeVideos.Data): AnimeVideosPresentation.Data =
+        AnimeVideosPresentation.Data(data.episodes.map { toPresentation(it) }, data.promos.map { toPresentation(it) })
+
+    private fun toPresentation(episode: AnimeVideos.Data.Episode): AnimeVideosPresentation.Data.Episode =
+        AnimeVideosPresentation.Data.Episode(episode.episode, toPresentation(episode.images), episode.mal_id, episode.title, episode.url)
+
+    private fun toPresentation(images: AnimeVideos.Data.Episode.Images): AnimeVideosPresentation.Data.Episode.Images =
+        AnimeVideosPresentation.Data.Episode.Images(toPresentation(images.jpg))
+
+    private fun toPresentation(jpg: AnimeVideos.Data.Episode.Images.Jpg): AnimeVideosPresentation.Data.Episode.Images.Jpg =
+        AnimeVideosPresentation.Data.Episode.Images.Jpg(jpg.image_url)
+
+    private fun toPresentation(promo: AnimeVideos.Data.Promo): AnimeVideosPresentation.Data.Promo =
+        AnimeVideosPresentation.Data.Promo(promo.title, toPresentation(promo.trailer))
+
+    private fun toPresentation(trailer: AnimeVideos.Data.Promo.Trailer): AnimeVideosPresentation.Data.Promo.Trailer =
+        AnimeVideosPresentation.Data.Promo.Trailer(trailer.embed_url, toPresentation(trailer.images), trailer.url, trailer.youtube_id)
+
+    private fun toPresentation(image: AnimeVideos.Data.Promo.Trailer.ImagesX): AnimeVideosPresentation.Data.Promo.Trailer.ImagesX =
+        AnimeVideosPresentation.Data.Promo.Trailer.ImagesX(image.default_image_url, image.large_image_url, image.maximum_image_url, image.medium_image_url, image.small_image_url)
 }

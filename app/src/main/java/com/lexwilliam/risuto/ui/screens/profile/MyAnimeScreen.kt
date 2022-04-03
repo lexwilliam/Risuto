@@ -4,8 +4,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.GridCells
-import androidx.compose.foundation.lazy.LazyVerticalGrid
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -19,7 +18,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.material.TabRowDefaults
-import com.google.accompanist.flowlayout.FlowRow
+import androidx.compose.material.icons.filled.Star
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.navigationBarsWithImePadding
 import com.google.accompanist.insets.rememberInsetsPaddingValues
@@ -35,7 +34,6 @@ import com.lexwilliam.risuto.model.UserAnimeListPresentation
 import com.lexwilliam.risuto.model.WatchStatusPresentation
 import com.lexwilliam.risuto.ui.component.LoadingScreen
 import com.lexwilliam.risuto.ui.component.NetworkImage
-import com.lexwilliam.risuto.util.intToCurrency
 import com.lexwilliam.risuto.util.watchStatusList
 import com.lexwilliam.risuto.util.watchStatusToString
 import kotlinx.coroutines.launch
@@ -104,7 +102,7 @@ fun MyAnimeContent(
             expanded = expanded,
             isExpanded = { isExpanded(it) }
         )
-        MyAnimeGridList(items = myAnimeList, isRefreshing = isRefreshing, onEventSent = { onEventSent(it) }, navToDetail = { navToDetail(it) })
+        MyAnimeList(items = myAnimeList, isRefreshing = isRefreshing, onEventSent = { onEventSent(it) }, navToDetail = { navToDetail(it) })
     }
 }
 
@@ -152,34 +150,41 @@ fun MyAnimeToolbar(
 }
 
 @Composable
-fun MyAnimeGrid(
+fun MyAnimeRowItem(
     modifier: Modifier = Modifier,
     item: UserAnimeListPresentation.Data,
     navToDetail: (Int) -> Unit
 ) {
-    Column(
-        modifier = modifier
+    Row(
+        modifier
+            .fillMaxWidth()
             .clickable {
                 navToDetail(item.node.id)
             }
-    ) {
+            .height(180.dp)) {
         NetworkImage(
             imageUrl = item.node.mainPicture.medium,
             modifier = Modifier
-                .size(width = 180.dp, height = 240.dp)
-                .shadow(elevation = 4.dp, shape = MaterialTheme.shapes.medium, clip = true)
+                .size(width = 120.dp, height = 180.dp)
+                .shadow(elevation = 4.dp, shape = MaterialTheme.shapes.medium, true)
         )
-        Text(text = item.node.title,
-            maxLines = 2,
-            modifier = Modifier.padding(top = 4.dp),
-            style = MaterialTheme.typography.subtitle1
-        )
-        Row(
-            modifier = Modifier.requiredHeight(IntrinsicSize.Min),
-            horizontalArrangement = Arrangement.spacedBy(4.dp)
+        Column(modifier = Modifier
+            .padding(start = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            Text(text = watchStatusToString(item.listStatus.status), style = MaterialTheme.typography.caption)
-            Text(text = intToCurrency(item.listStatus.score), style = MaterialTheme.typography.caption)
+            Text(
+                text = item.node.title,
+                style = MaterialTheme.typography.subtitle1,
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                text = if (item.listStatus.score == -1) "${watchStatusToString(item.listStatus.status)} 0" else "${watchStatusToString(item.listStatus.status)} ${item.listStatus.score}",
+                style = MaterialTheme.typography.caption
+            )
+            Text(
+                text = "Eps: ${item.listStatus.numWatchedEpisodes}/${item.node.numTotalEpisodes}",
+                style = MaterialTheme.typography.caption
+            )
         }
     }
 }
@@ -188,7 +193,7 @@ fun MyAnimeGrid(
 @OptIn(ExperimentalPagerApi::class)
 @ExperimentalFoundationApi
 @Composable
-fun MyAnimeGridList(
+fun MyAnimeList(
     modifier: Modifier = Modifier,
     items: List<UserAnimeListPresentation.Data>,
     isRefreshing: Boolean,
@@ -234,11 +239,11 @@ fun MyAnimeGridList(
                     onEventSent(MyAnimeContract.Event.RefreshList)
                 },
             ) {
-                LazyVerticalGrid(
+                LazyColumn(
                     modifier = modifier
-                        .padding(start = 16.dp)
+                        .padding(horizontal = 16.dp)
                         .fillMaxSize(),
-                    cells = GridCells.Adaptive(minSize = 136.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     items(
                         items = when(page) {
@@ -251,7 +256,7 @@ fun MyAnimeGridList(
                             else -> items
                         }
                     ) { item ->
-                        MyAnimeGrid(item = item, modifier = Modifier.padding(top = 16.dp, end = 16.dp), navToDetail = { navToDetail(it) })
+                        MyAnimeRowItem(item = item, modifier = Modifier.padding(top = 16.dp, end = 16.dp), navToDetail = { navToDetail(it) })
                     }
                 }
             }

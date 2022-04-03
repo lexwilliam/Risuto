@@ -2,13 +2,16 @@ package com.lexwilliam.data.mapper
 
 import com.lexwilliam.data.model.remote.anime.AnimeCharactersRepo
 import com.lexwilliam.data.model.remote.anime.AnimeDetailRepo
+import com.lexwilliam.data.model.remote.anime.AnimeVideosRepo
 import com.lexwilliam.domain.model.remote.anime.AnimeCharacters
 import com.lexwilliam.domain.model.remote.anime.AnimeDetail
+import com.lexwilliam.domain.model.remote.anime.AnimeVideos
 import javax.inject.Inject
 
 interface DetailMapper {
     fun toDomain(detail: AnimeDetailRepo): AnimeDetail
     fun toDomain(characters: AnimeCharactersRepo): AnimeCharacters
+    fun toDomain(videos: AnimeVideosRepo): AnimeVideos
 }
 
 class DetailMapperImpl @Inject constructor(): DetailMapper {
@@ -17,6 +20,9 @@ class DetailMapperImpl @Inject constructor(): DetailMapper {
 
     override fun toDomain(characters: AnimeCharactersRepo): AnimeCharacters =
         AnimeCharacters(characters.data.map { toDomain(it) })
+
+    override fun toDomain(videos: AnimeVideosRepo): AnimeVideos =
+        AnimeVideos(toDomain(videos.data))
 
     private fun toDomain(alter: AnimeDetailRepo.AlternativeTitles): AnimeDetail.AlternativeTitles =
         AnimeDetail.AlternativeTitles(alter.en, alter.ja, alter.synonyms)
@@ -83,4 +89,27 @@ class DetailMapperImpl @Inject constructor(): DetailMapper {
 
     private fun toDomain(jpg: AnimeCharactersRepo.Data.VoiceActor.Person.Images.Jpg): AnimeCharacters.Data.VoiceActor.Person.Images.Jpg =
         AnimeCharacters.Data.VoiceActor.Person.Images.Jpg(jpg.image_url)
+
+    // AnimeVideos
+
+    private fun toDomain(data: AnimeVideosRepo.Data): AnimeVideos.Data =
+        AnimeVideos.Data(data.episodes.map { toDomain(it) }, data.promos.map { toDomain(it) })
+
+    private fun toDomain(episode: AnimeVideosRepo.Data.Episode): AnimeVideos.Data.Episode =
+        AnimeVideos.Data.Episode(episode.episode, toDomain(episode.images), episode.mal_id, episode.title, episode.url)
+
+    private fun toDomain(images: AnimeVideosRepo.Data.Episode.Images): AnimeVideos.Data.Episode.Images =
+        AnimeVideos.Data.Episode.Images(toDomain(images.jpg))
+
+    private fun toDomain(jpg: AnimeVideosRepo.Data.Episode.Images.Jpg): AnimeVideos.Data.Episode.Images.Jpg =
+        AnimeVideos.Data.Episode.Images.Jpg(jpg.image_url)
+
+    private fun toDomain(promo: AnimeVideosRepo.Data.Promo): AnimeVideos.Data.Promo =
+        AnimeVideos.Data.Promo(promo.title, toDomain(promo.trailer))
+
+    private fun toDomain(trailer: AnimeVideosRepo.Data.Promo.Trailer): AnimeVideos.Data.Promo.Trailer =
+        AnimeVideos.Data.Promo.Trailer(trailer.embed_url, toDomain(trailer.images), trailer.url, trailer.youtube_id)
+
+    private fun toDomain(image: AnimeVideosRepo.Data.Promo.Trailer.ImagesX): AnimeVideos.Data.Promo.Trailer.ImagesX =
+        AnimeVideos.Data.Promo.Trailer.ImagesX(image.default_image_url, image.large_image_url, image.maximum_image_url, image.medium_image_url, image.small_image_url)
 }

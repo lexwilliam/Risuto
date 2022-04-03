@@ -18,7 +18,7 @@ fun NetworkImage(
     if (imageUrl.isNotEmpty()) {
         AsyncImage(
             modifier = modifier
-                .background(color = MaterialTheme.colors.background),
+                .background(color = MaterialTheme.colors.surface),
             model = ImageRequest.Builder(LocalContext.current)
                 .data(imageUrl.replace("\\\\", "/"))
                 .crossfade(true)

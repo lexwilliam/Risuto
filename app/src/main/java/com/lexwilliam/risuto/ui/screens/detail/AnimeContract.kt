@@ -5,6 +5,7 @@ import com.lexwilliam.risuto.base.ViewSideEffect
 import com.lexwilliam.risuto.base.ViewState
 import com.lexwilliam.risuto.model.AnimeCharactersPresentation
 import com.lexwilliam.risuto.model.AnimeDetailPresentation
+import com.lexwilliam.risuto.model.AnimeVideosPresentation
 
 class AnimeContract {
     sealed class Event : ViewEvent {
@@ -18,6 +19,7 @@ class AnimeContract {
         val animeDetail: AnimeDetailPresentation,
         val myListStatus: AnimeDetailPresentation.MyListStatus,
         val characters: List<AnimeCharactersPresentation.Data>,
+        val videos: AnimeVideosPresentation,
         val isLoading: Boolean = false,
         val isError: Boolean = false
     ) : ViewState

@@ -8,6 +8,7 @@ import com.lexwilliam.risuto.mapper.DetailMapper
 import com.lexwilliam.risuto.mapper.HistoryMapper
 import com.lexwilliam.risuto.model.AnimeDetailPresentation
 import com.lexwilliam.risuto.util.getInitialAnimeDetails
+import com.lexwilliam.risuto.util.getInitialAnimeVideos
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.InternalCoroutinesApi
@@ -20,6 +21,7 @@ import javax.inject.Inject
 class AnimeViewModel @Inject constructor(
     private val getAnimeDetails: GetAnimeDetails,
     private val getAnimeCharacters: GetAnimeCharacters,
+    private val getAnimeVideos: GetAnimeVideos,
     private val insertAnimeHistory: InsertAnimeHistory,
     private val updateUserAnimeStatus: UpdateUserAnimeStatus,
     private val deleteUserAnimeStatus: DeleteUserAnimeStatus,
@@ -46,6 +48,7 @@ class AnimeViewModel @Inject constructor(
             animeDetail = getInitialAnimeDetails(),
             myListStatus = AnimeDetailPresentation.MyListStatus(false, -1, -1, "", ""),
             characters = emptyList(),
+            videos = getInitialAnimeVideos(),
             isLoading = true,
             isError = false
         )
@@ -79,6 +82,7 @@ class AnimeViewModel @Inject constructor(
                 setState { copy(malId = id) }
                 getAnimeDetails(id)
                 getAnimeCharacters(id)
+                getAnimeVideos(id)
             }
         }
     }
@@ -121,6 +125,29 @@ class AnimeViewModel @Inject constructor(
                                 setState {
                                     copy(
                                         characters = characters.data
+                                    )
+                                }
+                            }
+                    }
+            } catch (throwable: Throwable) {
+                handleExceptions(throwable)
+            }
+        }
+    }
+
+    private fun getAnimeVideos(id: Int) {
+        viewModelScope.launch(errorHandler) {
+            try {
+                getAnimeVideos.execute(id)
+                    .catch { throwable ->
+                        handleExceptions(throwable)
+                    }
+                    .collect {
+                        detailMapper.toPresentation(it)
+                            .let { videos ->
+                                setState {
+                                    copy(
+                                        videos = videos
                                     )
                                 }
                             }
