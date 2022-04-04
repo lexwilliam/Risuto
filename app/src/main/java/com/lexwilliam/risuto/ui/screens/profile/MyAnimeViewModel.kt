@@ -3,6 +3,7 @@ package com.lexwilliam.risuto.ui.screens.profile
 import androidx.lifecycle.viewModelScope
 import com.lexwilliam.domain.usecase.GetUserAnimeList
 import com.lexwilliam.domain.usecase.GetUserInfo
+import com.lexwilliam.domain.usecase.UpdateUserAnimeStatus
 import com.lexwilliam.risuto.base.BaseViewModel
 import com.lexwilliam.risuto.mapper.AnimeMapper
 import com.lexwilliam.risuto.model.WatchStatusPresentation
@@ -19,6 +20,7 @@ class MyAnimeViewModel
 @Inject constructor(
     private val getUserInfo: GetUserInfo,
     private val getUserAnimeList: GetUserAnimeList,
+    private val updateUserAnimeStatus: UpdateUserAnimeStatus,
     private val animeMapper: AnimeMapper
 ) : BaseViewModel<MyAnimeContract.Event, MyAnimeContract.State, MyAnimeContract.Effect>() {
 
@@ -56,6 +58,9 @@ class MyAnimeViewModel
                     getUserAnimeList()
                 }
             }
+            is MyAnimeContract.Event.UpdateUserAnimeStatus -> {
+                updateUserAnimeStatus(event.id, event.numEpisodesWatched, event.status, event.score)
+            }
         }
     }
 
@@ -85,6 +90,12 @@ class MyAnimeViewModel
                     )
                 }
             }
+        }
+    }
+
+    private fun updateUserAnimeStatus(id: Int, numEpisodesWatched: Int, status: String, score: Int) {
+        viewModelScope.launch(errorHandler) {
+            updateUserAnimeStatus.execute(id, numEpisodesWatched, status, score).collect()
         }
     }
 

@@ -79,8 +79,8 @@ class AnimeViewModel @Inject constructor(
     init {
         viewModelScope.launch(errorHandler) {
             malIdFromArgs?.let { id ->
-                setState { copy(malId = id) }
                 getAnimeDetails(id)
+                setState { copy(malId = id) }
                 getAnimeCharacters(id)
                 getAnimeVideos(id)
             }

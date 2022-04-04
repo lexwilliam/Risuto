@@ -68,11 +68,13 @@ fun MediumGrid(
                 .size(width = 180.dp, height = 240.dp)
                 .shadow(elevation = 4.dp, shape = MaterialTheme.shapes.medium, clip = true)
         )
-        Text(text = title,
+        Text(
+            text = title,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier.padding(top = 4.dp),
-            style = MaterialTheme.typography.subtitle1
+            style = MaterialTheme.typography.subtitle1,
+            fontWeight = FontWeight.Bold
         )
         Row(
             modifier = Modifier.requiredHeight(IntrinsicSize.Min),

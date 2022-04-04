@@ -46,18 +46,14 @@ fun AnimeScreen(
     navToSearchWithGenre: (Int) -> Unit,
     navToDetail: (Int) -> Unit
 ) {
-    val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(
-        bottomSheetState = BottomSheetState(BottomSheetValue.Collapsed)
-    )
-    val coroutineScope = rememberCoroutineScope()
-    val scrollState = rememberLazyListState()
-    Timber.d(scrollState.firstVisibleItemIndex.toString())
-    if(state.isLoading) {
+    if(state.isLoading || state.animeDetail == getInitialAnimeDetails()) {
         LoadingScreen()
     } else {
-        LaunchedEffect(state.animeDetail) {
-            onEventSent(AnimeContract.Event.InsertAnimeHistory(state.animeDetail))
-        }
+        val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(
+            bottomSheetState = BottomSheetState(BottomSheetValue.Collapsed)
+        )
+        val coroutineScope = rememberCoroutineScope()
+        val scrollState = rememberLazyListState()
         BottomSheetScaffold(
             scaffoldState = bottomSheetScaffoldState,
             sheetPeekHeight = 0.dp,
@@ -97,6 +93,9 @@ fun AnimeScreen(
                     onBackPressed = { onBackPressed() }
                 )
             }
+        }
+        LaunchedEffect(state.animeDetail) {
+            onEventSent(AnimeContract.Event.InsertAnimeHistory(state.animeDetail))
         }
     }
 }
@@ -232,14 +231,6 @@ fun AnimeToolbar(
             }
         },
         actions = {
-            val watchStatusString = when(status.status) {
-                "plan_to_watch" -> "Plan To Watch"
-                "dropped" -> "Dropped"
-                "on_hold" -> "On Hold"
-                "watching" -> "Watching"
-                "completed" -> "Completed"
-                else -> ""
-            }
             Box(
                 modifier = Modifier
                     .wrapContentWidth()
@@ -252,13 +243,14 @@ fun AnimeToolbar(
             ) {
                 Row(
                     modifier = Modifier.padding(start = 12.dp, end = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     if(status.status == "") {
                         Text(text = "Add ", style = MaterialTheme.typography.button, fontWeight = FontWeight.Bold, color = MaterialTheme.colors.onBackground)
                         Icon(Icons.Default.Add, contentDescription = null, tint = MaterialTheme.colors.onBackground)
                     } else {
-                        Text(text = "$watchStatusString ", style = MaterialTheme.typography.button, fontWeight = FontWeight.Bold, color = MaterialTheme.colors.onBackground)
+                        Text(text = toTextFormat(status.status), style = MaterialTheme.typography.button, fontWeight = FontWeight.Bold, color = MaterialTheme.colors.onBackground)
                         Box(
                             modifier = Modifier
                                 .size(24.dp)

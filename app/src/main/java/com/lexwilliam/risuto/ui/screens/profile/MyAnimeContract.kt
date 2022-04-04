@@ -10,6 +10,7 @@ class MyAnimeContract {
     sealed class Event : ViewEvent {
         object RefreshList: Event()
         object RefreshListWithoutView: Event()
+        data class UpdateUserAnimeStatus(val id: Int, val numEpisodesWatched: Int, val status: String, val score: Int): Event()
     }
 
     data class State(

@@ -18,6 +18,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.material.TabRowDefaults
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Star
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.navigationBarsWithImePadding
@@ -34,8 +35,10 @@ import com.lexwilliam.risuto.model.UserAnimeListPresentation
 import com.lexwilliam.risuto.model.WatchStatusPresentation
 import com.lexwilliam.risuto.ui.component.LoadingScreen
 import com.lexwilliam.risuto.ui.component.NetworkImage
+import com.lexwilliam.risuto.util.toMalFormat
 import com.lexwilliam.risuto.util.watchStatusList
 import com.lexwilliam.risuto.util.watchStatusToString
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @ExperimentalFoundationApi
@@ -153,8 +156,10 @@ fun MyAnimeToolbar(
 fun MyAnimeRowItem(
     modifier: Modifier = Modifier,
     item: UserAnimeListPresentation.Data,
+    onEventSent: (MyAnimeContract.Event) -> Unit,
     navToDetail: (Int) -> Unit
 ) {
+    var myEpisode by remember { mutableStateOf(item.listStatus.numWatchedEpisodes) }
     Row(
         modifier
             .fillMaxWidth()
@@ -169,22 +174,61 @@ fun MyAnimeRowItem(
                 .shadow(elevation = 4.dp, shape = MaterialTheme.shapes.medium, true)
         )
         Column(modifier = Modifier
-            .padding(start = 8.dp),
-            verticalArrangement = Arrangement.spacedBy(4.dp)
+            .padding(start = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Text(
-                text = item.node.title,
-                style = MaterialTheme.typography.subtitle1,
-                fontWeight = FontWeight.Bold
-            )
-            Text(
-                text = if (item.listStatus.score == -1) "${watchStatusToString(item.listStatus.status)} 0" else "${watchStatusToString(item.listStatus.status)} ${item.listStatus.score}",
-                style = MaterialTheme.typography.caption
-            )
-            Text(
-                text = "Eps: ${item.listStatus.numWatchedEpisodes}/${item.node.numTotalEpisodes}",
-                style = MaterialTheme.typography.caption
-            )
+            Column(
+                Modifier.weight(2f),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Text(
+                    modifier = Modifier.padding(top = 8.dp),
+                    text = item.node.title,
+                    style = MaterialTheme.typography.subtitle1,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = if (item.listStatus.score == -1) "${watchStatusToString(item.listStatus.status)} 0" else "${watchStatusToString(item.listStatus.status)} ${item.listStatus.score}",
+                    style = MaterialTheme.typography.body1
+                )
+            }
+            Column(
+                Modifier.weight(1f),
+                verticalArrangement = Arrangement.Bottom
+            ) {
+                LinearProgressIndicator(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(6.dp),
+                    progress = if(item.node.numTotalEpisodes > 0) myEpisode.toFloat() / item.node.numTotalEpisodes.toFloat() else 0f,
+                    color = MaterialTheme.colors.primary
+                )
+                Spacer(modifier = Modifier.padding(4.dp))
+                Row(
+                    modifier = Modifier
+                        .align(Alignment.End)
+                        .clickable {
+                            if(myEpisode != item.node.numTotalEpisodes) {
+                                myEpisode++
+                                onEventSent(
+                                    MyAnimeContract.Event.UpdateUserAnimeStatus(
+                                        item.node.id,
+                                        myEpisode,
+                                        toMalFormat(watchStatusToString(item.listStatus.status)),
+                                        item.listStatus.score
+                                    )
+                                )
+                            }
+                        },
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(Icons.Default.Add, contentDescription = null)
+                    Text(
+                        text = if(item.node.numTotalEpisodes > 0) "${myEpisode}/${item.node.numTotalEpisodes}" else "${myEpisode}/?",
+                        style = MaterialTheme.typography.subtitle1
+                    )
+                }
+            }
         }
     }
 }
@@ -243,7 +287,7 @@ fun MyAnimeList(
                     modifier = modifier
                         .padding(horizontal = 16.dp)
                         .fillMaxSize(),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                    verticalArrangement = Arrangement.spacedBy(0.dp)
                 ) {
                     items(
                         items = when(page) {
@@ -256,7 +300,7 @@ fun MyAnimeList(
                             else -> items
                         }
                     ) { item ->
-                        MyAnimeRowItem(item = item, modifier = Modifier.padding(top = 16.dp, end = 16.dp), navToDetail = { navToDetail(it) })
+                        MyAnimeRowItem(item = item, modifier = Modifier.padding(top = 16.dp, end = 16.dp), onEventSent = { onEventSent(it) }, navToDetail = { navToDetail(it) })
                     }
                 }
             }

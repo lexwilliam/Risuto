@@ -15,6 +15,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -287,9 +288,6 @@ fun ResultView(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 contentPadding = PaddingValues(vertical = 16.dp)
             ) {
-                items(lazyAnimeList) { anime ->
-                    RowItem(modifier = Modifier.padding(start = 16.dp, end = 16.dp), item = anime!!, navToDetail = { navToDetail(anime.mal_id) })
-                }
                 lazyAnimeList.apply {
                     when {
                         loadState.refresh is LoadState.Loading -> {
@@ -316,6 +314,9 @@ fun ResultView(
                             }
                         }
                     }
+                }
+                items(lazyAnimeList) { anime ->
+                    RowItem(modifier = Modifier.padding(start = 16.dp, end = 16.dp), item = anime!!, navToDetail = { navToDetail(anime.mal_id) })
                 }
             }
         }
@@ -480,6 +481,21 @@ fun HistoryHorizontalGridList(
         }
         item {
             Spacer(modifier = Modifier.padding(0.dp))
+        }
+    }
+}
+
+@Composable
+fun NoResultScreen() {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Icon(modifier = Modifier.size(80.dp), imageVector = Icons.Default.Warning, contentDescription = null, tint = Color.LightGray)
+            Text(text = "No Anime Found", style = MaterialTheme.typography.h6, color = Color.LightGray)
         }
     }
 }
