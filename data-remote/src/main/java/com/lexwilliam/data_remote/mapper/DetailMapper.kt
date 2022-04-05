@@ -97,7 +97,7 @@ class DetailMapperImpl @Inject constructor(): DetailMapper {
     // AnimeVideos
 
     private fun toRepo(data: AnimeVideosResponse.Data): AnimeVideosRepo.Data =
-        AnimeVideosRepo.Data(data.episodes.map { toRepo(it) }, data.promos.map { toRepo(it) })
+        AnimeVideosRepo.Data(data.episodes?.map { toRepo(it) } ?: emptyList(), data.promo?.map { toRepo(it) } ?: emptyList())
 
     private fun toRepo(episode: AnimeVideosResponse.Data.Episode): AnimeVideosRepo.Data.Episode =
         AnimeVideosRepo.Data.Episode(episode.episode, toRepo(episode.images), episode.mal_id, episode.title, episode.url)
@@ -106,7 +106,7 @@ class DetailMapperImpl @Inject constructor(): DetailMapper {
         AnimeVideosRepo.Data.Episode.Images(toRepo(images.jpg))
 
     private fun toRepo(jpg: AnimeVideosResponse.Data.Episode.Images.Jpg): AnimeVideosRepo.Data.Episode.Images.Jpg =
-        AnimeVideosRepo.Data.Episode.Images.Jpg(jpg.image_url)
+        AnimeVideosRepo.Data.Episode.Images.Jpg(jpg.image_url?:"")
 
     private fun toRepo(promo: AnimeVideosResponse.Data.Promo): AnimeVideosRepo.Data.Promo =
         AnimeVideosRepo.Data.Promo(promo.title, toRepo(promo.trailer))
@@ -114,6 +114,6 @@ class DetailMapperImpl @Inject constructor(): DetailMapper {
     private fun toRepo(trailer: AnimeVideosResponse.Data.Promo.Trailer): AnimeVideosRepo.Data.Promo.Trailer =
         AnimeVideosRepo.Data.Promo.Trailer(trailer.embed_url, toRepo(trailer.images), trailer.url, trailer.youtube_id)
 
-    private fun toRepo(image: AnimeVideosResponse.Data.Promo.Trailer.ImagesX): AnimeVideosRepo.Data.Promo.Trailer.ImagesX =
-        AnimeVideosRepo.Data.Promo.Trailer.ImagesX(image.default_image_url, image.large_image_url, image.maximum_image_url, image.medium_image_url, image.small_image_url)
+    private fun toRepo(image: AnimeVideosResponse.Data.Promo.Trailer.Images): AnimeVideosRepo.Data.Promo.Trailer.ImagesX =
+        AnimeVideosRepo.Data.Promo.Trailer.ImagesX(image.image_url, image.large_image_url, image.maximum_image_url, image.medium_image_url, image.small_image_url)
 }

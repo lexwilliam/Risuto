@@ -1,11 +1,17 @@
 package com.lexwilliam.data_remote.model.anime
 
+import androidx.annotation.Keep
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
+
+@Keep
+@JsonClass(generateAdapter = true)
 data class AnimeVideosResponse(
     val `data`: Data
 ) {
     data class Data(
-        val episodes: List<Episode>,
-        val promos: List<Promo>
+        val episodes: List<Episode>?,
+        val promo: List<Promo>?
     ) {
         data class Episode(
             val episode: String,
@@ -18,7 +24,7 @@ data class AnimeVideosResponse(
                 val jpg: Jpg
             ) {
                 data class Jpg(
-                    val image_url: String
+                    val image_url: String?
                 )
             }
         }
@@ -28,12 +34,12 @@ data class AnimeVideosResponse(
         ) {
             data class Trailer(
                 val embed_url: String,
-                val images: ImagesX,
+                val images: Images,
                 val url: String,
                 val youtube_id: String
             ) {
-                data class ImagesX(
-                    val default_image_url: String,
+                data class Images(
+                    val image_url: String,
                     val large_image_url: String,
                     val maximum_image_url: String,
                     val medium_image_url: String,

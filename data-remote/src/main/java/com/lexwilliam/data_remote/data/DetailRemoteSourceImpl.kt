@@ -9,6 +9,7 @@ import com.lexwilliam.data_remote.MyAnimeListService
 import com.lexwilliam.data_remote.mapper.DetailMapper
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import timber.log.Timber
 import javax.inject.Inject
 
 class DetailRemoteSourceImpl @Inject constructor(
@@ -28,6 +29,7 @@ class DetailRemoteSourceImpl @Inject constructor(
 
     override suspend fun getAnimeVideos(id: Int): Flow<AnimeVideosRepo> = flow {
         val response = jikanService.getAnimeVideos(id)
+        Timber.d(response.toString())
         emit(detailMapper.toRepo(response))
     }
 }

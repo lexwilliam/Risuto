@@ -145,6 +145,7 @@ class AnimeViewModel @Inject constructor(
                     .collect {
                         detailMapper.toPresentation(it)
                             .let { videos ->
+                                Timber.d(videos.toString())
                                 setState {
                                     copy(
                                         videos = videos

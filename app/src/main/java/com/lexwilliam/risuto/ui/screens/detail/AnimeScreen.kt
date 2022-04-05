@@ -1,5 +1,7 @@
 package com.lexwilliam.risuto.ui.screens.detail
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -16,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -34,7 +37,6 @@ import com.lexwilliam.risuto.ui.theme.RisutoTheme
 import com.lexwilliam.risuto.util.*
 import com.lexwilliam.risuto.util.intToCurrency
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import java.util.*
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -46,7 +48,7 @@ fun AnimeScreen(
     navToSearchWithGenre: (Int) -> Unit,
     navToDetail: (Int) -> Unit
 ) {
-    if(state.isLoading || state.animeDetail == getInitialAnimeDetails()) {
+    if(state.animeDetail == getInitialAnimeDetails()) {
         LoadingScreen()
     } else {
         val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(
@@ -289,7 +291,7 @@ fun AnimeContent(
         item { AnimeSynopsis(synopsis = animeDetail.synopsis) }
         item { AnimeTrailer(videos = videos) }
         item { AnimeInfo(animeDetail = animeDetail) }
-        item { DetailPictureList(pictures = animeDetail.pictures) }
+        item { AnimePictures(pictures = animeDetail.pictures) }
         item { RelatedAnimeList(relatedAnime = animeDetail.related_anime, navToDetail = navToDetail) }
         item { RecommendationAnimeList(recommendations = animeDetail.recommendations, navToDetail = navToDetail) }
         item { Spacer(modifier = Modifier.padding(4.dp)) }
@@ -511,7 +513,40 @@ fun CharVoiceActorList(
 fun AnimeTrailer(
     videos: AnimeVideosPresentation
 ) {
-
+    if(videos.data.promos != emptyList<AnimeVideosPresentation.Data.Promo>()) {
+        val context = LocalContext.current
+        Column {
+            DetailSubtitle(title = "Trailers")
+            LazyRow(
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier
+                    .fillMaxWidth(),
+                contentPadding = PaddingValues(start = 40.dp)
+            ){
+                items(items = videos.data.promos) { item ->
+                    Box(
+                        modifier = Modifier
+                            .clickable {
+                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(item.trailer.embed_url))
+                                context.startActivity(intent)
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        NetworkImage(
+                            modifier = Modifier
+                                .width(180.dp)
+                                .shadow(4.dp, MaterialTheme.shapes.medium, true),
+                            imageUrl = item.trailer.images.default_image_url
+                        )
+                        Icon(Icons.Default.PlayArrow, contentDescription = null)
+                    }
+                }
+                item {
+                    Spacer(modifier = Modifier.padding(0.dp))
+                }
+            }
+        }
+    }
 }
 
 @Composable
@@ -595,7 +630,7 @@ fun titleSynonymsToString(
 }
 
 @Composable
-fun DetailPictureList(
+fun AnimePictures(
     pictures: List<AnimeDetailPresentation.Picture>
 ) {
     if(pictures != emptyList<AnimeDetailPresentation.Picture>()) {
@@ -742,7 +777,7 @@ fun AnimeSuggestionPreview() {
                 .fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
-            DetailPictureList(pictures = FakeItems.animeDetail.pictures)
+            AnimePictures(pictures = FakeItems.animeDetail.pictures)
             RelatedAnimeList(relatedAnime = FakeItems.animeDetail.related_anime, navToDetail = {})
             RecommendationAnimeList(recommendations = FakeItems.animeDetail.recommendations, navToDetail = {})
         }
