@@ -524,21 +524,30 @@ fun AnimeTrailer(
                 contentPadding = PaddingValues(start = 40.dp)
             ){
                 items(items = videos.data.promos) { item ->
-                    Box(
-                        modifier = Modifier
-                            .clickable {
-                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(item.trailer.embed_url))
-                                context.startActivity(intent)
-                            },
-                        contentAlignment = Alignment.Center
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        NetworkImage(
+                        Box(
                             modifier = Modifier
-                                .width(180.dp)
-                                .shadow(4.dp, MaterialTheme.shapes.medium, true),
-                            imageUrl = item.trailer.images.default_image_url
+                                .clickable {
+                                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(item.trailer.embed_url))
+                                    context.startActivity(intent)
+                                },
+                            contentAlignment = Alignment.Center
+                        ) {
+                            NetworkImage(
+                                modifier = Modifier
+                                    .width(180.dp)
+                                    .shadow(4.dp, MaterialTheme.shapes.medium, true),
+                                imageUrl = item.trailer.images.maximum_image_url
+                            )
+                            Icon(Icons.Default.PlayArrow, contentDescription = null, modifier = Modifier.size(48.dp))
+                        }
+                        Text(
+                            text = item.title,
+                            style = MaterialTheme.typography.caption,
+                            overflow = TextOverflow.Ellipsis
                         )
-                        Icon(Icons.Default.PlayArrow, contentDescription = null)
                     }
                 }
                 item {

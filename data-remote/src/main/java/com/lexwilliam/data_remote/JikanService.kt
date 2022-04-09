@@ -1,9 +1,6 @@
 package com.lexwilliam.data_remote
 
-import com.lexwilliam.data_remote.model.anime.SeasonListResponse
-import com.lexwilliam.data_remote.model.anime.AnimeCharactersResponse
-import com.lexwilliam.data_remote.model.anime.AnimeResponse
-import com.lexwilliam.data_remote.model.anime.AnimeVideosResponse
+import com.lexwilliam.data_remote.model.anime.*
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -60,5 +57,10 @@ interface JikanService {
     suspend fun getAnimeVideos(
         @Path("id") id: Int
     ): AnimeVideosResponse
+
+    @GET("anime/{id}/staff")
+    suspend fun getAnimeStaff(
+        @Path("id") id: Int
+    ): AnimeStaffResponse
 
 }
