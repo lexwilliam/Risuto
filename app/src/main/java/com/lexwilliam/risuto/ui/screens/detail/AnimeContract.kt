@@ -1,10 +1,12 @@
 package com.lexwilliam.risuto.ui.screens.detail
 
+import com.lexwilliam.domain.model.remote.anime.AnimeStaff
 import com.lexwilliam.risuto.base.ViewEvent
 import com.lexwilliam.risuto.base.ViewSideEffect
 import com.lexwilliam.risuto.base.ViewState
 import com.lexwilliam.risuto.model.AnimeCharactersPresentation
 import com.lexwilliam.risuto.model.AnimeDetailPresentation
+import com.lexwilliam.risuto.model.AnimeStaffPresentation
 import com.lexwilliam.risuto.model.AnimeVideosPresentation
 
 class AnimeContract {
@@ -20,6 +22,7 @@ class AnimeContract {
         val myListStatus: AnimeDetailPresentation.MyListStatus,
         val characters: List<AnimeCharactersPresentation.Data>,
         val videos: AnimeVideosPresentation,
+        val staff: List<AnimeStaffPresentation.Data>,
         val isLoading: Boolean = false,
         val isError: Boolean = false
     ) : ViewState

@@ -169,4 +169,9 @@ object DomainModule {
     @Provides
     fun provideGetAnimeVideos(detailRepository: DetailRepository): GetAnimeVideos =
         GetAnimeVideosImpl(detailRepository)
+
+    @Singleton
+    @Provides
+    fun provideGetAnimeStaff(detailRepository: DetailRepository): GetAnimeStaff =
+        GetAnimeStaffImpl(detailRepository)
 }

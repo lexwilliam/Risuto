@@ -1,13 +1,12 @@
 package com.lexwilliam.risuto.mapper
 
-import com.lexwilliam.data.model.remote.anime.AnimeCharactersRepo
-import com.lexwilliam.data.model.remote.anime.AnimeDetailRepo
-import com.lexwilliam.data.model.remote.anime.AnimeVideosRepo
 import com.lexwilliam.domain.model.remote.anime.AnimeCharacters
 import com.lexwilliam.domain.model.remote.anime.AnimeDetail
+import com.lexwilliam.domain.model.remote.anime.AnimeStaff
 import com.lexwilliam.domain.model.remote.anime.AnimeVideos
 import com.lexwilliam.risuto.model.AnimeCharactersPresentation
 import com.lexwilliam.risuto.model.AnimeDetailPresentation
+import com.lexwilliam.risuto.model.AnimeStaffPresentation
 import com.lexwilliam.risuto.model.AnimeVideosPresentation
 import javax.inject.Inject
 
@@ -15,6 +14,7 @@ interface DetailMapper {
     fun toPresentation(detail: AnimeDetail): AnimeDetailPresentation
     fun toPresentation(characters: AnimeCharacters): AnimeCharactersPresentation
     fun toPresentation(videos: AnimeVideos): AnimeVideosPresentation
+    fun toPresentation(staff: AnimeStaff): AnimeStaffPresentation
 }
 
 class DetailMapperImpl @Inject constructor(): DetailMapper {
@@ -26,6 +26,9 @@ class DetailMapperImpl @Inject constructor(): DetailMapper {
 
     override fun toPresentation(videos: AnimeVideos): AnimeVideosPresentation =
         AnimeVideosPresentation(toPresentation(videos.data))
+
+    override fun toPresentation(staff: AnimeStaff): AnimeStaffPresentation =
+        AnimeStaffPresentation(staff.data.map { toPresentation(it) })
 
     private fun toPresentation(alter: AnimeDetail.AlternativeTitles): AnimeDetailPresentation.AlternativeTitles =
         AnimeDetailPresentation.AlternativeTitles(alter.en, alter.ja, alter.synonyms)
@@ -115,4 +118,18 @@ class DetailMapperImpl @Inject constructor(): DetailMapper {
 
     private fun toPresentation(image: AnimeVideos.Data.Promo.Trailer.ImagesX): AnimeVideosPresentation.Data.Promo.Trailer.ImagesX =
         AnimeVideosPresentation.Data.Promo.Trailer.ImagesX(image.default_image_url, image.large_image_url, image.maximum_image_url, image.medium_image_url, image.small_image_url)
+
+    // AnimeStaff
+
+    private fun toPresentation(data: AnimeStaff.Data): AnimeStaffPresentation.Data =
+        AnimeStaffPresentation.Data(toPresentation(data.person), data.positions)
+
+    private fun toPresentation(person: AnimeStaff.Data.Person): AnimeStaffPresentation.Data.Person =
+        AnimeStaffPresentation.Data.Person(toPresentation(person.images), person.mal_id, person.name, person.url)
+
+    private fun toPresentation(images: AnimeStaff.Data.Person.Images): AnimeStaffPresentation.Data.Person.Images =
+        AnimeStaffPresentation.Data.Person.Images(toPresentation(images.jpg))
+
+    private fun toPresentation(jpg: AnimeStaff.Data.Person.Images.Jpg): AnimeStaffPresentation.Data.Person.Images.Jpg =
+        AnimeStaffPresentation.Data.Person.Images.Jpg(jpg.image_url)
 }

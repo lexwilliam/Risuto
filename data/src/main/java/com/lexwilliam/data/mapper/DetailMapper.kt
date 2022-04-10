@@ -2,9 +2,11 @@ package com.lexwilliam.data.mapper
 
 import com.lexwilliam.data.model.remote.anime.AnimeCharactersRepo
 import com.lexwilliam.data.model.remote.anime.AnimeDetailRepo
+import com.lexwilliam.data.model.remote.anime.AnimeStaffRepo
 import com.lexwilliam.data.model.remote.anime.AnimeVideosRepo
 import com.lexwilliam.domain.model.remote.anime.AnimeCharacters
 import com.lexwilliam.domain.model.remote.anime.AnimeDetail
+import com.lexwilliam.domain.model.remote.anime.AnimeStaff
 import com.lexwilliam.domain.model.remote.anime.AnimeVideos
 import javax.inject.Inject
 
@@ -12,6 +14,7 @@ interface DetailMapper {
     fun toDomain(detail: AnimeDetailRepo): AnimeDetail
     fun toDomain(characters: AnimeCharactersRepo): AnimeCharacters
     fun toDomain(videos: AnimeVideosRepo): AnimeVideos
+    fun toDomain(staff: AnimeStaffRepo): AnimeStaff
 }
 
 class DetailMapperImpl @Inject constructor(): DetailMapper {
@@ -23,6 +26,9 @@ class DetailMapperImpl @Inject constructor(): DetailMapper {
 
     override fun toDomain(videos: AnimeVideosRepo): AnimeVideos =
         AnimeVideos(toDomain(videos.data))
+
+    override fun toDomain(staff: AnimeStaffRepo): AnimeStaff =
+        AnimeStaff(staff.data.map { toDomain(it) })
 
     private fun toDomain(alter: AnimeDetailRepo.AlternativeTitles): AnimeDetail.AlternativeTitles =
         AnimeDetail.AlternativeTitles(alter.en, alter.ja, alter.synonyms)
@@ -112,4 +118,18 @@ class DetailMapperImpl @Inject constructor(): DetailMapper {
 
     private fun toDomain(image: AnimeVideosRepo.Data.Promo.Trailer.ImagesX): AnimeVideos.Data.Promo.Trailer.ImagesX =
         AnimeVideos.Data.Promo.Trailer.ImagesX(image.default_image_url, image.large_image_url, image.maximum_image_url, image.medium_image_url, image.small_image_url)
+
+    // AnimeStaff
+
+    private fun toDomain(data: AnimeStaffRepo.Data): AnimeStaff.Data =
+        AnimeStaff.Data(toDomain(data.person), data.positions)
+
+    private fun toDomain(person: AnimeStaffRepo.Data.Person): AnimeStaff.Data.Person =
+        AnimeStaff.Data.Person(toDomain(person.images), person.mal_id, person.name, person.url)
+
+    private fun toDomain(images: AnimeStaffRepo.Data.Person.Images): AnimeStaff.Data.Person.Images =
+        AnimeStaff.Data.Person.Images(toDomain(images.jpg))
+
+    private fun toDomain(jpg: AnimeStaffRepo.Data.Person.Images.Jpg): AnimeStaff.Data.Person.Images.Jpg =
+        AnimeStaff.Data.Person.Images.Jpg(jpg.image_url)
 }

@@ -6,6 +6,7 @@ import com.lexwilliam.data.constant.ApiConstant
 import com.lexwilliam.data.mapper.DetailMapper
 import com.lexwilliam.domain.model.remote.anime.AnimeCharacters
 import com.lexwilliam.domain.model.remote.anime.AnimeDetail
+import com.lexwilliam.domain.model.remote.anime.AnimeStaff
 import com.lexwilliam.domain.model.remote.anime.AnimeVideos
 import com.lexwilliam.domain.repository.DetailRepository
 import kotlinx.coroutines.flow.Flow
@@ -29,6 +30,10 @@ class DetailRepositoryImpl @Inject constructor(
 
     override suspend fun getAnimeVideos(id: Int): Flow<AnimeVideos> {
         return detailRemoteSource.getAnimeVideos(id).map { detailMapper.toDomain(it) }
+    }
+
+    override suspend fun getAnimeStaff(id: Int): Flow<AnimeStaff> {
+        return detailRemoteSource.getAnimeStaff(id).map { detailMapper.toDomain(it) }
     }
 
 }

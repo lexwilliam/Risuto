@@ -11,8 +11,8 @@ import com.lexwilliam.risuto.util.getInitialAnimeDetails
 import com.lexwilliam.risuto.util.getInitialAnimeVideos
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.InternalCoroutinesApi
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -22,6 +22,7 @@ class AnimeViewModel @Inject constructor(
     private val getAnimeDetails: GetAnimeDetails,
     private val getAnimeCharacters: GetAnimeCharacters,
     private val getAnimeVideos: GetAnimeVideos,
+    private val getAnimeStaff: GetAnimeStaff,
     private val insertAnimeHistory: InsertAnimeHistory,
     private val updateUserAnimeStatus: UpdateUserAnimeStatus,
     private val deleteUserAnimeStatus: DeleteUserAnimeStatus,
@@ -49,6 +50,7 @@ class AnimeViewModel @Inject constructor(
             myListStatus = AnimeDetailPresentation.MyListStatus(false, -1, -1, "", ""),
             characters = emptyList(),
             videos = getInitialAnimeVideos(),
+            staff = emptyList(),
             isLoading = true,
             isError = false
         )
@@ -83,6 +85,7 @@ class AnimeViewModel @Inject constructor(
                 setState { copy(malId = id) }
                 getAnimeCharacters(id)
                 getAnimeVideos(id)
+                getAnimeStaff(id)
             }
         }
     }
@@ -145,10 +148,32 @@ class AnimeViewModel @Inject constructor(
                     .collect {
                         detailMapper.toPresentation(it)
                             .let { videos ->
-                                Timber.d(videos.toString())
                                 setState {
                                     copy(
                                         videos = videos
+                                    )
+                                }
+                            }
+                    }
+            } catch (throwable: Throwable) {
+                handleExceptions(throwable)
+            }
+        }
+    }
+
+    private fun getAnimeStaff(id: Int) {
+        viewModelScope.launch(errorHandler) {
+            try {
+                getAnimeStaff.execute(id)
+                    .catch { throwable ->
+                        handleExceptions(throwable)
+                    }
+                    .collect {
+                        detailMapper.toPresentation(it)
+                            .let { staff ->
+                                setState {
+                                    copy(
+                                        staff = staff.data
                                     )
                                 }
                             }

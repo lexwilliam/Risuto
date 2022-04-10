@@ -31,6 +31,7 @@ import com.google.accompanist.insets.navigationBarsWithImePadding
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.lexwilliam.risuto.model.AnimeCharactersPresentation
 import com.lexwilliam.risuto.model.AnimeDetailPresentation
+import com.lexwilliam.risuto.model.AnimeStaffPresentation
 import com.lexwilliam.risuto.model.AnimeVideosPresentation
 import com.lexwilliam.risuto.ui.component.*
 import com.lexwilliam.risuto.ui.theme.RisutoTheme
@@ -80,6 +81,7 @@ fun AnimeScreen(
                     animeDetail = state.animeDetail,
                     characters = state.characters,
                     videos = state.videos,
+                    staff = state.staff,
                     scrollState = scrollState,
                     navToSearchWithGenre = navToSearchWithGenre,
                     navToDetail = navToDetail
@@ -274,6 +276,7 @@ fun AnimeContent(
     animeDetail: AnimeDetailPresentation,
     characters: List<AnimeCharactersPresentation.Data>,
     videos: AnimeVideosPresentation,
+    staff: List<AnimeStaffPresentation.Data>,
     scrollState: LazyListState,
     navToSearchWithGenre: (Int) -> Unit,
     navToDetail: (Int) -> Unit
@@ -288,6 +291,7 @@ fun AnimeContent(
         item { AnimePoster(imageUrl = animeDetail.main_picture.large) }
         item { AnimeDetail(animeDetail = animeDetail, navToSearchWithGenre = { navToSearchWithGenre(it) }) }
         item { CharVoiceActorList(characters = characters) }
+        item { StaffList(staff = staff) }
         item { AnimeSynopsis(synopsis = animeDetail.synopsis) }
         item { AnimeTrailer(videos = videos) }
         item { AnimeInfo(animeDetail = animeDetail) }
@@ -510,6 +514,58 @@ fun CharVoiceActorList(
 }
 
 @Composable
+fun StaffList(
+    staff: List<AnimeStaffPresentation.Data>
+) {
+    if(staff != emptyList<AnimeCharactersPresentation.Data>()) {
+        Column {
+            DetailSubtitle(title = "Staff")
+            LazyRow(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                contentPadding = PaddingValues(start = 40.dp)
+            ) {
+                items(items = staff) { item ->
+                    Column(
+                        modifier = Modifier
+                            .width(80.dp)
+                            .wrapContentHeight()
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .shadow(4.dp, MaterialTheme.shapes.small, clip = true)
+                                .background(color = MaterialTheme.colors.background)
+                        ) {
+                            NetworkImage(
+                                imageUrl = item.person.images.jpg.image_url,
+                                modifier = Modifier
+                                    .clip(MaterialTheme.shapes.small)
+                                    .size(width = 80.dp, height = 100.dp)
+                            )
+                            Text(
+                                modifier = Modifier.padding(2.dp),
+                                text = item.person.name + '\n',
+                                maxLines = 2, overflow = TextOverflow.Ellipsis,
+                                style = MaterialTheme.typography.caption,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                            Text(
+                                modifier = Modifier.padding(2.dp),
+                                text = item.positions.first() + '\n',
+                                maxLines = 2, overflow = TextOverflow.Ellipsis,
+                                style = MaterialTheme.typography.caption
+                            )
+                        }
+                    }
+                }
+                item {
+                    Spacer(modifier = Modifier.padding(0.dp))
+                }
+            }
+        }
+    }
+}
+
+@Composable
 fun AnimeTrailer(
     videos: AnimeVideosPresentation
 ) {
@@ -538,7 +594,9 @@ fun AnimeTrailer(
                             NetworkImage(
                                 modifier = Modifier
                                     .width(180.dp)
-                                    .shadow(4.dp, MaterialTheme.shapes.medium, true),
+                                    .height(120.dp)
+                                    .shadow(4.dp, MaterialTheme.shapes.medium, true)
+                                    .background(MaterialTheme.colors.surface),
                                 imageUrl = item.trailer.images.maximum_image_url
                             )
                             Icon(Icons.Default.PlayArrow, contentDescription = null, modifier = Modifier.size(48.dp))

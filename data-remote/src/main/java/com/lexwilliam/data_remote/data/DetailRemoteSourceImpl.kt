@@ -3,6 +3,7 @@ package com.lexwilliam.data_remote.data
 import com.lexwilliam.data.DetailRemoteSource
 import com.lexwilliam.data.model.remote.anime.AnimeCharactersRepo
 import com.lexwilliam.data.model.remote.anime.AnimeDetailRepo
+import com.lexwilliam.data.model.remote.anime.AnimeStaffRepo
 import com.lexwilliam.data.model.remote.anime.AnimeVideosRepo
 import com.lexwilliam.data_remote.JikanService
 import com.lexwilliam.data_remote.MyAnimeListService
@@ -29,7 +30,11 @@ class DetailRemoteSourceImpl @Inject constructor(
 
     override suspend fun getAnimeVideos(id: Int): Flow<AnimeVideosRepo> = flow {
         val response = jikanService.getAnimeVideos(id)
-        Timber.d(response.toString())
+        emit(detailMapper.toRepo(response))
+    }
+
+    override suspend fun getAnimeStaff(id: Int): Flow<AnimeStaffRepo> = flow {
+        val response = jikanService.getAnimeStaff(id)
         emit(detailMapper.toRepo(response))
     }
 }

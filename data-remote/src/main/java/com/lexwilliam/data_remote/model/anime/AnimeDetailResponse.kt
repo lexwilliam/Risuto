@@ -46,7 +46,7 @@ data class AnimeDetailResponse(
     )
     data class Broadcast(
         val day_of_the_week: String,
-        val start_time: String
+        val start_time: String?
     )
     data class Genre(
         val id: Int,

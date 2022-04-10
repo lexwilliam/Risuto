@@ -3,10 +3,7 @@ package com.lexwilliam.risuto.util
 import android.annotation.SuppressLint
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.lexwilliam.risuto.model.AnimeCharactersPresentation
-import com.lexwilliam.risuto.model.AnimeDetailPresentation
-import com.lexwilliam.risuto.model.AnimeVideosPresentation
-import com.lexwilliam.risuto.model.WatchStatusPresentation
+import com.lexwilliam.risuto.model.*
 import org.joda.time.LocalDate
 import java.text.NumberFormat
 import java.text.SimpleDateFormat

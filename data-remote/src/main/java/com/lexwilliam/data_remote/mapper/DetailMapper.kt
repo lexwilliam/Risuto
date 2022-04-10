@@ -2,9 +2,11 @@ package com.lexwilliam.data_remote.mapper
 
 import com.lexwilliam.data.model.remote.anime.AnimeCharactersRepo
 import com.lexwilliam.data.model.remote.anime.AnimeDetailRepo
+import com.lexwilliam.data.model.remote.anime.AnimeStaffRepo
 import com.lexwilliam.data.model.remote.anime.AnimeVideosRepo
 import com.lexwilliam.data_remote.model.anime.AnimeCharactersResponse
 import com.lexwilliam.data_remote.model.anime.AnimeDetailResponse
+import com.lexwilliam.data_remote.model.anime.AnimeStaffResponse
 import com.lexwilliam.data_remote.model.anime.AnimeVideosResponse
 import javax.inject.Inject
 
@@ -12,6 +14,7 @@ interface DetailMapper {
     fun toRepo(detail: AnimeDetailResponse): AnimeDetailRepo
     fun toRepo(characters: AnimeCharactersResponse): AnimeCharactersRepo
     fun toRepo(videos: AnimeVideosResponse): AnimeVideosRepo
+    fun toRepo(staff: AnimeStaffResponse): AnimeStaffRepo
 }
 
 class DetailMapperImpl @Inject constructor(): DetailMapper {
@@ -24,13 +27,16 @@ class DetailMapperImpl @Inject constructor(): DetailMapper {
     override fun toRepo(videos: AnimeVideosResponse): AnimeVideosRepo =
         AnimeVideosRepo(toRepo(videos.data))
 
+    override fun toRepo(staff: AnimeStaffResponse): AnimeStaffRepo =
+        AnimeStaffRepo(staff.data.map { toRepo(it) })
+
     // AnimeDetail
 
     private fun toRepo(alter: AnimeDetailResponse.AlternativeTitles): AnimeDetailRepo.AlternativeTitles =
         AnimeDetailRepo.AlternativeTitles(alter.en, alter.ja, alter.synonyms)
 
     private fun toRepo(broadcast: AnimeDetailResponse.Broadcast): AnimeDetailRepo.Broadcast =
-        AnimeDetailRepo.Broadcast(broadcast.day_of_the_week, broadcast.start_time)
+        AnimeDetailRepo.Broadcast(broadcast.day_of_the_week, broadcast.start_time?:"")
 
     private fun toRepo(genre: AnimeDetailResponse.Genre): AnimeDetailRepo.Genre =
         AnimeDetailRepo.Genre(genre.id, genre.name)
@@ -116,4 +122,18 @@ class DetailMapperImpl @Inject constructor(): DetailMapper {
 
     private fun toRepo(image: AnimeVideosResponse.Data.Promo.Trailer.Images): AnimeVideosRepo.Data.Promo.Trailer.ImagesX =
         AnimeVideosRepo.Data.Promo.Trailer.ImagesX(image.image_url, image.large_image_url, image.maximum_image_url, image.medium_image_url, image.small_image_url)
+
+    // AnimeStaff
+
+    private fun toRepo(data: AnimeStaffResponse.Data): AnimeStaffRepo.Data =
+        AnimeStaffRepo.Data(toRepo(data.person), data.positions)
+
+    private fun toRepo(person: AnimeStaffResponse.Data.Person): AnimeStaffRepo.Data.Person =
+        AnimeStaffRepo.Data.Person(toRepo(person.images), person.mal_id, person.name, person.url)
+
+    private fun toRepo(images: AnimeStaffResponse.Data.Person.Images): AnimeStaffRepo.Data.Person.Images =
+        AnimeStaffRepo.Data.Person.Images(toRepo(images.jpg))
+
+    private fun toRepo(jpg: AnimeStaffResponse.Data.Person.Images.Jpg): AnimeStaffRepo.Data.Person.Images.Jpg =
+        AnimeStaffRepo.Data.Person.Images.Jpg(jpg.image_url)
 }
