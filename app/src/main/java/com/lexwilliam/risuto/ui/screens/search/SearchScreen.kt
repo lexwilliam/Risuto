@@ -66,6 +66,7 @@ fun SearchScreen(
     var cursorColor by remember { mutableStateOf(Color.Black) }
     Timber.d(state.resultType.name)
     Timber.d(state.genres.toString())
+    Timber.d(state.producer.toString())
     if(state.isLoading) {
         LoadingScreen()
     } else {

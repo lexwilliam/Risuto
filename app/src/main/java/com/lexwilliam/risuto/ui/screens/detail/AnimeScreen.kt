@@ -47,6 +47,7 @@ fun AnimeScreen(
     onEventSent: (AnimeContract.Event) -> Unit,
     onBackPressed: () -> Unit,
     navToSearchWithGenre: (Int) -> Unit,
+    navToSearchWithProducer: (Int) -> Unit,
     navToDetail: (Int) -> Unit
 ) {
     if(state.animeDetail == getInitialAnimeDetails()) {
@@ -83,7 +84,8 @@ fun AnimeScreen(
                     videos = state.videos,
                     staff = state.staff,
                     scrollState = scrollState,
-                    navToSearchWithGenre = navToSearchWithGenre,
+                    navToSearchWithGenre = { navToSearchWithGenre(it) },
+                    navToSearchWithProducer = { navToSearchWithProducer(it) },
                     navToDetail = navToDetail
                 )
                 AnimeToolbar(
@@ -279,6 +281,7 @@ fun AnimeContent(
     staff: List<AnimeStaffPresentation.Data>,
     scrollState: LazyListState,
     navToSearchWithGenre: (Int) -> Unit,
+    navToSearchWithProducer: (Int) -> Unit,
     navToDetail: (Int) -> Unit
 ) {
     LazyColumn(
@@ -294,7 +297,7 @@ fun AnimeContent(
         item { StaffList(staff = staff) }
         item { AnimeSynopsis(synopsis = animeDetail.synopsis) }
         item { AnimeTrailer(videos = videos) }
-        item { AnimeInfo(animeDetail = animeDetail) }
+        item { AnimeInfo(animeDetail = animeDetail, navToSearchWithProducer = { navToSearchWithProducer(it) }) }
         item { AnimePictures(pictures = animeDetail.pictures) }
         item { RelatedAnimeList(relatedAnime = animeDetail.related_anime, navToDetail = navToDetail) }
         item { RecommendationAnimeList(recommendations = animeDetail.recommendations, navToDetail = navToDetail) }
@@ -618,7 +621,8 @@ fun AnimeTrailer(
 
 @Composable
 fun AnimeInfo(
-    animeDetail: AnimeDetailPresentation
+    animeDetail: AnimeDetailPresentation,
+    navToSearchWithProducer: (Int) -> Unit
 ) {
     val infoList = listOf(
         Pair("Alternative titles", titleSynonymsToString(animeDetail.alternative_titles.ja, animeDetail.alternative_titles.en, animeDetail.alternative_titles.synonyms)),
@@ -653,8 +657,10 @@ fun AnimeInfo(
                 ) {
                     animeDetail.studios.forEach { studio ->
                         Text(
+                            modifier = Modifier.clickable { navToSearchWithProducer(studio.id) },
                             text = studio.name,
-                            style = MaterialTheme.typography.subtitle1
+                            style = MaterialTheme.typography.subtitle1,
+                            color = MaterialTheme.colors.secondary
                         )
                     }
                 }
@@ -829,7 +835,7 @@ fun AnimeInfoPreview() {
                     FakeItems.character
                 )
             )
-            AnimeInfo(animeDetail = FakeItems.animeDetail)
+            AnimeInfo(animeDetail = FakeItems.animeDetail, navToSearchWithProducer = {})
         }
     }
 }

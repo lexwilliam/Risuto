@@ -189,6 +189,7 @@ class  SearchViewModel @Inject constructor(
     }
 
     private val genreFromArgs = savedStateHandle.get<Int>("genre")
+    private val producerFromArgs = savedStateHandle.get<Int>("producer")
 
     init {
         genreFromArgs.let {
@@ -196,6 +197,18 @@ class  SearchViewModel @Inject constructor(
                 setState {
                     copy(
                         genres = it.toString(),
+                        isLoading = false,
+                        resultType = ResultType.FullResult
+                    )
+                }
+            }
+        }
+        producerFromArgs.let {
+            Timber.d(it.toString())
+            if(it != null && it != -1) {
+                setState {
+                    copy(
+                        producer = it.toString(),
                         isLoading = false,
                         resultType = ResultType.FullResult
                     )

@@ -48,6 +48,7 @@ import com.lexwilliam.risuto.ui.screens.search.SearchScreen
 import com.lexwilliam.risuto.ui.screens.search.SearchViewModel
 import com.lexwilliam.risuto.ui.screens.season.SeasonScreen
 import com.lexwilliam.risuto.ui.screens.season.SeasonViewModel
+import timber.log.Timber
 
 @ExperimentalMaterialApi
 @ExperimentalComposeUiApi
@@ -176,21 +177,25 @@ fun RisutoAppContent(
                 SearchHomeScreen(
                     navToSearch = {
                         navController.navigate(
-                            RisutoSearchScreen.route.plus("/?genre=")
+                            RisutoSearchScreen.route
                         )
                     },
                     navToSearchWithGenre = { genre ->
                         navController.navigate(
-                            RisutoSearchScreen.route.plus("/?genre=$genre")
+                            RisutoSearchScreen.route.plus("?genre=$genre")
                         )
                     }
                 )
             }
 
             composable(
-                route = RisutoSearchScreen.route.plus("/?genre={genre}"),
+                route = RisutoSearchScreen.route.plus("?genre={genre}&producer={producer}"),
                 arguments = listOf(
                     navArgument("genre") {
+                        type = NavType.IntType
+                        defaultValue = -1
+                    },
+                    navArgument("producer") {
                         type = NavType.IntType
                         defaultValue = -1
                     }
@@ -240,7 +245,12 @@ fun RisutoAppContent(
                     onBackPressed = { navController.navigateUp() },
                     navToSearchWithGenre = { genre ->
                         navController.navigate(
-                            RisutoSearchScreen.route.plus("/?genre=$genre")
+                            RisutoSearchScreen.route.plus("?genre=$genre")
+                        )
+                    },
+                    navToSearchWithProducer = { producer ->
+                        navController.navigate(
+                            RisutoSearchScreen.route.plus("?producer=$producer")
                         )
                     },
                     navToDetail = { id ->
@@ -270,7 +280,6 @@ fun RisutoAppContent(
 }
 
 sealed class Screens(val route: String) {
-    object RisutoSplashScreen: Screens("splash")
     object RisutoLoginScreen: Screens("login")
     object RisutoHomeScreen: Screens("home")
     object RisutoSearchHomeScreen: Screens("searchHome")
