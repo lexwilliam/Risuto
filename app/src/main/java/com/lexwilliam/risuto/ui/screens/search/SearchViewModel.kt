@@ -197,6 +197,8 @@ class  SearchViewModel @Inject constructor(
                 setState {
                     copy(
                         genres = it.toString(),
+                        orderBy = "rank",
+                        sort = "desc",
                         isLoading = false,
                         resultType = ResultType.FullResult
                     )
@@ -209,6 +211,8 @@ class  SearchViewModel @Inject constructor(
                 setState {
                     copy(
                         producer = it.toString(),
+                        orderBy = "start_date",
+                        sort = "desc",
                         isLoading = false,
                         resultType = ResultType.FullResult
                     )

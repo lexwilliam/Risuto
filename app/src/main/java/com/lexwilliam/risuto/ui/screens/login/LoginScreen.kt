@@ -6,11 +6,10 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -26,6 +25,8 @@ import com.google.accompanist.insets.navigationBarsWithImePadding
 import com.lexwilliam.risuto.R
 import com.lexwilliam.risuto.ui.component.StatusBarSpacer
 import com.lexwilliam.risuto.ui.theme.RisutoTheme
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @Composable
@@ -46,6 +47,7 @@ fun LoginScreen(
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun LoginContent(
     authCode: String?,
@@ -75,71 +77,48 @@ fun LoginContent(
         }
         else -> Unit
     }
-
-    Column(
-        modifier = Modifier
-            .navigationBarsWithImePadding()
-            .fillMaxSize(),
-        verticalArrangement = Arrangement.Bottom,
-    ) {
-        Image(
-            modifier = Modifier
-                .background(MaterialTheme.colors.primary)
-                .fillMaxWidth()
-                .weight(3f),
-            contentScale = ContentScale.Crop,
-            painter = painterResource(id = R.drawable.anime),
-            contentDescription = null
-        )
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .weight(2f)
-                .background(MaterialTheme.colors.primary),
-            contentAlignment = Alignment.BottomCenter
-        ) {
+    val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(bottomSheetState = BottomSheetState(BottomSheetValue.Collapsed))
+    BottomSheetScaffold(
+        scaffoldState = bottomSheetScaffoldState,
+        sheetGesturesEnabled = false,
+        sheetBackgroundColor = MaterialTheme.colors.background,
+        sheetElevation = 16.dp,
+        sheetContent = {
+            LaunchedEffect(bottomSheetScaffoldState) {
+                bottomSheetScaffoldState.bottomSheetState.expand()
+            }
             Column(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
-                    .background(MaterialTheme.colors.background)
+                    .navigationBarsWithImePadding()
+                    .padding(horizontal = 16.dp, vertical = 48.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Column(
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp),
-                    verticalArrangement = Arrangement.Top
+                Text(text = "Let's Get Started", style = MaterialTheme.typography.h2, fontWeight = FontWeight.Black)
+                Text(text = "Start exploring and tracking animes from MyAnimeList Database", style = MaterialTheme.typography.body1, color = Color.Gray, fontWeight = FontWeight.SemiBold)
+                Button(
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = { onEventSent(LoginContract.Event.RedirectToAuth) }
                 ) {
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(16.dp)
-                    ) {
-                        Spacer(Modifier.padding(4.dp))
-                        Text(text = "Let's Get Started", style = MaterialTheme.typography.h2, fontWeight = FontWeight.Black)
-                        Text(text = "Start exploring and tracking animes from MyAnimeList Database", style = MaterialTheme.typography.body1, color = Color.Gray, fontWeight = FontWeight.SemiBold)
-                    }
-                }
-                Column(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .padding(horizontal = 16.dp),
-                    verticalArrangement = Arrangement.Bottom
-                ) {
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(16.dp)
-                    ) {
-                        Button(
-                            modifier = Modifier.fillMaxWidth(),
-                            onClick = { onEventSent(LoginContract.Event.RedirectToAuth) }
-                        ) {
-                            Text(text = "Sign in with MyAnimeList", style = MaterialTheme.typography.button, fontWeight = FontWeight.SemiBold)
-                        }
-                        Spacer(Modifier.padding(8.dp))
-                    }
+                    Text(text = "Sign in with MyAnimeList", style = MaterialTheme.typography.button, fontWeight = FontWeight.SemiBold)
                 }
             }
         }
+    ) {
+        Column(
+            modifier = Modifier
+                .navigationBarsWithImePadding()
+                .background(MaterialTheme.colors.primary)
+                .fillMaxSize()
+        ) {
+            Image(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                contentScale = ContentScale.Crop,
+                painter = painterResource(id = R.drawable.anime),
+                contentDescription = null
+            )
+        }
     }
-
-
 }
 
 @Preview
