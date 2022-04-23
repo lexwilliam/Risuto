@@ -7,8 +7,10 @@ import com.lexwilliam.data.mapper.AnimeMapper
 import com.lexwilliam.data.mapper.UserMapper
 import com.lexwilliam.domain.model.remote.user.UserAnimeList
 import com.lexwilliam.domain.model.remote.user.UserAnimeUpdate
+import com.lexwilliam.domain.model.remote.user.UserProfile
 import com.lexwilliam.domain.repository.UserRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import timber.log.Timber
@@ -21,9 +23,9 @@ class UserRepositoryImpl @Inject constructor(
     private val userMapper: UserMapper
 ): UserRepository {
 
-    override suspend fun getUserInfo(): String? {
+    override suspend fun getUserProfile(): Flow<UserProfile> {
         val accessToken = oAuthLocalSource.accessTokenFlow.firstOrNull()
-        return userRemoteSource.getUserInfo(ApiConstant.BEARER_SEPARATOR + accessToken)
+        return userRemoteSource.getUserProfile(ApiConstant.BEARER_SEPARATOR + accessToken).map { userMapper.toDomain(it) }
     }
 
     override suspend fun getUserAnimeList(): Flow<UserAnimeList> {

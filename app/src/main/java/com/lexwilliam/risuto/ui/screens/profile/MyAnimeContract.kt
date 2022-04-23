@@ -16,6 +16,7 @@ class MyAnimeContract {
     data class State(
         val animes: List<UserAnimeListPresentation.Data>,
         val username: String,
+        val userImage: String,
         val isRefreshing: Boolean = false,
         val isLoading: Boolean = false,
         val isError: Boolean = false

@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Warning
@@ -20,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.material.TabRowDefaults
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.ui.draw.clip
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.navigationBarsWithImePadding
 import com.google.accompanist.insets.rememberInsetsPaddingValues
@@ -61,6 +63,7 @@ fun MyAnimeScreen(
         MyAnimeContent(
             myAnimeList = sortAnime(state.animes, currentSortType, currentOrderType),
             username = state.username,
+            userImage = state.userImage,
             expanded = expanded,
             isExpanded = { expanded = it } ,
             currentStatus = currentStatus,
@@ -82,6 +85,7 @@ fun MyAnimeScreen(
 fun MyAnimeContent(
     myAnimeList: List<UserAnimeListPresentation.Data>,
     username: String,
+    userImage: String,
     expanded: Boolean,
     isExpanded: (Boolean) -> Unit,
     currentStatus: String,
@@ -99,6 +103,7 @@ fun MyAnimeContent(
         .padding(bottom = 56.dp)) {
         MyAnimeToolbar(
             username = username,
+            userImage = userImage,
             onSortTypeChanged = { onSortTypeChanged(it) },
             currentOrderType = currentOrderType,
             onOrderTypeChanged = { onOrderTypeChanged(it) },
@@ -112,6 +117,7 @@ fun MyAnimeContent(
 @Composable
 fun MyAnimeToolbar(
     username: String,
+    userImage: String,
     expanded: Boolean,
     isExpanded: (Boolean) -> Unit,
     onSortTypeChanged: (String) -> Unit,
@@ -125,7 +131,20 @@ fun MyAnimeToolbar(
         ),
         backgroundColor = MaterialTheme.colors.background,
         contentColor = MaterialTheme.colors.onBackground,
-        title = { Text("$username Anime List", style = MaterialTheme.typography.h6, fontWeight = FontWeight.Bold)},
+        title = {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                NetworkImage(
+                    modifier = Modifier
+                        .size(32.dp)
+                        .clip(CircleShape),
+                    imageUrl = userImage
+                )
+                Text("$username Anime List", style = MaterialTheme.typography.h6, fontWeight = FontWeight.Bold)
+            }
+        },
         actions = {
             IconButton(onClick = { isExpanded(true) }) {
                 Icon(painter = painterResource(id = R.drawable.ic_baseline_filter_list_24), contentDescription = null)
@@ -208,7 +227,7 @@ fun MyAnimeRowItem(
                     modifier = Modifier
                         .align(Alignment.End)
                         .clickable {
-                            if(myEpisode != item.node.numTotalEpisodes) {
+                            if (myEpisode != item.node.numTotalEpisodes) {
                                 myEpisode++
                                 onEventSent(
                                     MyAnimeContract.Event.UpdateUserAnimeStatus(

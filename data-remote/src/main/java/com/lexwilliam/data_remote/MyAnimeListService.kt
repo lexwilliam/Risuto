@@ -1,6 +1,5 @@
 package com.lexwilliam.data_remote
 
-import com.lexwilliam.data.model.remote.user.UserInfoRepo
 import com.lexwilliam.data_remote.model.constants.ApiConstants
 import com.lexwilliam.data_remote.model.constants.UserAnimeSortType
 import com.lexwilliam.data_remote.model.anime.AnimeDetailResponse
@@ -8,6 +7,7 @@ import com.lexwilliam.data_remote.model.auth.AccessTokenResponse
 import com.lexwilliam.data_remote.model.auth.OAuthGrantType
 import com.lexwilliam.data_remote.model.user.UserAnimeListResponse
 import com.lexwilliam.data_remote.model.user.UserAnimeUpdateResponse
+import com.lexwilliam.data_remote.model.user.UserInfoResponse
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -88,5 +88,5 @@ interface MyAnimeListService {
     suspend fun getUserInfo(
         @Header("Authorization") authHeader: String,
         @Path("username") username: String = "@me"
-    ): Response<UserInfoRepo>
+    ): Response<UserInfoResponse>
 }

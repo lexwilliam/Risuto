@@ -2,14 +2,15 @@ package com.lexwilliam.risuto.ui.screens.profile
 
 import androidx.lifecycle.viewModelScope
 import com.lexwilliam.domain.usecase.GetUserAnimeList
-import com.lexwilliam.domain.usecase.GetUserInfo
+import com.lexwilliam.domain.usecase.GetUserProfile
 import com.lexwilliam.domain.usecase.UpdateUserAnimeStatus
 import com.lexwilliam.risuto.base.BaseViewModel
 import com.lexwilliam.risuto.mapper.AnimeMapper
-import com.lexwilliam.risuto.model.WatchStatusPresentation
+import com.lexwilliam.risuto.mapper.UserMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -18,10 +19,11 @@ import javax.inject.Inject
 @HiltViewModel
 class MyAnimeViewModel
 @Inject constructor(
-    private val getUserInfo: GetUserInfo,
+    private val getUserProfile: GetUserProfile,
     private val getUserAnimeList: GetUserAnimeList,
     private val updateUserAnimeStatus: UpdateUserAnimeStatus,
-    private val animeMapper: AnimeMapper
+    private val animeMapper: AnimeMapper,
+    private val userMapper: UserMapper
 ) : BaseViewModel<MyAnimeContract.Event, MyAnimeContract.State, MyAnimeContract.Effect>() {
 
     private val errorHandler = CoroutineExceptionHandler { _, exception ->
@@ -38,6 +40,7 @@ class MyAnimeViewModel
         return MyAnimeContract.State(
             animes = emptyList(),
             username = "",
+            userImage = "",
             isLoading = true,
             isError = false
         )
@@ -65,19 +68,8 @@ class MyAnimeViewModel
     }
 
     init {
-        getUserInfo()
+        getUserProfile()
         getUserAnimeList()
-    }
-
-    private fun getUserInfo() {
-        viewModelScope.launch(errorHandler) {
-            val name = getUserInfo.execute()
-            if(name == null) {
-                setState { copy(username = "") }
-            } else {
-                setState { copy(username = name) }
-            }
-        }
     }
 
     private fun getUserAnimeList() {
@@ -89,6 +81,30 @@ class MyAnimeViewModel
                         isLoading = false
                     )
                 }
+            }
+        }
+    }
+
+    private fun getUserProfile() {
+        viewModelScope.launch(errorHandler) {
+            try {
+                getUserProfile.execute()
+                    .catch { throwable ->
+                        handleExceptions(throwable)
+                    }
+                    .collect {
+                        userMapper.toPresentation(it)
+                            .let { profile ->
+                                setState {
+                                    copy(
+                                        username = profile.data.username,
+                                        userImage = profile.data.images.jpg.image_url
+                                    )
+                                }
+                            }
+                    }
+            } catch (throwable: Throwable) {
+                handleExceptions(throwable)
             }
         }
     }

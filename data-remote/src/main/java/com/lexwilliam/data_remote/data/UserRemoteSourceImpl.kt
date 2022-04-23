@@ -3,6 +3,8 @@ package com.lexwilliam.data_remote.data
 import com.lexwilliam.data.UserRemoteSource
 import com.lexwilliam.data.model.remote.user.UserAnimeListRepo
 import com.lexwilliam.data.model.remote.user.UserAnimeUpdateRepo
+import com.lexwilliam.data.model.remote.user.UserProfileRepo
+import com.lexwilliam.data_remote.JikanService
 import com.lexwilliam.data_remote.MyAnimeListService
 import com.lexwilliam.data_remote.mapper.AnimeMapper
 import com.lexwilliam.data_remote.mapper.UserMapper
@@ -12,12 +14,16 @@ import javax.inject.Inject
 
 class UserRemoteSourceImpl @Inject constructor(
     private val malService: MyAnimeListService,
+    private val jikanService: JikanService,
     private val animeMapper: AnimeMapper,
     private val userMapper: UserMapper
 ): UserRemoteSource {
 
-    override suspend fun getUserInfo(authHeader: String): String? =
-        malService.getUserInfo(authHeader).body()?.name
+    override suspend fun getUserProfile(authHeader: String): Flow<UserProfileRepo> = flow {
+        val username = malService.getUserInfo(authHeader).body()?.name
+        val response = jikanService.getUserProfile(username!!)
+        emit(userMapper.toRepo(response))
+    }
 
     override suspend fun getUserAnimeList(authHeader: String): Flow<UserAnimeListRepo> = flow {
         val response = malService.getUserAnimeList(authHeader).body()
@@ -32,6 +38,5 @@ class UserRemoteSourceImpl @Inject constructor(
     override suspend fun deleteUserAnimeStatus(authHeader: String, id: Int) {
         malService.deleteUserAnimeStatus(authHeader, id)
     }
-
 
 }

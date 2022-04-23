@@ -91,11 +91,6 @@ object DomainModule {
 
     @Singleton
     @Provides
-    fun provideGetUserInfo(userRepository: UserRepository): GetUserInfo =
-        GetUserInfoImpl(userRepository)
-
-    @Singleton
-    @Provides
     fun provideGetAccessTokenFromCache(oAuthRepository: OAuthRepository): GetAccessTokenFromCache =
         GetAccessTokenFromCacheImpl(oAuthRepository)
 
@@ -174,4 +169,9 @@ object DomainModule {
     @Provides
     fun provideGetAnimeStaff(detailRepository: DetailRepository): GetAnimeStaff =
         GetAnimeStaffImpl(detailRepository)
+
+    @Singleton
+    @Provides
+    fun provideGetUserProfile(userRepository: UserRepository): GetUserProfile =
+        GetUserProfileImpl(userRepository)
 }

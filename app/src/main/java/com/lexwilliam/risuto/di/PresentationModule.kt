@@ -23,4 +23,7 @@ object PresentationModule {
     @Provides
     fun provideAnimeMapper(): AnimeMapper = AnimeMapperImpl()
 
+    @Singleton
+    @Provides
+    fun provideUserMapper(): UserMapper = UserMapperImpl()
 }
