@@ -13,4 +13,5 @@ dependencies {
 
     implementation(Dependencies.Hilt.hiltAndroid)
     implementation(Dependencies.Hilt.hiltAndroidCompiler)
+    testImplementation(project(mapOf("path" to ":core-android-test")))
 }

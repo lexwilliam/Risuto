@@ -7,3 +7,4 @@ include(
     ":data-local",
     ":data-remote"
 )
+include(":core-android-test")
