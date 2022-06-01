@@ -39,4 +39,5 @@ object Versions {
     const val retrofitCoroutineAdapter = "0.9.2"
     const val accompanist = "0.24.3-alpha"
     const val swipeRefresh = "1.0.0-beta01"
+    const val splashScreen = "1.0.0-beta02"
 }

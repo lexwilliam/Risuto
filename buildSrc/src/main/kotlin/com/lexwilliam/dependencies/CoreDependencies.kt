@@ -7,7 +7,7 @@ object Dependencies {
         const val archComponents =
             "androidx.lifecycle:lifecycle-extensions:${Versions.lifecycleLivedataKtx}"
         const val browser = "androidx.browser:browser:${Versions.browser}"
-        const val splashScreen = "androidx.core:core-splashscreen:${Versions.swipeRefresh}"
+        const val splashScreen = "androidx.core:core-splashscreen:${Versions.splashScreen}"
 
         object Compose {
             const val ui = "androidx.compose.ui:ui:${Versions.compose}"
