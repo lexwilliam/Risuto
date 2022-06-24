@@ -48,7 +48,8 @@ fun AnimeScreen(
     onBackPressed: () -> Unit,
     navToSearchWithGenre: (Int) -> Unit,
     navToSearchWithProducer: (Int) -> Unit,
-    navToDetail: (Int) -> Unit
+    navToDetail: (Int) -> Unit,
+    navToPerson: (Int) -> Unit
 ) {
     if(state.animeDetail == getInitialAnimeDetails()) {
         LoadingScreen()
@@ -86,7 +87,8 @@ fun AnimeScreen(
                     scrollState = scrollState,
                     navToSearchWithGenre = { navToSearchWithGenre(it) },
                     navToSearchWithProducer = { navToSearchWithProducer(it) },
-                    navToDetail = navToDetail
+                    navToDetail = navToDetail,
+                    navToPerson = navToPerson
                 )
                 AnimeToolbar(
                     status = state.myListStatus,
@@ -282,7 +284,8 @@ fun AnimeContent(
     scrollState: LazyListState,
     navToSearchWithGenre: (Int) -> Unit,
     navToSearchWithProducer: (Int) -> Unit,
-    navToDetail: (Int) -> Unit
+    navToDetail: (Int) -> Unit,
+    navToPerson: (Int) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier
@@ -293,7 +296,7 @@ fun AnimeContent(
     ) {
         item { AnimePoster(imageUrl = animeDetail.main_picture.large) }
         item { AnimeDetail(animeDetail = animeDetail, navToSearchWithGenre = { navToSearchWithGenre(it) }) }
-        item { CharVoiceActorList(characters = characters) }
+        item { CharVoiceActorList(characters = characters, navToPerson = navToPerson) }
         item { StaffList(staff = staff) }
         item { AnimeSynopsis(synopsis = animeDetail.synopsis) }
         item { AnimeTrailer(videos = videos) }
@@ -452,7 +455,8 @@ fun AnimeSynopsis(
 
 @Composable
 fun CharVoiceActorList(
-    characters: List<AnimeCharactersPresentation.Data>
+    characters: List<AnimeCharactersPresentation.Data>,
+    navToPerson: (Int) -> Unit
 ) {
     if(characters != emptyList<AnimeCharactersPresentation.Data>()) {
         Column {
@@ -491,6 +495,9 @@ fun CharVoiceActorList(
                             modifier = Modifier
                                 .shadow(4.dp, MaterialTheme.shapes.small, clip = true)
                                 .background(color = MaterialTheme.colors.background)
+                                .clickable {
+                                    navToPerson(getJpnVoiceActor(item.voice_actors).person.mal_id)
+                                }
                         ) {
                             NetworkImage(
                                 imageUrl = getJpnVoiceActor(item.voice_actors).person.images.jpg.image_url,
@@ -833,7 +840,8 @@ fun AnimeInfoPreview() {
                     FakeItems.character,
                     FakeItems.character,
                     FakeItems.character
-                )
+                ),
+                navToPerson = {}
             )
             AnimeInfo(animeDetail = FakeItems.animeDetail, navToSearchWithProducer = {})
         }

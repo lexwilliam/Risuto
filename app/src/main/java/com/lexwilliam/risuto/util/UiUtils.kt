@@ -3,6 +3,7 @@ package com.lexwilliam.risuto.util
 import android.annotation.SuppressLint
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.lexwilliam.data.model.remote.people.PersonRepo
 import com.lexwilliam.risuto.model.*
 import org.joda.time.LocalDate
 import java.text.NumberFormat
@@ -137,3 +138,12 @@ fun getInitialAnimeVideos() =
             emptyList()
         )
     )
+
+fun getInitialStatePerson() =
+    PersonPresentation(
+        PersonPresentation.Data(
+            "", emptyList(), emptyList(), "", "",
+            -1, "", PersonPresentation.Data.Images(
+                PersonPresentation.Data.Images.Jpg("")),
+            -1, emptyList(), "", "", emptyList(), ""
+        ))

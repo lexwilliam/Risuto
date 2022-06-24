@@ -41,6 +41,8 @@ import com.lexwilliam.risuto.ui.screens.home.HomeScreen
 import com.lexwilliam.risuto.ui.screens.home.HomeViewModel
 import com.lexwilliam.risuto.ui.screens.login.LoginScreen
 import com.lexwilliam.risuto.ui.screens.login.LoginViewModel
+import com.lexwilliam.risuto.ui.screens.people.PeopleScreen
+import com.lexwilliam.risuto.ui.screens.people.PeopleViewModel
 import com.lexwilliam.risuto.ui.screens.profile.MyAnimeScreen
 import com.lexwilliam.risuto.ui.screens.profile.MyAnimeViewModel
 import com.lexwilliam.risuto.ui.screens.search.SearchHomeScreen
@@ -48,7 +50,6 @@ import com.lexwilliam.risuto.ui.screens.search.SearchScreen
 import com.lexwilliam.risuto.ui.screens.search.SearchViewModel
 import com.lexwilliam.risuto.ui.screens.season.SeasonScreen
 import com.lexwilliam.risuto.ui.screens.season.SeasonViewModel
-import timber.log.Timber
 
 @ExperimentalMaterialApi
 @ExperimentalComposeUiApi
@@ -257,6 +258,11 @@ fun RisutoAppContent(
                         navController.navigate(
                             RisutoAnimeScreen.route.plus("/?mal_id=$id")
                         )
+                    },
+                    navToPerson = { id ->
+                        navController.navigate(
+                            RisutoPersonScreen.route.plus("/?mal_id=$id")
+                        )
                     }
                 )
             }
@@ -275,6 +281,20 @@ fun RisutoAppContent(
                     }
                 )
             }
+            composable(
+                route = RisutoPersonScreen.route.plus("/?mal_id={mal_id}"),
+                arguments = listOf(
+                    navArgument("mal_id") {
+                        type = NavType.IntType
+                        defaultValue = -1
+                    }
+                )
+            ) {
+                val peopleViewModel = hiltViewModel<PeopleViewModel>()
+                PeopleScreen(
+                    state = peopleViewModel.viewState.value
+                )
+            }
         }
     }
 }
@@ -288,6 +308,7 @@ sealed class Screens(val route: String) {
     object RisutoAnimeScreen: Screens("anime")
     object RisutoMyAnimeScreen: Screens("myAnime")
     object RisutoProfileScreen: Screens("profile")
+    object RisutoPersonScreen: Screens("people")
 }
 
 @Suppress("DEPRECATION")

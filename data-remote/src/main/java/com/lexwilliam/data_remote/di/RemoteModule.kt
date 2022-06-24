@@ -1,15 +1,9 @@
 package com.lexwilliam.data_remote.di
 
-import com.lexwilliam.data.AnimeRemoteSource
-import com.lexwilliam.data.DetailRemoteSource
-import com.lexwilliam.data.OAuthRemoteSource
-import com.lexwilliam.data.UserRemoteSource
+import com.lexwilliam.data.*
 import com.lexwilliam.data_remote.JikanService
 import com.lexwilliam.data_remote.MyAnimeListService
-import com.lexwilliam.data_remote.data.AnimeRemoteSourceImpl
-import com.lexwilliam.data_remote.data.DetailRemoteSourceImpl
-import com.lexwilliam.data_remote.data.OAuthRemoteSourceImpl
-import com.lexwilliam.data_remote.data.UserRemoteSourceImpl
+import com.lexwilliam.data_remote.data.*
 import com.lexwilliam.data_remote.mapper.*
 import dagger.Module
 import dagger.Provides
@@ -58,6 +52,14 @@ object RemoteModule {
 
     @Singleton
     @Provides
+    fun providePersonRemoteSource(
+        jikanService: JikanService,
+        personMapper: PersonMapper
+    ): PersonRemoteSource =
+        PersonRemoteSourceImpl(jikanService, personMapper)
+
+    @Singleton
+    @Provides
     fun provideAnimeMapper(): AnimeMapper = AnimeMapperImpl()
 
     @Singleton
@@ -71,4 +73,8 @@ object RemoteModule {
     @Singleton
     @Provides
     fun provideUserMapper(): UserMapper = UserMapperImpl()
+
+    @Singleton
+    @Provides
+    fun providePersonMapper(): PersonMapper = PersonMapperImpl()
 }

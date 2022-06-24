@@ -26,4 +26,8 @@ object PresentationModule {
     @Singleton
     @Provides
     fun provideUserMapper(): UserMapper = UserMapperImpl()
+
+    @Singleton
+    @Provides
+    fun providePersonMapper(): PersonMapper = PersonMapperImpl()
 }

@@ -8,3 +8,4 @@ include(
     ":data-remote"
 )
 include(":core-android-test")
+include(":feature-home")

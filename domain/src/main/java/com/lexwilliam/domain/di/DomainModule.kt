@@ -174,4 +174,9 @@ object DomainModule {
     @Provides
     fun provideGetUserProfile(userRepository: UserRepository): GetUserProfile =
         GetUserProfileImpl(userRepository)
+
+    @Singleton
+    @Provides
+    fun provideGetPeopleById(personRepository: PersonRepository): GetPeopleById =
+        GetPeopleByIdImpl(personRepository)
 }
