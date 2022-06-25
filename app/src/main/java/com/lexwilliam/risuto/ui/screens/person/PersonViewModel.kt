@@ -1,28 +1,25 @@
-package com.lexwilliam.risuto.ui.screens.people
+package com.lexwilliam.risuto.ui.screens.person
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import com.lexwilliam.data.model.remote.people.PersonRepo
 import com.lexwilliam.domain.usecase.GetPeopleById
 import com.lexwilliam.risuto.base.BaseViewModel
 import com.lexwilliam.risuto.mapper.PersonMapper
-import com.lexwilliam.risuto.ui.screens.home.HomeContract
 import com.lexwilliam.risuto.util.getInitialStatePerson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
-class PeopleViewModel
+class PersonViewModel
 @Inject constructor(
     private val getPeopleById: GetPeopleById,
     private val personMapper: PersonMapper,
     savedState: SavedStateHandle
-): BaseViewModel<PeopleContract.Event, PeopleContract.State, PeopleContract.Effect>() {
+): BaseViewModel<PersonContract.Event, PersonContract.State, PersonContract.Effect>() {
     private val errorHandler = CoroutineExceptionHandler { _, exception ->
         Timber.e(exception)
         setState {
@@ -35,15 +32,15 @@ class PeopleViewModel
 
     private val malIdFromArgs = savedState.get<Int>("mal_id")
 
-    override fun setInitialState(): PeopleContract.State {
-        return PeopleContract.State(
-            person = getInitialStatePerson(),
+    override fun setInitialState(): PersonContract.State {
+        return PersonContract.State(
+            person = getInitialStatePerson().data,
             isLoading = true,
             isError = false
         )
     }
 
-    override fun handleEvents(event: PeopleContract.Event) {
+    override fun handleEvents(event: PersonContract.Event) {
 
     }
 
@@ -65,7 +62,7 @@ class PeopleViewModel
                             .let { person ->
                                 setState {
                                     copy(
-                                        person = person,
+                                        person = person.data,
                                         isLoading = false
                                     )
                                 }

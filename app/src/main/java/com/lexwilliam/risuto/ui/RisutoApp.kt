@@ -41,8 +41,8 @@ import com.lexwilliam.risuto.ui.screens.home.HomeScreen
 import com.lexwilliam.risuto.ui.screens.home.HomeViewModel
 import com.lexwilliam.risuto.ui.screens.login.LoginScreen
 import com.lexwilliam.risuto.ui.screens.login.LoginViewModel
-import com.lexwilliam.risuto.ui.screens.people.PeopleScreen
-import com.lexwilliam.risuto.ui.screens.people.PeopleViewModel
+import com.lexwilliam.risuto.ui.screens.person.PersonScreen
+import com.lexwilliam.risuto.ui.screens.person.PersonViewModel
 import com.lexwilliam.risuto.ui.screens.profile.MyAnimeScreen
 import com.lexwilliam.risuto.ui.screens.profile.MyAnimeViewModel
 import com.lexwilliam.risuto.ui.screens.search.SearchHomeScreen
@@ -290,9 +290,17 @@ fun RisutoAppContent(
                     }
                 )
             ) {
-                val peopleViewModel = hiltViewModel<PeopleViewModel>()
-                PeopleScreen(
-                    state = peopleViewModel.viewState.value
+                val personViewModel = hiltViewModel<PersonViewModel>()
+                PersonScreen(
+                    state = personViewModel.viewState.value,
+                    onBackPressed = {
+                        navController.navigateUp()
+                    },
+                    navToDetail = { mal_id ->
+                        navController.navigate(
+                            RisutoAnimeScreen.route.plus("/?mal_id=$mal_id")
+                        )
+                    }
                 )
             }
         }
@@ -308,7 +316,7 @@ sealed class Screens(val route: String) {
     object RisutoAnimeScreen: Screens("anime")
     object RisutoMyAnimeScreen: Screens("myAnime")
     object RisutoProfileScreen: Screens("profile")
-    object RisutoPersonScreen: Screens("people")
+    object RisutoPersonScreen: Screens("person")
 }
 
 @Suppress("DEPRECATION")

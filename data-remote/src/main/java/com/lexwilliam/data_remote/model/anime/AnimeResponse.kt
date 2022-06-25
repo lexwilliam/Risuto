@@ -31,7 +31,7 @@ data class AnimeResponse(
         val popularity: Int,
         val producers: List<Producer>,
         val rank: Int?,
-        val rating: String,
+        val rating: String?,
         val score: Double?,
         val scored_by: Double?,
         val season: String?,

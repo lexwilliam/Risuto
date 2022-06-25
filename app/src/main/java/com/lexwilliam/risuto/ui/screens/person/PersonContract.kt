@@ -1,17 +1,17 @@
-package com.lexwilliam.risuto.ui.screens.people
+package com.lexwilliam.risuto.ui.screens.person
 
 import com.lexwilliam.risuto.base.ViewEvent
 import com.lexwilliam.risuto.base.ViewSideEffect
 import com.lexwilliam.risuto.base.ViewState
 import com.lexwilliam.risuto.model.PersonPresentation
 
-class PeopleContract {
+class PersonContract {
     sealed class Event: ViewEvent {
 
     }
 
     data class State(
-        val person: PersonPresentation,
+        val person: PersonPresentation.Data,
         val isLoading: Boolean,
         val isError: Boolean
     ): ViewState

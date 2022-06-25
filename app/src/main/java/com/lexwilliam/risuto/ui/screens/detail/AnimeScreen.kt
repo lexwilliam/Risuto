@@ -297,7 +297,7 @@ fun AnimeContent(
         item { AnimePoster(imageUrl = animeDetail.main_picture.large) }
         item { AnimeDetail(animeDetail = animeDetail, navToSearchWithGenre = { navToSearchWithGenre(it) }) }
         item { CharVoiceActorList(characters = characters, navToPerson = navToPerson) }
-        item { StaffList(staff = staff) }
+        item { StaffList(staff = staff, navToPerson = navToPerson) }
         item { AnimeSynopsis(synopsis = animeDetail.synopsis) }
         item { AnimeTrailer(videos = videos) }
         item { AnimeInfo(animeDetail = animeDetail, navToSearchWithProducer = { navToSearchWithProducer(it) }) }
@@ -496,7 +496,9 @@ fun CharVoiceActorList(
                                 .shadow(4.dp, MaterialTheme.shapes.small, clip = true)
                                 .background(color = MaterialTheme.colors.background)
                                 .clickable {
-                                    navToPerson(getJpnVoiceActor(item.voice_actors).person.mal_id)
+                                    if(getJpnVoiceActor(item.voice_actors).person.mal_id != -1) {
+                                        navToPerson(getJpnVoiceActor(item.voice_actors).person.mal_id)
+                                    }
                                 }
                         ) {
                             NetworkImage(
@@ -525,7 +527,8 @@ fun CharVoiceActorList(
 
 @Composable
 fun StaffList(
-    staff: List<AnimeStaffPresentation.Data>
+    staff: List<AnimeStaffPresentation.Data>,
+    navToPerson: (Int) -> Unit
 ) {
     if(staff != emptyList<AnimeCharactersPresentation.Data>()) {
         Column {
@@ -544,6 +547,7 @@ fun StaffList(
                             modifier = Modifier
                                 .shadow(4.dp, MaterialTheme.shapes.small, clip = true)
                                 .background(color = MaterialTheme.colors.background)
+                                .clickable { navToPerson(item.person.mal_id) }
                         ) {
                             NetworkImage(
                                 imageUrl = item.person.images.jpg.image_url,
