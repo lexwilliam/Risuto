@@ -31,11 +31,11 @@ class PersonRemoteSourceImpl @Inject constructor(
     }
 
     private fun getInitialStatePerson() =
-        PersonRepo(
-            PersonRepo.Data(
-            "", emptyList(), emptyList(), "", "",
-                -1, "", PersonRepo.Data.Images(
-                    PersonRepo.Data.Images.Jpg("")),
-                -1, emptyList(), "", "", emptyList(), ""
-        ))
+            PersonRepo(
+                PersonRepo.Data(
+                    "", emptyList(), emptyList(), "", "",
+                    -1, "", PersonRepo.Data.Images(
+                        PersonRepo.Data.Images.Jpg("")),
+                    -1, emptyList(), "", "", emptyList(), ""
+                ))
 }

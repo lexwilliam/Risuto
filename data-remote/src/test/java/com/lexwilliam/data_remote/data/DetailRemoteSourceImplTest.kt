@@ -57,20 +57,6 @@ class DetailRemoteSourceImplTest {
 
     @ExperimentalCoroutinesApi
     @Test
-    fun `When getAnimeDetails then jikanService invoked`() {
-        runTest {
-            // When
-            whenever(malService.getAnimeDetails("", 1)).thenReturn(mock())
-
-            detailRemoteSource.getAnimeDetails("", 1)
-
-            // Then
-            verify(jikanService, times(1)).getTopAnime()
-        }
-    }
-
-    @ExperimentalCoroutinesApi
-    @Test
     fun `When getAnimeCharacters then jikanService invoked`() {
         runTest {
             // When

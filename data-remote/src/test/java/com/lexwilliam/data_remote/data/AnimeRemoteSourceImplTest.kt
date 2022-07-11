@@ -1,6 +1,7 @@
 package com.lexwilliam.data_remote.data
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.google.common.truth.Truth.assertThat
 import com.lexwilliam.MainCoroutineRule
 import com.lexwilliam.data.AnimeRemoteSource
 import com.lexwilliam.data_remote.JikanService
@@ -11,7 +12,13 @@ import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
+import okhttp3.mockwebserver.MockResponse
+import okhttp3.mockwebserver.MockWebServer
+import okio.buffer
+import okio.source
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -19,6 +26,8 @@ import org.junit.rules.TestRule
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
+import retrofit2.Retrofit
+import retrofit2.converter.moshi.MoshiConverterFactory
 
 @RunWith(MockitoJUnitRunner::class)
 class AnimeRemoteSourceImplTest {
@@ -28,7 +37,13 @@ class AnimeRemoteSourceImplTest {
     lateinit var jikanService: JikanService
 
     @Mock
+    lateinit var service: JikanService
+
+    @Mock
     lateinit var animeMapper: AnimeMapper
+
+    @Mock
+    lateinit var server: MockWebServer
 
     @get:Rule
     val rule: TestRule = InstantTaskExecutorRule()
@@ -45,7 +60,42 @@ class AnimeRemoteSourceImplTest {
             jikanService,
             animeMapper
         )
+        server = MockWebServer()
+        service = Retrofit.Builder()
+            .baseUrl(server.url(""))
+            .addConverterFactory(MoshiConverterFactory.create())
+            .build()
+            .create(JikanService::class.java)
     }
+
+    private fun enqueueMockResponse(fileName: String) {
+        javaClass.classLoader?.let {
+            val inputStream = it.getResourceAsStream(fileName)
+            val source = inputStream.source().buffer()
+            val mockResponse = MockResponse()
+            mockResponse.setBody(source.readString(Charsets.UTF_8))
+            server.enqueue(mockResponse)
+        }
+    }
+
+    @After
+    fun tearDown() {
+        server.shutdown()
+    }
+
+//    @Test
+//    fun getSeason_sentRequest_receivedExpected() {
+//        runBlocking {
+//            // Prepare fake response
+//            enqueueMockResponse("GetSeason_Success.json")
+//            // Send request to the MockServer
+//            val responseBody = service.getSeasonNow()
+//            // Request received by the mock server
+//            val request = server.takeRequest()
+//            assertThat(responseBody).isNotNull()
+//            assertThat(request.path).isEqualTo("v4/seasons/2022/spring")
+//        }
+//    }
 
     @ExperimentalCoroutinesApi
     @Test

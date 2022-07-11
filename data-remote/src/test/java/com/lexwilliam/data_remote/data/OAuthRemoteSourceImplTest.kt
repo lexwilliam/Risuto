@@ -47,31 +47,31 @@ class OAuthRemoteSourceImplTest {
         )
     }
 
-    @ExperimentalCoroutinesApi
-    @Test
-    fun `When refreshToken then malService invoked`() {
-        runTest {
-            // When
-            whenever(malService.refreshToken("", "", "")).thenReturn(mock())
-
-            oAuthRemoteSource.refreshToken("", "")
-
-            // Then
-            verify(malService, times(1)).refreshToken("", "", "")
-        }
-    }
-
-    @ExperimentalCoroutinesApi
-    @Test
-    fun `When getAccessToken then malService invoked`() {
-        runTest {
-            // When
-            whenever(malService.getAccessToken("", "", "")).thenReturn(mock())
-
-            oAuthRemoteSource.getAccessToken("", "", "")
-
-            // Then
-            verify(malService, times(1)).getAccessToken("", "", "")
-        }
-    }
+//    @ExperimentalCoroutinesApi
+//    @Test
+//    fun `When refreshToken then malService invoked`() {
+//        runTest {
+//            // When
+//            whenever(malService.refreshToken("", "", "")).thenReturn(mock())
+//
+//            oAuthRemoteSource.refreshToken("", "")
+//
+//            // Then
+//            verify(malService, times(1)).refreshToken("", "", "")
+//        }
+//    }
+//
+//    @ExperimentalCoroutinesApi
+//    @Test
+//    fun `When getAccessToken then malService invoked`() {
+//        runTest {
+//            // When
+//            whenever(malService.getAccessToken("", "", "")).thenReturn(mock())
+//
+//            oAuthRemoteSource.getAccessToken("", "", "")
+//
+//            // Then
+//            verify(malService, times(1)).getAccessToken("", "", "")
+//        }
+//    }
 }

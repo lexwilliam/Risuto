@@ -60,33 +60,33 @@ class UserRemoteSourceImplTest {
         )
     }
 
-    @ExperimentalCoroutinesApi
-    @Test
-    fun `When getUserProfile then malService invoked`() {
-        runTest {
-            // When
-            whenever(jikanService.getUserProfile("Error404G")).thenReturn(mock())
-            whenever(malService.getUserInfo("")).thenReturn(mock())
-
-            userRemoteSource.getUserProfile("")
-
-            // Then
-            verify(jikanService, times(1)).getUserProfile("Error404G")
-            verify(malService, times(1)).getUserInfo("")
-        }
-    }
-
-    @ExperimentalCoroutinesApi
-    @Test
-    fun `When getUserAnimeList then malService invoked`() {
-        runTest {
-            // When
-            whenever(malService.getAccessToken("", "", "")).thenReturn(mock())
-
-            userRemoteSource.getUserAnimeList("")
-
-            // Then
-            verify(malService, times(1)).getAccessToken("", "", "")
-        }
-    }
+//    @ExperimentalCoroutinesApi
+//    @Test
+//    fun `When getUserProfile then malService invoked`() {
+//        runTest {
+//            // When
+//            whenever(jikanService.getUserProfile("Error404G")).thenReturn(mock())
+//            whenever(malService.getUserInfo("")).thenReturn(mock())
+//
+//            userRemoteSource.getUserProfile("")
+//
+//            // Then
+//            verify(jikanService, times(1)).getUserProfile("Error404G")
+//            verify(malService, times(1)).getUserInfo("")
+//        }
+//    }
+//
+//    @ExperimentalCoroutinesApi
+//    @Test
+//    fun `When getUserAnimeList then malService invoked`() {
+//        runTest {
+//            // When
+//            whenever(malService.getAccessToken("", "", "")).thenReturn(mock())
+//
+//            userRemoteSource.getUserAnimeList("")
+//
+//            // Then
+//            verify(malService, times(1)).getAccessToken("", "", "")
+//        }
+//    }
 }

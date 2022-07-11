@@ -1,5 +1,6 @@
 import com.lexwilliam.dependencies.ProjectModules
 import com.lexwilliam.dependencies.Dependencies
+import com.lexwilliam.dependencies.TestDependencies
 
 plugins {
     id("com.android.library")
@@ -20,4 +21,7 @@ dependencies {
 
     implementation(Dependencies.Hilt.hiltAndroid)
     implementation(Dependencies.Hilt.hiltAndroidCompiler)
+
+    implementation(TestDependencies.mockWebServer)
+    implementation(TestDependencies.AndroidX.googleTruth)
 }

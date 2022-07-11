@@ -171,10 +171,11 @@ fun PersonSubtitle(
 fun PersonAbout(
     about: String
 ) {
-    Column(
-    ) {
-        PersonSubtitle(title = "About")
-        Text(modifier = Modifier.padding(16.dp), text = about, style = MaterialTheme.typography.body1)
+    if(about != "") {
+        Column() {
+            PersonSubtitle(title = "About")
+            Text(modifier = Modifier.padding(16.dp), text = about, style = MaterialTheme.typography.body1)
+        }
     }
 }
 
@@ -217,7 +218,7 @@ fun PersonAnime(
                             )
                             Text(
                                 modifier = Modifier.padding(2.dp),
-                                text = item.position + '\n',
+                                text = item.position.drop(4) + '\n',
                                 maxLines = 2, overflow = TextOverflow.Ellipsis,
                                 style = MaterialTheme.typography.caption
                             )
