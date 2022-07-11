@@ -15,10 +15,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.insets.navigationBarsWithImePadding
 import com.lexwilliam.risuto.model.AnimePresentation
-import com.lexwilliam.risuto.ui.component.Header
-import com.lexwilliam.risuto.ui.component.HorizontalGridList
-import com.lexwilliam.risuto.ui.component.ImeAvoidingBox
-import com.lexwilliam.risuto.ui.component.StatusBarSpacer
+import com.lexwilliam.risuto.ui.component.*
 import com.lexwilliam.risuto.ui.theme.RisutoTheme
 import com.lexwilliam.risuto.util.FakeItems
 import timber.log.Timber
@@ -89,9 +86,7 @@ fun PosterGridList(
     navToDetail: (Int) -> Unit,
 ) {
     if(items.isEmpty()) {
-        Box(modifier = Modifier
-            .size(240.dp)
-            .background(Color.Transparent))
+        PosterGridListShimmerLoading()
     } else {
         Column(
             modifier = Modifier
@@ -125,6 +120,25 @@ fun HomeContentPreview() {
                 schedules = listOf(FakeItems.animeData, FakeItems.animeData, FakeItems.animeData, FakeItems.animeData),
                 seasonAnime = listOf(FakeItems.animeData, FakeItems.animeData, FakeItems.animeData, FakeItems.animeData),
                 topAnime = listOf(FakeItems.animeData, FakeItems.animeData, FakeItems.animeData, FakeItems.animeData),
+                navToDetail = {}
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+fun HomeContentEmptyPreview() {
+    RisutoTheme {
+        Box(
+            Modifier.background(MaterialTheme.colors.background)
+        ) {
+            HomeContent(
+                currentSeason = "Winter",
+                currentYear = 2022,
+                schedules = emptyList(),
+                seasonAnime = emptyList(),
+                topAnime = emptyList(),
                 navToDetail = {}
             )
         }
