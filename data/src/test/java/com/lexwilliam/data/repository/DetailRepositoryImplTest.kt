@@ -50,6 +50,20 @@ class DetailRepositoryImplTest {
         )
     }
 
+//    @ExperimentalCoroutinesApi
+//    @Test
+//    fun `When getAnimeDetails then detailRemoteSource invoked`() {
+//        runTest {
+//            // When
+//            whenever(detailRemoteSource.getAnimeDetails("", 1)).thenReturn(mock())
+//
+//            detailRepository.getAnimeDetails(1)
+//
+//            // Then
+//            verify(detailRemoteSource, times(1)).getAnimeDetails("", 1)
+//        }
+//    }
+
     @ExperimentalCoroutinesApi
     @Test
     fun `When getAnimeCharacters then detailRemoteSource invoked`() {
