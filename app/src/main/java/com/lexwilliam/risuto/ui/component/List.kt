@@ -23,7 +23,7 @@ fun GridList(
     navToDetail: (Int) -> Unit
 ) {
     if(items.isEmpty()) {
-        LoadingScreen()
+        GridListShimmerLoading()
     } else {
         SwipeRefresh(
             state = rememberSwipeRefreshState(isRefreshing),

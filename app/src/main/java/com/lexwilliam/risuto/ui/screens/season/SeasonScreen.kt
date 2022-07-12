@@ -49,7 +49,14 @@ fun SeasonScreen(
     )
     val coroutineScope = rememberCoroutineScope()
     if(state.seasonNowIsLoading || state.seasonListIsLoading) {
-        LoadingScreen()
+        Column(
+            modifier = Modifier
+                .navigationBarsWithImePadding()
+        ) {
+            StatusBarSpacer()
+            HeaderShimmerLoading()
+            GridListShimmerLoading()
+        }
     } else {
         BottomSheetScaffold(
             scaffoldState = bottomSheetScaffoldState,

@@ -36,6 +36,7 @@ import com.lexwilliam.risuto.R
 import com.lexwilliam.risuto.model.UserAnimeListPresentation
 import com.lexwilliam.risuto.model.WatchStatusPresentation
 import com.lexwilliam.risuto.ui.component.LoadingScreen
+import com.lexwilliam.risuto.ui.component.MyAnimeListShimmerLoading
 import com.lexwilliam.risuto.ui.component.NetworkImage
 import com.lexwilliam.risuto.util.toMalFormat
 import com.lexwilliam.risuto.util.watchStatusList
@@ -58,7 +59,7 @@ fun MyAnimeScreen(
         onEventSent(MyAnimeContract.Event.RefreshListWithoutView)
     }
     if(state.isLoading) {
-        LoadingScreen()
+        MyAnimeListShimmerLoading()
     } else {
         MyAnimeContent(
             myAnimeList = sortAnime(state.animes, currentSortType, currentOrderType),
@@ -74,10 +75,10 @@ fun MyAnimeScreen(
             onOrderTypeChanged = { currentOrderType = it },
             isRefreshing = state.isRefreshing,
             onEventSent = { onEventSent(it) },
-            navToDetail = { navToDetail(it) }
+            navToDetail = { navToDetail(it) },
+            isLoading = state.isLoading
         )
     }
-
 }
 
 @ExperimentalFoundationApi
@@ -96,7 +97,8 @@ fun MyAnimeContent(
     onOrderTypeChanged: (String) -> Unit,
     isRefreshing: Boolean,
     onEventSent: (MyAnimeContract.Event) -> Unit,
-    navToDetail: (Int) -> Unit
+    navToDetail: (Int) -> Unit,
+    isLoading: Boolean
 ) {
     Column(modifier = Modifier
         .navigationBarsWithImePadding()
@@ -108,9 +110,16 @@ fun MyAnimeContent(
             currentOrderType = currentOrderType,
             onOrderTypeChanged = { onOrderTypeChanged(it) },
             expanded = expanded,
-            isExpanded = { isExpanded(it) }
+            isExpanded = { isExpanded(it) },
+            isLoading = isLoading
         )
-        MyAnimeList(items = myAnimeList, isRefreshing = isRefreshing, onEventSent = { onEventSent(it) }, navToDetail = { navToDetail(it) })
+        MyAnimeList(
+            items = myAnimeList,
+            isRefreshing = isRefreshing,
+            onEventSent = { onEventSent(it) },
+            navToDetail = { navToDetail(it) },
+            isLoading = isLoading
+        )
     }
 }
 
@@ -122,7 +131,8 @@ fun MyAnimeToolbar(
     isExpanded: (Boolean) -> Unit,
     onSortTypeChanged: (String) -> Unit,
     currentOrderType: String,
-    onOrderTypeChanged: (String) -> Unit
+    onOrderTypeChanged: (String) -> Unit,
+    isLoading: Boolean
 ) {
     TopAppBar(
         contentPadding = rememberInsetsPaddingValues(
@@ -261,65 +271,71 @@ fun MyAnimeList(
     items: List<UserAnimeListPresentation.Data>,
     isRefreshing: Boolean,
     onEventSent: (MyAnimeContract.Event) -> Unit,
-    navToDetail: (Int) -> Unit
+    navToDetail: (Int) -> Unit,
+    isLoading: Boolean
 ) {
     val watchStatusTabRow = listOf("All", "Watching", "On Hold", "Plan To Watch", "Completed", "Dropped")
     val coroutineScope = rememberCoroutineScope()
     val pagerState = rememberPagerState()
-    ScrollableTabRow(
-        backgroundColor = MaterialTheme.colors.background,
-        selectedTabIndex = pagerState.currentPage,
-        indicator = { tabPositions ->
-            TabRowDefaults.Indicator(
-                Modifier.pagerTabIndicatorOffset(pagerState, tabPositions)
-            )
-        }
-    ) {
-        watchStatusTabRow.forEachIndexed { index, status ->
-            Tab(
-                text = { Text(text = status, style = MaterialTheme.typography.subtitle1) },
-                selected = pagerState.currentPage == index,
-                onClick = {
-                    coroutineScope.launch {
-                        pagerState.animateScrollToPage(index)
-                    }
-                }
-            )
-        }
-    }
-    HorizontalPager(
-        modifier = Modifier
-            .fillMaxWidth(),
-        count = watchStatusTabRow.size,
-        state = pagerState
-    ) { page ->
-        if(items.isEmpty()) {
-            NoAnimeScreen()
-        } else {
-            SwipeRefresh(
-                state = rememberSwipeRefreshState(isRefreshing),
-                onRefresh = {
-                    onEventSent(MyAnimeContract.Event.RefreshList)
-                },
-            ) {
-                LazyColumn(
-                    modifier = modifier
-                        .padding(horizontal = 16.dp)
-                        .fillMaxSize(),
-                    verticalArrangement = Arrangement.spacedBy(0.dp)
-                ) {
-                    items(
-                        items = when(page) {
-                            0 -> items
-                            1 -> items.filter { it.listStatus.status == WatchStatusPresentation.Watching }
-                            2 -> items.filter { it.listStatus.status == WatchStatusPresentation.OnHold }
-                            3 -> items.filter { it.listStatus.status == WatchStatusPresentation.PlanToWatch }
-                            4 -> items.filter { it.listStatus.status == WatchStatusPresentation.Completed }
-                            5 -> items.filter { it.listStatus.status == WatchStatusPresentation.Dropped }
-                            else -> items
+    if(isLoading) {
+
+        MyAnimeListShimmerLoading()
+    } else {
+        ScrollableTabRow(
+            backgroundColor = MaterialTheme.colors.background,
+            selectedTabIndex = pagerState.currentPage,
+            indicator = { tabPositions ->
+                TabRowDefaults.Indicator(
+                    Modifier.pagerTabIndicatorOffset(pagerState, tabPositions)
+                )
+            }
+        ) {
+            watchStatusTabRow.forEachIndexed { index, status ->
+                Tab(
+                    text = { Text(text = status, style = MaterialTheme.typography.subtitle1) },
+                    selected = pagerState.currentPage == index,
+                    onClick = {
+                        coroutineScope.launch {
+                            pagerState.animateScrollToPage(index)
                         }
-                    ) { item ->
-                        MyAnimeRowItem(item = item, modifier = Modifier.padding(top = 16.dp, end = 16.dp), onEventSent = { onEventSent(it) }, navToDetail = { navToDetail(it) })
+                    }
+                )
+            }
+        }
+        HorizontalPager(
+            modifier = Modifier
+                .fillMaxWidth(),
+            count = watchStatusTabRow.size,
+            state = pagerState
+        ) { page ->
+            if(items.isEmpty()) {
+                NoAnimeScreen()
+            } else {
+                SwipeRefresh(
+                    state = rememberSwipeRefreshState(isRefreshing),
+                    onRefresh = {
+                        onEventSent(MyAnimeContract.Event.RefreshList)
+                    },
+                ) {
+                    LazyColumn(
+                        modifier = modifier
+                            .padding(horizontal = 16.dp)
+                            .fillMaxSize(),
+                        verticalArrangement = Arrangement.spacedBy(0.dp)
+                    ) {
+                        items(
+                            items = when(page) {
+                                0 -> items
+                                1 -> items.filter { it.listStatus.status == WatchStatusPresentation.Watching }
+                                2 -> items.filter { it.listStatus.status == WatchStatusPresentation.OnHold }
+                                3 -> items.filter { it.listStatus.status == WatchStatusPresentation.PlanToWatch }
+                                4 -> items.filter { it.listStatus.status == WatchStatusPresentation.Completed }
+                                5 -> items.filter { it.listStatus.status == WatchStatusPresentation.Dropped }
+                                else -> items
+                            }
+                        ) { item ->
+                            MyAnimeRowItem(item = item, modifier = Modifier.padding(top = 16.dp, end = 16.dp), onEventSent = { onEventSent(it) }, navToDetail = { navToDetail(it) })
+                        }
                     }
                 }
             }
