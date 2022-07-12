@@ -43,10 +43,7 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.lexwilliam.risuto.model.SearchHistoryPresentation
 import com.lexwilliam.risuto.model.AnimePresentation
 import com.lexwilliam.risuto.model.ShortAnimePresentation
-import com.lexwilliam.risuto.ui.component.ImeAvoidingBox
-import com.lexwilliam.risuto.ui.component.LoadingScreen
-import com.lexwilliam.risuto.ui.component.RowItem
-import com.lexwilliam.risuto.ui.component.SmallGrid
+import com.lexwilliam.risuto.ui.component.*
 import com.lexwilliam.risuto.ui.theme.RisutoTheme
 import com.lexwilliam.risuto.util.FakeItems
 import kotlinx.coroutines.delay
@@ -67,29 +64,25 @@ fun SearchScreen(
     Timber.d(state.resultType.name)
     Timber.d(state.genres.toString())
     Timber.d(state.producer.toString())
-    if(state.isLoading) {
-        LoadingScreen()
-    } else {
-        if(state.q == "" && state.genres == "-1") {
-            onEventSent(SearchContract.Event.OnResultChanged(ResultType.History))
-        }
-        SearchContent(
-            searchSuggestions = state.searchAnimes,
-            animes = state.searchAnimesPaging,
-            searchHistory = state.searchHistory,
-            animeHistory = state.animeHistory,
-            isRefreshing = state.isRefreshing,
-            onEventSent = { onEventSent(it) },
-            query = state.q,
-            resultType = state.resultType,
-            genres = state.genres,
-            keyboardController = keyboardController,
-            cursorColor = cursorColor,
-            onCursorChanged = { cursorColor = it },
-            navToDetail = { navToDetail(it) },
-            onBackPressed = { onBackPressed() }
-        )
+    if(state.q == "" && state.genres == "-1") {
+        onEventSent(SearchContract.Event.OnResultChanged(ResultType.History))
     }
+    SearchContent(
+        searchSuggestions = state.searchAnimes,
+        animes = state.searchAnimesPaging,
+        searchHistory = state.searchHistory,
+        animeHistory = state.animeHistory,
+        isRefreshing = state.isRefreshing,
+        onEventSent = { onEventSent(it) },
+        query = state.q,
+        resultType = state.resultType,
+        genres = state.genres,
+        keyboardController = keyboardController,
+        cursorColor = cursorColor,
+        onCursorChanged = { cursorColor = it },
+        navToDetail = { navToDetail(it) },
+        onBackPressed = { onBackPressed() }
+    )
 }
 
 @ExperimentalFoundationApi
@@ -292,10 +285,10 @@ fun ResultView(
                 lazyAnimeList.apply {
                     when {
                         loadState.refresh is LoadState.Loading -> {
-                            item { LoadingScreen() }
+                            item { RowItemShimmerLoading() }
                         }
                         loadState.append is LoadState.Loading -> {
-                            item { LoadingScreen() }
+                            item {  }
                         }
                         loadState.refresh is LoadState.Error -> {
                             val e = lazyAnimeList.loadState.refresh as LoadState.Error
