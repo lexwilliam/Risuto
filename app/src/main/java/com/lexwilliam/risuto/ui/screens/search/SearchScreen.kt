@@ -285,7 +285,7 @@ fun ResultView(
                 lazyAnimeList.apply {
                     when {
                         loadState.refresh is LoadState.Loading -> {
-                            item { RowItemShimmerLoading() }
+                            item { RowListShimmerLoading() }
                         }
                         loadState.append is LoadState.Loading -> {
                             item {  }

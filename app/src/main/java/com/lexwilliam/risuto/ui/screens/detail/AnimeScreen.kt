@@ -52,7 +52,7 @@ fun AnimeScreen(
     navToPerson: (Int) -> Unit
 ) {
     if(state.animeDetail == getInitialAnimeDetails()) {
-        LoadingScreen()
+        AnimeScreenShimmerLoading()
     } else {
         val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(
             bottomSheetState = BottomSheetState(BottomSheetValue.Collapsed)

@@ -6,13 +6,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
@@ -20,9 +17,9 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.flowlayout.FlowRow
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.ui.TopAppBar
-import com.google.accompanist.insets.navigationBarsWithImePadding
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.lexwilliam.risuto.ui.theme.RisutoTheme
 
@@ -188,7 +185,7 @@ fun HeaderShimmerLoading() {
 }
 
 @Composable
-fun RowItemShimmerLoading() {
+fun RowListShimmerLoading() {
     val shimmerColor = listOf(
         Color.LightGray.copy(alpha = 0.6f),
         Color.LightGray.copy(alpha = 0.2f),
@@ -215,7 +212,7 @@ fun RowItemShimmerLoading() {
 
     Column(
         modifier = Modifier
-            .padding(top = 16.dp, start = 16.dp, end = 16.dp),
+            .padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         repeat(4) {
@@ -336,6 +333,75 @@ fun MyAnimeListShimmerLoading() {
     }
 }
 
+@Composable
+fun AnimeScreenShimmerLoading() {
+    val shimmerColor = listOf(
+        Color.LightGray.copy(alpha = 0.6f),
+        Color.LightGray.copy(alpha = 0.2f),
+        Color.LightGray.copy(alpha = 0.6f)
+    )
+
+    val transition = rememberInfiniteTransition()
+    val translateAnim = transition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1000f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(
+                durationMillis = 1000,
+                easing = FastOutSlowInEasing
+            )
+        )
+    )
+
+    val brush = Brush.linearGradient(
+        colors = shimmerColor,
+        start = Offset.Zero,
+        end = Offset(x = translateAnim.value, y = translateAnim.value)
+    )
+
+    Column(
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(500.dp)
+                .padding(start = 40.dp)
+                .clip(RoundedCornerShape(bottomStart = 32.dp))
+                .background(brush)
+        )
+        FlowRow(
+            modifier = Modifier
+                .padding(start = 40.dp),
+            mainAxisSpacing = 16.dp,
+            crossAxisSpacing = 8.dp
+        ) {
+            repeat(5) {
+                Box(
+                    modifier = Modifier
+                        .size(width = if (it % 2 == 0) 70.dp else 100.dp, height = 20.dp)
+                        .clip(RoundedCornerShape(6.dp))
+                        .background(brush)
+                )
+            }
+        }
+        Box(
+            modifier = Modifier
+                .size(width = 300.dp, height = 40.dp)
+                .padding(start = 40.dp)
+                .clip(RoundedCornerShape(20.dp))
+                .background(brush)
+        )
+        Box(
+            modifier = Modifier
+                .size(width = 240.dp, height = 40.dp)
+                .padding(start = 40.dp)
+                .clip(RoundedCornerShape(20.dp))
+                .background(brush)
+        )
+    }
+}
+
 @Preview
 @Composable
 fun PosterGridListShimmerLoadingPreview() {
@@ -365,8 +431,24 @@ fun SeasonScreenShimmerLoadingPreview() {
 
 @Preview
 @Composable
+fun RowListShimmerLoadingPreview() {
+    RisutoTheme {
+        RowListShimmerLoading()
+    }
+}
+
+@Preview
+@Composable
 fun MyAnimeListShimmerLoadingPreview() {
     RisutoTheme {
         MyAnimeListShimmerLoading()
+    }
+}
+
+@Preview
+@Composable
+fun AnimeScreenShimmerLoadingPreview() {
+    RisutoTheme {
+        AnimeScreenShimmerLoading()
     }
 }
