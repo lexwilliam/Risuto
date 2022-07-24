@@ -1,4 +1,4 @@
-rootProject.name = "RisutoV2"
+rootProject.name = "Risuto"
 rootProject.buildFileName = "build.gradle.kts"
 include(
     ":app",

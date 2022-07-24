@@ -399,6 +399,35 @@ fun AnimeScreenShimmerLoading() {
                 .clip(RoundedCornerShape(20.dp))
                 .background(brush)
         )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 40.dp, end = 16.dp, top = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            repeat(3) {
+                Column(
+                    modifier = Modifier
+                        .weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .height(16.dp)
+                            .width(40.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(brush)
+                    )
+                    Box(
+                        modifier = Modifier
+                            .height(36.dp)
+                            .width(80.dp)
+                            .clip(RoundedCornerShape(20.dp))
+                            .background(brush)
+                    )
+                }
+            }
+        }
     }
 }
 
@@ -445,7 +474,7 @@ fun MyAnimeListShimmerLoadingPreview() {
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun AnimeScreenShimmerLoadingPreview() {
     RisutoTheme {

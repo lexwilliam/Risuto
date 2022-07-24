@@ -45,6 +45,8 @@ import com.lexwilliam.risuto.ui.screens.person.PersonScreen
 import com.lexwilliam.risuto.ui.screens.person.PersonViewModel
 import com.lexwilliam.risuto.ui.screens.profile.MyAnimeScreen
 import com.lexwilliam.risuto.ui.screens.profile.MyAnimeViewModel
+import com.lexwilliam.risuto.ui.screens.profile.ProfileScreen
+import com.lexwilliam.risuto.ui.screens.profile.ProfileViewModel
 import com.lexwilliam.risuto.ui.screens.search.SearchHomeScreen
 import com.lexwilliam.risuto.ui.screens.search.SearchScreen
 import com.lexwilliam.risuto.ui.screens.search.SearchViewModel
@@ -88,6 +90,7 @@ fun RisutoAppContent(
     authCode: String?,
     startDestination: String
 ) {
+
     val navController = rememberNavController()
 
     data class BottomNavItem(
@@ -266,19 +269,27 @@ fun RisutoAppContent(
                     }
                 )
             }
-            composable(RisutoProfileScreen.route) {
-
-            }
             composable(RisutoMyAnimeScreen.route) {
-                val profileViewModel = hiltViewModel<MyAnimeViewModel>()
+                val myAnimeViewModel = hiltViewModel<MyAnimeViewModel>()
                 MyAnimeScreen(
-                    state = profileViewModel.viewState.value,
-                    onEventSent = { event -> profileViewModel.setEvent(event)},
+                    state = myAnimeViewModel.viewState.value,
+                    onEventSent = { event -> myAnimeViewModel.setEvent(event)},
                     navToDetail = { mal_id ->
                         navController.navigate(
                             RisutoAnimeScreen.route.plus("/?mal_id=$mal_id")
                         )
+                    },
+                    navToProfile = {
+                        navController.navigate(
+                            RisutoProfileScreen.route
+                        )
                     }
+                )
+            }
+            composable(RisutoProfileScreen.route) {
+                val profileViewModel = hiltViewModel<ProfileViewModel>()
+                ProfileScreen(
+                    state = profileViewModel.viewState.value
                 )
             }
             composable(

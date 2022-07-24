@@ -19,7 +19,7 @@ class UserMapperImpl @Inject constructor(): UserMapper {
         UserProfile(toDomain(profile.data))
 
     private fun toDomain(profile: UserProfileRepo.Data): UserProfile.Data =
-        UserProfile.Data(profile.birthday, profile.gender, toDomain(profile.images), profile.joined, profile.last_online, profile.location, profile.mal_id, profile.url, profile.username)
+        UserProfile.Data(profile.birthday, profile.gender, toDomain(profile.images), profile.joined, profile.last_online, profile.location, profile.mal_id, profile.url, profile.username, toDomain(profile.statistics))
 
     private fun toDomain(images: UserProfileRepo.Data.Images): UserProfile.Data.Images =
         UserProfile.Data.Images(toDomain(images.jpg), toDomain(images.webp))
@@ -28,5 +28,14 @@ class UserMapperImpl @Inject constructor(): UserMapper {
         UserProfile.Data.Images.Jpg(jpg.image_url)
 
     private fun toDomain(webp: UserProfileRepo.Data.Images.Webp): UserProfile.Data.Images.Webp =
-        UserProfile.Data.Images.Webp(webp.image_url?:"")
+        UserProfile.Data.Images.Webp(webp.image_url)
+
+    private fun toDomain(statistics: UserProfileRepo.Data.Statistics): UserProfile.Data.Statistics =
+        UserProfile.Data.Statistics(toDomain(statistics.anime), toDomain(statistics.manga))
+
+    private fun toDomain(anime: UserProfileRepo.Data.Statistics.Anime): UserProfile.Data.Statistics.Anime =
+        UserProfile.Data.Statistics.Anime(anime.days_watched, anime.mean_score, anime.watching, anime.completed, anime.on_hold, anime.dropped, anime.plan_to_watch, anime.total_entries, anime.rewatched, anime.episodes_watched)
+
+    private fun toDomain(manga: UserProfileRepo.Data.Statistics.Manga): UserProfile.Data.Statistics.Manga =
+        UserProfile.Data.Statistics.Manga(manga.days_read, manga.mean_score, manga.reading, manga.completed, manga.on_hold, manga.dropped, manga.plan_to_read, manga.total_entries, manga.reread, manga.chapters_read, manga.volumes_read)
 }

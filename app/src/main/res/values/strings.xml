@@ -5,4 +5,7 @@
     <string name="connection_error_title">Connection error</string>
     <string name="connection_error_message">Unable to fetch podcasts feeds.\nCheck your internet connection and try again.</string>
     <string name="retry_label">Retry</string>
+    <!-- Currently Watching notification channel -->
+    <string name="channel_currently_watching_name">Currently watching</string>
+    <string name="channel_currently_watching_description">Description</string>
 </resources>

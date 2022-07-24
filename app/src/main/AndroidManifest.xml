@@ -33,6 +33,8 @@
                     android:scheme="risuto" />
             </intent-filter>
         </activity>
+        <receiver android:name=".notification.CurrentlyWatchingReceiver"
+            android:exported="false"/>
     </application>
 
 </manifest>

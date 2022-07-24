@@ -62,9 +62,14 @@ class UserRemoteSourceImpl @Inject constructor(
     }
 
     private fun getInitialStateUserProfile() =
-        UserProfileRepo(UserProfileRepo.Data("", "", UserProfileRepo.Data.Images(
-            UserProfileRepo.Data.Images.Jpg(""), UserProfileRepo.Data.Images.Webp("")),
-            "", "", "", -1, "", ""))
+        UserProfileRepo(
+            UserProfileRepo.Data(
+                "", "", UserProfileRepo.Data.Images(
+                    UserProfileRepo.Data.Images.Jpg(""), UserProfileRepo.Data.Images.Webp("")),
+                "", "", "", -1,"", "", UserProfileRepo.Data.Statistics(UserProfileRepo.Data.Statistics.Anime(-1.0,-1.0,-1,-1,-1,-1,-1,-1,-1,-1),
+                    UserProfileRepo.Data.Statistics.Manga(-1.0,-1.0,-1,-1,-1,-1,-1,-1,-1,-1,-1))
+            )
+        )
 
     private fun getInitialStateUserAnime() =
         UserAnimeListRepo(emptyList())

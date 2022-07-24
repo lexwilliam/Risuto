@@ -79,7 +79,7 @@ fun getWatchStatusColor(watchStatus: WatchStatusPresentation): Color {
 }
 
 fun seasonYearFormat(season: String, year: Int): String {
-    return season.capitalize(Locale.ROOT) + " " + year.toString()
+    return season.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() } + " " + year.toString()
 }
 
 fun getCurrentSeason(): String {
@@ -147,3 +147,13 @@ fun getInitialStatePerson() =
                 PersonPresentation.Data.Images.Jpg("")),
             -1, emptyList(), "", "", emptyList(), ""
         ))
+
+fun getInitialStateUserProfile() =
+    UserProfilePresentation(
+        UserProfilePresentation.Data(
+            "", "", UserProfilePresentation.Data.Images(
+                UserProfilePresentation.Data.Images.Jpg(""), UserProfilePresentation.Data.Images.Webp("")),
+            "", "", "", -1,"", "", UserProfilePresentation.Data.Statistics(UserProfilePresentation.Data.Statistics.Anime(-1.0,-1.0,-1,-1,-1,-1,-1,-1,-1,-1),
+                UserProfilePresentation.Data.Statistics.Manga(-1.0,-1.0,-1,-1,-1,-1,-1,-1,-1,-1,-1))
+        )
+    )

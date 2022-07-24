@@ -65,7 +65,7 @@ interface JikanService {
         @Path("id") id: Int
     ): AnimeStaffResponse
 
-    @GET("users/{username}")
+    @GET("users/{username}/full")
     suspend fun getUserProfile(
         @Path("username") username: String
     ): UserProfileResponse

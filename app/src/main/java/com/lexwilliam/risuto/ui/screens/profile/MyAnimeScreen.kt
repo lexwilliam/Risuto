@@ -9,19 +9,18 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.material.TabRowDefaults
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.ui.draw.clip
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.navigationBarsWithImePadding
 import com.google.accompanist.insets.rememberInsetsPaddingValues
@@ -35,13 +34,12 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.lexwilliam.risuto.R
 import com.lexwilliam.risuto.model.UserAnimeListPresentation
 import com.lexwilliam.risuto.model.WatchStatusPresentation
-import com.lexwilliam.risuto.ui.component.LoadingScreen
 import com.lexwilliam.risuto.ui.component.MyAnimeListShimmerLoading
 import com.lexwilliam.risuto.ui.component.NetworkImage
+import com.lexwilliam.risuto.ui.theme.RisutoTheme
 import com.lexwilliam.risuto.util.toMalFormat
 import com.lexwilliam.risuto.util.watchStatusList
 import com.lexwilliam.risuto.util.watchStatusToString
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @ExperimentalFoundationApi
@@ -50,6 +48,7 @@ fun MyAnimeScreen(
     state: (MyAnimeContract.State),
     onEventSent: (MyAnimeContract.Event) -> Unit,
     navToDetail: (Int) -> Unit,
+    navToProfile: () -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
     var currentStatus by remember { mutableStateOf("All")}
@@ -76,6 +75,7 @@ fun MyAnimeScreen(
             isRefreshing = state.isRefreshing,
             onEventSent = { onEventSent(it) },
             navToDetail = { navToDetail(it) },
+            navToProfile = navToProfile,
             isLoading = state.isLoading
         )
     }
@@ -98,6 +98,7 @@ fun MyAnimeContent(
     isRefreshing: Boolean,
     onEventSent: (MyAnimeContract.Event) -> Unit,
     navToDetail: (Int) -> Unit,
+    navToProfile: () -> Unit,
     isLoading: Boolean
 ) {
     Column(modifier = Modifier
@@ -107,11 +108,9 @@ fun MyAnimeContent(
             username = username,
             userImage = userImage,
             onSortTypeChanged = { onSortTypeChanged(it) },
-            currentOrderType = currentOrderType,
-            onOrderTypeChanged = { onOrderTypeChanged(it) },
             expanded = expanded,
             isExpanded = { isExpanded(it) },
-            isLoading = isLoading
+            navToProfile = navToProfile
         )
         MyAnimeList(
             items = myAnimeList,
@@ -130,9 +129,7 @@ fun MyAnimeToolbar(
     expanded: Boolean,
     isExpanded: (Boolean) -> Unit,
     onSortTypeChanged: (String) -> Unit,
-    currentOrderType: String,
-    onOrderTypeChanged: (String) -> Unit,
-    isLoading: Boolean
+    navToProfile: () -> Unit
 ) {
     TopAppBar(
         contentPadding = rememberInsetsPaddingValues(
@@ -144,15 +141,16 @@ fun MyAnimeToolbar(
         title = {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 NetworkImage(
                     modifier = Modifier
                         .size(32.dp)
-                        .clip(CircleShape),
+                        .clip(CircleShape)
+                        .clickable { navToProfile() },
                     imageUrl = userImage
                 )
-                Text("$username Anime List", style = MaterialTheme.typography.h6, fontWeight = FontWeight.Bold)
+                Text("$username's Anime List", style = MaterialTheme.typography.h6, fontWeight = FontWeight.Bold)
             }
         },
         actions = {
@@ -379,5 +377,31 @@ fun sortAnime(
             "By Last Update" -> animes.sortedBy { it.listStatus.updatedAt }
             else -> animes
         }
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Preview
+@Composable
+fun MyAnimeScreenPreview() {
+    RisutoTheme {
+        MyAnimeContent(
+            myAnimeList = emptyList(),
+            username = "Username",
+            userImage = "",
+            expanded = false,
+            isExpanded = {},
+            currentStatus = "",
+            onStatusChanged = {},
+            currentSortType = "",
+            onSortTypeChanged = {},
+            currentOrderType = "",
+            onOrderTypeChanged = {},
+            isRefreshing = false,
+            onEventSent = {},
+            navToDetail = {},
+            navToProfile = {},
+            isLoading = false
+        )
     }
 }
