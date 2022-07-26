@@ -92,4 +92,6 @@ object Dependencies {
     const val jodaTime = "joda-time:joda-time:${Versions.jodaTime}"
 
     const val material = "com.google.android.material:material:${Versions.material}"
+
+    const val mpAndroidChart = "com.github.PhilJay:MPAndroidChart:v3.1.0"
 }

@@ -31,7 +31,7 @@ class ProfileViewModel @Inject constructor(
 
     override fun setInitialState(): ProfileContract.State {
         return ProfileContract.State(
-            userProfile = getInitialStateUserProfile(),
+            userProfile = getInitialStateUserProfile().data,
             isLoading = true,
             isError = false
         )
@@ -55,7 +55,7 @@ class ProfileViewModel @Inject constructor(
                             .let { profile ->
                                 setState {
                                     copy(
-                                        userProfile = profile,
+                                        userProfile = profile.data,
                                         isLoading = false
                                     )
                                 }

@@ -79,6 +79,8 @@ dependencies {
     implementation(Dependencies.lottie)
     implementation(Dependencies.lottieCompose)
 
+    implementation(Dependencies.mpAndroidChart)
+
     implementation(Dependencies.Accompanist.flowLayout)
     implementation(Dependencies.Accompanist.insets)
     implementation(Dependencies.Accompanist.insetsUi)

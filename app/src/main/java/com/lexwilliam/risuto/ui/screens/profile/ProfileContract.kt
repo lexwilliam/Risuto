@@ -11,7 +11,7 @@ class ProfileContract {
     }
 
     data class State(
-        val userProfile: UserProfilePresentation,
+        val userProfile: UserProfilePresentation.Data,
         val isLoading: Boolean,
         val isError: Boolean
     ) : ViewState
