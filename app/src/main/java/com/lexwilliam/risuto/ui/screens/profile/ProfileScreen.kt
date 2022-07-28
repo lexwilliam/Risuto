@@ -1,8 +1,10 @@
 package com.lexwilliam.risuto.ui.screens.profile
 
+import android.content.res.Configuration
 import android.graphics.Typeface
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -20,17 +22,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.github.mikephil.charting.charts.PieChart
-import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
 import com.google.accompanist.insets.navigationBarsWithImePadding
 import com.lexwilliam.risuto.model.UserProfilePresentation
+import com.lexwilliam.risuto.ui.component.Header
 import com.lexwilliam.risuto.ui.component.LoadingScreen
 import com.lexwilliam.risuto.ui.component.NetworkImage
 import com.lexwilliam.risuto.ui.component.StatusBarSpacer
+import com.lexwilliam.risuto.ui.screens.person.PersonSubtitle
 import com.lexwilliam.risuto.ui.theme.*
-import timber.log.Timber
+import com.lexwilliam.risuto.util.FakeItems
 
 @Composable
 fun ProfileScreen(
@@ -97,47 +100,72 @@ fun ProfileInfo(
 
 data class PieChartData(
     val name: String,
-    val count: Float
+    val count: Float,
+    val color: Color
 )
 
 @Composable
 fun ProfileStatistics(
     statistics: UserProfilePresentation.Data.Statistics
 ) {
+
     val pieChartData = listOf(
-        PieChartData("Completed", statistics.anime.completed.toFloat()),
-        PieChartData("Watching", statistics.anime.watching.toFloat()),
-        PieChartData("Dropped", statistics.anime.dropped.toFloat()),
-        PieChartData("On Hold", statistics.anime.on_hold.toFloat()),
-        PieChartData("Plan To Watch", statistics.anime.plan_to_watch.toFloat())
+        PieChartData("Completed", statistics.anime.completed.toFloat(), completedColor),
+        PieChartData("Watching", statistics.anime.watching.toFloat(), watchingColor),
+        PieChartData("Dropped", statistics.anime.dropped.toFloat(), droppedColor),
+        PieChartData("On Hold", statistics.anime.on_hold.toFloat(), onHoldColor),
+        PieChartData("Plan To Watch", statistics.anime.plan_to_watch.toFloat(), planToWatchColor)
     )
     Column(
-        modifier = Modifier
-            .padding(18.dp)
-            .size(320.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        AndroidView(
-            factory = { context ->
-                PieChart(context).apply {
-                    layoutParams = LinearLayout.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.MATCH_PARENT
-                    )
-                    this.description.isEnabled = false
-                    this.isDrawHoleEnabled = false
-                    this.legend.isEnabled = true
-                    this.legend.textSize = 14F
-                    this.legend.horizontalAlignment =
-                        Legend.LegendHorizontalAlignment.CENTER
-                    this.setEntryLabelColor(Color.Black.hashCode())
+        PersonSubtitle(title = "Activity")
+        Row(
+            modifier = Modifier
+                .padding(horizontal = 16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(200.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                AndroidView(
+                    factory = { context ->
+                        PieChart(context).apply {
+                            layoutParams = LinearLayout.LayoutParams(
+                                ViewGroup.LayoutParams.MATCH_PARENT,
+                                ViewGroup.LayoutParams.MATCH_PARENT
+                            )
+                            this.description.isEnabled = false
+                            this.isDrawHoleEnabled = true
+                            this.legend.isEnabled = false
+                            this.holeRadius = 80f
+                            this.setHoleColor(if (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES) 0x151E29 else 0xFFFFFF)
+                        }
+                    },
+                    update = {
+                        updatePieChartWithData(it, pieChartData)
+                    }
+                )
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(text = statistics.anime.total_entries.toString(), style = MaterialTheme.typography.h4, fontWeight = FontWeight.Black)
+                    Text(text = "Total Entries", style = MaterialTheme.typography.caption)
                 }
-            },
-            update = {
-                updatePieChartWithData(it, pieChartData)
             }
-        )
+            Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                pieChartData.forEach {
+                    Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                        Box(modifier = Modifier.size(16.dp).background(it.color))
+                        Text(text = it.name, style = MaterialTheme.typography.subtitle2)
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -147,35 +175,27 @@ fun updatePieChartWithData(
 ) {
     val entries = ArrayList<PieEntry>()
     data.forEach {
-        entries.add(PieEntry(it.count, it.name))
+        entries.add(PieEntry(it.count))
     }
 
     val ds = PieDataSet(entries, "")
+    ds.colors = data.map { it.color.toArgb() }
 
-    ds.colors = arrayListOf(
-        primary.toArgb(),
-        primaryVariant.toArgb(),
-        secondary.toArgb(),
-        secondaryVariant.toArgb(),
-        surface.toArgb()
-    )
-
-    ds.yValuePosition = PieDataSet.ValuePosition.INSIDE_SLICE
-    ds.xValuePosition = PieDataSet.ValuePosition.INSIDE_SLICE
+    ds.setDrawValues(false)
     ds.sliceSpace = 2f
-    ds.valueTextColor = Color.Black.toArgb()
-    ds.valueTextSize = 18f
-    ds.valueTypeface = Typeface.DEFAULT_BOLD
+
     val d = PieData(ds)
     chart.data = d
     chart.invalidate()
 }
 
-@Preview
+@Preview(
+    showBackground = true
+)
 @Composable
 fun ProfileContentPreview() {
     RisutoTheme {
-        ProfileInfo(imageUrl = "", username = "Testing username", joined = "Testing joined")
+        ProfileContent(userProfile = FakeItems.fakeUserProfile.data)
     }
 
 }
