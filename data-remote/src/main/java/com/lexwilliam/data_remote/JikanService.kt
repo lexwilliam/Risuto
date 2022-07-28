@@ -3,7 +3,6 @@ package com.lexwilliam.data_remote
 import com.lexwilliam.data_remote.model.anime.*
 import com.lexwilliam.data_remote.model.people.PersonResponse
 import com.lexwilliam.data_remote.model.user.UserProfileResponse
-import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query

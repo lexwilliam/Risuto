@@ -1,6 +1,5 @@
 package com.lexwilliam.data_remote.data
 
-import android.media.Image
 import com.lexwilliam.data.UserRemoteSource
 import com.lexwilliam.data.model.remote.user.UserAnimeListRepo
 import com.lexwilliam.data.model.remote.user.UserAnimeUpdateRepo
@@ -9,7 +8,6 @@ import com.lexwilliam.data_remote.JikanService
 import com.lexwilliam.data_remote.MyAnimeListService
 import com.lexwilliam.data_remote.mapper.AnimeMapper
 import com.lexwilliam.data_remote.mapper.UserMapper
-import com.lexwilliam.data_remote.model.user.UserProfileResponse
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
@@ -62,14 +60,11 @@ class UserRemoteSourceImpl @Inject constructor(
     }
 
     private fun getInitialStateUserProfile() =
-        UserProfileRepo(
-            UserProfileRepo.Data(
-                "", "", UserProfileRepo.Data.Images(
-                    UserProfileRepo.Data.Images.Jpg(""), UserProfileRepo.Data.Images.Webp("")),
-                "", "", "", -1,"", "", UserProfileRepo.Data.Statistics(UserProfileRepo.Data.Statistics.Anime(-1.0,-1.0,-1,-1,-1,-1,-1,-1,-1,-1),
-                    UserProfileRepo.Data.Statistics.Manga(-1.0,-1.0,-1,-1,-1,-1,-1,-1,-1,-1,-1))
-            )
-        )
+        UserProfileRepo(UserProfileRepo.Data("","", emptyList(),
+            UserProfileRepo.Data.Favorites(emptyList(), emptyList(), emptyList()),"",
+            UserProfileRepo.Data.Images(UserProfileRepo.Data.Images.Jpg("")),"","","",-1,
+            UserProfileRepo.Data.Statistics(UserProfileRepo.Data.Statistics.Anime(-1,-1.0,-1,-1,-1.0,-1,-1,-1,-1,-1)),
+            UserProfileRepo.Data.Updates(emptyList()),"",""))
 
     private fun getInitialStateUserAnime() =
         UserAnimeListRepo(emptyList())

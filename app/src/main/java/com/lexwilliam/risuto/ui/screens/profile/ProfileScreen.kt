@@ -195,7 +195,7 @@ fun updatePieChartWithData(
 @Composable
 fun ProfileContentPreview() {
     RisutoTheme {
-        ProfileContent(userProfile = FakeItems.fakeUserProfile.data)
+        ProfileContent(userProfile = FakeItems.fakeUserProfile)
     }
 
 }

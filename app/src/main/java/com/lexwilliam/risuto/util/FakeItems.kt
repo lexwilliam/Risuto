@@ -279,14 +279,11 @@ object FakeItems {
         )
     )
 
-    val fakeUserProfile = UserProfilePresentation(
-        UserProfilePresentation.Data(
-            "", "", UserProfilePresentation.Data.Images(
-                UserProfilePresentation.Data.Images.Jpg(""), UserProfilePresentation.Data.Images.Webp("")),
-            "", "", "", -1,"", "", UserProfilePresentation.Data.Statistics(
-                UserProfilePresentation.Data.Statistics.Anime(29.0,8.5,3,90,6,20,50,-1,-1,-1),
-                UserProfilePresentation.Data.Statistics.Manga(-1.0,-1.0,-1,-1,-1,-1,-1,-1,-1,-1,-1))
-        )
-    )
+    val fakeUserProfile =
+        UserProfilePresentation.Data("","", emptyList(),
+            UserProfilePresentation.Data.Favorites(emptyList(), emptyList(), emptyList()),"",
+            UserProfilePresentation.Data.Images(UserProfilePresentation.Data.Images.Jpg("")),"","","",-1,
+            UserProfilePresentation.Data.Statistics(UserProfilePresentation.Data.Statistics.Anime(-1,-1.0,-1,-1,-1.0,-1,-1,-1,-1,-1)),
+            UserProfilePresentation.Data.Updates(emptyList()),"","")
 }
 
