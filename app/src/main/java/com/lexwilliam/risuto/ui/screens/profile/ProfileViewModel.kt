@@ -1,9 +1,9 @@
 package com.lexwilliam.risuto.ui.screens.profile
 
 import androidx.lifecycle.viewModelScope
-import com.lexwilliam.domain.model.remote.user.UserProfile
+import com.lexwilliam.domain.usecase.GetUserAnimeList
 import com.lexwilliam.domain.usecase.GetUserProfile
-import com.lexwilliam.risuto.base.BaseViewModel
+import com.lexwilliam.risuto.ui.base.BaseViewModel
 import com.lexwilliam.risuto.mapper.UserMapper
 import com.lexwilliam.risuto.util.getInitialStateUserProfile
 import dagger.hilt.android.lifecycle.HiltViewModel

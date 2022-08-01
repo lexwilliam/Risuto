@@ -47,6 +47,37 @@ fun SmallGrid(
 }
 
 @Composable
+fun SmallGridPerson(
+    modifier: Modifier = Modifier,
+    id: Int,
+    imageUrl: String,
+    title: String,
+    navToPerson: (Int) -> Unit
+) {
+    Column(
+        modifier
+            .wrapContentSize()
+            .width(100.dp)
+            .clickable {
+                navToPerson(id)
+            }
+    ) {
+        NetworkImage(
+            imageUrl = imageUrl,
+            modifier = Modifier
+                .size(width = 120.dp, height = 160.dp)
+                .shadow(elevation = 4.dp, shape = MaterialTheme.shapes.small, true)
+        )
+        Text(text = title + "\n",
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.padding(top = 4.dp),
+            style = MaterialTheme.typography.subtitle2
+        )
+    }
+}
+
+@Composable
 fun MediumGrid(
     modifier: Modifier = Modifier,
     id: Int,

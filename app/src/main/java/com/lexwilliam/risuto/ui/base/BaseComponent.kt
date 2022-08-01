@@ -1,4 +1,4 @@
-package com.lexwilliam.risuto.base
+package com.lexwilliam.risuto.ui.base
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 

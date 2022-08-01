@@ -39,7 +39,6 @@ class UserRepositoryImpl @Inject constructor(
     }
 
     override suspend fun deleteUserAnimeStatus(id: Int) {
-        Timber.d("test")
         val accessToken = oAuthLocalSource.accessTokenFlow.firstOrNull()
         return userRemoteSource.deleteUserAnimeStatus(authHeader = ApiConstant.BEARER_SEPARATOR + accessToken, id)
     }

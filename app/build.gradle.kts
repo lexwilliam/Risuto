@@ -25,6 +25,7 @@ android {
     buildTypes {
         getByName("debug") {
             isDebuggable = true
+            isTestCoverageEnabled = true
             buildConfigField("Integer", "PORT", "8080")
         }
         getByName("release") {
@@ -33,6 +34,12 @@ android {
                     getDefaultProguardFile("proguard-android-optimize.txt"),
                     file("proguard-rules.pro")
             )
+        }
+    }
+
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
         }
     }
 

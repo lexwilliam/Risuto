@@ -4,7 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.lexwilliam.domain.usecase.GetExpiresInFromCache
 import com.lexwilliam.domain.usecase.GetRefreshTokenFromCache
 import com.lexwilliam.domain.usecase.SetRefreshToken
-import com.lexwilliam.risuto.base.BaseViewModel
+import com.lexwilliam.risuto.ui.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.firstOrNull

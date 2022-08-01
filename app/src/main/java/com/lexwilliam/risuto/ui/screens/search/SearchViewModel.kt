@@ -7,7 +7,7 @@ import androidx.paging.cachedIn
 import androidx.paging.map
 import com.lexwilliam.domain.usecase.DeleteAllAnimeHistory
 import com.lexwilliam.domain.usecase.*
-import com.lexwilliam.risuto.base.BaseViewModel
+import com.lexwilliam.risuto.ui.base.BaseViewModel
 import com.lexwilliam.risuto.mapper.AnimeMapper
 import com.lexwilliam.risuto.mapper.HistoryMapper
 import com.lexwilliam.risuto.model.SearchHistoryPresentation

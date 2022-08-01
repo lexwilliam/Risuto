@@ -5,7 +5,6 @@ import com.lexwilliam.data.OAuthRemoteSource
 import com.lexwilliam.data.constant.DataConstant
 import com.lexwilliam.domain.repository.OAuthRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
 import timber.log.Timber
 import javax.inject.Inject
 

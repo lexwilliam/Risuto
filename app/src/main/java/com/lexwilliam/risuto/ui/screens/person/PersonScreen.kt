@@ -30,7 +30,6 @@ import com.google.accompanist.insets.ui.TopAppBar
 import com.lexwilliam.risuto.model.PersonPresentation
 import com.lexwilliam.risuto.ui.component.LoadingScreen
 import com.lexwilliam.risuto.ui.component.NetworkImage
-import com.lexwilliam.risuto.ui.screens.detail.DetailSubtitle
 
 @Composable
 fun PersonScreen(
@@ -155,7 +154,7 @@ fun PersonPoster(
 }
 
 @Composable
-fun PersonSubtitle(
+fun Subtitle(
     title: String
 ) {
     Text(
@@ -173,7 +172,7 @@ fun PersonAbout(
 ) {
     if(about != "") {
         Column() {
-            PersonSubtitle(title = "About")
+            Subtitle(title = "About")
             Text(modifier = Modifier.padding(16.dp), text = about, style = MaterialTheme.typography.body1)
         }
     }
@@ -185,7 +184,7 @@ fun PersonAnime(
     navToDetail: (Int) -> Unit
 ) {
     Column {
-        PersonSubtitle(title = "Anime")
+        Subtitle(title = "Anime")
         if(animes.isNotEmpty()) {
             LazyRow(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -236,7 +235,7 @@ fun PersonManga(
 ) {
     if(mangas.isNotEmpty()) {
         Column {
-            PersonSubtitle(title = "Manga")
+            Subtitle(title = "Manga")
             if(mangas.isNotEmpty()) {
                 LazyRow(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -288,7 +287,7 @@ fun PersonVoice(
 ) {
     if(voices.isNotEmpty()) {
         Column {
-            PersonSubtitle(title = "Voice")
+            Subtitle(title = "Voice")
             if(voices.isNotEmpty()) {
                 LazyRow(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),

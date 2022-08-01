@@ -1,9 +1,8 @@
 package com.lexwilliam.risuto.ui.screens.detail
 
-import com.lexwilliam.domain.model.remote.anime.AnimeStaff
-import com.lexwilliam.risuto.base.ViewEvent
-import com.lexwilliam.risuto.base.ViewSideEffect
-import com.lexwilliam.risuto.base.ViewState
+import com.lexwilliam.risuto.ui.base.ViewEvent
+import com.lexwilliam.risuto.ui.base.ViewSideEffect
+import com.lexwilliam.risuto.ui.base.ViewState
 import com.lexwilliam.risuto.model.AnimeCharactersPresentation
 import com.lexwilliam.risuto.model.AnimeDetailPresentation
 import com.lexwilliam.risuto.model.AnimeStaffPresentation

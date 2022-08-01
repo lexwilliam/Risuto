@@ -53,4 +53,6 @@ object TestDependencies {
     }
 
     const val mockWebServer = "com.squareup.okhttp3:mockwebserver:${Versions.mockWebServer}"
+
+    const val robolectric = "org.robolectric:robolectric:${Versions.robolectric}"
 }

@@ -11,6 +11,7 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.lexwilliam.risuto.model.AnimePresentation
 import com.lexwilliam.risuto.model.ShortAnimePresentation
+import com.lexwilliam.risuto.model.UserProfilePresentation
 import com.lexwilliam.risuto.ui.screens.profile.MyAnimeContract
 
 @ExperimentalFoundationApi
@@ -67,6 +68,105 @@ fun HorizontalGridList(
                 id = item.mal_id,
                 imageUrl = item.images.jpg.image_url,
                 title = item.title,
+                navToDetail = { navToDetail(it) }
+            )
+        }
+        item {
+            Spacer(modifier = Modifier.padding(0.dp))
+        }
+    }
+}
+
+@Composable
+fun FavoriteAnimeHorizontalGridList(
+    items: List<UserProfilePresentation.Data.Favorites.Anime>,
+    navToDetail: (Int) -> Unit
+) {
+    LazyRow(
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        modifier = Modifier
+            .fillMaxWidth(),
+        contentPadding = PaddingValues(start = 16.dp)
+    ){
+        items(items = items){ item ->
+            SmallGrid(
+                id = item.mal_id,
+                imageUrl = item.images.jpg.image_url,
+                title = item.title,
+                navToDetail = { navToDetail(it) }
+            )
+        }
+        item {
+            Spacer(modifier = Modifier.padding(0.dp))
+        }
+    }
+}
+
+@Composable
+fun FavoriteCharacterHorizontalGridList(
+    items: List<UserProfilePresentation.Data.Favorites.Character>
+) {
+    LazyRow(
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        modifier = Modifier
+            .fillMaxWidth(),
+        contentPadding = PaddingValues(start = 16.dp)
+    ){
+        items(items = items){ item ->
+            SmallGrid(
+                id = item.mal_id,
+                imageUrl = item.images.jpg.image_url,
+                title = item.name,
+                navToDetail = {}
+            )
+        }
+        item {
+            Spacer(modifier = Modifier.padding(0.dp))
+        }
+    }
+}
+
+@Composable
+fun FavoritePeopleHorizontalGridList(
+    items: List<UserProfilePresentation.Data.Favorites.People>,
+    navToPerson: (Int) -> Unit
+) {
+    LazyRow(
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        modifier = Modifier
+            .fillMaxWidth(),
+        contentPadding = PaddingValues(start = 16.dp)
+    ){
+        items(items = items){ item ->
+            SmallGridPerson(
+                id = item.mal_id,
+                imageUrl = item.images.jpg.image_url,
+                title = item.name,
+                navToPerson = { navToPerson(it) }
+            )
+        }
+        item {
+            Spacer(modifier = Modifier.padding(0.dp))
+        }
+    }
+}
+
+@Composable
+fun UpdatesHorizontalGridList(
+    items: UserProfilePresentation.Data.Updates,
+    navToDetail: (Int) -> Unit
+) {
+    LazyRow(
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        modifier = Modifier
+            .fillMaxWidth(),
+        contentPadding = PaddingValues(start = 16.dp)
+    ){
+        items(items = items.anime){ item ->
+            SmallGrid(
+                id = item.entry.mal_id,
+                imageUrl = item.entry.images.jpg.image_url,
+                title = item.entry.title,
                 navToDetail = { navToDetail(it) }
             )
         }

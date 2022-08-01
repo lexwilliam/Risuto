@@ -1,6 +1,7 @@
 package com.lexwilliam.risuto
 
 import android.os.Bundle
+import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -16,7 +17,7 @@ import com.lexwilliam.risuto.util.Constants
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
+class MainActivity : ComponentActivity() {
 
     private var authCode: String? = null
     private val viewModel: MainViewModel by viewModels()

@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -129,6 +130,7 @@ fun RisutoAppContent(
                 ) {
                     bottomNavIcons.forEach { screen ->
                         BottomNavigationItem(
+                            modifier = Modifier.testTag("${screen.description} Bottom Nav Button"),
                             icon = { Icon(imageVector = screen.icon, contentDescription = null) },
                             label = { Text(text = screen.description, fontWeight = FontWeight.SemiBold) },
                             selected = currentRoute?.hierarchy?.any { it.route == screen.route } == true,
@@ -289,7 +291,20 @@ fun RisutoAppContent(
             composable(RisutoProfileScreen.route) {
                 val profileViewModel = hiltViewModel<ProfileViewModel>()
                 ProfileScreen(
-                    state = profileViewModel.viewState.value
+                    state = profileViewModel.viewState.value,
+                    navToDetail = { mal_id ->
+                        navController.navigate(
+                            RisutoAnimeScreen.route.plus("/?mal_id=$mal_id")
+                        )
+                    },
+                    navToPerson = { mal_id ->
+                        navController.navigate(
+                            RisutoPersonScreen.route.plus("/?mal_id=$mal_id")
+                        )
+                    },
+                    onBackPressed = {
+                        navController.navigateUp()
+                    }
                 )
             }
             composable(

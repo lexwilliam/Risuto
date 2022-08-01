@@ -1,8 +1,8 @@
 package com.lexwilliam.risuto.ui.screens.login
 
-import com.lexwilliam.risuto.base.ViewEvent
-import com.lexwilliam.risuto.base.ViewSideEffect
-import com.lexwilliam.risuto.base.ViewState
+import com.lexwilliam.risuto.ui.base.ViewEvent
+import com.lexwilliam.risuto.ui.base.ViewSideEffect
+import com.lexwilliam.risuto.ui.base.ViewState
 
 class LoginContract {
     sealed class Event : ViewEvent {

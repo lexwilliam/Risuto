@@ -10,6 +10,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -57,7 +58,8 @@ fun HomeContent(
             StatusBarSpacer()
             Header(
                 modifier = Modifier
-                    .padding(top = 16.dp, start = 16.dp),
+                    .padding(top = 16.dp, start = 16.dp)
+                    .testTag("Home Header"),
                 title = "Home"
             )
         }

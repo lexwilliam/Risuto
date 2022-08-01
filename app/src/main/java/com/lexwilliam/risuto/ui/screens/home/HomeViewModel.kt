@@ -4,12 +4,11 @@ import androidx.lifecycle.viewModelScope
 import com.lexwilliam.domain.usecase.GetSchedules
 import com.lexwilliam.domain.usecase.GetSeasonNow
 import com.lexwilliam.domain.usecase.GetTopAnime
-import com.lexwilliam.risuto.base.BaseViewModel
+import com.lexwilliam.risuto.ui.base.BaseViewModel
 import com.lexwilliam.risuto.mapper.AnimeMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.joda.time.DateTime
 import timber.log.Timber

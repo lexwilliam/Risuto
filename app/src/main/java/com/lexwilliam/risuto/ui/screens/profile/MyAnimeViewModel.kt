@@ -4,7 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.lexwilliam.domain.usecase.GetUserAnimeList
 import com.lexwilliam.domain.usecase.GetUserProfile
 import com.lexwilliam.domain.usecase.UpdateUserAnimeStatus
-import com.lexwilliam.risuto.base.BaseViewModel
+import com.lexwilliam.risuto.ui.base.BaseViewModel
 import com.lexwilliam.risuto.mapper.AnimeMapper
 import com.lexwilliam.risuto.mapper.UserMapper
 import dagger.hilt.android.lifecycle.HiltViewModel

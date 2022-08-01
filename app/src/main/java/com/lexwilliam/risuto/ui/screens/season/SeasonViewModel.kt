@@ -4,7 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.lexwilliam.domain.usecase.GetSeason
 import com.lexwilliam.domain.usecase.GetSeasonList
 import com.lexwilliam.domain.usecase.GetSeasonNow
-import com.lexwilliam.risuto.base.BaseViewModel
+import com.lexwilliam.risuto.ui.base.BaseViewModel
 import com.lexwilliam.risuto.mapper.AnimeMapper
 import com.lexwilliam.risuto.model.SeasonListPresentation
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -12,7 +12,6 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.*

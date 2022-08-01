@@ -5,7 +5,6 @@ include(
     ":data",
     ":domain",
     ":data-local",
-    ":data-remote"
+    ":data-remote",
+    ":core-android-test"
 )
-include(":core-android-test")
-include(":feature-home")
