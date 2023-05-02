@@ -67,6 +67,14 @@ object RepositoryModule {
 
     @Singleton
     @Provides
+    fun provideCharacterRepository(
+        characterRemoteSource: CharacterRemoteSource,
+        characterMapper: CharacterMapper
+    ): CharacterRepository =
+        CharacterRepositoryImpl(characterRemoteSource, characterMapper)
+
+    @Singleton
+    @Provides
     fun provideHistoryMapper(): HistoryMapper = HistoryMapperImpl()
 
     @Singleton
@@ -84,4 +92,8 @@ object RepositoryModule {
     @Singleton
     @Provides
     fun providePersonMapper(): PersonMapper = PersonMapperImpl()
+
+    @Singleton
+    @Provides
+    fun provideCharacterMapper(): CharacterMapper = CharacterMapperImpl()
 }

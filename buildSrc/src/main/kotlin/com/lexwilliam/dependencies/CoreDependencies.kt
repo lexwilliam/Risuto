@@ -11,6 +11,7 @@ object Dependencies {
 
         object Compose {
             const val ui = "androidx.compose.ui:ui:${Versions.compose}"
+
             const val systemUiController =
                 "com.google.accompanist:accompanist-systemuicontroller:${Versions.composeSystemUi}"
             const val runtime = "androidx.compose.runtime:runtime:${Versions.compose}"

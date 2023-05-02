@@ -60,6 +60,14 @@ object RemoteModule {
 
     @Singleton
     @Provides
+    fun provideCharacterRemoteSource(
+        jikanService: JikanService,
+        characterMapper: CharacterMapper
+    ): CharacterRemoteSource =
+        CharacterRemoteSourceImpl(jikanService, characterMapper)
+
+    @Singleton
+    @Provides
     fun provideAnimeMapper(): AnimeMapper = AnimeMapperImpl()
 
     @Singleton
@@ -77,4 +85,8 @@ object RemoteModule {
     @Singleton
     @Provides
     fun providePersonMapper(): PersonMapper = PersonMapperImpl()
+
+    @Singleton
+    @Provides
+    fun provideCharacterMapper(): CharacterMapper = CharacterMapperImpl()
 }

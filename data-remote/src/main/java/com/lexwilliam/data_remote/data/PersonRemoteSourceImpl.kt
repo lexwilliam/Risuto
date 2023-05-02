@@ -20,7 +20,7 @@ class PersonRemoteSourceImpl @Inject constructor(
 
     override suspend fun getPeopleById(id: Int): Flow<PersonRepo> {
         try {
-            personMapper.toRepo(jikanService.getPersonFullById(id))
+            personMapper.toRepo(jikanService.getPersonById(id))
                 .let  {
                     _personSharedFlow.emit(it)
                 }

@@ -90,11 +90,10 @@ fun LoginContent(
             Column(
                 modifier = Modifier
                     .navigationBarsWithImePadding()
-                    .padding(horizontal = 16.dp, vertical = 48.dp),
+                    .padding(horizontal = 16.dp, vertical = 72.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Text(text = "Let's Get Started", style = MaterialTheme.typography.h2, fontWeight = FontWeight.Black)
-                Text(text = "Start exploring and tracking animes from MyAnimeList Database", style = MaterialTheme.typography.body1, color = Color.Gray, fontWeight = FontWeight.SemiBold)
                 Button(
                     modifier = Modifier.fillMaxWidth(),
                     onClick = { onEventSent(LoginContract.Event.RedirectToAuth) }

@@ -1,6 +1,7 @@
 package com.lexwilliam.data_remote
 
 import com.lexwilliam.data_remote.model.anime.*
+import com.lexwilliam.data_remote.model.character.CharacterDetailResponse
 import com.lexwilliam.data_remote.model.people.PersonResponse
 import com.lexwilliam.data_remote.model.user.UserProfileResponse
 import retrofit2.http.GET
@@ -70,8 +71,13 @@ interface JikanService {
     ): UserProfileResponse
 
     @GET("people/{id}/full")
-    suspend fun getPersonFullById(
+    suspend fun getPersonById(
         @Path("id") id: Int
     ): PersonResponse
+
+    @GET("characters/{id}/full")
+    suspend fun getCharacterById(
+        @Path("id") id: Int
+    ): CharacterDetailResponse
 
 }

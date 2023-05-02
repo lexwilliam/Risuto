@@ -30,4 +30,8 @@ object PresentationModule {
     @Singleton
     @Provides
     fun providePersonMapper(): PersonMapper = PersonMapperImpl()
+
+    @Singleton
+    @Provides
+    fun provideCharacterMapper(): CharacterMapper = CharacterMapperImpl()
 }

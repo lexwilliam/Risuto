@@ -36,6 +36,8 @@ import com.google.accompanist.insets.ui.BottomNavigation
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.lexwilliam.risuto.MainViewModel
 import com.lexwilliam.risuto.ui.Screens.*
+import com.lexwilliam.risuto.ui.screens.character.CharacterScreen
+import com.lexwilliam.risuto.ui.screens.character.CharacterViewModel
 import com.lexwilliam.risuto.ui.screens.detail.AnimeScreen
 import com.lexwilliam.risuto.ui.screens.detail.AnimeViewModel
 import com.lexwilliam.risuto.ui.screens.home.HomeScreen
@@ -268,6 +270,11 @@ fun RisutoAppContent(
                         navController.navigate(
                             RisutoPersonScreen.route.plus("/?mal_id=$id")
                         )
+                    },
+                    navToCharacter = { id ->
+                        navController.navigate(
+                            RisutoCharacterScreen.route.plus("/?mal_id=$id")
+                        )
                     }
                 )
             }
@@ -329,6 +336,23 @@ fun RisutoAppContent(
                     }
                 )
             }
+            composable(
+                route = RisutoCharacterScreen.route.plus("/?mal_id={mal_id}"),
+                arguments = listOf(
+                    navArgument("mal_id") {
+                        type = NavType.IntType
+                        defaultValue = -1
+                    }
+                )
+            ) {
+                val characterViewModel = hiltViewModel<CharacterViewModel>()
+                CharacterScreen(
+                    state = characterViewModel.viewState.value,
+                    onBackPressed = {
+                        navController.navigateUp()
+                    }
+                )
+            }
         }
     }
 }
@@ -343,6 +367,7 @@ sealed class Screens(val route: String) {
     object RisutoMyAnimeScreen: Screens("myAnime")
     object RisutoProfileScreen: Screens("profile")
     object RisutoPersonScreen: Screens("person")
+    object RisutoCharacterScreen: Screens("character")
 }
 
 @Suppress("DEPRECATION")

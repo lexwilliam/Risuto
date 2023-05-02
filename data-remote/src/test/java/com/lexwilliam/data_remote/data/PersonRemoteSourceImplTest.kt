@@ -3,12 +3,8 @@ package com.lexwilliam.data_remote.data
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.lexwilliam.MainCoroutineRule
 import com.lexwilliam.data.PersonRemoteSource
-import com.lexwilliam.data.UserRemoteSource
 import com.lexwilliam.data_remote.JikanService
-import com.lexwilliam.data_remote.MyAnimeListService
-import com.lexwilliam.data_remote.mapper.AnimeMapper
 import com.lexwilliam.data_remote.mapper.PersonMapper
-import com.lexwilliam.data_remote.mapper.UserMapper
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.times
 import com.nhaarman.mockito_kotlin.verify
@@ -16,7 +12,6 @@ import com.nhaarman.mockito_kotlin.whenever
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 
@@ -56,12 +51,12 @@ class PersonRemoteSourceImplTest {
     fun `When getPersonById then jikanService invoked`() {
         runTest {
             // When
-            whenever(jikanService.getPersonFullById(1)).thenReturn(mock())
+            whenever(jikanService.getPersonById(1)).thenReturn(mock())
 
             personRemoteSource.getPeopleById(1)
 
             // Then
-            verify(jikanService, times(1)).getPersonFullById(1)
+            verify(jikanService, times(1)).getPersonById(1)
         }
     }
 }
