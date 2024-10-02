@@ -47,7 +47,6 @@ fun LoginScreen(
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun LoginContent(
     authCode: String?,
@@ -77,45 +76,34 @@ fun LoginContent(
         }
         else -> Unit
     }
-    val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(bottomSheetState = BottomSheetState(BottomSheetValue.Collapsed))
-    BottomSheetScaffold(
-        scaffoldState = bottomSheetScaffoldState,
-        sheetGesturesEnabled = false,
-        sheetBackgroundColor = MaterialTheme.colors.background,
-        sheetElevation = 16.dp,
-        sheetContent = {
-            LaunchedEffect(bottomSheetScaffoldState) {
-                bottomSheetScaffoldState.bottomSheetState.expand()
-            }
-            Column(
-                modifier = Modifier
-                    .navigationBarsWithImePadding()
-                    .padding(horizontal = 16.dp, vertical = 72.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                Text(text = "Let's Get Started", style = MaterialTheme.typography.h2, fontWeight = FontWeight.Black)
-                Button(
-                    modifier = Modifier.fillMaxWidth(),
-                    onClick = { onEventSent(LoginContract.Event.RedirectToAuth) }
-                ) {
-                    Text(text = "Sign in with MyAnimeList", style = MaterialTheme.typography.button, fontWeight = FontWeight.SemiBold)
-                }
-            }
-        }
+    Column(
+        modifier = Modifier
+            .navigationBarsWithImePadding()
+            .background(MaterialTheme.colors.primary)
+            .fillMaxSize(),
+        verticalArrangement = Arrangement.SpaceBetween
     ) {
+        Image(
+            modifier = Modifier
+                .fillMaxWidth(),
+            contentScale = ContentScale.Crop,
+            painter = painterResource(id = R.drawable.anime),
+            contentDescription = null
+        )
         Column(
             modifier = Modifier
-                .navigationBarsWithImePadding()
-                .background(MaterialTheme.colors.primary)
-                .fillMaxSize()
+                .background(MaterialTheme.colors.background, RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
+                .padding(horizontal = 16.dp)
+                .height(300.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically)
         ) {
-            Image(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                contentScale = ContentScale.Crop,
-                painter = painterResource(id = R.drawable.anime),
-                contentDescription = null
-            )
+            Text(text = "Let's Get Started", style = MaterialTheme.typography.h2, fontWeight = FontWeight.Black)
+            Button(
+                modifier = Modifier.fillMaxWidth(),
+                onClick = { onEventSent(LoginContract.Event.RedirectToAuth) }
+            ) {
+                Text(text = "Sign in with MyAnimeList", style = MaterialTheme.typography.button, fontWeight = FontWeight.SemiBold)
+            }
         }
     }
 }

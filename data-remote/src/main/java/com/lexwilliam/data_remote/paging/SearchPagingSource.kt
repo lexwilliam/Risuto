@@ -30,7 +30,7 @@ class SearchPagingSource @Inject constructor(
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, AnimeResponse.Data> {
         val page = params.key ?: AnimeRemoteSourceImpl.DEFAULT_PAGE_INDEX
         return try {
-            val response = jikanService.getSearchAnime(page, params.loadSize, q, type, score, minScore, maxScore, status, rating, sfw, genres, genresExclude, orderBy, sort, letter, producer)
+            val response = jikanService.getSearchAnime(page, 25, q, type, score, minScore, maxScore, status, rating, sfw, genres, genresExclude, orderBy, sort, letter, producer)
             LoadResult.Page(
                 response.data, prevKey = if (page == AnimeRemoteSourceImpl.DEFAULT_PAGE_INDEX) null else page - 1,
                 nextKey = if (response.pagination.has_next_page) page + 1 else null
