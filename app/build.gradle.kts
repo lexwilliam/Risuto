@@ -26,7 +26,6 @@ android {
         getByName("debug") {
             isDebuggable = true
             isTestCoverageEnabled = true
-            buildConfigField("Integer", "PORT", "8080")
         }
         getByName("release") {
             isMinifyEnabled = false

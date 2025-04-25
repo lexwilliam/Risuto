@@ -13,6 +13,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -23,6 +24,7 @@ class AnimeViewModel @Inject constructor(
     private val getAnimeCharacters: GetAnimeCharacters,
     private val getAnimeVideos: GetAnimeVideos,
     private val getAnimeStaff: GetAnimeStaff,
+    private val getAccessTokenFromCache: GetAccessTokenFromCache,
     private val insertAnimeHistory: InsertAnimeHistory,
     private val updateUserAnimeStatus: UpdateUserAnimeStatus,
     private val deleteUserAnimeStatus: DeleteUserAnimeStatus,
@@ -80,6 +82,11 @@ class AnimeViewModel @Inject constructor(
 
     init {
         viewModelScope.launch(errorHandler) {
+            val accessToken = getAccessTokenFromCache.execute().firstOrNull()
+            if (accessToken == "GUEST") {
+                setState { copy(isGuest = true, isLoading = false) }
+                return@launch
+            }
             malIdFromArgs?.let { id ->
                 getAnimeDetails(id)
                 setState { copy(malId = id) }

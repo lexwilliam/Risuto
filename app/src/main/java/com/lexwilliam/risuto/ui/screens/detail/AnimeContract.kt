@@ -22,6 +22,7 @@ class AnimeContract {
         val characters: List<AnimeCharactersPresentation.Data>,
         val videos: AnimeVideosPresentation,
         val staff: List<AnimeStaffPresentation.Data>,
+        val isGuest: Boolean = false,
         val isLoading: Boolean = false,
         val isError: Boolean = false
     ) : ViewState

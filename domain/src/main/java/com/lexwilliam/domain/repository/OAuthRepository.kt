@@ -24,4 +24,6 @@ interface OAuthRepository {
 
     suspend fun getAuthState(): Flow<String?>
 
+    suspend fun logout()
+
 }

@@ -18,7 +18,8 @@ class MyAnimeContract {
         val userImage: String,
         val isRefreshing: Boolean = false,
         val isLoading: Boolean = false,
-        val isError: Boolean = false
+        val isError: Boolean = false,
+        val isGuest: Boolean = false,
     ) : ViewState
 
     sealed class Effect : ViewSideEffect {}

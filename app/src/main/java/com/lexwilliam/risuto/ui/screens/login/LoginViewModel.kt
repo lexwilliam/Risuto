@@ -1,12 +1,14 @@
 package com.lexwilliam.risuto.ui.screens.login
 
 import androidx.lifecycle.viewModelScope
+import com.lexwilliam.domain.usecase.ContinueAsGuest
 import com.lexwilliam.domain.usecase.GetAuthTokenLink
 import com.lexwilliam.domain.usecase.GetCodeChallenge
 import com.lexwilliam.domain.usecase.SetAccessToken
 import com.lexwilliam.domain.usecase.SetCodeChallenge
 import com.lexwilliam.risuto.BuildConfig
 import com.lexwilliam.risuto.ui.base.BaseViewModel
+import com.lexwilliam.risuto.ui.screens.login.OAuthState.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
@@ -19,7 +21,8 @@ class LoginViewModel @Inject constructor(
     private val setAccessToken: SetAccessToken,
     private val getAuthTokenLink: GetAuthTokenLink,
     private val getCodeChallenge: GetCodeChallenge,
-    private val setCodeChallenge: SetCodeChallenge
+    private val setCodeChallenge: SetCodeChallenge,
+    private val continueAsGuest: ContinueAsGuest,
 ): BaseViewModel<LoginContract.Event, LoginContract.State, LoginContract.Effect>() {
 
     private val errorHandler = CoroutineExceptionHandler { _, exception ->
@@ -49,7 +52,7 @@ class LoginViewModel @Inject constructor(
                 getAuthTokenLink()
                 setState {
                     copy(
-                        oAuthState = OAuthState.RedirectToAuth(
+                        oAuthState = RedirectToAuth(
                             codeChallenge = viewState.value.codeChallenge,
                             state = viewState.value.state
                         )
@@ -63,6 +66,10 @@ class LoginViewModel @Inject constructor(
             is LoginContract.Event.Done -> {
                 setState { copy(oAuthState = OAuthState.Done) }
             }
+
+            LoginContract.Event.ContinueAsGuest -> {
+                continueAsGuest()
+            }
         }
     }
 
@@ -72,6 +79,13 @@ class LoginViewModel @Inject constructor(
 
     init {
         getCodeChallenge()
+    }
+
+    private fun continueAsGuest() {
+        viewModelScope.launch(errorHandler) {
+            continueAsGuest.execute()
+            setState { copy(oAuthState = OAuthState.OAuthSuccess) }
+        }
     }
 
     private fun setCodeChallenge(codeChallenge: String?) {

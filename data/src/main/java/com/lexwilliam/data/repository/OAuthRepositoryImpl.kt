@@ -72,4 +72,8 @@ class OAuthRepositoryImpl @Inject constructor(
     override suspend fun getAuthState(): Flow<String?>  {
         return oAuthLocalSource.state
     }
+
+    override suspend fun logout() {
+        return oAuthLocalSource.clearDataStore()
+    }
 }

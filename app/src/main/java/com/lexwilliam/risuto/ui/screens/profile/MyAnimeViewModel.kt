@@ -1,6 +1,7 @@
 package com.lexwilliam.risuto.ui.screens.profile
 
 import androidx.lifecycle.viewModelScope
+import com.lexwilliam.domain.usecase.GetAccessTokenFromCache
 import com.lexwilliam.domain.usecase.GetUserAnimeList
 import com.lexwilliam.domain.usecase.GetUserProfile
 import com.lexwilliam.domain.usecase.UpdateUserAnimeStatus
@@ -12,6 +13,7 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -23,7 +25,8 @@ class MyAnimeViewModel
     private val getUserAnimeList: GetUserAnimeList,
     private val updateUserAnimeStatus: UpdateUserAnimeStatus,
     private val animeMapper: AnimeMapper,
-    private val userMapper: UserMapper
+    private val userMapper: UserMapper,
+    private val getAccessTokenFromCache: GetAccessTokenFromCache,
 ) : BaseViewModel<MyAnimeContract.Event, MyAnimeContract.State, MyAnimeContract.Effect>() {
 
     private val errorHandler = CoroutineExceptionHandler { _, exception ->
@@ -68,8 +71,15 @@ class MyAnimeViewModel
     }
 
     init {
-        getUserProfile()
-        getUserAnimeList()
+        viewModelScope.launch(errorHandler) {
+            val accessToken = getAccessTokenFromCache.execute().firstOrNull()
+            if (accessToken == "GUEST") {
+                setState { copy(isGuest = true, isLoading = false) }
+                return@launch
+            }
+            getUserProfile()
+            getUserAnimeList()
+        }
     }
 
     private fun getUserAnimeList() {

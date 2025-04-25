@@ -50,10 +50,16 @@ fun AnimeScreen(
     navToSearchWithProducer: (Int) -> Unit,
     navToDetail: (Int) -> Unit,
     navToPerson: (Int) -> Unit,
-    navToCharacter: (Int) -> Unit
+    navToCharacter: (Int) -> Unit,
+    navToLogin: () -> Unit
 ) {
-    if(state.animeDetail == getInitialAnimeDetails()) {
+    if(state.isLoading) {
         AnimeScreenShimmerLoading()
+    } else if (state.isGuest) {
+        GuestScreen(
+            navToLogin = navToLogin,
+            onDismiss = onBackPressed
+        )
     } else {
         val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(
             bottomSheetState = BottomSheetState(BottomSheetValue.Collapsed)

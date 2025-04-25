@@ -29,6 +29,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import androidx.navigation.navOptions
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.navigationBarsHeight
 import com.google.accompanist.insets.rememberInsetsPaddingValues
@@ -62,8 +63,9 @@ import com.lexwilliam.risuto.ui.screens.season.SeasonViewModel
 @Composable
 fun RisutoApp(
     authCode: String?,
-    isUserLoggedIn: Boolean?
+    isUserLoggedIn: Boolean?,
 ) {
+    var authCode by remember { mutableStateOf<String?>(authCode) }
     val viewModel = hiltViewModel<MainViewModel>()
     val state = viewModel.viewState.value
     val systemUiController = rememberSystemUiController()
@@ -72,16 +74,12 @@ fun RisutoApp(
         systemUiController.setSystemBarsColor(Color.Transparent, darkIcons = useDarkIcons)
     }
     val context = LocalContext.current
-    var isOnline by remember { mutableStateOf(checkIfOnline(context)) }
-    if (isOnline) {
-        if(isUserLoggedIn != null) {
-            RisutoAppContent(
-                authCode = authCode,
-                startDestination = if(isUserLoggedIn) RisutoHomeScreen.route else RisutoLoginScreen.route
-            )
-        }
-    } else {
-        OfflineDialog { isOnline = checkIfOnline(context) }
+    if(isUserLoggedIn != null) {
+        RisutoAppContent(
+            authCode = authCode,
+            startDestination = if(isUserLoggedIn) RisutoHomeScreen.route else RisutoLoginScreen.route,
+            onDeleteAuthCode = { authCode = null }
+        )
     }
 }
 
@@ -91,7 +89,8 @@ fun RisutoApp(
 @Composable
 fun RisutoAppContent(
     authCode: String?,
-    startDestination: String
+    startDestination: String,
+    onDeleteAuthCode: () -> Unit
 ) {
 
     val navController = rememberNavController()
@@ -177,7 +176,8 @@ fun RisutoAppContent(
                     onEventSent = { event -> loginViewModel.setEvent(event) },
                     navToHome = {
                         navController.navigate(RisutoHomeScreen.route)
-                    }
+                    },
+                    onDeleteAuthCode = onDeleteAuthCode
                 )
             }
 
@@ -275,6 +275,13 @@ fun RisutoAppContent(
                         navController.navigate(
                             RisutoCharacterScreen.route.plus("/?mal_id=$id")
                         )
+                    },
+                    navToLogin = {
+                        navController.navigate(RisutoLoginScreen.route, navOptions {
+                            popUpTo(RisutoAnimeScreen.route) {
+                                inclusive = true
+                            }
+                        })
                     }
                 )
             }
@@ -292,6 +299,11 @@ fun RisutoAppContent(
                         navController.navigate(
                             RisutoProfileScreen.route
                         )
+                    },
+                    navToLogin = {
+                        navController.navigate(
+                            RisutoLoginScreen.route
+                        )
                     }
                 )
             }
@@ -299,6 +311,7 @@ fun RisutoAppContent(
                 val profileViewModel = hiltViewModel<ProfileViewModel>()
                 ProfileScreen(
                     state = profileViewModel.viewState.value,
+                    event = { event -> profileViewModel.setEvent(event) },
                     navToDetail = { mal_id ->
                         navController.navigate(
                             RisutoAnimeScreen.route.plus("/?mal_id=$mal_id")
@@ -311,6 +324,16 @@ fun RisutoAppContent(
                     },
                     onBackPressed = {
                         navController.navigateUp()
+                    },
+                    navToLogin = {
+                        navController.navigate(
+                            RisutoLoginScreen.route,
+                            navOptions = navOptions {
+                                popUpTo(RisutoProfileScreen.route) {
+                                    inclusive = true
+                                }
+                            }
+                        )
                     }
                 )
             }
@@ -368,25 +391,4 @@ sealed class Screens(val route: String) {
     object RisutoProfileScreen: Screens("profile")
     object RisutoPersonScreen: Screens("person")
     object RisutoCharacterScreen: Screens("character")
-}
-
-@Suppress("DEPRECATION")
-private fun checkIfOnline(context: Context): Boolean {
-    val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-    val activeNetwork = cm.activeNetworkInfo
-    return activeNetwork?.isConnectedOrConnecting == true
-}
-
-@Composable
-fun OfflineDialog(onRetry: () -> Unit) {
-    AlertDialog(
-        onDismissRequest = {},
-        title = { Text(text = "Connection Error") },
-        text = { Text(text = "Unable to fetch anime list. Please check your connection") },
-        confirmButton = {
-            TextButton(onClick = onRetry) {
-                Text("Retry")
-            }
-        }
-    )
 }

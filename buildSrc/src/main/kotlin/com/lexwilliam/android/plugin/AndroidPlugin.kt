@@ -7,7 +7,6 @@ import com.lexwilliam.dependencies.TestDependencies
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.*
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 open class AndroidPlugin : Plugin<Project> {
     override fun apply(project: Project) {
@@ -38,7 +37,7 @@ open class AndroidPlugin : Plugin<Project> {
         buildToolsVersion(AndroidSettings.buildTools)
 
         defaultConfig {
-            versionCode = 1
+            versionCode = AndroidSettings.appVersionCode
             versionName = AndroidSettings.appVersionName
 
             testInstrumentationRunner = AndroidSettings.testInstrumentationRunner

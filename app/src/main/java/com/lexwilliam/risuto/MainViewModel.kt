@@ -1,6 +1,7 @@
 package com.lexwilliam.risuto
 
 import androidx.lifecycle.viewModelScope
+import com.lexwilliam.domain.usecase.GetAccessTokenFromCache
 import com.lexwilliam.domain.usecase.GetExpiresInFromCache
 import com.lexwilliam.domain.usecase.GetRefreshTokenFromCache
 import com.lexwilliam.domain.usecase.SetRefreshToken
@@ -16,7 +17,8 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     private val getRefreshTokenFromCache: GetRefreshTokenFromCache,
     private val getExpiresInFromCache: GetExpiresInFromCache,
-    private val setRefreshAccessToken: SetRefreshToken
+    private val setRefreshAccessToken: SetRefreshToken,
+    private val getAccessTokenFromCache: GetAccessTokenFromCache,
 ): BaseViewModel<MainContract.Event, MainContract.State, MainContract.Effect>() {
 
     private val errorHandler = CoroutineExceptionHandler { _, exception ->
@@ -40,6 +42,11 @@ class MainViewModel @Inject constructor(
 
     init {
         viewModelScope.launch(errorHandler) {
+            val accessToken = getAccessTokenFromCache.execute().firstOrNull()
+            if (accessToken == "GUEST") {
+                setState { copy(isUserLoggedIn = true, isLoading = false) }
+                return@launch
+            }
             val expiresIn = getExpiresInFromCache.execute().firstOrNull()
             val refreshToken = getRefreshTokenFromCache.execute().firstOrNull()
             if(refreshToken == "" && expiresIn == null) {

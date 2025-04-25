@@ -12,13 +12,16 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -41,14 +44,24 @@ import com.lexwilliam.risuto.ui.theme.*
 import com.lexwilliam.risuto.util.FakeItems
 import com.lexwilliam.risuto.util.gradientBackground
 import com.google.accompanist.insets.ui.TopAppBar
+import com.lexwilliam.risuto.R
 
 @Composable
 fun ProfileScreen(
     state: ProfileContract.State,
+    event: (ProfileContract.Event) -> Unit,
     navToDetail: (Int) -> Unit,
     navToPerson: (Int) -> Unit,
+    navToLogin: () -> Unit,
     onBackPressed: () -> Unit
 ) {
+    LaunchedEffect(state.isLoggedOut) {
+        if (state.isLoggedOut) {
+            navToLogin()
+        }
+        event(ProfileContract.Event.NavigationDone)
+    }
+
     if(state.isLoading) {
         LoadingScreen()
     } else {
@@ -56,39 +69,51 @@ fun ProfileScreen(
             userProfile = state.userProfile,
             navToDetail = navToDetail,
             navToPerson = navToPerson,
-            onBackPressed = onBackPressed
+            onBackPressed = onBackPressed,
+            isGuest = state.isGuest,
+            event = event,
+            navToLogin = navToLogin
         )
     }
-
 }
 
 @Composable
 fun ProfileContent(
     userProfile: UserProfilePresentation.Data,
+    event: (ProfileContract.Event) -> Unit,
     navToDetail: (Int) -> Unit,
     navToPerson: (Int) -> Unit,
-    onBackPressed: () -> Unit
+    isGuest: Boolean,
+    onBackPressed: () -> Unit,
+    navToLogin: () -> Unit
 ) {
     Column(
         modifier = Modifier
             .navigationBarsWithImePadding()
             .verticalScroll(rememberScrollState())
     ) {
-        ProfileToolbar(onBackPressed = onBackPressed)
-        ProfileInfo(
-            imageUrl = userProfile.images.jpg.image_url,
-            username = userProfile.username,
-            joined = userProfile.joined
-        )
-        ProfileStatistics(statistics = userProfile.statistics)
-        ProfileUpdates(updates = userProfile.updates, navToDetail = navToDetail)
-        ProfileFavorites(favorites = userProfile.favorites, navToDetail = navToDetail, navToPerson = navToPerson)
+        ProfileToolbar(onBackPressed = onBackPressed, onLogout = { event(ProfileContract.Event.Logout) })
+        if (!isGuest) {
+            ProfileInfo(
+                imageUrl = userProfile.images.jpg.image_url,
+                username = userProfile.username,
+                joined = userProfile.joined
+            )
+            ProfileStatistics(statistics = userProfile.statistics)
+            ProfileUpdates(updates = userProfile.updates, navToDetail = navToDetail)
+            ProfileFavorites(favorites = userProfile.favorites, navToDetail = navToDetail, navToPerson = navToPerson)
+        } else {
+            GuestScreen(
+                navToLogin = navToLogin,
+            )
+        }
     }
 }
 
 @Composable
 fun ProfileToolbar(
-    onBackPressed: () -> Unit
+    onBackPressed: () -> Unit,
+    onLogout: () -> Unit
 ) {
     TopAppBar(
         contentPadding = rememberInsetsPaddingValues(
@@ -109,6 +134,11 @@ fun ProfileToolbar(
                 contentAlignment = Alignment.Center
             ) {
                 Icon(Icons.Default.ArrowBack, contentDescription = null, tint = MaterialTheme.colors.onBackground)
+            }
+        },
+        actions = {
+            IconButton(onClick = { onLogout() }) {
+                Icon(painter = painterResource(R.drawable.ic_logout), contentDescription = null, tint = MaterialTheme.colors.onBackground)
             }
         }
     )
@@ -317,18 +347,19 @@ fun ProfileUpdates(
 
 }
 
-@Preview(
-    showBackground = true
-)
-@Composable
-fun ProfileContentPreview() {
-    RisutoTheme {
-        ProfileContent(
-            userProfile = FakeItems.fakeUserProfile,
-            navToDetail = {},
-            navToPerson = {},
-            onBackPressed = {}
-        )
-    }
-
-}
+//@Preview(
+//    showBackground = true
+//)
+//@Composable
+//fun ProfileContentPreview() {
+//    RisutoTheme {
+//        ProfileContent(
+//            userProfile = FakeItems.fakeUserProfile,
+//            navToDetail = {},
+//            navToPerson = {},
+//            onBackPressed = {},
+//
+//        )
+//    }
+//
+//}

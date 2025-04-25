@@ -34,6 +34,7 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.lexwilliam.risuto.R
 import com.lexwilliam.risuto.model.UserAnimeListPresentation
 import com.lexwilliam.risuto.model.WatchStatusPresentation
+import com.lexwilliam.risuto.ui.component.GuestScreen
 import com.lexwilliam.risuto.ui.component.MyAnimeListShimmerLoading
 import com.lexwilliam.risuto.ui.component.NetworkImage
 import com.lexwilliam.risuto.ui.theme.RisutoTheme
@@ -48,17 +49,37 @@ fun MyAnimeScreen(
     state: (MyAnimeContract.State),
     onEventSent: (MyAnimeContract.Event) -> Unit,
     navToDetail: (Int) -> Unit,
-    navToProfile: () -> Unit
+    navToProfile: () -> Unit,
+    navToLogin: () -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
     var currentStatus by remember { mutableStateOf("All")}
     var currentSortType by remember { mutableStateOf("By Last Updated") }
     var currentOrderType by remember { mutableStateOf("Descending") }
+    LaunchedEffect(Unit) {
+        onEventSent(MyAnimeContract.Event.RefreshListWithoutView)
+    }
     LaunchedEffect(state.animes) {
         onEventSent(MyAnimeContract.Event.RefreshListWithoutView)
     }
     if(state.isLoading) {
         MyAnimeListShimmerLoading()
+    } else if (state.isGuest)  {
+        Column(modifier = Modifier
+            .navigationBarsWithImePadding()
+            .padding(bottom = 56.dp)) {
+            MyAnimeToolbar(
+                username = "Guest",
+                userImage = "",
+                onSortTypeChanged = {  },
+                expanded = expanded,
+                isExpanded = {  },
+                navToProfile = navToProfile
+            )
+            GuestScreen(
+                navToLogin = navToLogin,
+            )
+        }
     } else {
         MyAnimeContent(
             myAnimeList = sortAnime(state.animes, currentSortType, currentOrderType),

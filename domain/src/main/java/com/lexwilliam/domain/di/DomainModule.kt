@@ -184,4 +184,14 @@ object DomainModule {
     @Provides
     fun provideGetCharacterById(characterRepository: CharacterRepository): GetCharacterById =
         GetCharacterByIdImpl(characterRepository)
+
+    @Singleton
+    @Provides
+    fun provideContinueAsGuest(userRepository: UserRepository): ContinueAsGuest =
+        ContinueAsGuestImpl(userRepository)
+
+    @Singleton
+    @Provides
+    fun provideLogout(oAuthRepository: OAuthRepository): Logout =
+        LogoutImpl(oAuthRepository)
 }

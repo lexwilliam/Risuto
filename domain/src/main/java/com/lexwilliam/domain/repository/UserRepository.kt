@@ -14,4 +14,6 @@ interface UserRepository {
     suspend fun updateUserAnimeStatus(id: Int, numEpisodesWatched: Int, status: String, score: Int): Flow<UserAnimeUpdate>
 
     suspend fun deleteUserAnimeStatus(id: Int)
+
+    suspend fun continueAsGuest()
 }

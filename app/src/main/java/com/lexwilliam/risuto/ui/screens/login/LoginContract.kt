@@ -7,6 +7,7 @@ import com.lexwilliam.risuto.ui.base.ViewState
 class LoginContract {
     sealed class Event : ViewEvent {
         object RedirectToAuth: Event()
+        object ContinueAsGuest: Event()
         data class ReceivedAuthToken(val code: String): Event()
         object Done: Event()
     }

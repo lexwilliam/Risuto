@@ -7,12 +7,16 @@ import com.lexwilliam.risuto.model.UserProfilePresentation
 
 class ProfileContract {
     sealed class Event : ViewEvent {
+        object Logout: Event()
+        object NavigationDone: Event()
     }
 
     data class State(
         val userProfile: UserProfilePresentation.Data,
         val isLoading: Boolean,
-        val isError: Boolean
+        val isError: Boolean,
+        val isGuest: Boolean,
+        val isLoggedOut: Boolean,
     ) : ViewState
 
     sealed class Effect : ViewSideEffect {}

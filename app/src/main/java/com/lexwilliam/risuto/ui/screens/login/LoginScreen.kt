@@ -9,12 +9,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -23,10 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.insets.navigationBarsWithImePadding
 import com.lexwilliam.risuto.R
-import com.lexwilliam.risuto.ui.component.StatusBarSpacer
 import com.lexwilliam.risuto.ui.theme.RisutoTheme
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @Composable
@@ -34,7 +27,8 @@ fun LoginScreen(
     authCode: String?,
     state: LoginContract.State,
     onEventSent: (LoginContract.Event) -> Unit,
-    navToHome: () -> Unit
+    navToHome: () -> Unit,
+    onDeleteAuthCode: () -> Unit
 ) {
     if(!state.isLoading) {
         LoginContent(
@@ -42,7 +36,8 @@ fun LoginScreen(
             authTokenLink = state.authTokenLink,
             oAuthState = state.oAuthState,
             onEventSent = { onEventSent(it) },
-            navToHome = { navToHome() }
+            navToHome = { navToHome() },
+            onDeleteAuthCode = onDeleteAuthCode
         )
     }
 }
@@ -53,7 +48,8 @@ fun LoginContent(
     authTokenLink: String,
     oAuthState: OAuthState,
     onEventSent: (LoginContract.Event) -> Unit,
-    navToHome: () -> Unit
+    navToHome: () -> Unit,
+    onDeleteAuthCode: () -> Unit
 ) {
     val context = LocalContext.current
 
@@ -61,20 +57,24 @@ fun LoginContent(
         onEventSent(LoginContract.Event.ReceivedAuthToken(authCode))
     }
 
-    when(oAuthState) {
-        is OAuthState.RedirectToAuth -> {
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(authTokenLink))
-            context.startActivity(intent)
+    LaunchedEffect(oAuthState) {
+        Timber.d(oAuthState.toString())
+        when(oAuthState) {
+            is OAuthState.RedirectToAuth -> {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(authTokenLink))
+                context.startActivity(intent)
+            }
+            is OAuthState.OAuthSuccess -> {
+                Timber.d("OAUTH SUCCESS")
+                navToHome()
+                onDeleteAuthCode()
+                onEventSent(LoginContract.Event.Done)
+            }
+            is OAuthState.OAuthFailure -> {
+                Timber.d("OAUTH ERROR")
+            }
+            else -> Unit
         }
-        is OAuthState.OAuthSuccess -> {
-            Timber.d("OAUTH SUCCESS")
-            navToHome()
-            onEventSent(LoginContract.Event.Done)
-        }
-        is OAuthState.OAuthFailure -> {
-            Timber.d("OAUTH ERROR")
-        }
-        else -> Unit
     }
     Column(
         modifier = Modifier
@@ -104,6 +104,12 @@ fun LoginContent(
             ) {
                 Text(text = "Sign in with MyAnimeList", style = MaterialTheme.typography.button, fontWeight = FontWeight.SemiBold)
             }
+            Button(
+                modifier = Modifier.fillMaxWidth(),
+                onClick = { onEventSent(LoginContract.Event.ContinueAsGuest) }
+            ) {
+                Text(text = "Continue as Guest", style = MaterialTheme.typography.button, fontWeight = FontWeight.SemiBold)
+            }
         }
     }
 }
@@ -117,6 +123,7 @@ fun LoginScreenPreview() {
             authTokenLink = "",
             oAuthState = OAuthState.Idle,
             onEventSent = {},
+            onDeleteAuthCode = {},
             navToHome = {}
         )
     }

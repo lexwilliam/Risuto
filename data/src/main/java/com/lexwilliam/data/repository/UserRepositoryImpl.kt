@@ -43,5 +43,9 @@ class UserRepositoryImpl @Inject constructor(
         return userRemoteSource.deleteUserAnimeStatus(authHeader = ApiConstant.BEARER_SEPARATOR + accessToken, id)
     }
 
+    override suspend fun continueAsGuest() {
+        oAuthLocalSource.setAccessToken("GUEST")
+    }
+
 
 }
