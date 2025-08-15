@@ -6,9 +6,6 @@ import com.lexwilliam.domain.usecase.GetCharacterById
 import com.lexwilliam.risuto.mapper.CharacterMapper
 import com.lexwilliam.risuto.model.CharacterDetailPresentation
 import com.lexwilliam.risuto.ui.base.BaseViewModel
-import com.lexwilliam.risuto.ui.screens.detail.AnimeContract
-import com.lexwilliam.risuto.ui.screens.person.PersonContract
-import com.lexwilliam.risuto.util.getInitialStatePerson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.catch

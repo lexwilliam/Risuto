@@ -1,7 +1,6 @@
 package com.lexwilliam.data
 
 import kotlinx.coroutines.flow.Flow
-import java.util.*
 
 interface OAuthLocalSource {
     val codeVerifier: Flow<String?>

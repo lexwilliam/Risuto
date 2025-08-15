@@ -6,5 +6,4 @@ object ProjectModules {
     const val cache = ":data-local"
     const val data = ":data"
     const val domain = ":domain"
-    const val coreAndroidTest = ":core-android-test"
 }

@@ -7,12 +7,23 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.lexwilliam.risuto.model.*
+import com.lexwilliam.risuto.model.AnimeCharactersPresentation
+import com.lexwilliam.risuto.model.AnimeDetailPresentation
+import com.lexwilliam.risuto.model.AnimeVideosPresentation
+import com.lexwilliam.risuto.model.PersonPresentation
+import com.lexwilliam.risuto.model.UserProfilePresentation
+import com.lexwilliam.risuto.model.WatchStatusPresentation
 import org.joda.time.LocalDate
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
-import java.util.*
-import kotlin.math.*
+import java.util.Date
+import java.util.Locale
+import kotlin.math.PI
+import kotlin.math.cos
+import kotlin.math.min
+import kotlin.math.pow
+import kotlin.math.sin
+import kotlin.math.sqrt
 
 private val typeList= arrayListOf("TV", "OVA", "Movie", "Special", "ONA", "Music")
 private val statusList = arrayListOf("Airing", "Completed", "Upcoming")

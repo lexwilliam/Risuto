@@ -1,8 +1,5 @@
 package com.lexwilliam.risuto.mapper
 
-import com.lexwilliam.data.model.remote.user.UserAnimeUpdateRepo
-import com.lexwilliam.data.model.remote.user.UserProfileRepo
-import com.lexwilliam.domain.model.remote.user.UserAnimeUpdate
 import com.lexwilliam.domain.model.remote.user.UserProfile
 import com.lexwilliam.risuto.model.UserProfilePresentation
 import javax.inject.Inject

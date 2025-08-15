@@ -8,7 +8,6 @@ import com.lexwilliam.data.model.local.AnimeHistoryRepo
 import com.lexwilliam.data.model.local.SearchHistoryRepo
 import com.lexwilliam.domain.model.local.AnimeHistory
 import com.lexwilliam.domain.model.local.SearchHistory
-import com.lexwilliam.domain.repository.HistoryRepository
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.times
 import com.nhaarman.mockito_kotlin.verify

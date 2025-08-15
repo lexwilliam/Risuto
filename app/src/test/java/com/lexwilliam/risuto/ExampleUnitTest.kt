@@ -2,10 +2,9 @@ package com.lexwilliam.risuto
 
 import junit.framework.TestCase
 import org.joda.time.DateTime
+import org.junit.Assert.assertEquals
 import org.junit.Test
-
-import org.junit.Assert.*
-import java.util.*
+import java.util.Locale
 
 /**
  * Example local unit test, which will execute on the development machine (host).

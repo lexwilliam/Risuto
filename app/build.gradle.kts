@@ -8,6 +8,7 @@ plugins {
     id("com.lexwilliam.android.plugin")
     id("dagger.hilt.android.plugin")
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
+    id("org.jetbrains.kotlin.plugin.compose") version "2.0.0"
 }
 
 androidPlugin {
@@ -15,7 +16,9 @@ androidPlugin {
 }
 
 android {
+    buildToolsVersion = "35.0.0"
     defaultConfig {
+        namespace = "com.lexwilliam.risuto"
         applicationId = "com.lexwilliam.risuto"
         minSdk = com.lexwilliam.dependencies.AndroidSettings.minSdk
         targetSdk = com.lexwilliam.dependencies.AndroidSettings.targetSdk
@@ -25,7 +28,8 @@ android {
     buildTypes {
         getByName("debug") {
             isDebuggable = true
-            isTestCoverageEnabled = true
+            enableUnitTestCoverage = true
+            enableAndroidTestCoverage = true
         }
         getByName("release") {
             isMinifyEnabled = false
@@ -44,10 +48,11 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 
-    composeOptions {
-        kotlinCompilerExtensionVersion = com.lexwilliam.dependencies.Versions.compose
+    hilt {
+        enableAggregatingTask = false
     }
 }
 
@@ -57,21 +62,19 @@ dependencies {
     implementation(project(ProjectModules.domain))
     implementation(project(ProjectModules.data))
 
-    implementation(Dependencies.AndroidX.Compose.viewModel)
     implementation(Dependencies.material)
     implementation(Dependencies.AndroidX.splashScreen)
-    implementation(Dependencies.AndroidX.archComponents)
     implementation(Dependencies.AndroidX.browser)
 
+    implementation(platform(Dependencies.AndroidX.Compose.bom))
     implementation(Dependencies.AndroidX.Compose.ui)
     implementation(Dependencies.AndroidX.Compose.systemUiController)
     implementation(Dependencies.AndroidX.Compose.material)
-    implementation(Dependencies.AndroidX.Compose.uiTooling)
-    implementation(Dependencies.AndroidX.Compose.uiUtil)
     implementation(Dependencies.AndroidX.Compose.runtime)
-    implementation(Dependencies.AndroidX.Compose.runtimeLiveData)
     implementation(Dependencies.AndroidX.Compose.navigation)
     implementation(Dependencies.AndroidX.Compose.coil)
+    implementation(Dependencies.AndroidX.Compose.icons)
+    implementation(Dependencies.AndroidX.Compose.iconsExtended)
 
     implementation(Dependencies.Paging.runtime)
     implementation(Dependencies.Paging.compose)
@@ -105,8 +108,6 @@ dependencies {
     androidTestImplementation(TestDependencies.AndroidX.coreKtx)
     androidTestImplementation(TestDependencies.AndroidX.runner)
     androidTestImplementation(TestDependencies.AndroidX.rules)
-    androidTestImplementation(TestDependencies.AndroidX.composeUiTest)
-    androidTestImplementation(TestDependencies.AndroidX.composeUiTestJUnit4)
     debugImplementation(TestDependencies.AndroidX.uiTestManifest)
 
     androidTestImplementation(TestDependencies.mockWebServer)

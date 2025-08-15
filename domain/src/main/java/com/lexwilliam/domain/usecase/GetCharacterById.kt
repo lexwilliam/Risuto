@@ -1,9 +1,7 @@
 package com.lexwilliam.domain.usecase
 
 import com.lexwilliam.domain.model.remote.character.CharacterDetail
-import com.lexwilliam.domain.model.remote.people.Person
 import com.lexwilliam.domain.repository.CharacterRepository
-import com.lexwilliam.domain.repository.PersonRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

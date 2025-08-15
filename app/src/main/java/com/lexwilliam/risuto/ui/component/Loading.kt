@@ -1,12 +1,14 @@
 package com.lexwilliam.risuto.ui.component
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
 fun LoadingScreen() {
@@ -20,12 +22,4 @@ fun LoadingScreen() {
             color = MaterialTheme.colors.primary
         )
     }
-}
-
-
-
-@Preview
-@Composable
-fun LoadingScreenPreview() {
-    LoadingScreen()
 }

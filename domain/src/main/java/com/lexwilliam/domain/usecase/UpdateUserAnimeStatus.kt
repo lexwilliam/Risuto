@@ -1,8 +1,6 @@
 package com.lexwilliam.domain.usecase
 
-import com.lexwilliam.domain.model.remote.anime.AnimeDetail
 import com.lexwilliam.domain.model.remote.user.UserAnimeUpdate
-import com.lexwilliam.domain.repository.DetailRepository
 import com.lexwilliam.domain.repository.UserRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject

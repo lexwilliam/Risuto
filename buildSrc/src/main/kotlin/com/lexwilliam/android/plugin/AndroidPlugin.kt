@@ -4,9 +4,12 @@ import com.android.build.gradle.BaseExtension
 import com.lexwilliam.dependencies.AndroidSettings
 import com.lexwilliam.dependencies.Dependencies
 import com.lexwilliam.dependencies.TestDependencies
+import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.kotlin.dsl.*
+import org.gradle.kotlin.dsl.create
+import org.gradle.kotlin.dsl.dependencies
+import org.gradle.kotlin.dsl.kotlin
 
 open class AndroidPlugin : Plugin<Project> {
     override fun apply(project: Project) {
@@ -76,9 +79,16 @@ open class AndroidPlugin : Plugin<Project> {
             }
         }
 
+        buildFeatures.buildConfig = true
+
         testOptions {
             unitTests.isReturnDefaultValues = true
             animationsDisabled = true
+        }
+
+        compileOptions {
+            sourceCompatibility = JavaVersion.VERSION_17
+            targetCompatibility = JavaVersion.VERSION_17
         }
     }
 

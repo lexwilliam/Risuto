@@ -1,6 +1,10 @@
 package com.lexwilliam.risuto.util
 
-import com.lexwilliam.risuto.model.*
+import com.lexwilliam.risuto.model.AnimeCharactersPresentation
+import com.lexwilliam.risuto.model.AnimeDetailPresentation
+import com.lexwilliam.risuto.model.AnimePresentation
+import com.lexwilliam.risuto.model.ShortAnimePresentation
+import com.lexwilliam.risuto.model.UserProfilePresentation
 
 object FakeItems {
     val animeData: AnimePresentation.Data =

@@ -2,11 +2,10 @@ package com.lexwilliam.risuto.ui.screens.profile
 
 import androidx.lifecycle.viewModelScope
 import com.lexwilliam.domain.usecase.GetAccessTokenFromCache
-import com.lexwilliam.domain.usecase.GetUserAnimeList
 import com.lexwilliam.domain.usecase.GetUserProfile
 import com.lexwilliam.domain.usecase.Logout
-import com.lexwilliam.risuto.ui.base.BaseViewModel
 import com.lexwilliam.risuto.mapper.UserMapper
+import com.lexwilliam.risuto.ui.base.BaseViewModel
 import com.lexwilliam.risuto.util.getInitialStateUserProfile
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler

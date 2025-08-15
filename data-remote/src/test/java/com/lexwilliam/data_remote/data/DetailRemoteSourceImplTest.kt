@@ -2,11 +2,9 @@ package com.lexwilliam.data_remote.data
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.lexwilliam.MainCoroutineRule
-import com.lexwilliam.data.AnimeRemoteSource
 import com.lexwilliam.data.DetailRemoteSource
 import com.lexwilliam.data_remote.JikanService
 import com.lexwilliam.data_remote.MyAnimeListService
-import com.lexwilliam.data_remote.mapper.AnimeMapper
 import com.lexwilliam.data_remote.mapper.DetailMapper
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.times

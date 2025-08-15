@@ -1,6 +1,5 @@
 package com.lexwilliam.domain.usecase
 
-import com.lexwilliam.domain.repository.HistoryRepository
 import com.lexwilliam.domain.repository.UserRepository
 import javax.inject.Inject
 

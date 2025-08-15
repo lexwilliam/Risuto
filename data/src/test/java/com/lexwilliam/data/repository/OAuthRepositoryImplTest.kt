@@ -2,10 +2,8 @@ package com.lexwilliam.data.repository
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.lexwilliam.MainCoroutineRule
-import com.lexwilliam.data.HistoryLocalSource
 import com.lexwilliam.data.OAuthLocalSource
 import com.lexwilliam.data.OAuthRemoteSource
-import com.lexwilliam.domain.repository.OAuthRepository
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.times
 import com.nhaarman.mockito_kotlin.verify

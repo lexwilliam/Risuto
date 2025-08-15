@@ -2,8 +2,6 @@ package com.lexwilliam.data.repository
 
 import com.lexwilliam.data.HistoryLocalSource
 import com.lexwilliam.data.mapper.HistoryMapper
-import com.lexwilliam.data.model.local.AnimeHistoryRepo
-import com.lexwilliam.data.model.local.SearchHistoryRepo
 import com.lexwilliam.domain.model.local.AnimeHistory
 import com.lexwilliam.domain.model.local.SearchHistory
 import com.lexwilliam.domain.repository.HistoryRepository

@@ -1,9 +1,9 @@
 package com.lexwilliam.risuto.ui.screens.home
 
+import com.lexwilliam.risuto.model.AnimePresentation
 import com.lexwilliam.risuto.ui.base.ViewEvent
 import com.lexwilliam.risuto.ui.base.ViewSideEffect
 import com.lexwilliam.risuto.ui.base.ViewState
-import com.lexwilliam.risuto.model.AnimePresentation
 
 class HomeContract {
     sealed class Event : ViewEvent {

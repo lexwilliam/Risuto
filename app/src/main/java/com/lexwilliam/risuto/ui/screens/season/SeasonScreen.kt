@@ -1,39 +1,59 @@
 package com.lexwilliam.risuto.ui.screens.season
 
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.material.BottomSheetScaffold
+import androidx.compose.material.BottomSheetState
+import androidx.compose.material.BottomSheetValue
+import androidx.compose.material.Button
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.KeyboardArrowRight
-import androidx.compose.runtime.*
+import androidx.compose.material.rememberBottomSheetScaffoldState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.util.lerp
 import com.google.accompanist.insets.navigationBarsWithImePadding
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.calculateCurrentOffsetForPage
 import com.google.accompanist.pager.rememberPagerState
 import com.lexwilliam.risuto.model.AnimePresentation
 import com.lexwilliam.risuto.model.SeasonListPresentation
-import com.lexwilliam.risuto.ui.component.*
-import com.lexwilliam.risuto.ui.theme.RisutoTheme
-import com.lexwilliam.risuto.util.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.coroutineScope
+import com.lexwilliam.risuto.ui.component.ChipGroup
+import com.lexwilliam.risuto.ui.component.GridList
+import com.lexwilliam.risuto.ui.component.GridListShimmerLoading
+import com.lexwilliam.risuto.ui.component.Header
+import com.lexwilliam.risuto.ui.component.HeaderShimmerLoading
+import com.lexwilliam.risuto.ui.component.StatusBarSpacer
+import com.lexwilliam.risuto.util.seasonYearFormat
 import kotlinx.coroutines.launch
-import timber.log.Timber
-import java.util.*
-import kotlin.math.absoluteValue
+import java.util.Locale
 
 @ExperimentalMaterialApi
 @ExperimentalComposeUiApi
@@ -45,7 +65,7 @@ fun SeasonScreen(
     navToDetail: (Int) -> Unit
 ) {
     val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(
-        bottomSheetState = BottomSheetState(BottomSheetValue.Collapsed)
+        bottomSheetState = BottomSheetState(BottomSheetValue.Collapsed, density = Density(1f))
     )
     val coroutineScope = rememberCoroutineScope()
     if(state.seasonNowIsLoading || state.seasonListIsLoading) {
@@ -292,26 +312,5 @@ private fun onNextSeason(
     } else {
         nextSeason = allSeason.first()
         SeasonAndYear(nextSeason, year + 1)
-    }
-}
-
-@OptIn(ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class,
-    ExperimentalFoundationApi::class
-)
-@Preview
-@Composable
-fun SeasonPreview() {
-    RisutoTheme {
-        Box(modifier = Modifier.background(MaterialTheme.colors.background)) {
-            SeasonContent(
-                year = 2022,
-                season = "Winter",
-                animes = listOf(FakeItems.animeData, FakeItems.animeData, FakeItems.animeData, FakeItems.animeData, FakeItems.animeData, FakeItems.animeData),
-                isRefreshing = false,
-                onEventSent = {},
-                navToDetail = {},
-                onFilterClicked = {}
-            )
-        }
     }
 }

@@ -1,11 +1,11 @@
 package com.lexwilliam.data_remote.di
 
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.lexwilliam.data_remote.JikanService
 import com.lexwilliam.data_remote.MyAnimeListService
 import com.lexwilliam.data_remote.interceptor.RateLimitInterceptor
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

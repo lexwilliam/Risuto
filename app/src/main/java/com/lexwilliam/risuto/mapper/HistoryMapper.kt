@@ -3,7 +3,6 @@ package com.lexwilliam.risuto.mapper
 import com.lexwilliam.domain.model.local.AnimeHistory
 import com.lexwilliam.domain.model.local.SearchHistory
 import com.lexwilliam.risuto.model.AnimeDetailPresentation
-import com.lexwilliam.risuto.model.AnimePresentation
 import com.lexwilliam.risuto.model.SearchHistoryPresentation
 import com.lexwilliam.risuto.model.ShortAnimePresentation
 import javax.inject.Inject

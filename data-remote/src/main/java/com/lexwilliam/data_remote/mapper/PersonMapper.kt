@@ -1,6 +1,5 @@
 package com.lexwilliam.data_remote.mapper
 
-import android.media.Image
 import com.lexwilliam.data.model.remote.people.PersonRepo
 import com.lexwilliam.data_remote.model.people.PersonResponse
 import javax.inject.Inject

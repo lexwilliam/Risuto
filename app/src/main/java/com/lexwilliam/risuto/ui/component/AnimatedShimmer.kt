@@ -1,11 +1,24 @@
 package com.lexwilliam.risuto.ui.component
 
-import androidx.compose.animation.core.*
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.GridCells
-import androidx.compose.foundation.lazy.LazyVerticalGrid
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
@@ -15,13 +28,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.flowlayout.FlowRow
 import com.google.accompanist.insets.LocalWindowInsets
-import com.google.accompanist.insets.ui.TopAppBar
 import com.google.accompanist.insets.rememberInsetsPaddingValues
-import com.lexwilliam.risuto.ui.theme.RisutoTheme
+import com.google.accompanist.insets.ui.TopAppBar
 
 @Composable
 fun PosterGridListShimmerLoading() {
@@ -120,7 +131,7 @@ fun GridListShimmerLoading() {
         modifier = Modifier
             .fillMaxSize()
             .padding(start = 16.dp),
-        cells = GridCells.Adaptive(minSize = 136.dp),
+        columns = GridCells.Adaptive(minSize = 136.dp),
     ) {
         repeat(6) {
             item {
@@ -428,56 +439,5 @@ fun AnimeScreenShimmerLoading() {
                 }
             }
         }
-    }
-}
-
-@Preview
-@Composable
-fun PosterGridListShimmerLoadingPreview() {
-    RisutoTheme {
-        PosterGridListShimmerLoading()
-    }
-}
-
-@Preview
-@Composable
-fun GridListShimmerLoadingPreview() {
-    RisutoTheme {
-        GridListShimmerLoading()
-    }
-}
-
-@Preview
-@Composable
-fun SeasonScreenShimmerLoadingPreview() {
-    RisutoTheme {
-        Column {
-            HeaderShimmerLoading()
-            GridListShimmerLoading()
-        }
-    }
-}
-
-@Preview
-@Composable
-fun RowListShimmerLoadingPreview() {
-    RisutoTheme {
-        RowListShimmerLoading()
-    }
-}
-
-@Preview
-@Composable
-fun MyAnimeListShimmerLoadingPreview() {
-    RisutoTheme {
-        MyAnimeListShimmerLoading()
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun AnimeScreenShimmerLoadingPreview() {
-    RisutoTheme {
-        AnimeScreenShimmerLoading()
     }
 }

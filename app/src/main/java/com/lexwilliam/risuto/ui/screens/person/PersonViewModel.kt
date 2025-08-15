@@ -3,8 +3,8 @@ package com.lexwilliam.risuto.ui.screens.person
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.lexwilliam.domain.usecase.GetPeopleById
-import com.lexwilliam.risuto.ui.base.BaseViewModel
 import com.lexwilliam.risuto.mapper.PersonMapper
+import com.lexwilliam.risuto.ui.base.BaseViewModel
 import com.lexwilliam.risuto.util.getInitialStatePerson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler

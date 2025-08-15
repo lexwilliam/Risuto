@@ -5,14 +5,23 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.*
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Warning
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -23,7 +32,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.github.mikephil.charting.charts.PieChart
@@ -33,18 +41,26 @@ import com.github.mikephil.charting.data.PieEntry
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.navigationBarsWithImePadding
 import com.google.accompanist.insets.rememberInsetsPaddingValues
+import com.google.accompanist.insets.ui.TopAppBar
 import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.HorizontalPagerIndicator
 import com.google.accompanist.pager.rememberPagerState
-import com.lexwilliam.risuto.model.UserProfilePresentation
-import com.lexwilliam.risuto.ui.component.*
-import com.lexwilliam.risuto.ui.screens.person.Subtitle
-import com.lexwilliam.risuto.ui.theme.*
-import com.lexwilliam.risuto.util.FakeItems
-import com.lexwilliam.risuto.util.gradientBackground
-import com.google.accompanist.insets.ui.TopAppBar
 import com.lexwilliam.risuto.R
+import com.lexwilliam.risuto.model.UserProfilePresentation
+import com.lexwilliam.risuto.ui.component.FavoriteAnimeHorizontalGridList
+import com.lexwilliam.risuto.ui.component.FavoriteCharacterHorizontalGridList
+import com.lexwilliam.risuto.ui.component.FavoritePeopleHorizontalGridList
+import com.lexwilliam.risuto.ui.component.GuestScreen
+import com.lexwilliam.risuto.ui.component.LoadingScreen
+import com.lexwilliam.risuto.ui.component.NetworkImage
+import com.lexwilliam.risuto.ui.component.UpdatesHorizontalGridList
+import com.lexwilliam.risuto.ui.screens.person.Subtitle
+import com.lexwilliam.risuto.ui.theme.completedColor
+import com.lexwilliam.risuto.ui.theme.droppedColor
+import com.lexwilliam.risuto.ui.theme.onHoldColor
+import com.lexwilliam.risuto.ui.theme.planToWatchColor
+import com.lexwilliam.risuto.ui.theme.watchingColor
+import com.lexwilliam.risuto.util.gradientBackground
 
 @Composable
 fun ProfileScreen(
@@ -346,20 +362,3 @@ fun ProfileUpdates(
     }
 
 }
-
-//@Preview(
-//    showBackground = true
-//)
-//@Composable
-//fun ProfileContentPreview() {
-//    RisutoTheme {
-//        ProfileContent(
-//            userProfile = FakeItems.fakeUserProfile,
-//            navToDetail = {},
-//            navToPerson = {},
-//            onBackPressed = {},
-//
-//        )
-//    }
-//
-//}

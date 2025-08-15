@@ -1,8 +1,6 @@
 package com.lexwilliam.domain.repository
 
-import com.lexwilliam.domain.model.remote.auth.AccessToken
 import kotlinx.coroutines.flow.Flow
-import java.util.*
 
 interface OAuthRepository {
 

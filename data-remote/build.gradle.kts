@@ -1,5 +1,5 @@
-import com.lexwilliam.dependencies.ProjectModules
 import com.lexwilliam.dependencies.Dependencies
+import com.lexwilliam.dependencies.ProjectModules
 import com.lexwilliam.dependencies.TestDependencies
 
 plugins {
@@ -7,9 +7,12 @@ plugins {
     id("com.lexwilliam.android.plugin")
 }
 
+android {
+    namespace = "com.lexwilliam.data_remote"
+}
+
 dependencies {
     implementation(project(ProjectModules.data))
-    testImplementation(project(ProjectModules.coreAndroidTest))
 
     api(Dependencies.Retrofit.retrofit)
     api(Dependencies.Retrofit.retrofitConverterMoshi)

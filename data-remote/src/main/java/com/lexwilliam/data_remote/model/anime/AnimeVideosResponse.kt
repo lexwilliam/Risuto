@@ -1,7 +1,6 @@
 package com.lexwilliam.data_remote.model.anime
 
 import androidx.annotation.Keep
-import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @Keep

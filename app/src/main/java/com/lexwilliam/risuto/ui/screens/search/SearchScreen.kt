@@ -1,22 +1,45 @@
 package com.lexwilliam.risuto.ui.screens.search
 
-import androidx.compose.foundation.*
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.*
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Warning
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -28,7 +51,6 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.PagingData
@@ -40,12 +62,13 @@ import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.google.accompanist.insets.ui.TopAppBar
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import com.lexwilliam.risuto.model.SearchHistoryPresentation
 import com.lexwilliam.risuto.model.AnimePresentation
+import com.lexwilliam.risuto.model.SearchHistoryPresentation
 import com.lexwilliam.risuto.model.ShortAnimePresentation
-import com.lexwilliam.risuto.ui.component.*
-import com.lexwilliam.risuto.ui.theme.RisutoTheme
-import com.lexwilliam.risuto.util.FakeItems
+import com.lexwilliam.risuto.ui.component.ImeAvoidingBox
+import com.lexwilliam.risuto.ui.component.RowItem
+import com.lexwilliam.risuto.ui.component.RowListShimmerLoading
+import com.lexwilliam.risuto.ui.component.SmallGrid
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import timber.log.Timber
@@ -490,52 +513,6 @@ fun NoResultScreen() {
         ) {
             Icon(modifier = Modifier.size(80.dp), imageVector = Icons.Default.Warning, contentDescription = null, tint = Color.LightGray)
             Text(text = "No Anime Found", style = MaterialTheme.typography.h6, color = Color.LightGray)
-        }
-    }
-}
-
-//@Preview
-//@Composable
-//fun ResultPreview() {
-//    RisutoTheme {
-//        Box(
-//            Modifier.background(MaterialTheme.colors.background)
-//        ) {
-//            ResultView(
-//                animes = flowOf(PagingData.from(listOf(FakeItems.animeData, FakeItems.animeData, FakeItems.animeData, FakeItems.animeData))),
-//                navToDetail = {}
-//            )
-//        }
-//        }
-//    }
-
-
-@Preview
-@Composable
-fun QueryPreview() {
-    RisutoTheme {
-        Box(
-            Modifier.background(MaterialTheme.colors.background)
-        ) {
-            SuggestionView(items = listOf(SearchHistoryPresentation(query = "test123"), SearchHistoryPresentation(query = "test123"), SearchHistoryPresentation(query = "test123")), onSelectItem = {})
-        }
-    }
-}
-
-@Preview
-@Composable
-fun HistoryPreview() {
-    RisutoTheme {
-        Box(
-            Modifier.background(MaterialTheme.colors.background)
-        ) {
-            HistoryView(
-                animeHistory = listOf(FakeItems.shortAnime, FakeItems.shortAnime, FakeItems.shortAnime, FakeItems.shortAnime, FakeItems.shortAnime),
-                searchHistory = listOf(SearchHistoryPresentation(query = "test123")),
-                onEventSent = {},
-                navToDetail = {},
-                onCursorChanged = {}
-            )
         }
     }
 }

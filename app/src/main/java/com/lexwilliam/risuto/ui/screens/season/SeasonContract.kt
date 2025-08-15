@@ -1,10 +1,10 @@
 package com.lexwilliam.risuto.ui.screens.season
 
+import com.lexwilliam.risuto.model.AnimePresentation
+import com.lexwilliam.risuto.model.SeasonListPresentation
 import com.lexwilliam.risuto.ui.base.ViewEvent
 import com.lexwilliam.risuto.ui.base.ViewSideEffect
 import com.lexwilliam.risuto.ui.base.ViewState
-import com.lexwilliam.risuto.model.AnimePresentation
-import com.lexwilliam.risuto.model.SeasonListPresentation
 
 class SeasonContract {
     sealed class Event : ViewEvent {

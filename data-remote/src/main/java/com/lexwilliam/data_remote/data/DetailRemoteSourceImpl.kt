@@ -8,8 +8,10 @@ import com.lexwilliam.data.model.remote.anime.AnimeVideosRepo
 import com.lexwilliam.data_remote.JikanService
 import com.lexwilliam.data_remote.MyAnimeListService
 import com.lexwilliam.data_remote.mapper.DetailMapper
-import kotlinx.coroutines.flow.*
-import timber.log.Timber
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import javax.inject.Inject
 
 class DetailRemoteSourceImpl @Inject constructor(

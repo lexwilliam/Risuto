@@ -8,7 +8,11 @@ import com.lexwilliam.data_remote.JikanService
 import com.lexwilliam.data_remote.MyAnimeListService
 import com.lexwilliam.data_remote.mapper.AnimeMapper
 import com.lexwilliam.data_remote.mapper.UserMapper
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class UserRemoteSourceImpl @Inject constructor(

@@ -10,7 +10,11 @@ import com.lexwilliam.data.model.remote.anime.SeasonListRepo
 import com.lexwilliam.data_remote.JikanService
 import com.lexwilliam.data_remote.mapper.AnimeMapper
 import com.lexwilliam.data_remote.paging.SearchPagingSource
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class AnimeRemoteSourceImpl @Inject constructor(

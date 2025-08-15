@@ -9,4 +9,5 @@ object BuildDependencies {
         "com.google.dagger:hilt-android-gradle-plugin:${Versions.hilt}"
     const val googleSecret =
         "com.google.android.libraries.mapsplatform.secrets-gradle-plugin:secrets-gradle-plugin:${Versions.googleSecret}"
+    const val kotlinCompose = "org.jetbrains.kotlin.plugin.compose:${Versions.kotlin}"
 }

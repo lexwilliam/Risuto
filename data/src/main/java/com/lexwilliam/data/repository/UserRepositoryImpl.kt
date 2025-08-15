@@ -10,10 +10,8 @@ import com.lexwilliam.domain.model.remote.user.UserAnimeUpdate
 import com.lexwilliam.domain.model.remote.user.UserProfile
 import com.lexwilliam.domain.repository.UserRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
-import timber.log.Timber
 import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(

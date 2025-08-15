@@ -5,6 +5,10 @@ plugins {
     id("com.lexwilliam.android.plugin")
 }
 
+android {
+    namespace = "com.lexwilliam.domain"
+}
+
 dependencies {
     implementation(Dependencies.Paging.runtime)
 

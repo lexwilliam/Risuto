@@ -1,6 +1,5 @@
 package com.lexwilliam.domain.usecase
 
-import com.lexwilliam.domain.model.local.AnimeHistory
 import com.lexwilliam.domain.model.local.SearchHistory
 import com.lexwilliam.domain.repository.HistoryRepository
 import kotlinx.coroutines.flow.Flow

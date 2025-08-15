@@ -1,6 +1,9 @@
 package com.lexwilliam.data_local.dao
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
 import com.lexwilliam.data_local.model.AnimeHistoryEntity
 import com.lexwilliam.data_local.model.SearchHistoryEntity
 import kotlinx.coroutines.flow.Flow

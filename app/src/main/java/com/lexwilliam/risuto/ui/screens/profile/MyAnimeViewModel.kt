@@ -5,9 +5,9 @@ import com.lexwilliam.domain.usecase.GetAccessTokenFromCache
 import com.lexwilliam.domain.usecase.GetUserAnimeList
 import com.lexwilliam.domain.usecase.GetUserProfile
 import com.lexwilliam.domain.usecase.UpdateUserAnimeStatus
-import com.lexwilliam.risuto.ui.base.BaseViewModel
 import com.lexwilliam.risuto.mapper.AnimeMapper
 import com.lexwilliam.risuto.mapper.UserMapper
+import com.lexwilliam.risuto.ui.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.delay

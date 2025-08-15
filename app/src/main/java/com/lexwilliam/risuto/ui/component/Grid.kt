@@ -1,8 +1,18 @@
 package com.lexwilliam.risuto.ui.component
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Star
@@ -12,7 +22,6 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.lexwilliam.risuto.model.AnimePresentation
 import com.lexwilliam.risuto.util.intToCurrency
 
 @Composable
@@ -118,15 +127,3 @@ fun MediumGrid(
         }
     }
 }
-
-//@Preview
-//@Composable
-//fun SmallGridPreview() {
-//    SmallGrid(item = generateFakeItem(), navToDetail = {})
-//}
-//
-//@Preview
-//@Composable
-//fun MediumGridPreview() {
-//    MediumGrid(item = generateFakeItem(), navToDetail = {})
-//}

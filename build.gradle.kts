@@ -1,12 +1,7 @@
-import org.jetbrains.kotlin.gradle.plugin.statistics.ReportStatisticsToElasticSearch.url
+import org.jetbrains.kotlin.commonizer.OptimisticNumberCommonizationEnabledKey.alias
 
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
-    repositories {
-        google()
-        mavenCentral()
-        maven { setUrl("https://jitpack.io") }
-    }
     dependencies {
         classpath(com.lexwilliam.dependencies.BuildDependencies.androidGradle)
         classpath(com.lexwilliam.dependencies.BuildDependencies.kotlinGradlePlugin)
@@ -17,14 +12,6 @@ buildscript {
     }
 }
 
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
-        maven { setUrl("https://jitpack.io") }
-    }
-}
-
-task("clean") {
-    delete(rootProject.buildDir)
+plugins {
+    id("org.jetbrains.kotlin.plugin.compose") version "2.0.0" apply false
 }

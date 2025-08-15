@@ -1,15 +1,23 @@
 package com.lexwilliam.data_remote
 
-import com.lexwilliam.data_remote.model.constants.ApiConstants
-import com.lexwilliam.data_remote.model.constants.UserAnimeSortType
 import com.lexwilliam.data_remote.model.anime.AnimeDetailResponse
 import com.lexwilliam.data_remote.model.auth.AccessTokenResponse
 import com.lexwilliam.data_remote.model.auth.OAuthGrantType
+import com.lexwilliam.data_remote.model.constants.ApiConstants
+import com.lexwilliam.data_remote.model.constants.UserAnimeSortType
 import com.lexwilliam.data_remote.model.user.UserAnimeListResponse
 import com.lexwilliam.data_remote.model.user.UserAnimeUpdateResponse
 import com.lexwilliam.data_remote.model.user.UserInfoResponse
 import retrofit2.Response
-import retrofit2.http.*
+import retrofit2.http.DELETE
+import retrofit2.http.Field
+import retrofit2.http.FormUrlEncoded
+import retrofit2.http.GET
+import retrofit2.http.Header
+import retrofit2.http.PATCH
+import retrofit2.http.POST
+import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface MyAnimeListService {
 

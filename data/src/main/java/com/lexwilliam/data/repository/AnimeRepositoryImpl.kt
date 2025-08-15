@@ -3,7 +3,6 @@ package com.lexwilliam.data.repository
 import androidx.paging.PagingData
 import androidx.paging.map
 import com.lexwilliam.data.AnimeRemoteSource
-import com.lexwilliam.data.OAuthLocalSource
 import com.lexwilliam.data.mapper.AnimeMapper
 import com.lexwilliam.domain.model.remote.anime.Anime
 import com.lexwilliam.domain.model.remote.anime.SeasonList

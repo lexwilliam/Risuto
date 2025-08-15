@@ -2,11 +2,18 @@ package com.lexwilliam.risuto.ui.screens.detail
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import com.lexwilliam.domain.usecase.*
-import com.lexwilliam.risuto.ui.base.BaseViewModel
+import com.lexwilliam.domain.usecase.DeleteUserAnimeStatus
+import com.lexwilliam.domain.usecase.GetAccessTokenFromCache
+import com.lexwilliam.domain.usecase.GetAnimeCharacters
+import com.lexwilliam.domain.usecase.GetAnimeDetails
+import com.lexwilliam.domain.usecase.GetAnimeStaff
+import com.lexwilliam.domain.usecase.GetAnimeVideos
+import com.lexwilliam.domain.usecase.InsertAnimeHistory
+import com.lexwilliam.domain.usecase.UpdateUserAnimeStatus
 import com.lexwilliam.risuto.mapper.DetailMapper
 import com.lexwilliam.risuto.mapper.HistoryMapper
 import com.lexwilliam.risuto.model.AnimeDetailPresentation
+import com.lexwilliam.risuto.ui.base.BaseViewModel
 import com.lexwilliam.risuto.util.getInitialAnimeDetails
 import com.lexwilliam.risuto.util.getInitialAnimeVideos
 import dagger.hilt.android.lifecycle.HiltViewModel

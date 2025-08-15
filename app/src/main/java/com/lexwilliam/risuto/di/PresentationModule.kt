@@ -1,6 +1,17 @@
 package com.lexwilliam.risuto.di
 
-import com.lexwilliam.risuto.mapper.*
+import com.lexwilliam.risuto.mapper.AnimeMapper
+import com.lexwilliam.risuto.mapper.AnimeMapperImpl
+import com.lexwilliam.risuto.mapper.CharacterMapper
+import com.lexwilliam.risuto.mapper.CharacterMapperImpl
+import com.lexwilliam.risuto.mapper.DetailMapper
+import com.lexwilliam.risuto.mapper.DetailMapperImpl
+import com.lexwilliam.risuto.mapper.HistoryMapper
+import com.lexwilliam.risuto.mapper.HistoryMapperImpl
+import com.lexwilliam.risuto.mapper.PersonMapper
+import com.lexwilliam.risuto.mapper.PersonMapperImpl
+import com.lexwilliam.risuto.mapper.UserMapper
+import com.lexwilliam.risuto.mapper.UserMapperImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

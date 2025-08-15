@@ -8,7 +8,7 @@ import com.lexwilliam.domain.usecase.SetAccessToken
 import com.lexwilliam.domain.usecase.SetCodeChallenge
 import com.lexwilliam.risuto.BuildConfig
 import com.lexwilliam.risuto.ui.base.BaseViewModel
-import com.lexwilliam.risuto.ui.screens.login.OAuthState.*
+import com.lexwilliam.risuto.ui.screens.login.OAuthState.RedirectToAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch

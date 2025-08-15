@@ -2,8 +2,8 @@ package com.lexwilliam.data_remote.mapper
 
 import com.lexwilliam.data.model.remote.anime.AnimeRepo
 import com.lexwilliam.data.model.remote.anime.SeasonListRepo
-import com.lexwilliam.data_remote.model.anime.AnimeResponse
 import com.lexwilliam.data.model.remote.user.UserAnimeListRepo
+import com.lexwilliam.data_remote.model.anime.AnimeResponse
 import com.lexwilliam.data_remote.model.anime.SeasonListResponse
 import com.lexwilliam.data_remote.model.user.UserAnimeListResponse
 import javax.inject.Inject

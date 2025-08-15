@@ -1,13 +1,12 @@
 package com.lexwilliam.risuto.mapper
 
-import com.lexwilliam.data.model.remote.anime.SeasonListRepo
 import com.lexwilliam.domain.model.remote.anime.Anime
 import com.lexwilliam.domain.model.remote.anime.SeasonList
 import com.lexwilliam.domain.model.remote.user.UserAnimeList
-import com.lexwilliam.risuto.model.WatchStatusPresentation
 import com.lexwilliam.risuto.model.AnimePresentation
 import com.lexwilliam.risuto.model.SeasonListPresentation
 import com.lexwilliam.risuto.model.UserAnimeListPresentation
+import com.lexwilliam.risuto.model.WatchStatusPresentation
 import javax.inject.Inject
 
 interface AnimeMapper {

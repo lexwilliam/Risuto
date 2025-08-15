@@ -1,18 +1,24 @@
 package com.lexwilliam.risuto.ui.component
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.*
-import androidx.compose.material.Divider
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.lexwilliam.risuto.model.AnimePresentation
-import com.lexwilliam.risuto.model.ShortAnimePresentation
 import com.lexwilliam.risuto.model.UserProfilePresentation
-import com.lexwilliam.risuto.ui.screens.profile.MyAnimeContract
 
 @ExperimentalFoundationApi
 @Composable
@@ -34,7 +40,7 @@ fun GridList(
                 modifier = modifier
                     .fillMaxSize()
                     .padding(start = 16.dp),
-                cells = GridCells.Adaptive(minSize = 136.dp),
+                columns = GridCells.Adaptive(minSize = 136.dp),
             ) {
                 items(items = items) { item ->
                     MediumGrid(
@@ -175,22 +181,3 @@ fun UpdatesHorizontalGridList(
         }
     }
 }
-//
-//@Preview
-//@Composable
-//fun ColumnListPreview() {
-//    ColumnList(items = generateFakeItemList(), navToDetail = {})
-//}
-//
-//@ExperimentalFoundationApi
-//@Preview
-//@Composable
-//fun GridListPreview() {
-//    GridList(items = generateFakeItemList(), navToDetail = {})
-//}
-//
-//@Preview
-//@Composable
-//fun HorizontalGridListPreview() {
-//    HorizontalGridList(items = generateFakeItemList(), navToDetail = {})
-//}

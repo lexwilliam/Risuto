@@ -1,12 +1,12 @@
 package com.lexwilliam.risuto.ui.screens.detail
 
-import com.lexwilliam.risuto.ui.base.ViewEvent
-import com.lexwilliam.risuto.ui.base.ViewSideEffect
-import com.lexwilliam.risuto.ui.base.ViewState
 import com.lexwilliam.risuto.model.AnimeCharactersPresentation
 import com.lexwilliam.risuto.model.AnimeDetailPresentation
 import com.lexwilliam.risuto.model.AnimeStaffPresentation
 import com.lexwilliam.risuto.model.AnimeVideosPresentation
+import com.lexwilliam.risuto.ui.base.ViewEvent
+import com.lexwilliam.risuto.ui.base.ViewSideEffect
+import com.lexwilliam.risuto.ui.base.ViewState
 
 class AnimeContract {
     sealed class Event : ViewEvent {

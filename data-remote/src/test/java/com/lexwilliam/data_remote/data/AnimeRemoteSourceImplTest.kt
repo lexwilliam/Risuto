@@ -1,7 +1,6 @@
 package com.lexwilliam.data_remote.data
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.google.common.truth.Truth.assertThat
 import com.lexwilliam.MainCoroutineRule
 import com.lexwilliam.data.AnimeRemoteSource
 import com.lexwilliam.data_remote.JikanService
@@ -12,7 +11,6 @@ import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer

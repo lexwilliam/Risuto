@@ -1,7 +1,5 @@
 package com.lexwilliam.risuto.ui
 
-import android.content.Context
-import android.net.ConnectivityManager
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth

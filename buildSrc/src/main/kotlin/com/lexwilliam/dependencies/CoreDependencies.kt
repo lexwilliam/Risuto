@@ -4,27 +4,27 @@ object Dependencies {
     object AndroidX {
         const val coreKtx =
             "androidx.core:core-ktx:${Versions.core}"
-        const val archComponents =
-            "androidx.lifecycle:lifecycle-extensions:${Versions.lifecycleLivedataKtx}"
         const val browser = "androidx.browser:browser:${Versions.browser}"
         const val splashScreen = "androidx.core:core-splashscreen:${Versions.splashScreen}"
 
         object Compose {
-            const val ui = "androidx.compose.ui:ui:${Versions.compose}"
+            const val bom = "androidx.compose:compose-bom:${Versions.compose}"
+            const val ui = "androidx.compose.ui:ui"
 
             const val systemUiController =
                 "com.google.accompanist:accompanist-systemuicontroller:${Versions.composeSystemUi}"
-            const val runtime = "androidx.compose.runtime:runtime:${Versions.compose}"
+            const val runtime = "androidx.compose.runtime:runtime"
             const val runtimeLiveData =
-                "androidx.compose.runtime:runtime-livedata:${Versions.compose}"
-            const val material = "androidx.compose.material:material:${Versions.compose}"
-            const val uiTooling = "androidx.compose.ui:ui-tooling:${Versions.compose}"
-            const val uiUtil = "androidx.compose.ui:ui-util:${Versions.compose}"
+                "androidx.compose.runtime:runtime-livedata"
+            const val material = "androidx.compose.material:material"
+            const val uiTooling = "androidx.compose.ui:ui-tooling"
+            const val uiUtil = "androidx.compose.ui:ui-util"
             const val navigation =
                 "androidx.navigation:navigation-compose:${Versions.composeNavigation}"
-            const val viewModel =
-                "androidx.lifecycle:lifecycle-viewmodel-compose:${Versions.composeViewModel}"
             const val coil = "io.coil-kt:coil-compose:${Versions.coil}"
+            const val icons = "androidx.compose.material:material-icons-core"
+            const val iconsExtended =
+                "androidx.compose.material:material-icons-extended"
         }
     }
 

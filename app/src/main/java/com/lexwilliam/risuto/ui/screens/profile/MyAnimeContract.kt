@@ -1,9 +1,9 @@
 package com.lexwilliam.risuto.ui.screens.profile
 
+import com.lexwilliam.risuto.model.UserAnimeListPresentation
 import com.lexwilliam.risuto.ui.base.ViewEvent
 import com.lexwilliam.risuto.ui.base.ViewSideEffect
 import com.lexwilliam.risuto.ui.base.ViewState
-import com.lexwilliam.risuto.model.UserAnimeListPresentation
 
 class MyAnimeContract {
     sealed class Event : ViewEvent {

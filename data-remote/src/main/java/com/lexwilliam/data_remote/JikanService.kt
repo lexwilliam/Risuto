@@ -1,6 +1,10 @@
 package com.lexwilliam.data_remote
 
-import com.lexwilliam.data_remote.model.anime.*
+import com.lexwilliam.data_remote.model.anime.AnimeCharactersResponse
+import com.lexwilliam.data_remote.model.anime.AnimeResponse
+import com.lexwilliam.data_remote.model.anime.AnimeStaffResponse
+import com.lexwilliam.data_remote.model.anime.AnimeVideosResponse
+import com.lexwilliam.data_remote.model.anime.SeasonListResponse
 import com.lexwilliam.data_remote.model.character.CharacterDetailResponse
 import com.lexwilliam.data_remote.model.people.PersonResponse
 import com.lexwilliam.data_remote.model.user.UserProfileResponse

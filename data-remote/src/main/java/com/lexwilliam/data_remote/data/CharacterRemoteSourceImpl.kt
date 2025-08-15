@@ -2,7 +2,6 @@ package com.lexwilliam.data_remote.data
 
 import com.lexwilliam.data.CharacterRemoteSource
 import com.lexwilliam.data.model.remote.character.CharacterDetailRepo
-import com.lexwilliam.data.model.remote.people.PersonRepo
 import com.lexwilliam.data_remote.JikanService
 import com.lexwilliam.data_remote.mapper.CharacterMapper
 import kotlinx.coroutines.flow.Flow

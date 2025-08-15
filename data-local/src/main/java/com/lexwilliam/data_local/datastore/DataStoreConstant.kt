@@ -1,6 +1,5 @@
 package com.lexwilliam.data_local.datastore
 
-import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 

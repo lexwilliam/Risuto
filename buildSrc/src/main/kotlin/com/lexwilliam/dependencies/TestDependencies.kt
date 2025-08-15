@@ -18,10 +18,10 @@ object TestDependencies {
             "android.arch.core:core-testing:${Versions.coreTesting}"
 
         const val composeUiTest =
-            "androidx.compose.ui:ui-test:${Versions.compose}"
+            "androidx.compose.ui:ui-test"
         const val composeUiTestJUnit4 =
-            "androidx.compose.ui:ui-test-junit4:${Versions.compose}"
-        const val uiTestManifest = "androidx.compose.ui:ui-test-manifest:${Versions.compose}"
+            "androidx.compose.ui:ui-test-junit4"
+        const val uiTestManifest = "androidx.compose.ui:ui-test-manifest"
 
         const val googleTruth = "com.google.truth:truth:${Versions.truth}"
     }
