@@ -16,7 +16,6 @@ androidPlugin {
 }
 
 android {
-    buildToolsVersion = "35.0.0"
     defaultConfig {
         namespace = "com.lexwilliam.risuto"
         applicationId = "com.lexwilliam.risuto"
